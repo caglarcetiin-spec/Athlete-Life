@@ -1,0 +1,14 @@
+const fs=require('fs');
+const assert=require('assert');
+const html=fs.readFileSync('index.html','utf8');
+const vault=fs.readFileSync('backup-vault.js','utf8');
+const css=fs.readFileSync('styles.css','utf8');
+const sw=fs.readFileSync('service-worker.js','utf8');
+assert(html.includes('id="quickBackupBtn"'),'global backup button missing');
+assert(html.indexOf('id="quickBackupBtn"') < html.indexOf('id="quickSocialBtn"'),'backup should sit next to/before surprise plan');
+assert(vault.includes('quickBackupBtn'),'backup button is not wired');
+assert(vault.includes('exportBackup(true)'),'global action must use full backup');
+assert(vault.includes('const APP_VERSION="10.0.0"'),'backup filename version not updated');
+assert(css.includes('.topbar-actions'),'topbar actions layout missing');
+assert(sw.includes('athlete-life-os-v10-0-0-dynamic-sqlite'),'service worker cache not bumped');
+console.log('PASS global backup v9.2.6');

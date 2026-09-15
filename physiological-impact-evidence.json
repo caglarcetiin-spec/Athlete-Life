@@ -1,0 +1,47 @@
+{
+  "version": "7.14",
+  "scope": "Universal movement-specific physiological impact decision support across planned, Guided, manual, substitution and Ad Hoc training",
+  "sources": [
+    {
+      "pmid": "36165995",
+      "title": "The Effects of Sprint Interval Training on Physical Performance: A Systematic Review and Meta-Analysis",
+      "use": "SIT supports aerobic, anaerobic/mixed and performance adaptation; moderators include sprint length and number of sprints."
+    },
+    {
+      "pmid": "38041768",
+      "title": "Effects of Repeated-Sprint Training on Physical Fitness and Physiological Adaptation in Athletes",
+      "use": "Repeated-sprint training can improve sprint, VO2max and repeated-sprint-related outcomes."
+    },
+    {
+      "pmid": "37222864",
+      "title": "Acute Demands of Repeated-Sprint Training: Systematic Review and Meta-analysis",
+      "use": "Acute repeated-sprint demand includes high HR, oxygen consumption, lactate and perceptual load; protocol variables alter demands."
+    },
+    {
+      "pmid": "34781827",
+      "title": "Contribution of Energy Systems in Repeated-Sprint Protocols",
+      "use": "Sprint distance/rest/repetitions materially change phosphagen, glycolytic and aerobic contributions."
+    },
+    {
+      "pmid": "8964751",
+      "title": "Contribution of phosphocreatine and aerobic metabolism to repeated sprint exercise",
+      "use": "PCr availability is important for initial sprint power; aerobic contribution rises in repeated bouts."
+    },
+    {
+      "pmid": "29163016",
+      "title": "Session-RPE Method for Training Load Monitoring",
+      "use": "duration × session RPE is a practical internal-load monitor across sports."
+    },
+    {
+      "pmid": "37668346",
+      "title": "Quantifying demands on the hamstrings during high-speed running",
+      "use": "Hamstring activation/kinetic demand rises with high-speed running."
+    }
+  ],
+  "limits": [
+    "0–100 demand scores are engineering decision-support indices, not measured biological percentages.",
+    "Movement models use logged sets/reps/hold seconds/load/rest/RIR/session-RPE and curated biomechanics; they do not infer exact lactate, VO2, calories, tendon force or injury probability.",
+    "External-load starting recommendations are conservative heuristics until the athlete has real history for that movement.",
+    "Once real history exists, the Load Prescription Engine prioritizes the athlete's own load/reps/RIR trend over bodyweight baselines."
+  ]
+}

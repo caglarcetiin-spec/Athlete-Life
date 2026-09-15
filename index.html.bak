@@ -1,0 +1,1852 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Athlete Life OS</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#0d1117" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="logo">A</div>
+        <div>
+          <h1>Athlete Life OS <span class="version-pill">v9.2.5</span></h1>
+          <p>Planla · Uygula · Ölç · Öğren · Yeniden Planla</p>
+        </div>
+      </div>
+      <nav>
+        <button class="nav-btn active" data-page="today">Bugün</button>
+        <button class="nav-btn" data-page="week">Haftam</button>
+        <button class="nav-btn" data-page="training">Antrenman</button>
+        <button class="nav-btn" data-page="nutrition">Beslenme</button>
+        <button class="nav-btn" data-page="analytics">Analiz</button>
+        <button class="nav-btn" data-page="detailed">Detaylı Analiz</button>
+        <button class="nav-btn" data-page="coach">Koç</button>
+        <button class="nav-btn" data-page="character">Çağlar</button>
+        <button class="nav-btn" data-page="reports">Raporlar</button>
+        <button class="nav-btn" data-page="records">Kayıtlar</button>
+        <button class="nav-btn" data-page="settings">Ayarlar</button>
+      </nav>
+      <div class="sidebar-note">
+        <strong>Tek veri portalı</strong>
+        <span>Girdiğin veriler tüm ekranları besler.</span>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <h2 id="pageTitle">Bugün</h2>
+          <p id="dateLabel"></p>
+        </div>
+        <div class="topbar-actions">
+          <button id="quickBackupBtn" class="secondary quick-backup-btn" type="button" title="Tüm uygulama verilerini ve Photo Progress görsellerini yedekle">⬇ Tüm Verileri Yedekle</button>
+          <button id="quickSocialBtn" class="primary" type="button">+ Sürpriz Plan</button>
+        </div>
+      </header>
+
+      <section id="today" class="page active">
+
+        <div class="card command-center">
+          <div class="section-head">
+            <div><h3>Life OS Command Center</h3><p class="hint">Bugün, yarın ve 12 haftalık döngünün tek bakışta özeti.</p></div>
+            <div id="engineStatus" class="engine-status">Motor hazırlanıyor…</div>
+          </div>
+          <div class="command-grid">
+            <button class="command-tile" data-command="training"><span>BUGÜN</span><strong id="cmdTodayTraining">--</strong><small id="cmdTodayTime">--</small></button>
+            <button class="command-tile" data-command="coach"><span>YARIN</span><strong id="cmdTomorrowTraining">--</strong><small id="cmdTomorrowReadiness">--</small></button>
+            <button class="command-tile" data-command="coach"><span>12 HAFTA</span><strong id="cmdProgramWeek">--</strong><small id="cmdProgramPhase">--</small></button>
+            <button class="command-tile" data-command="reports"><span>RECOVERY</span><strong id="cmdRecovery">--</strong><small id="cmdRecoveryNote">--</small></button>
+          </div>
+        </div>
+
+        <div class="grid four">
+          <div class="card metric"><span>Readiness</span><strong id="readinessScore">--</strong><small id="readinessText">Veri bekleniyor</small></div>
+          <div class="card metric"><span>Uyku</span><strong id="sleepHours">--</strong><small id="sleepText">Saat</small></div>
+          <div class="card metric"><span>Günlük yük</span><strong id="dailyLoad">--</strong><small>İş + antrenman + stres</small></div>
+          <div class="card metric"><span>Life Balance</span><strong id="lifeBalance">--</strong><small>Bugünkü denge</small></div>
+        </div>
+
+        <div id="gapReconciliationCard" class="card gap-reconciliation-card" hidden>
+          <div class="section-head">
+            <div>
+              <h3>Eksik Günleri Tamamla <small class="version-chip">Gap Reconciliation</small></h3>
+              <p class="hint">Uygulama kapalıyken kayıt olmayan planlı günler otomatik olarak “kaçırıldı” sayılmaz. Önce sen doğrularsın.</p>
+            </div>
+            <span id="gapPendingBadge" class="plan-badge">0 gün</span>
+          </div>
+          <div id="gapReconciliationIntro" class="insight-box neutral"></div>
+          <div id="gapReconciliationList" class="gap-list"></div>
+        </div>
+
+        <div class="card adherence-guardian-card">
+          <div class="section-head">
+            <div>
+              <h3>Adherence Guardian <small class="version-chip">v6.8</small></h3>
+              <p class="hint">Planlanan ile gerçekleşeni izler. Program uyumu ve adaptasyon başarısı birbirinden ayrı değerlendirilir.</p>
+            </div>
+            <div class="guardian-badges">
+              <span id="guardianAdherenceBadge" class="plan-badge">Uyum --</span>
+              <span id="guardianAdaptationBadge" class="plan-badge">Adaptasyon --</span>
+            </div>
+          </div>
+          <div id="guardianAlerts" class="guardian-alerts"></div>
+          <div id="guardianTodayPlan" class="guardian-plan-strip"></div>
+          <div class="guardian-context-row">
+            <label>Sapma nedeni (opsiyonel)
+              <select id="deviationReason">
+                <option value="">Otomatik değerlendir</option>
+                <option value="sleep_debt">Uyku borcu / recovery</option>
+                <option value="work">İş / vardiya</option>
+                <option value="social">Sosyal plan</option>
+                <option value="pain">Ağrı / eklem</option>
+                <option value="time">Zaman sıkışması</option>
+                <option value="energy">Enerji / yorgunluk</option>
+                <option value="other">Diğer</option>
+              </select>
+            </label>
+            <button id="saveDeviationReason" type="button" class="secondary">Nedeni Kaydet</button>
+          </div>
+        </div>
+
+        <div class="grid two">
+          <div class="card">
+            <div class="section-head">
+              <div><h3>Sabah Check-in</h3><p>Bugünkü optimizer'ın temel verileri.</p></div>
+              <div class="save-wrap"><span id="dailySaveStatus" class="save-status"></span><button id="saveDailyBtn" class="primary" type="button">Kaydet</button></div>
+            </div>
+            <div class="form-grid">
+              <label>Yatış <input id="bedTime" type="time" value="00:30"></label>
+              <label>Uykuya dalış <input id="sleepTime" type="time" value="00:45"></label>
+              <label>Uyanış <input id="wakeTime" type="time" value="08:45"></label>
+              <label>Gece uyanıklığı (dk) <input id="nightAwake" type="number" min="0" value="0"></label>
+              <label>Uyku kalitesi (1-5) <input id="sleepQuality" type="number" min="1" max="5" value="4"></label>
+              <label>Enerji (1-5) <input id="energy" type="number" min="1" max="5" value="4"></label>
+              <label>Motivasyon (1-5) <input id="motivation" type="number" min="1" max="5" value="4"></label>
+              <label>Kas ağrısı (1-5) <input id="soreness" type="number" min="1" max="5" value="2"></label>
+              <label>Eklem rahatlığı (1-5) <input id="joint" type="number" min="1" max="5" value="5"></label>
+              <label>Stres (1-5) <input id="stress" type="number" min="1" max="5" value="2"></label>
+              <label>Kilo (kg) <input id="weight" type="number" step="0.1" value="72"></label>
+              <label>Bel (cm) <input id="waist" type="number" step="0.1" value="78"></label>
+              <label>Koşu km <input id="runKm" type="number" step="0.1" value="0"></label>
+              <label>Koşu süre dk <input id="runMinutes" type="number" step="1" value="0"></label>
+              <label>Koşu RPE <input id="runRpe" type="number" min="0" max="10" value="0"></label>
+            </div>
+
+            <div class="health-state-box">
+              <div class="section-head compact">
+                <div><h4>Sağlık / Halsizlik Durumu</h4><p class="hint">Tanı koymaz; bugünkü training load, readiness ve Coach kararına bağlanır.</p></div>
+                <span id="healthStateBadge" class="plan-badge">NORMAL</span>
+              </div>
+              <div class="health-grid">
+                <label>Durum
+                  <select id="healthStatus">
+                    <option value="normal">Normal</option>
+                    <option value="fatigued">Halsiz / yorgun</option>
+                    <option value="mild_illness">Hafif hastalık belirtileri</option>
+                    <option value="sick">Hastayım</option>
+                    <option value="recovering">Hastalık sonrası toparlanıyorum</option>
+                  </select>
+                </label>
+                <label>Halsizlik (0–10)<input id="fatigueLevel" type="number" min="0" max="10" step="1" value="0"></label>
+                <label>Hastalık şiddeti (0–10)<input id="illnessSeverity" type="number" min="0" max="10" step="1" value="0"></label>
+                <label>Not<input id="healthNote" type="text" placeholder="örn. boğaz ağrısı, genel halsizlik"></label>
+              </div>
+              <div class="health-flags">
+                <label><input id="healthFever" type="checkbox"> Ateş / ateş hissi</label>
+                <label><input id="healthCough" type="checkbox"> Öksürük / solunum yolu</label>
+                <label><input id="healthSoreThroat" type="checkbox"> Boğaz ağrısı</label>
+                <label><input id="healthHeadache" type="checkbox"> Baş ağrısı</label>
+                <label><input id="healthGI" type="checkbox"> Mide-bağırsak</label>
+                <label><input id="healthDizziness" type="checkbox"> Baş dönmesi</label>
+                <label><input id="healthChestBreathing" type="checkbox"> Göğüs / nefes sorunu</label>
+              </div>
+              <div id="healthStateAdvice" class="insight-box neutral">Sağlık durumunu girince Coach burada yorumlayacak.</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="section-head">
+              <div><h3>Bugünün Planı</h3><p>Vardiya + uyku + sosyal plan + antrenman durumuna göre.</p></div>
+              <button id="optimizeTodayBtn" class="secondary">Yeniden Optimize Et</button>
+            </div>
+            <div id="todayPlan" class="timeline"></div>
+          </div>
+        </div>
+
+
+        <div class="card pain-card">
+          <div class="section-head">
+            <div>
+              <h3>Pain / Joint Intelligence <small class="version-chip">v7.7</small></h3>
+              <p class="hint">Bölge + sağ/sol + şiddet + tetikleyen hareket kaydedilir. Tanı koymaz; Coach yük yönetimi ve 3D hotspot için kullanır.</p>
+            </div>
+            <div id="painRiskBadge" class="plan-badge">0/10</div>
+          </div>
+
+          <div class="pain-entry-grid">
+            <label>Tarih<input id="painLogDate" type="date"></label>
+            <label>Bölge
+              <select id="painJoint">
+                <option value="shoulder">Omuz</option><option value="elbow">Dirsek</option>
+                <option value="wrist">El bileği</option><option value="hand">El / avuç</option>
+                <option value="neck">Boyun</option><option value="upperBack">Üst sırt</option>
+                <option value="lowBack">Bel / lumbar</option><option value="hip">Kalça</option>
+                <option value="knee">Diz</option><option value="ankle">Ayak bileği</option>
+                <option value="foot">Ayak</option>
+              </select>
+            </label>
+            <label>Taraf
+              <select id="painSide">
+                <option value="left">Sol</option><option value="right">Sağ</option>
+                <option value="bilateral">İki taraf</option><option value="midline">Orta hat</option>
+              </select>
+            </label>
+            <label>Şiddet (0–10)<input id="painSeverity" type="number" min="0" max="10" step="1" value="0"></label>
+            <label>Ne zaman?
+              <select id="painContext">
+                <option value="movement">Hareket sırasında</option><option value="after_training">Antrenman sonrası</option>
+                <option value="rest">Dinlenirken</option><option value="morning">Sabah / ilk hareket</option>
+                <option value="daily">Günlük yaşamda</option>
+              </select>
+            </label>
+            <label>Başlangıç
+              <select id="painOnset">
+                <option value="gradual">Kademeli</option><option value="sudden">Ani</option><option value="trauma">Travma sonrası</option>
+              </select>
+            </label>
+            <label>Hissettiğin durum
+              <select id="painSensation">
+                <option value="ache">Sızı / ağrı</option><option value="sharp">Keskin</option>
+                <option value="stiffness">Sertlik</option><option value="burning">Yanma</option>
+                <option value="tingling">Uyuşma / karıncalanma</option><option value="other">Diğer</option>
+              </select>
+            </label>
+            <label>Kaç gündür?<input id="painDurationDays" type="number" min="0" max="3650" step="1" value="0"></label>
+            <label class="span-2">Tetikleyen / artıran hareket
+              <select id="painTriggerExercise"><option value="">Belirli hareket yok / bilmiyorum</option></select>
+            </label>
+            <label class="span-2">Not<input id="painNote" type="text" placeholder="örn. planche lean'de wrist extension ile artıyor"></label>
+          </div>
+
+          <div class="pain-redflag-grid">
+            <label><input id="painFlagSwelling" type="checkbox"> Belirgin şişlik</label>
+            <label><input id="painFlagNumbness" type="checkbox"> Uyuşma / karıncalanma</label>
+            <label><input id="painFlagWeakness" type="checkbox"> Yeni güç kaybı</label>
+            <label><input id="painFlagInstability" type="checkbox"> Boşa çıkma / instabilite</label>
+            <label><input id="painFlagCannotUse" type="checkbox"> Üzerine basamama / uzvu kullanamama</label>
+            <label><input id="painFlagNightRestPain" type="checkbox"> Belirgin gece / istirahat ağrısı</label>
+          </div>
+
+          <div class="pain-entry-actions">
+            <button id="savePainLogBtn" class="primary" type="button">Ağrı Kaydını Ekle</button>
+            <span id="painSaveStatus" class="save-status"></span>
+          </div>
+
+          <div id="painCoachNote" class="insight-box neutral" style="margin-top:12px">Ağrı verisi kaydedildiğinde hareket uyumluluğu burada görünür.</div>
+          <div id="activePainList" class="active-pain-list"></div>
+          <div id="painMovementAdvice" class="pain-movement-advice"></div>
+        </div>
+
+        <div class="grid two">
+          <div class="card">
+            <div class="section-head">
+              <div><h3>Bugünkü Vardiya</h3><p>İş günü, izin veya yıllık izin.</p></div>
+              <div class="save-wrap"><span id="shiftSaveStatus" class="save-status"></span><button id="saveShiftBtn" class="primary" type="button">Vardiyayı Kaydet</button></div>
+            </div>
+            <div class="form-grid">
+              <label>Durum
+                <select id="todayWorkStatus">
+                  <option value="off">İzin</option>
+                  <option value="work">Çalışma</option>
+                  <option value="annual">Yıllık izin</option>
+                </select>
+              </label>
+              <label>Vardiya
+                <select id="todayShift">
+                  <option value="morning">Sabah 10:00–18:00</option>
+                  <option value="mid">Ara 12:00–20:00</option>
+                  <option value="evening">Akşam 14:00–22:00</option>
+                </select>
+              </label>
+              <label>İş yoğunluğu (1-5) <input id="workIntensity" type="number" min="1" max="5" value="3"></label>
+              <label>Adım <input id="steps" type="number" min="0" value="9000"></label>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="section-head"><div><h3>Feragat Analizi</h3><p>Sürpriz planın bugüne etkisi.</p></div></div>
+            <div id="tradeoffBox" class="insight-box neutral">Henüz sürpriz plan eklenmedi.</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="week" class="page">
+        <div class="card">
+          <div class="section-head">
+            <div><h3>Haftalık Vardiya Planı</h3><p>Pazar günü yeni haftayı buradan gir.</p></div>
+            <button id="optimizeWeekBtn" class="primary">Haftayı Optimize Et</button>
+          </div>
+          <div id="weekPlanner" class="week-grid"></div>
+        </div>
+        <div class="card">
+          <div class="section-head"><div><h3>Optimize Edilmiş Hafta</h3><p>Uyku, antrenman ve vardiya önerileri.</p></div></div>
+          <div id="weekOutput" class="week-output"></div>
+        </div>
+      </section>
+
+      <section id="training" class="page">
+
+        <div class="card training-plan-card">
+          <div class="training-date-nav" aria-label="Antrenman günü seçimi">
+            <button id="trainingPrevDay" type="button" class="secondary" aria-label="Önceki gün">←</button>
+            <div class="training-date-focus">
+              <span>SEÇİLİ ANTRENMAN GÜNÜ</span>
+              <strong id="trainingSelectedDateLabel">--</strong>
+            </div>
+            <button id="trainingTodayDay" type="button" class="secondary">Bugün</button>
+            <button id="trainingNextDay" type="button" class="secondary" aria-label="Sonraki gün">→</button>
+          </div>
+          <div class="section-head">
+            <div>
+              <h3>Bu Haftanın Antrenman Planı</h3>
+              <p class="hint">Çalışma programın, günlük uyku/readiness ve Çağlar Hybrid Mass 12W sistemine göre otomatik hazırlanır.</p>
+            </div>
+            <button id="rebuildTrainingPlanBtn" class="secondary" type="button">Planı Yenile</button>
+          </div>
+          <div id="weeklyTrainingPlan" class="weekly-training-plan"></div>
+        </div>
+
+        <div class="card today-plan-card" style="margin-top:16px">
+          <div class="section-head">
+            <div>
+              <h3 id="selectedWorkoutHeading">Seçili Günün Hazır Antrenmanı</h3>
+              <p class="hint">Önce planı uygula, sonra gerçekleşen set/tekrar/yük değerlerini aşağıdaki kayıt alanına işle.</p>
+            </div>
+            <div id="todayPlanBadge" class="plan-badge">--</div>
+          </div>
+          <div id="todayTrainingPlan" class="today-training-plan"></div>
+          <button id="guidedStartToday" type="button" class="primary">Bu Planı Guided Runner’da Başlat</button>
+          <div id="todayPlanReason" class="insight-box" style="margin-top:12px"></div>
+          <div class="canonical-sync-strip">
+            <span id="trainingPlanSyncBadge" class="plan-badge">CANONICAL</span>
+            <div id="trainingPlanSyncDetail" class="hint">Haftalık Plan → Bugünün Hazır Antrenmanı → Guided Runner senkronizasyonu kontrol ediliyor…</div>
+          </div>
+        </div>
+
+
+        <div class="card late-session-card">
+          <section class="unified-training-status" aria-label="Veri ve plan eşleşmesi">
+            <h3>Tek Plan · Ortak Sporcu Verisi</h3>
+            <p id="athleteSyncStatus" role="status">Motorlar hazırlanıyor…</p>
+            <p id="athleteSyncErrors" role="alert"></p>
+            <button id="refreshAthleteState" class="secondary" type="button">Verileri ve Analizleri Yenile</button>
+            <p class="hint">Önerilen antrenman ve gerçekleşen setler ayrı tutulur. Toparlanma/doku yükü puanları model tahminidir; ölçülmüş fizyolojik değer veya sakatlık olasılığı değildir.</p>
+          </section>
+          <section class="guided-shared-preview" aria-label="Guided Runner ortak plan önizlemesi">
+            <h3>Guided Workout Runner · Seçili Günün Programı</h3>
+            <p id="guidedPreviewIdentity" class="hint"></p>
+            <div id="guidedPrescriptionPreview" class="today-training-plan"></div>
+            <button id="guidedStartWorkout" type="button" class="primary">Seçili Günün Ortak Planını Başlat</button>
+            <button id="guidedResumeWorkout" type="button" class="secondary" hidden>Kayıtlı Oturuma Dön</button>
+          </section>
+          <details class="catchup-options">
+          <summary>Başka tarihe antrenman kaydet / telafi yap</summary>
+          <div class="section-head">
+            <div>
+              <h3>Session Router · Gece / Telafi Antrenmanı</h3>
+              <p class="hint">Gerçek antrenman zamanı ile bağlı olduğu program gününü ayrı saklar. Böylece 00:00 sonrası antrenman kaybolmaz.</p>
+            </div>
+            <div id="sessionRouterBadge" class="plan-badge">--</div>
+          </div>
+          <div class="form-grid">
+            <label>Seansı hangi plana bağlayalım?
+              <select id="sessionAttributionMode"></select>
+            </label>
+            <label id="sessionCustomDateWrap" hidden>Özel plan tarihi<input id="sessionCustomDate" type="date"></label>
+            <label>Gece seansı cutoff
+              <select id="lateSessionCutoff"><option value="2">02:00</option><option value="4" selected>04:00</option><option value="6">06:00</option></select>
+            </label>
+          </div>
+          <div id="sessionRouterSummary" class="insight-box neutral" style="margin-top:12px"></div>
+          <div class="guided-router-actions">
+            <button id="guidedStartCatchup" type="button" class="secondary">Seçilen Tarihe Ayrı Oturum Başlat</button>
+            <span id="guidedRouterHint" class="hint">Plan tarihi Session Router seçimine göre alınır.</span>
+          </div>
+          </details>
+        </div>
+
+        <div id="guidedWorkoutCard" class="card guided-workout-card" hidden>
+          <div class="section-head guided-head">
+            <div>
+              <h3>Guided Workout Runner <small class="version-chip">v9.2 Program Engine Sync</small></h3>
+              <p class="hint">Guided + manuel kayıtlar tek akışta uzlaştırılır. Daha önce elle yaptığın setleri algılar, tekrar yaptırmadan ilk eksik setten devam eder.</p>
+            </div>
+            <div class="guided-head-badges">
+              <span id="guidedIntegrityBadge" class="plan-badge">DATA CHECK</span>
+              <span id="guidedSessionStatus" class="plan-badge">HAZIR</span>
+              <span id="guidedSessionElapsed" class="plan-badge">00:00</span>
+            </div>
+          </div>
+
+          <div class="guided-session-tools" aria-label="Guided antrenman bakım araçları">
+            <button id="guidedSyncPlan" type="button" class="secondary">Planı Eşitle</button>
+            <button id="guidedResetTimer" type="button" class="secondary">Süreyi Sıfırla</button>
+            <button id="guidedRestartWorkout" type="button" class="danger">Antrenmanı Baştan Başlat</button>
+            <small>İlk setten önce ortak plan güncellenir; başladıktan sonra reçete korunur. Baştan başlatma kayıtları silmez ve ilk eksik setten devam eder.</small>
+          </div>
+
+          <div class="guided-progress-top">
+            <div><span>PLAN</span><strong id="guidedPlanTitle">--</strong><small id="guidedPlanDate">--</small></div>
+            <div><span>HAREKET</span><strong id="guidedExerciseProgress">--</strong><small id="guidedExerciseName">--</small></div>
+            <div><span>SET</span><strong id="guidedSetProgress">--</strong><small id="guidedPrescription">--</small></div>
+            <div><span>SONRAKİ DİNLENME</span><strong id="guidedRestTarget">--</strong><small id="guidedWorkWindow">--</small></div>
+          </div>
+
+          <div id="guidedPlanQueue" class="guided-plan-queue"></div>
+
+          <div class="guided-stage">
+            <div class="guided-current">
+              <span id="guidedMovementClass">--</span>
+              <h2 id="guidedCurrentExercise">Antrenmanı başlat</h2>
+              <p id="guidedCurrentInstruction">Session Router’dan planı seçip “Seçili Antrenmanı Başlat” düğmesine bas.</p>
+              <div id="guidedTargetChips" class="guided-target-chips"></div>
+            </div>
+
+            <div class="guided-stopwatch-wrap">
+              <span id="guidedTimerLabel">SET TIMER</span>
+              <strong id="guidedWorkTimer">00:00.0</strong>
+              <div id="guidedTimerFeedback" class="guided-timer-feedback neutral">Set başlamadı.</div>
+              <div class="guided-main-actions">
+                <button id="guidedStartSet" type="button" class="primary guided-big-btn">Seti Başlat</button>
+                <button id="guidedStopSet" type="button" class="danger-btn guided-big-btn" hidden>Seti Durdur</button>
+              </div>
+            </div>
+          </div>
+
+          <div id="guidedResultPanel" class="guided-result-panel" hidden>
+            <div class="section-head"><div><h4>Set Sonucu</h4><p id="guidedResultHint" class="hint"></p></div><span id="guidedMeasuredDuration" class="plan-badge">--</span></div>
+            <div class="form-grid guided-result-grid">
+              <label id="guidedResultValueLabel">Tekrar<input id="guidedResultValue" type="number" min="0" step="1"></label>
+              <label id="guidedResultLoadLabel">Yük (kg)<input id="guidedResultLoad" type="number" min="0" step="0.5"></label>
+              <label>RIR / Hold reserve<input id="guidedResultRir" type="number" min="0" max="5" step="0.5" value="2"></label>
+              <label>Set notu<input id="guidedResultNote" type="text" placeholder="örn. temiz, transition yavaşladı"></label>
+            </div>
+            <div class="guided-result-actions">
+              <button id="guidedSaveSet" type="button" class="primary">Seti Kaydet ve Dinlen</button>
+              <button id="guidedRedoSet" type="button" class="secondary">Timerı Yeniden Başlat</button>
+            </div>
+          </div>
+
+          <div id="guidedRestPanel" class="guided-rest-panel" hidden>
+            <div>
+              <span>SET ARASI DİNLENME</span>
+              <strong id="guidedRestCountdown">00:00</strong>
+              <small id="guidedRestActual">Gerçek dinlenme: 00:00</small>
+            </div>
+            <div class="guided-rest-copy">
+              <strong id="guidedRestMessage">Toparlan.</strong>
+              <p id="guidedRestRange" class="hint"></p>
+            </div>
+            <div class="guided-rest-actions">
+              <button id="guidedNextSet" type="button" class="primary">Sıradaki Seti Başlat</button>
+              <button id="guidedRestPlus30" type="button" class="secondary">+30 sn hedef</button>
+              <button id="guidedSkipRest" type="button" class="secondary">Dinlenmeyi Bitir</button>
+            </div>
+          </div>
+
+          <div id="guidedExerciseDone" class="guided-exercise-done" hidden>
+            <div><strong>Hareket tamamlandı.</strong><span id="guidedExerciseDoneSummary"></span></div>
+            <button id="guidedNextExercise" type="button" class="primary">Sonraki Harekete Geç</button>
+          </div>
+
+          <div id="guidedSubstitutionPanel" class="guided-substitution-panel" hidden>
+            <div class="section-head">
+              <div><h4>Farklı hareket algılandı</h4><p id="guidedSubstitutionTitle" class="hint">Planlanan hareket ile kaydettiğin hareket farklı.</p></div>
+              <span id="guidedSubstitutionFit" class="plan-badge">--</span>
+            </div>
+            <div id="guidedSubstitutionCompare" class="guided-substitution-compare"></div>
+            <div id="guidedSubstitutionAnalysis" class="insight-box warn"></div>
+            <div class="guided-substitution-actions">
+              <button id="guidedAcceptSubstitution" type="button" class="primary">Yerine Say → Sonraki Harekete Geç</button>
+              <button id="guidedKeepExtra" type="button" class="secondary">Ekstra Olarak Tut · Planı Değiştirme</button>
+            </div>
+          </div>
+
+          <div id="guidedPartialControls" class="guided-partial-controls" hidden>
+            <div>
+              <strong id="guidedPartialTitle">Planlanan setlerin altında bitir</strong>
+              <small id="guidedPartialCopy">Yaptığın setler korunur; kalan setler yapılmadı olarak işlenir.</small>
+            </div>
+            <label>Neden?
+              <select id="guidedPartialReason">
+                <option value="fatigue">Yorgunluk / readiness düşük</option>
+                <option value="performance_drop">Performans düştü</option>
+                <option value="form_quality">Teknik / form kalitesi bozuldu</option>
+                <option value="pain">Ağrı / eklem sinyali</option>
+                <option value="time">Zaman kısıtı</option>
+                <option value="other">Diğer</option>
+              </select>
+            </label>
+            <button id="guidedCloseExercisePartial" type="button" class="secondary">Hareketi Burada Bitir → Sonraki Harekete Geç</button>
+          </div>
+
+          <div class="guided-footer-actions">
+            <button id="guidedSkipExercise" type="button" class="secondary">Bu Hareketi Atla</button>
+            <button id="guidedPauseSession" type="button" class="secondary">Seansı Duraklat</button>
+            <button id="guidedEndSession" type="button" class="danger-btn">Antrenmanı Bitir</button>
+          </div>
+        </div>
+
+        <div class="grid two guided-graph-grid">
+          <div id="guidedTimingCard" class="card" hidden>
+            <div class="section-head"><div><h3>Set Zamanlama Grafiği</h3><p class="hint">Her kaydedilen set için aktif set süresi ve zamanlama kalite skoru.</p></div><span id="guidedTimingAverage" class="plan-badge">--</span></div>
+            <div class="guided-chart-wrap"><canvas id="guidedTimingChart"></canvas></div>
+            <div id="guidedTimingDetails" class="guided-timing-details"></div>
+          </div>
+          <div id="guidedAutomationCard" class="card" hidden>
+            <div class="section-head"><div><h3>Otomasyon Özeti</h3><p class="hint">Planlanan → gerçek set, work-time ve rest akışı.</p></div></div>
+            <div id="guidedAutomationSummary" class="summary-list"></div>
+            <div id="guidedCoachTimingAdvice" class="insight-box neutral" style="margin-top:10px"></div>
+          </div>
+        </div>
+
+        <div class="grid two training-feedback-grid">
+          <div class="card">
+            <h3>Plan → Gerçekleşen</h3>
+            <div id="planVsActual" class="summary-list"></div>
+            <div id="sessionRestSummary" class="rest-session-summary"></div>
+            <div id="liveAutoregulation" class="insight-box neutral" style="margin-top:12px">İlk set kaydından sonra canlı öneri burada oluşur.</div>
+          </div>
+          <div class="card">
+            <div class="section-head"><div><h3>Seansı Tamamla</h3><p class="hint">Bu kayıt gelecekteki Koç kararlarını değiştirir.</p></div><button id="completeSessionBtn" class="primary" type="button">Seansı Tamamla</button></div>
+            <div class="form-grid">
+              <label>Session RPE (1–10)<input id="sessionRpe" type="number" min="1" max="10" step="0.5" value="7"></label>
+              <label>Süre (dk)<input id="sessionDuration" type="number" min="0" step="5" value="75"></label>
+              <label class="span-2">Not<input id="sessionNote" placeholder="örn. son iki sette bar hızı düştü"></label>
+            </div>
+            <div id="sessionCompleteStatus" class="save-status"></div>
+          </div>
+        </div>
+
+
+        <div class="card adhoc-session-card">
+          <div class="section-head">
+            <div>
+              <h3>Serbest / Plan Dışı Antrenman <small class="version-chip">Unified Physiology Mesh</small></h3>
+              <p class="hint">Programın dışında yaptığın circuit, superset, kesintisiz kondisyon veya kısa ek seansı kaydet. Program uyumu sayılmaz; gerçek training load olarak analiz edilir.</p>
+            </div>
+            <span id="adhocDraftBadge" class="plan-badge">0 hareket</span>
+          </div>
+
+          <div class="adhoc-config-grid">
+            <label>Seans yapısı
+              <select id="adhocStructure">
+                <option value="circuit">Circuit / ardışık hareketler</option>
+                <option value="continuous">Kesintisiz yoğun devre</option>
+                <option value="superset">Superset / giant set</option>
+                <option value="straight_sets">Normal serbest setler</option>
+                <option value="emom">EMOM</option>
+                <option value="amrap">AMRAP</option>
+                <option value="for_time">For Time</option>
+              </select>
+            </label>
+            <label>Tur / round<input id="adhocRounds" type="number" min="1" max="20" step="1" value="3"></label>
+            <label>Toplam süre (dk)<input id="adhocDuration" type="number" min="1" max="240" step="1" value="15"></label>
+            <label>Session RPE<input id="adhocRpe" type="number" min="1" max="10" step="0.5" value="7"></label>
+            <label>Hareket arası rest (sn)<input id="adhocExerciseRest" type="number" min="0" max="600" step="5" value="0"></label>
+            <label>Tur arası rest (sn)<input id="adhocRoundRest" type="number" min="0" max="900" step="5" value="60"></label>
+          </div>
+
+          <div class="adhoc-add-grid">
+            <label>Hareket<select id="adhocExerciseSelect"></select></label>
+            <label id="adhocValueLabel">Tekrar / hold<input id="adhocValue" type="number" min="0.1" step="1" value="10"></label>
+            <label id="adhocLoadLabel">Ek yük (kg)<input id="adhocLoad" type="number" min="0" step="0.5" value="0"></label>
+            <label id="adhocDistanceLabel" hidden>Tur başına mesafe (m, opsiyonel)<input id="adhocDistanceM" type="number" min="0" step="1" value="0"></label>
+            <button id="adhocAddMovement" type="button" class="secondary">Hareketi Devreye Ekle</button>
+          </div>
+
+          <div id="adhocDraftList" class="adhoc-draft-list"></div>
+          <div class="adhoc-actions">
+            <button id="adhocSaveSession" type="button" class="primary">Serbest Seansı Kaydet ve Analiz Et</button>
+            <button id="adhocClearDraft" type="button" class="secondary">Taslağı Temizle</button>
+          </div>
+          <div id="adhocAnalysis" class="adhoc-analysis"></div>
+          <div id="adhocHistory" class="adhoc-history"></div>
+        </div>
+
+        <div class="grid two">
+          <div class="card">
+            <div class="section-head"><div><h3>Antrenman Kaydı <small id="coachCatalogIntegrityBadge" class="version-chip">Katalog kontrolü…</small></h3><p>Hareket tipi otomatik belirlenir: statik=saniye, dinamik=tekrar, koşu=km, mobility=dk.</p></div><button id="addExerciseBtn" class="primary">Hareket Ekle</button></div>
+            <div class="form-grid">
+              <label>Ekipman
+                <select id="exerciseEquipmentFilter"><option value="all">Tüm ekipmanlar</option></select>
+              </label>
+              <label>Hareket
+                <select id="exerciseSelect"></select>
+              </label>
+              <label id="exerciseLoadLabel">Ek yük (kg) <input id="exerciseLoad" type="number" step="0.5" value="0"></label>
+              <label id="setLabel1">Set 1 <input id="set1" type="number" step="0.1"></label>
+              <label id="setLabel2">Set 2 <input id="set2" type="number" step="0.1"></label>
+              <label id="setLabel3">Set 3 <input id="set3" type="number" step="0.1"></label>
+              <label id="setLabel4">Set 4 <input id="set4" type="number" step="0.1"></label>
+              <label id="setLabel5">Set 5 <input id="set5" type="number" step="0.1"></label>
+              <label id="exerciseRirLabel">RIR <input id="exerciseRir" type="number" min="0" max="5" value="2"></label>
+              <label>Planlanan dinlenme (sn)
+                <input id="exerciseRestPlanned" type="number" min="0" step="15" value="120">
+              </label>
+              <label>1→2 set dinlenme (sn)<input id="rest12" type="number" min="0" step="5"></label>
+              <label>2→3 set dinlenme (sn)<input id="rest23" type="number" min="0" step="5"></label>
+              <label>3→4 set dinlenme (sn)<input id="rest34" type="number" min="0" step="5"></label>
+              <label>4→5 set dinlenme (sn)<input id="rest45" type="number" min="0" step="5"></label>
+            </div>
+            <div id="movementEffectPreview" class="movement-effect-preview"></div>
+            <div id="loadPrescriptionBox" class="load-prescription-box"></div>
+            <div id="unifiedPhysiologyPreview" class="unified-physiology-preview"></div>
+            <div id="restRecommendationBox" class="rest-recommendation-box"></div>
+            <div class="rest-timer">
+              <div>
+                <span>SET ARASI TIMER</span>
+                <strong id="restTimerDisplay">02:00</strong>
+                <small id="restTimerStatus">Önerilen dinlenme süresini kullanır.</small>
+              </div>
+              <div class="rest-timer-actions">
+                <button id="restTimerStart" type="button" class="secondary">Başlat</button>
+                <button id="restTimerPlus30" type="button" class="secondary">+30 sn</button>
+                <button id="restTimerReset" type="button" class="secondary">Sıfırla</button>
+              </div>
+            </div>
+            <p class="hint">Statik hareketlerde set hücreleri saniyedir; ağırlıklı hareketlerde tekrar sayısıdır. Dinlenme sürelerini boş bırakırsan yalnızca planlanan süre saklanır.</p>
+          </div>
+          <div class="card">
+            <div class="section-head"><div><h3>Bugünkü Antrenman</h3><p>Toplam hacim ve performans özeti.</p></div></div>
+            <div id="exerciseLog"></div>
+            <div id="restEvidenceNote" class="insight-box neutral" style="margin-top:12px"></div>
+          </div>
+        </div>
+
+        <div class="grid two movement-session-grid">
+          <div class="card">
+            <div class="section-head">
+              <div><h3>Seans Kas Etkisi</h3><p class="hint">Dinamik setler ve statik hold sürelerinden hesaplanan stimulus-equivalent dağılım.</p></div>
+              <span id="sessionStimulusBadge" class="plan-badge">0 unit</span>
+            </div>
+            <div id="sessionMuscleImpact" class="session-muscle-impact"></div>
+          </div>
+          <div class="card">
+            <div class="section-head">
+              <div><h3>Antrenman Etki İmzası</h3><p class="hint">Hareketlerin kuvvet, hipertrofi, power, skill, stabilizasyon ve core karakteri.</p></div>
+              <span id="sessionMovementConfidence" class="plan-badge">Güven --</span>
+            </div>
+            <div id="sessionEffectSignature" class="session-effect-signature"></div>
+            <div id="sessionStaticSummary" class="insight-box neutral" style="margin-top:10px"></div>
+          </div>
+        </div>
+        <div id="movementScienceNote" class="card movement-science-note"></div>
+      </section>
+
+      <section id="nutrition" class="page">
+        <div class="grid two">
+          <div class="card">
+            <div class="section-head"><div><h3>Besin Ekle <small id="nutritionLibraryBadge" class="version-chip">Kütüphane</small></h3><p>Değerleri kütüphane hesaplar ve her kayıt kendi besin snapshot'ını saklar.</p></div><div class="save-wrap"><span id="nutritionSaveStatus" class="save-status"></span><button id="addFoodBtn" class="primary">Öğüne Ekle</button></div></div>
+            <div class="form-grid">
+              <label>Öğün
+                <select id="mealType">
+                  <option>Kahvaltı</option><option>Öğle</option><option>Akşam</option>
+                  <option>Antrenman Öncesi</option><option>Antrenman Sonrası</option><option>Atıştırmalık</option><option>İş Molası</option>
+                </select>
+              </label>
+              <label>Besin ara <input id="foodSearch" type="search" placeholder="örn. tavuk, yoğurt, muz"></label>
+              <label>Kategori <select id="foodCategory"></select></label>
+              <label>Besin <select id="foodSelect"></select></label>
+              <label>Porsiyon <input id="servings" type="number" step="0.25" min="0.25" value="1"></label>
+              <label>Saat <input id="foodTime" type="time"></label>
+            </div>
+            <div id="foodPreview" class="food-preview-card"></div>
+            <p class="hint nutrient-reference-note">Değerler standart porsiyon için referans kompozisyondur; marka, tarif ve pişirme yöntemiyle değişebilir.</p>
+          </div>
+          <div class="card">
+            <div class="section-head"><div><h3>Günlük Beslenme</h3><p>Kalori ve makrolar otomatik.</p></div></div>
+            <div class="grid four compact">
+              <div class="mini"><span>Kalori</span><strong id="caloriesTotal">0</strong></div>
+              <div class="mini"><span>Protein</span><strong id="proteinTotal">0 g</strong></div>
+              <div class="mini"><span>Karbonhidrat</span><strong id="carbsTotal">0 g</strong></div>
+              <div class="mini"><span>Yağ</span><strong id="fatTotal">0 g</strong></div>
+            </div>
+            <div class="grid four compact nutrition-secondary-macros">
+              <div class="mini"><span>Lif</span><strong id="fiberTotal">0 g</strong></div>
+              <div class="mini"><span>Su</span><strong id="waterTotal">0 L</strong></div>
+              <div class="mini"><span>Kafein</span><strong id="caffeineTotal">0 mg</strong></div>
+              <div class="mini"><span>Gıda sayısı</span><strong id="foodCountTotal">0</strong></div>
+            </div>
+            <div class="quick-row">
+              <button class="secondary water-btn" data-ml="250">+250 ml su</button>
+              <button class="secondary water-btn" data-ml="500">+500 ml su</button>
+              <button class="secondary water-btn" data-ml="750">+750 ml su</button>
+            </div>
+            <div id="waterLedgerList" class="water-ledger-list"></div>
+            <div id="foodLog"></div>
+            <div class="micro-panel">
+              <div class="section-head"><div><h3>Mikro Besin Özeti</h3><p class="hint">Günlük kayıtların toplamı; yetişkin referans değerlerle karşılaştırılır.</p></div></div>
+              <div id="micronutrientGrid" class="micro-grid"></div>
+            </div>
+            <div style="margin-top:16px">
+              <h3>Beslenme Önerisi</h3>
+              <div id="nutritionAdvice" class="insight-box"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card nutrition-impact-hero" style="margin-top:16px">
+          <div class="section-head">
+            <div>
+              <h3>Nutrition Impact Engine <small class="version-chip">Evidence-informed v1</small></h3>
+              <p class="hint">Yalnızca ne yediğini değil; beslenmenin kilo yönü, hipertrofi ortamı, kas koruma, performans yakıtı, hidrasyon ve recovery üzerindeki olası etkisini izler.</p>
+            </div>
+            <span id="nutritionImpactConfidence" class="plan-badge">Güven --</span>
+          </div>
+
+          <div class="nutrition-state-strip">
+            <div class="nutrition-state-main">
+              <span>OBSERVED NUTRITION STATE</span>
+              <strong id="nutritionObservedState">Veri bekleniyor</strong>
+              <p id="nutritionObservedStateText">Yeterli uzun dönem veri oluşunca enerji yönü sınıflandırılacak.</p>
+            </div>
+            <div class="nutrition-impact-stat"><span>Kilo Trendi</span><strong id="nutritionWeightTrend">--</strong><small>kg / hafta</small></div>
+            <div class="nutrition-impact-stat"><span>Bel Trendi</span><strong id="nutritionWaistTrend">--</strong><small>cm / 4 hafta</small></div>
+            <div class="nutrition-impact-stat"><span>14G Kalori</span><strong id="nutritionAvgCalories">--</strong><small>günlük ort.</small></div>
+          </div>
+
+          <div id="nutritionImpactMatrix" class="nutrition-impact-matrix"></div>
+          <div id="nutritionPrimaryLimiter" class="insight-box neutral" style="margin-top:12px"></div>
+        </div>
+
+        <div class="grid two nutrition-impact-details" style="margin-top:16px">
+          <div class="card">
+            <div class="section-head"><div><h3>Vücutta Muhtemel Etkiler</h3><p class="hint">Kesin teşhis değil; kayıtların üzerinden olasılık ve risk sinyali.</p></div></div>
+            <div id="nutritionImpactEffects" class="recommendation-stack"></div>
+          </div>
+          <div class="card">
+            <div class="section-head"><div><h3>Nutrition → Adaptation Map</h3><p class="hint">Hangi beslenme faktörünün hangi performans çıktısını etkilediğini gösterir.</p></div></div>
+            <div id="nutritionCausalMap" class="nutrition-causal-map"></div>
+          </div>
+        </div>
+
+        <div class="grid two" style="margin-top:16px">
+          <div class="card">
+            <div class="section-head"><div><h3>Cut / Bulk Kalitesi</h3><p class="hint">Sadece kilo değişimine değil, bel ve performans trendine de bakar.</p></div></div>
+            <div id="nutritionPhaseQuality" class="phase-quality"></div>
+          </div>
+          <div class="card">
+            <div class="section-head"><div><h3>Bilimsel Kanıt Katmanı</h3><p class="hint">Skorların dayandığı ana prensipler ve motorun bilmediği şeyler.</p></div></div>
+            <div id="nutritionEvidencePanel" class="evidence-stack"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="analytics" class="page">
+        <div class="grid four">
+          <div class="card metric"><span>Plan Uyumu</span><strong id="adherenceScore">--</strong><small>Haftalık</small></div>
+          <div class="card metric"><span>Adaptasyon</span><strong id="adaptationScore">--</strong><small>Sürprizlere rağmen</small></div>
+          <div class="card metric"><span>Uyku Borcu</span><strong id="sleepDebt">--</strong><small>7 günlük</small></div>
+          <div class="card metric"><span>Nutrition</span><strong id="nutritionScore">--</strong><small>7 günlük</small></div>
+        </div>
+
+        <div class="card architecture-card">
+          <div class="section-head"><div><h3>Athlete OS Architecture <small class="version-chip">v9.0</small></h3><p class="hint">Event Store · Engine Bus · Lineage · Calibration · Solver · Tissue Load · Adaptive Nutrition</p></div><span id="architectureHealthBadge" class="plan-badge">CORE</span></div>
+          <div id="architectureCoreGrid" class="universal-mesh-metrics"></div>
+          <div id="architectureDecisionPreview" class="insight-box neutral" style="margin-top:10px"></div>
+        </div>
+
+        <div class="card periodic-trend-card">
+          <div class="section-head">
+            <div>
+              <h3>Periyodik Gelişim Analizi <small class="version-chip">v7.15</small></h3>
+              <p class="hint">Aynı hareketin önceki dönem performansıyla karşılaştırır: yükseliş / plato / düşüş / stabil.</p>
+            </div>
+            <span id="periodicTrendBadge" class="plan-badge">--</span>
+          </div>
+          <div class="periodic-trend-tabs">
+            <button class="periodic-trend-tab" data-period="weekly">Haftalık</button>
+            <button class="periodic-trend-tab active" data-period="monthly">Aylık</button>
+            <button class="periodic-trend-tab" data-period="cycle">12 Hafta</button>
+          </div>
+          <div id="periodicTrendSummary" class="insight-box neutral"></div>
+          <div id="periodicTrendMovements" class="periodic-trend-movements"></div>
+        </div>
+
+        <div class="card universal-mesh-card">
+          <div class="section-head">
+            <div><h3>Universal Training Mesh <small class="version-chip">v7.14</small></h3><p class="hint">Planlı + Guided + manuel + substitution + plan dışı bütün gerçek training load aynı 7 günlük ağda.</p></div>
+            <span id="universalMeshBadge" class="plan-badge">--</span>
+          </div>
+          <div id="universalMeshMetrics" class="universal-mesh-metrics"></div>
+          <div id="universalMeshSources" class="summary-list"></div>
+        </div>
+
+        <div class="card guided-history-card">
+          <div class="section-head">
+            <div><h3>Set Timing Consistency</h3><p class="hint">Guided Workout ile kaydedilen setlerin 28 günlük zamanlama kalite trendi.</p></div>
+            <span id="guided28dScore" class="plan-badge">--</span>
+          </div>
+          <div class="guided-chart-wrap history"><canvas id="guidedHistoryChart"></canvas></div>
+          <div id="guidedHistorySummary" class="summary-list"></div>
+        </div>
+
+        <div class="card adherence-trend-card">
+          <div class="section-head">
+            <div>
+              <h3>Programa Sadakat Trendi</h3>
+              <p class="hint">Mavi: plan uyumu · Yeşil: adaptasyon başarısı. Akıllı sapmalar ikincisinde korunabilir.</p>
+            </div>
+            <div class="adherence-range">
+              <button type="button" class="adherence-range-btn" data-days="7">7G</button>
+              <button type="button" class="adherence-range-btn active" data-days="14">14G</button>
+              <button type="button" class="adherence-range-btn" data-days="30">30G</button>
+            </div>
+          </div>
+          <div class="grid four compact">
+            <div class="mini"><span>7G Plan Uyumu</span><strong id="adh7Score">--</strong></div>
+            <div class="mini"><span>30G Plan Uyumu</span><strong id="adh30Score">--</strong></div>
+            <div class="mini"><span>Adaptasyon Başarısı</span><strong id="adapt30Score">--</strong></div>
+            <div class="mini"><span>Akıllı Sapma</span><strong id="smartDeviationCount">--</strong></div>
+          </div>
+          <div class="adherence-chart-wrap">
+            <canvas id="adherenceChart" aria-label="Program uyumu ve adaptasyon trend grafiği"></canvas>
+          </div>
+          <div id="adherenceLegend" class="adherence-legend"></div>
+          <div id="adherenceBreakdown" class="adherence-breakdown"></div>
+        </div>
+
+        <div class="grid two">
+          <div class="card">
+            <h3>Haftalık Özet</h3>
+            <div id="weeklySummary" class="summary-list"></div>
+          </div>
+          <div class="card">
+            <h3>Kişisel İçgörü</h3>
+            <div id="personalInsight" class="insight-box">Yeterli veri oluştuğunda burada kişisel örüntüler gösterilecek.</div>
+          </div>
+        </div>
+      </section>
+
+
+      <section id="detailed" class="page">
+        <div class="analysis-layout">
+          <div class="analysis-menu card">
+            <h3>Detaylı Analiz</h3>
+            <p class="hint">Excel sistemindeki ana veri başlıklarının uygulama karşılığı.</p>
+            <button class="analysis-tab active" data-detail="detail-dashboard">Dashboard</button>
+            <button class="analysis-tab" data-detail="detail-progression">12 Haftalık Progresyon</button>
+            <button class="analysis-tab" data-detail="detail-body">Vücut Ölçümleri & Body Gelişimi</button>
+            <button class="analysis-tab" data-detail="detail-volume">Kas Hacmi Analizi</button>
+            <button class="analysis-tab" data-detail="detail-recovery">Recovery</button>
+            <button class="analysis-tab" data-detail="detail-strength">Strength & PR</button>
+            <button class="analysis-tab" data-detail="detail-running">Koşu Analizi</button>
+            <button class="analysis-tab" data-detail="detail-bodymap">Body Map</button>
+            <button class="analysis-tab" data-detail="detail-critical">Kritik Hareket Analizi</button>
+            <button class="analysis-tab" data-detail="detail-rules">Uygulama & Gelişim Kuralları</button>
+            <button class="analysis-tab" data-detail="detail-portal">Veri Portalı</button>
+            <button class="analysis-tab" data-detail="detail-recommendation">Antrenman Önerisi</button>
+          </div>
+
+          <div class="analysis-content">
+            <div id="detail-dashboard" class="detail-panel active">
+              <div class="grid four">
+                <div class="card metric"><span>Athlete Score</span><strong id="athleteScore">--</strong><small>Skill + Strength + Recovery + Endurance</small></div>
+                <div class="card metric"><span>Recovery</span><strong id="detailRecoveryScore">--</strong><small>Son kayıtlar</small></div>
+                <div class="card metric"><span>Training Load</span><strong id="detailTrainingLoad">--</strong><small>7 günlük</small></div>
+                <div class="card metric"><span>Body Trend</span><strong id="detailBodyTrend">--</strong><small>Kilo değişimi</small></div>
+              </div>
+              <div class="grid two">
+                <div class="card"><h3>Performans Özeti</h3><div id="detailDashboardSummary" class="summary-list"></div></div>
+                <div class="card"><h3>Bu Haftanın Önceliği</h3><div id="detailPriority" class="insight-box"></div></div>
+              </div>
+            </div>
+
+            <div id="detail-progression" class="detail-panel">
+              <div class="card">
+                <h3>12 Haftalık Progresyon</h3>
+                <p class="hint">Haftalık kilo, readiness, antrenman sıklığı ve kritik hareket performansı.</p>
+                <div class="table-wrap"><table id="progressionTable"><thead><tr><th>Hafta</th><th>Ort. Kilo</th><th>Readiness</th><th>Antrenman Günü</th><th>Planche</th><th>Front Lever</th><th>Weighted Pull-Up</th><th>Koşu km</th></tr></thead><tbody></tbody></table></div>
+              </div>
+            </div>
+
+            <div id="detail-body" class="detail-panel">
+              <div class="grid two">
+                <div class="card">
+                  <h3>Vücut Ölçümleri</h3>
+                  <div class="form-grid">
+                    <label>Tarih <input id="bodyDate" type="date"></label>
+                    <label>Kilo kg <input id="bodyWeight" type="number" step="0.1"></label>
+                    <label>Omuz cm <input id="bodyShoulders" type="number" step="0.1"></label>
+                    <label>Göğüs cm <input id="bodyChest" type="number" step="0.1"></label>
+                    <label>Bel cm <input id="bodyWaist" type="number" step="0.1"></label>
+                    <label>Kalça cm <input id="bodyHips" type="number" step="0.1"></label>
+                    <label>Sağ Kol cm <input id="bodyArmR" type="number" step="0.1"></label>
+                    <label>Sol Kol cm <input id="bodyArmL" type="number" step="0.1"></label>
+                    <label>Sağ Uyluk cm <input id="bodyThighR" type="number" step="0.1"></label>
+                    <label>Sol Uyluk cm <input id="bodyThighL" type="number" step="0.1"></label>
+                    <label>Sağ Baldır cm <input id="bodyCalfR" type="number" step="0.1"></label>
+                    <label>Sol Baldır cm <input id="bodyCalfL" type="number" step="0.1"></label>
+                  </div>
+                  <button id="saveBodyBtn" class="primary" style="margin-top:12px">Ölçümü Kaydet</button>
+                  <p id="measurementMdcNote" class="hint" style="margin-top:10px"></p>
+                </div>
+                <div class="card">
+                  <h3>Body Gelişimi</h3>
+                  <div id="bodyDevelopment" class="summary-list"></div>
+                </div>
+              </div>
+
+              <div class="card" style="margin-top:16px">
+                <div class="section-head">
+                  <div><h3>Photo Progress Check-in</h3><p class="hint">Aynı ışık, kamera mesafesi ve pozla aylık görsel karşılaştırma. Fotoğraf kas ölçümü değildir; ölçümlere destek sağlar.</p></div>
+                  <button id="saveProgressPhotos" class="primary" type="button">Foto Check-in Kaydet</button>
+                </div>
+                <div class="photo-progress-grid">
+                  <label>Ön<input id="photoFront" type="file" accept="image/*"></label>
+                  <label>Yan<input id="photoSide" type="file" accept="image/*"></label>
+                  <label>Arka<input id="photoBack" type="file" accept="image/*"></label>
+                </div>
+                <div id="photoProgressStatus" class="save-status"></div>
+                <div id="photoProgressGallery" class="photo-progress-gallery"></div>
+              </div>
+            </div>
+
+            <div id="detail-volume" class="detail-panel">
+              <div class="card">
+                <h3>Kas Hacmi Analizi</h3>
+                <p class="hint">Ana kas = 1.0 efektif set, ikincil kas = 0.5 efektif set mantığı.</p>
+                <div id="muscleVolumeGrid" class="muscle-grid"></div>
+              </div>
+            </div>
+
+            <div id="detail-recovery" class="detail-panel">
+              <div class="grid four">
+                <div class="card metric"><span>Ort. Uyku</span><strong id="recSleep">--</strong><small>7 gün</small></div>
+                <div class="card metric"><span>Ort. Enerji</span><strong id="recEnergy">--</strong><small>7 gün</small></div>
+                <div class="card metric"><span>Ort. Stres</span><strong id="recStress">--</strong><small>7 gün</small></div>
+                <div class="card metric"><span>Recovery Score</span><strong id="recScore">--</strong><small>7 gün</small></div>
+              </div>
+              <div class="card" style="margin-top:16px"><h3>Recovery Önerisi</h3><div id="recoveryAdvice" class="insight-box"></div></div>
+            </div>
+
+            <div id="detail-strength" class="detail-panel">
+              <div class="card">
+                <h3>Strength & PR</h3>
+                <div class="table-wrap"><table id="strengthTable"><thead><tr><th>Hareket</th><th>En İyi Yük</th><th>En İyi Set</th><th>Toplam Hacim</th><th>PR Durumu</th></tr></thead><tbody></tbody></table></div>
+              </div>
+            </div>
+
+            <div id="detail-running" class="detail-panel">
+              <div class="grid four">
+                <div class="card metric"><span>7 Gün km</span><strong id="runKm7">--</strong><small>Toplam</small></div>
+                <div class="card metric"><span>Koşu Sayısı</span><strong id="runCount">--</strong><small>7 gün</small></div>
+                <div class="card metric"><span>Ort. Pace</span><strong id="runPace">--</strong><small>dk/km</small></div>
+                <div class="card metric"><span>Koşu Yükü</span><strong id="runLoad">--</strong><small>Yaklaşık</small></div>
+              </div>
+              <div class="card" style="margin-top:16px"><h3>Koşu & Strength Uyumu</h3><div id="runAdvice" class="insight-box"></div></div>
+            </div>
+
+            <div id="detail-bodymap" class="detail-panel">
+              <div class="card">
+                <h3>Body Map</h3>
+                <p class="hint">Son 7 günlük efektif set yüküne göre görsel kas haritası.</p>
+                <div class="bodymap">
+                  <div class="body-figure">
+                    <div class="muscle chest" data-muscle="Göğüs">Göğüs</div>
+                    <div class="muscle shoulders" data-muscle="Omuz">Omuz</div>
+                    <div class="muscle arms" data-muscle="Kol">Kol</div>
+                    <div class="muscle back" data-muscle="Sırt">Sırt</div>
+                    <div class="muscle core" data-muscle="Core">Core</div>
+                    <div class="muscle legs" data-muscle="Bacak">Bacak</div>
+                  </div>
+                  <div id="bodyMapLegend" class="summary-list"></div>
+                </div>
+              </div>
+            </div>
+
+            <div id="detail-critical" class="detail-panel">
+              <div class="card">
+                <h3>Kritik Hareket Analizi</h3>
+                <div class="table-wrap"><table id="criticalTable"><thead><tr><th>Hareket</th><th>Güncel</th><th>Önceki</th><th>Değişim</th><th>Durum</th><th>Öneri</th></tr></thead><tbody></tbody></table></div>
+              </div>
+            </div>
+
+            <div id="detail-rules" class="detail-panel">
+              <div class="grid two">
+                <div class="card">
+                  <h3>Antrenmanı Uygulama Kuralları</h3>
+                  <div class="rule-list">
+                    <div>1. Statik skill hareketleri antrenmanın başında, tazeyken.</div>
+                    <div>2. Teknik bozuluyorsa failure'a gitme.</div>
+                    <div>3. Ana kuvvet hareketlerinde çoğu sette 1–2 RIR bırak.</div>
+                    <div>4. İzolasyon/hacim setlerinde son setler 0–2 RIR olabilir.</div>
+                    <div>5. Koşuların çoğu kolay/Zone 2 karakterinde kalsın.</div>
+                    <div>6. 4 haftalık bloklarda 4. hafta hacmi %30–50 azalt.</div>
+                  </div>
+                </div>
+                <div class="card">
+                  <h3>Gelişim Odaklı Kurallar</h3>
+                  <div class="rule-list">
+                    <div>• Haftalık kilo artışını kontrollü tut.</div>
+                    <div>• Bel çevresi hızlı artarken kuvvet/skill artmıyorsa kaloriyi gözden geçir.</div>
+                    <div>• Weighted Pull-Up / Dip ve statik süreleri ana performans göstergesi olarak takip et.</div>
+                    <div>• Recovery 3/5 altına düşerse hacmi azaltmayı düşün.</div>
+                    <div>• Aynı harekette 2–3 hafta ilerleme yoksa yük, hacim veya dinlenmeyi yeniden düzenle.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div id="detail-portal" class="detail-panel">
+              <div class="card">
+                <h3>Veri Portalı</h3>
+                <p class="hint">Tüm sistemin beslendiği tek merkez. Günlük veri, vardiya, beslenme ve antrenman kayıtları buradan özetlenir.</p>
+                <div id="portalSummary" class="summary-list"></div>
+              </div>
+            </div>
+
+            <div id="detail-recommendation" class="detail-panel">
+              <div class="card">
+                <h3>Bugünkü Antrenman Önerisi</h3>
+                <div id="trainingRecommendation" class="insight-box"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+
+      <section id="coach" class="page">
+
+        <div class="coach-hub-head">
+          <div>
+            <h2>Koç Merkezi</h2>
+            <p class="hint">Bugünden 12 haftaya kadar antrenman, recovery ve yaşam yükünü tek merkezden planla.</p>
+          </div>
+          <div class="coach-tabs">
+            <button class="coach-tab active" data-coachtab="today">Bugün</button>
+            <button class="coach-tab" data-coachtab="week">7 Gün</button>
+            <button class="coach-tab" data-coachtab="month">Aylık</button>
+            <button class="coach-tab" data-coachtab="twelve">12 Hafta</button>
+          </div>
+        </div>
+        <div id="coachTodayPane" class="coach-pane active">
+
+        <div class="grid four">
+          <div class="card metric"><span>Coach Readiness</span><strong id="coachReadiness">--</strong><small>Bugünkü hazırlık</small></div>
+          <div class="card metric"><span>Önerilen Seans</span><strong id="coachSession">--</strong><small>Dinamik seçim</small></div>
+          <div class="card metric"><span>Yoğunluk</span><strong id="coachIntensity">--</strong><small>Recovery bazlı</small></div>
+          <div class="card metric"><span>Tahmini Süre</span><strong id="coachDuration">--</strong><small>dakika</small></div>
+        </div>
+        <div class="grid two">
+          <div class="card">
+            <h3>Bugünün Koç Programı</h3>
+            <div id="coachWorkout" class="coach-workout"></div>
+          </div>
+          <div class="card">
+            <h3>Koç Kararı</h3>
+            
+          <div class="card tomorrow-card" style="margin-top:16px">
+            <div class="section-head">
+              <div>
+                <h3>Yarın Ne Yapacağım?</h3>
+                <p class="hint">Gece/gün geçişinde otomatik yeniden optimize edilir.</p>
+              </div>
+              <div id="tomorrowStatusBadge" class="plan-badge">--</div>
+            </div>
+            <div id="tomorrowWorkoutSummary" class="tomorrow-summary"></div>
+            <div id="tomorrowWorkoutPlan" class="today-training-plan" style="margin-top:12px"></div>
+            <div id="tomorrowWorkoutReason" class="insight-box" style="margin-top:12px"></div>
+          </div>
+
+          <div id="coachDecision" class="insight-box"></div>
+            <details class="coach-why"><summary>Neden bu kararı verdin?</summary><div id="coachWhyDetail" class="science-methodology-body"></div></details>
+            <h3 style="margin-top:16px">Progression Engine</h3>
+            <div id="coachProgression" class="recommendation-stack"></div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:16px">
+          <h3>Çağlar Hybrid Mass 12W</h3>
+          <p class="hint">Ev ekipmanına göre 3 strength/calisthenics + 2 koşu + 2 recovery omurgası. Vardiya ve recovery ile günler otomatik yeniden sıralanır.</p>
+          <div id="blockPlan" class="block-plan"></div>
+        </div>
+
+        </div>
+
+        <div id="coachWeekPane" class="coach-pane">
+          <div class="grid two">
+            <div class="card">
+              <h3>Önümüzdeki 7 Gün</h3>
+              <div id="coach7DayForecast" class="forecast-stack"></div>
+            </div>
+            <div class="card">
+              <h3>Haftalık Koç Özeti</h3>
+              <div id="coachWeekSummary" class="insight-box"></div>
+              <div id="coachWeekTargets" class="recommendation-stack" style="margin-top:12px"></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="coachMonthPane" class="coach-pane">
+          <div class="grid four">
+            <div class="card metric"><span>4 Haftalık Hedef</span><strong id="monthTarget">--</strong><small>ana odak</small></div>
+            <div class="card metric"><span>Strength Günleri</span><strong id="monthStrengthDays">--</strong><small>planlanan</small></div>
+            <div class="card metric"><span>Koşu Günleri</span><strong id="monthRunDays">--</strong><small>planlanan</small></div>
+            <div class="card metric"><span>Deload</span><strong id="monthDeload">--</strong><small>blok durumu</small></div>
+          </div>
+          <div class="grid two">
+            <div class="card"><h3>4 Haftalık Yol Haritası</h3><div id="coachMonthRoadmap"></div></div>
+            <div class="card"><h3>Aylık Koç Kararı</h3><div id="coachMonthDecision" class="insight-box"></div></div>
+          </div>
+        </div>
+
+        <div id="coachTwelvePane" class="coach-pane">
+          <div class="card">
+            <h3>Çağlar Hybrid Mass 12W — Tam Yol Haritası</h3>
+            <p class="hint">76 kg hedefi, skill koruması/gelişimi, relative strength, hipertrofi ve koşu dayanıklılığı birlikte yönetilir.</p>
+            <div id="coach12WeekRoadmap" class="roadmap12"></div>
+          </div>
+          <div class="grid two" style="margin-top:16px">
+            <div class="card"><h3>12 Haftalık Başarı Kriterleri</h3><div id="coach12Criteria" class="summary-list"></div></div>
+            <div class="card"><h3>Koç Stratejisi</h3><div id="coach12Strategy" class="insight-box"></div></div>
+          </div>
+        </div>
+      </section>
+
+
+      <section id="character" class="page">
+        <div class="card athlete-identity-hero">
+          <div class="section-head">
+            <div>
+              <h3>Athlete Identity Engine <small class="version-chip">v6.9</small></h3>
+              <p class="hint">Yeteneklerini tek puana sıkıştırmaz; her performans alanını ayrı sınıflandırır ve birleşiminden sporcu profilini çıkarır.</p>
+            </div>
+            <span id="athleteIdentityConfidence" class="plan-badge">Güven --</span>
+          </div>
+          <div class="athlete-identity-grid">
+            <div class="athlete-archetype">
+              <span>ATHLETE TYPE</span>
+              <strong id="athleteTypeName">Veri bekleniyor</strong>
+              <p id="athleteTypeExplanation">Kabiliyet verilerini girdikçe profil oluşacak.</p>
+            </div>
+            <div class="identity-stat"><span>Denge İndeksi</span><strong id="athleteBalanceIndex">--</strong><small>alanlar arası denge</small></div>
+            <div class="identity-stat"><span>Uzmanlaşma</span><strong id="athleteSpecialization">--</strong><small>baskın alan farkı</small></div>
+            <div class="identity-stat"><span>Veri Kapsamı</span><strong id="athleteDataCoverage">--</strong><small>doğrudan test sayısı</small></div>
+          </div>
+          <div id="athleteDomainMatrix" class="athlete-domain-matrix"></div>
+          <div id="athleteIdentityInsight" class="insight-box neutral" style="margin-top:12px"></div>
+        </div>
+
+        <div class="card capability-lab-card" style="margin-top:16px">
+          <div class="section-head">
+            <div>
+              <h3>Capability Lab</h3>
+              <p class="hint">Calisthenics, Muscle-Up, Gymnastics Rings, kuvvet, koşu ve atletik testlerin yanında balance/control, work capacity, mobility ve endurance verilerini de tarihli olarak kaydet.</p>
+            </div>
+            <span id="capabilityRecordCount" class="plan-badge">0 kayıt</span>
+          </div>
+
+          <div class="capability-tabs">
+            <button class="capability-tab active" data-cap-tab="calisthenics">Calisthenics</button>
+            <button class="capability-tab" data-cap-tab="strength">Strength</button>
+            <button class="capability-tab" data-cap-tab="running">Running</button>
+            <button class="capability-tab" data-cap-tab="power">Power / Tests</button>
+            <button class="capability-tab" data-cap-tab="balance">Balance / Control</button>
+            <button class="capability-tab" data-cap-tab="work">Work Capacity</button>
+            <button class="capability-tab" data-cap-tab="mobility">Mobility</button>
+            <button class="capability-tab" data-cap-tab="endurance">Endurance</button>
+          </div>
+
+          <div id="capPanelCalisthenics" class="capability-panel active">
+            <div class="capability-entry-grid">
+              <label>Hareket<select id="capSkillSelect"></select></label>
+              <label id="capSkillValueLabel">Performans<input id="capSkillValue" type="number" min="0" step="0.1"></label>
+              <label id="capSkillLoadWrap" hidden>Ek yük (kg)<input id="capSkillLoad" type="number" min="0" step="0.5"></label>
+              <label>Tarih<input id="capSkillDate" type="date"></label>
+              <label>Not<input id="capSkillNote" type="text" placeholder="form, tempo, ROM..."></label>
+              <button id="addSkillCapability" class="primary" type="button">Kaydet</button>
+            </div>
+            <div id="calisthenicsCapabilityList" class="capability-best-grid"></div>
+          </div>
+
+          <div id="capPanelStrength" class="capability-panel">
+            <div class="capability-entry-grid">
+              <label>Hareket<select id="capStrengthSelect"></select></label>
+              <label>Yük (kg)<input id="capStrengthLoad" type="number" min="0" step="0.5"></label>
+              <label>Tekrar<input id="capStrengthReps" type="number" min="1" step="1" value="1"></label>
+              <label>Vücut ağırlığı (kg)<input id="capStrengthBW" type="number" min="0" step="0.1"></label>
+              <label>Tarih<input id="capStrengthDate" type="date"></label>
+              <button id="addStrengthCapability" class="primary" type="button">Kaydet</button>
+            </div>
+            <div id="strengthCapabilityList" class="capability-best-grid"></div>
+          </div>
+
+          <div id="capPanelRunning" class="capability-panel">
+            <div class="capability-entry-grid">
+              <label>Mesafe<select id="capRunSelect"></select></label>
+              <label id="capCustomDistanceWrap" hidden>Mesafe (km)<input id="capRunDistance" type="number" min="0.1" step="0.01"></label>
+              <label>Süre (dk)<input id="capRunMinutes" type="number" min="0.1" step="0.01"></label>
+              <label>Tarih<input id="capRunDate" type="date"></label>
+              <label>Not<input id="capRunNote" type="text" placeholder="parkur, nabız, yarış..."></label>
+              <button id="addRunCapability" class="primary" type="button">Kaydet</button>
+            </div>
+            <div id="runningCapabilityList" class="capability-best-grid"></div>
+          </div>
+
+          <div id="capPanelPower" class="capability-panel">
+            <div class="capability-entry-grid">
+              <label>Test<select id="capPowerSelect"></select></label>
+              <label>Değer<input id="capPowerValue" type="number" min="0" step="0.01"></label>
+              <label id="capPowerUnit">Birim</label>
+              <label>Tarih<input id="capPowerDate" type="date"></label>
+              <label>Not<input id="capPowerNote" type="text"></label>
+              <button id="addPowerCapability" class="primary" type="button">Kaydet</button>
+            </div>
+            <div id="powerCapabilityList" class="capability-best-grid"></div>
+          </div>
+
+          <div id="capPanelBalance" class="capability-panel">
+            <div class="capability-entry-grid">
+              <label>Test<select id="capBalanceSelect"></select></label><label>Değer<input id="capBalanceValue" type="number" min="0" step="0.01"></label><label id="capBalanceUnit">Birim</label><label>Tarih<input id="capBalanceDate" type="date"></label><label>Not<input id="capBalanceNote" type="text" placeholder="taraf, stabilite, form..."></label><button id="addBalanceCapability" class="primary" type="button">Kaydet</button>
+            </div><div id="balanceCapabilityList" class="capability-best-grid"></div>
+          </div>
+
+          <div id="capPanelWork" class="capability-panel">
+            <div class="capability-entry-grid">
+              <label>Test<select id="capWorkSelect"></select></label><label>Değer<input id="capWorkValue" type="number" min="0" step="0.01"></label><label id="capWorkUnit">Birim</label><label>Tarih<input id="capWorkDate" type="date"></label><label>Not<input id="capWorkNote" type="text" placeholder="süre, protokol, form..."></label><button id="addWorkCapability" class="primary" type="button">Kaydet</button>
+            </div><div id="workCapabilityList" class="capability-best-grid"></div>
+          </div>
+
+          <div id="capPanelMobility" class="capability-panel">
+            <div class="capability-entry-grid">
+              <label>Test<select id="capMobilitySelect"></select></label><label>Değer<input id="capMobilityValue" type="number" min="0" step="0.01"></label><label id="capMobilityUnit">Birim</label><label>Tarih<input id="capMobilityDate" type="date"></label><label>Not<input id="capMobilityNote" type="text" placeholder="sağ/sol, ağrı, ROM..."></label><button id="addMobilityCapability" class="primary" type="button">Kaydet</button>
+            </div><div id="mobilityCapabilityList" class="capability-best-grid"></div>
+          </div>
+
+          <div id="capPanelEndurance" class="capability-panel">
+            <div class="capability-entry-grid">
+              <label>Test<select id="capEnduranceSelect"></select></label><label>Değer<input id="capEnduranceValue" type="number" min="0" step="0.01"></label><label id="capEnduranceUnit">Birim</label><label>Tarih<input id="capEnduranceDate" type="date"></label><label>Not<input id="capEnduranceNote" type="text" placeholder="nabız, parkur, protokol..."></label><button id="addEnduranceCapability" class="primary" type="button">Kaydet</button>
+            </div><div id="enduranceCapabilityList" class="capability-best-grid"></div>
+          </div>
+        </div>
+
+        <div class="grid two" style="margin-top:16px">
+          <div class="card">
+            <h3>Seviye Haritası</h3>
+            <div id="athleteTierExplanation" class="recommendation-stack"></div>
+          </div>
+          <div class="card">
+            <h3>Profil İçin En Değerli Sonraki Testler</h3>
+            <div id="athleteNextTests" class="recommendation-stack"></div>
+          </div>
+        </div>
+
+        <div class="grid two">
+          <div class="card">
+            <h3>ÇAĞLAR • Hybrid Athlete Character</h3>
+            <p class="hint">Skorlar mevcut kayıtlardan türetilen kişisel takip göstergeleridir; eksik testlerde güven düşer.</p>
+            <div class="radar-wrap">
+              <svg id="athleteRadar" viewBox="0 0 420 420" role="img" aria-label="Athlete character radar chart"></svg>
+            </div>
+          </div>
+          <div class="card">
+            <h3>Karakter Analizi</h3>
+            <div id="characterScores" class="summary-list"></div>
+            <div id="characterInsight" class="insight-box" style="margin-top:14px"></div>
+          </div>
+        </div>
+        
+        <div class="card" style="margin-top:16px">
+          <div class="section-head">
+            <div>
+              <h3>Karakter Veri Girişi</h3>
+              <p class="hint">Performans testlerini elle gir. Sistem otomatik antrenman kayıtlarıyla birlikte Character skorunu günceller. İstersen 0–100 skoru manuel override edebilirsin.</p>
+            </div>
+            <button id="saveCharacterDataBtn" class="primary" type="button">Karakter Verisini Kaydet</button>
+          </div>
+          <div id="characterSaveStatus" class="save-status"></div>
+
+          <div class="character-input-grid">
+            <div class="character-input-group">
+              <h4>Calisthenics / Skill</h4>
+              <label>Full Planche max hold (sn)<input id="charPlanche" type="number" min="0" step="0.1"></label>
+              <label>Front Lever max hold (sn)<input id="charFrontLever" type="number" min="0" step="0.1"></label>
+              <label>Back Lever max hold (sn)<input id="charBackLever" type="number" min="0" step="0.1"></label>
+              <label>Strict Muscle-Up max tekrar<input id="charMuscleUp" type="number" min="0" step="1"></label>
+              <label>L-Sit max hold (sn)<input id="charLSit" type="number" min="0" step="0.1"></label>
+            </div>
+
+            <div class="character-input-group">
+              <h4>Relative / Max Strength</h4>
+              <label>Vücut ağırlığı (kg)<input id="charBodyweight" type="number" min="0" step="0.1"></label>
+              <label>Weighted Pull-Up ek yük (kg)<input id="charWpuLoad" type="number" min="0" step="0.5"></label>
+              <label>Weighted Pull-Up tekrar<input id="charWpuReps" type="number" min="0" step="1"></label>
+              <label>Weighted Dip ek yük (kg)<input id="charDipLoad" type="number" min="0" step="0.5"></label>
+              <label>Weighted Dip tekrar<input id="charDipReps" type="number" min="0" step="1"></label>
+              <label>OHP en iyi yük (kg)<input id="charOHP" type="number" min="0" step="0.5"></label>
+            </div>
+
+            <div class="character-input-group">
+              <h4>Running / Endurance</h4>
+              <label>5 km süre (dk)<input id="char5k" type="number" min="0" step="0.01"></label>
+              <label>En uzun koşu (km)<input id="charLongRun" type="number" min="0" step="0.1"></label>
+              <label>Cooper 12 dk mesafe (m)<input id="charCooper" type="number" min="0" step="10"></label>
+              <label>Haftalık koşu hacmi (km)<input id="charWeeklyKm" type="number" min="0" step="0.1"></label>
+            </div>
+
+            <div class="character-input-group">
+              <h4>Power / Speed</h4>
+              <label>Vertical Jump (cm)<input id="charVJump" type="number" min="0" step="0.5"></label>
+              <label>Broad Jump (cm)<input id="charBroadJump" type="number" min="0" step="1"></label>
+              <label>10 m sprint (sn)<input id="charSprint10" type="number" min="0" step="0.01"></label>
+              <label>30 m sprint (sn)<input id="charSprint30" type="number" min="0" step="0.01"></label>
+            </div>
+
+            <div class="character-input-group">
+              <h4>Endurance / Work Capacity</h4>
+              <label>Max strict pull-up<input id="charMaxPullups" type="number" min="0" step="1"></label>
+              <label>Max push-up<input id="charMaxPushups" type="number" min="0" step="1"></label>
+              <label>Burpee 5 dk tekrar<input id="charBurpee5" type="number" min="0" step="1"></label>
+              <label>Plank max (sn)<input id="charPlank" type="number" min="0" step="1"></label>
+            </div>
+
+            <div class="character-input-group">
+              <h4>Mobility / Control</h4>
+              <label>Shoulder mobility (0–100)<input id="charShoulderMob" type="number" min="0" max="100" step="1"></label>
+              <label>Hip mobility (0–100)<input id="charHipMob" type="number" min="0" max="100" step="1"></label>
+              <label>Ankle mobility (0–100)<input id="charAnkleMob" type="number" min="0" max="100" step="1"></label>
+              <label>Balance / Control (0–100)<input id="charBalance" type="number" min="0" max="100" step="1"></label>
+            </div>
+          </div>
+
+          <details class="manual-score-panel">
+            <summary>Gelişmiş: Character skorlarını elle gir / override et</summary>
+            <p class="hint">Boş bıraktığın skorlar test ve antrenman verilerinden hesaplanır. Girdiğin skor yalnızca ilgili karakter başlığını override eder.</p>
+            <div id="manualCharacterScores" class="manual-score-grid"></div>
+          </details>
+        </div>
+
+
+        <div class="grid two" style="margin-top:16px">
+          <div class="card"><h3>Character Veri Güveni</h3><p class="hint">Skor ile ölçüm güveni ayrı tutulur.</p><div id="characterConfidence" class="confidence-grid"></div></div>
+          <div class="card"><h3>Eksik Testler / Retest</h3><div id="testingEngine" class="recommendation-stack"></div></div>
+        </div>
+
+        <div class="card" style="margin-top:16px">
+          <h3>Training DNA</h3>
+          <div class="dna-grid">
+            <div><strong>40%</strong><span>Calisthenics</span></div>
+            <div><strong>25%</strong><span>Strength</span></div>
+            <div><strong>15%</strong><span>Hypertrophy</span></div>
+            <div><strong>15%</strong><span>Running</span></div>
+            <div><strong>5%</strong><span>Power / Athleticism</span></div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:16px">
+          <h3>Ekipman Profili</h3>
+          <div class="equipment-grid">
+            <span>✓ Pull-Up Bar</span><span>✓ Gymnastic Rings</span><span>✓ Parallettes</span>
+            <span>✓ Weight Belt</span><span>✓ Backpack ≤50 kg</span><span>✓ Dumbbells</span>
+            <span>✓ EZ Bar</span><span>✓ Outdoor Running</span><span>✗ Rack / Cable / Bench</span>
+          </div>
+        </div>
+      </section>
+
+      <section id="reports" class="page">
+        <div class="report-tabs card">
+          <button class="report-tab active" data-report="daily-report">Günlük Rapor</button>
+          <button class="report-tab" data-report="weekly-report">Haftalık Rapor</button>
+          <button class="report-tab" data-report="monthly-report">Aylık Rapor</button>
+          <button class="report-tab" data-report="adaptive-report">Adaptive Intelligence</button>
+          <button class="report-tab" data-report="muscle-report">Kas Haritası</button>
+        </div>
+
+        <div id="daily-report" class="report-panel active">
+          <div class="grid four">
+            <div class="card metric"><span>Günlük Verimlilik</span><strong id="dailyEfficiency">--</strong><small>10 üzerinden</small></div>
+            <div class="card metric"><span>Readiness</span><strong id="dailyReadinessReport">--</strong><small>Bugün</small></div>
+            <div class="card metric"><span>Nutrition</span><strong id="dailyNutritionReport">--</strong><small>Bugün</small></div>
+            <div class="card metric"><span>Uyku</span><strong id="dailySleepReport">--</strong><small>Bugün</small></div>
+          </div>
+          <div class="grid two">
+            <div class="card">
+              <h3>Bugünün Özeti</h3>
+              <div id="dailyReportSummary" class="summary-list"></div>
+            </div>
+            <div class="card">
+              <h3>Bugün Ne Yapmalısın?</h3>
+              <div id="dailyReportAdvice" class="insight-box"></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="weekly-report" class="report-panel">
+          <div class="grid four">
+            <div class="card metric"><span>Haftalık Verimlilik</span><strong id="weeklyEfficiency10">--</strong><small>10 üzerinden</small></div>
+            <div class="card metric"><span>Uyku Uyumu</span><strong id="weeklySleepScore">--</strong><small>7 gün</small></div>
+            <div class="card metric"><span>Antrenman Uyumu</span><strong id="weeklyTrainingScore">--</strong><small>7 gün</small></div>
+            <div class="card metric"><span>Beslenme Uyumu</span><strong id="weeklyNutritionScore2">--</strong><small>7 gün</small></div>
+          </div>
+          <div class="grid two">
+            <div class="card">
+              <h3>Haftalık Performans Raporu</h3>
+              <div id="weeklyReportSummary2" class="summary-list"></div>
+              <div id="weeklyAdherenceContext" class="insight-box neutral" style="margin-top:12px"></div>
+            </div>
+            <div class="card">
+              <h3>Yeni Hafta İçin Öneriler</h3>
+              <div id="nextWeekAdvice" class="recommendation-stack"></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="monthly-report" class="report-panel">
+          <div class="grid four">
+            <div class="card metric"><span>Aylık Verimlilik</span><strong id="monthlyEfficiency10">--</strong><small>10 üzerinden</small></div>
+            <div class="card metric"><span>Ort. Readiness</span><strong id="monthlyReadiness">--</strong><small>30 gün</small></div>
+            <div class="card metric"><span>Antrenman Günü</span><strong id="monthlyTrainingDays">--</strong><small>30 gün</small></div>
+            <div class="card metric"><span>Uyku Borcu</span><strong id="monthlySleepDebt">--</strong><small>30 gün</small></div>
+          </div>
+          <div class="grid two">
+            <div class="card">
+              <h3>Aylık Gelişim Özeti</h3>
+              <div id="monthlyReportSummary" class="summary-list"></div>
+            </div>
+            <div class="card">
+              <h3>Önümüzdeki Ay İçin Öneriler</h3>
+              <div id="monthlyAdvice" class="recommendation-stack"></div>
+            </div>
+          </div>
+        </div>
+
+
+        <div id="adaptive-report" class="report-panel">
+          <div class="grid four">
+            <div class="card metric"><span>Deload İhtimali</span><strong id="adaptiveDeload">--</strong><small>trend-bazlı</small></div>
+            <div class="card metric"><span>Stimulus / Fatigue</span><strong id="adaptiveSFR">--</strong><small>seçili/öncelikli kaslar</small></div>
+            <div class="card metric"><span>Personal Model</span><strong id="adaptivePersonalModel">--</strong><small>öğrenme seviyesi</small></div>
+            <div class="card metric"><span>Ölçüm Güveni</span><strong id="adaptiveMeasurementConfidence">--</strong><small>MDC / veri kalitesi</small></div>
+          </div>
+          <div class="grid two">
+            <div class="card"><h3>Kişisel Response Model</h3><div id="personalResponseModel" class="recommendation-stack"></div></div>
+            <div class="card"><h3>Plateau Detector</h3><div id="plateauDetector" class="recommendation-stack"></div></div>
+          </div>
+          <div class="grid two">
+            <div class="card"><h3>Sağ / Sol Asimetri</h3><div id="asymmetryReport" class="summary-list"></div></div>
+            <div class="card"><h3>Measurement Scheduler</h3><div id="measurementScheduler" class="recommendation-stack"></div></div>
+          </div>
+          <div class="grid two">
+            <div class="card"><h3>Goal Conflict Engine</h3><div id="goalConflictEngine" class="recommendation-stack"></div></div>
+            <div class="card"><h3>Testing Calendar</h3><div id="testingCalendar" class="recommendation-stack"></div></div>
+          </div>
+          <div class="card">
+            <h3>Model Belirsizliği ve Bilim Sürümü</h3>
+            <div id="adaptiveUncertainty" class="insight-box neutral"></div>
+          </div>
+        </div>
+
+        <div id="muscle-report" class="report-panel">
+          <div class="card">
+            <div class="section-head">
+              <div><h3>Muscle Growth / Stimulus Map</h3><p class="hint">Renkler antrenman uyaranını gösterir; gerçek kas büyümesi yalnızca vücut ölçümü varsa ayrı olarak raporlanır.</p></div>
+              <div class="period-tabs">
+                <button class="muscle-period active" data-days="1">Günlük</button>
+                <button class="muscle-period" data-days="7">Haftalık</button>
+                <button class="muscle-period" data-days="30">Aylık</button>
+              </div>
+            </div>
+            <div class="card science-engine-card">
+              <div class="section-head">
+                <div>
+                  <h4>Science Trend Engine <small class="version-chip">Evidence 2026</small></h4>
+                  <p class="hint">Antrenmandan gerçek kas büyüme yüzdesi uydurmaz. Beklenen adaptasyonu ve ölçülen büyümeyi ayrı değerlendirir.</p>
+                </div>
+                <span id="scienceTrendConfidence" class="plan-badge">--</span>
+              </div>
+              <div class="grid four science-metrics">
+                <div class="metric mini"><span>Beklenen Adaptasyon</span><strong id="scienceTrendScore">--</strong><small id="scienceTrendLabel">--</small></div>
+                <div class="metric mini"><span>Training Stimulus</span><strong id="scienceStimulusScore">--</strong><small>28 günlük kas yükü</small></div>
+                <div class="metric mini"><span>Recovery + Nutrition</span><strong id="scienceEnvironmentScore">--</strong><small>uyku/protein/enerji</small></div>
+                <div class="metric mini"><span>Ölçüm Kanıtı</span><strong id="scienceMeasuredEvidence">--</strong><small>çevre / doğrudan ölçüm</small></div>
+              </div>
+              <div id="scienceTrendExplanation" class="insight-box neutral"></div>
+              <details class="science-methodology">
+                <summary>Trend nasıl hesaplanıyor?</summary>
+                <div id="scienceMethodologyBody" class="science-methodology-body"></div>
+              </details>
+            </div>
+
+            <div class="muscle-report-layout bodymap-pro-layout">
+              <div class="bodymap-visuals">
+                <div class="card real3d-card">
+                  <div class="section-head">
+                    <div><h4>Real 3D Anatomical Body Map <small class="version-chip">v6</small></h4><p class="hint">Yüklediğin gerçek GLB model. Sürükle: döndür · Mouse wheel/pinch: zoom · Kas yüzeyine tıkla: detay.</p></div>
+                    <span id="bodyMap3DStatus" class="save-status">Model hazırlanıyor…</span>
+                  </div>
+                  <div class="bodymap-controls real3d-controls">
+                    <div class="camera-preset-row"><button type="button" class="camera-preset active" data-camera="front">Ön</button><button type="button" class="camera-preset" data-camera="back">Arka</button><button type="button" class="camera-preset" data-camera="left">Sol</button><button type="button" class="camera-preset" data-camera="right">Sağ</button><button type="button" id="bodyMapResetCamera" class="camera-preset">Sıfırla</button></div>
+                    <div class="overlay-mode-row"><button class="overlay-mode active" data-overlay="stimulus">Stimulus</button><button class="overlay-mode" data-overlay="growth">Measured Growth</button><button class="overlay-mode" data-overlay="recovery">Recovery</button><button class="overlay-mode" data-overlay="pain">Pain</button></div>
+                  </div>
+                  <div id="overlayModeNote" class="overlay-mode-note"></div>
+                  <div class="real3d-shell"><canvas id="bodyMap3DCanvas" class="real3d-canvas"></canvas>
+                    <div id="bodyMapJointMarkers" class="joint-hotspot-layer"></div>
+                    <div id="bodyMap3DMarker" class="real3d-marker" hidden></div><div id="bodyMap3DTooltip" class="real3d-tooltip" hidden></div><div id="bodyMap3DLoading" class="real3d-loading"><div class="real3d-spinner"></div><strong>3D beden modeli yükleniyor</strong><span>Yaklaşık 72 MB GLB · İlk açılış biraz sürebilir.</span></div></div>
+                  <div class="real3d-footer"><span id="bodyMap3DSelection">Kas yüzeyine tıklayarak bölge seç. · GLB anatomik kalibrasyon v2</span><label class="model-file-fallback" id="modelFileFallback" hidden>GLB'yi manuel seç<input id="bodyMapModelFile" type="file" accept=".glb,model/gltf-binary"></label></div>
+                  <div id="bodyMapProtocolWarning" class="insight-box warn" hidden>3D model tarayıcı güvenliği nedeniyle doğrudan <b>file://</b> üzerinden yüklenemedi. Paketteki <b>START_MAC.command</b> dosyasını çalıştır veya buradan GLB dosyasını manuel seç.</div>
+                </div>
+              </div>
+              <div class="bodymap-inspector">
+                <div class="grid two compact-grid">
+                  <div class="metric card"><span>Toplam Efektif Set</span><strong id="muscleTotalSets">--</strong><small>seçili dönem</small></div>
+                  <div class="metric card"><span>En Çok Uyarılan</span><strong id="topStimulusMuscle">--</strong><small>kas bölgesi</small></div>
+                </div>
+
+                <div class="card bodymap-selector-card">
+                  <div class="section-head">
+                    <div><h4>Anatomik Kas Bölgeleri</h4><p class="hint">Aşağıdan kas bölgesi seçerek detaylı stimulus, recovery ve ölçüm bilgisini incele.</p></div>
+                  </div>
+                  <div id="muscleRegionGrid" class="muscle-region-grid"></div>
+                </div>
+
+                <div id="muscleDetailCard" class="card muscle-detail-card"><h3>Kas seç</h3><p class="hint">Kas bölgesi düğmelerinden birine tıkla.</p></div>
+
+                <div class="card muscle-trend-card">
+                  <div class="section-head">
+                    <div>
+                      <h4 id="muscleTrendTitle">Kas Adaptasyon / Ölçüm Grafiği</h4>
+                      <p id="muscleTrendSubtitle" class="hint">Seçili kasın zaman içindeki değişimi.</p>
+                    </div>
+                  </div>
+                  <div id="muscleTrendChart" class="muscle-trend-chart"></div>
+                </div>
+
+                <div id="muscleStimulusTable" class="muscle-table"></div>
+              </div>
+            </div>
+            <div class="legend-row"><span>Az</span><i class="heat h1"></i><i class="heat h2"></i><i class="heat h3"></i><i class="heat h4"></i><i class="heat h5"></i><span>Yüksek</span></div>
+          </div>
+        </div>
+      </section>
+
+
+      <section id="records" class="page">
+        <div class="card record-center-head">
+          <div class="section-head">
+            <div>
+              <h3>Kayıt Merkezi</h3>
+              <p class="hint">Yanlış girdiğin veriyi geçmişe dönük düzenle veya sil. Değişikliklerden sonra tüm analiz motorları otomatik yeniden hesaplanır.</p>
+            </div>
+            <button id="recordUndoBtn" class="secondary" type="button" disabled>Son İşlemi Geri Al</button>
+          </div>
+          <div class="record-date-controls">
+            <button id="recordPrevDay" class="secondary" type="button">← Önceki</button>
+            <label>Tarih <input id="recordManagerDate" type="date"></label>
+            <button id="recordTodayBtn" class="secondary" type="button">Bugün</button>
+            <button id="recordNextDay" class="secondary" type="button">Sonraki →</button>
+          </div>
+          <div id="recordManagerSummary" class="grid four compact" style="margin-top:12px"></div>
+        </div>
+
+        <div class="record-manager-grid">
+          <div class="card"><div class="section-head"><div><h3>Check-in / Uyku / Recovery</h3><p class="hint">Uyku, readiness, koşu, iş yükü ve pain değerleri.</p></div></div><div id="recordDailyList"></div></div>
+          <div class="card"><div class="section-head"><div><h3>Antrenman Kayıtları</h3><p class="hint">Set, tekrar/saniye, yük, RIR ve plan tarihi düzenlenebilir.</p></div></div><div id="recordTrainingList"></div></div>
+          <div class="card"><div class="section-head"><div><h3>Pain / Joint Kayıtları</h3><p class="hint">Sağ/sol, şiddet, tetikleyici ve aktif/çözüldü durumu.</p></div></div><div id="recordPainList"></div></div>
+          <div class="card"><div class="section-head"><div><h3>Beslenme & Su</h3><p class="hint">Öğün, porsiyon, saat ve su kaydı.</p></div></div><div id="recordNutritionList"></div></div>
+          <div class="card"><div class="section-head"><div><h3>Vücut Ölçümleri</h3><p class="hint">Kilo, çevre ölçümleri ve sağ/sol ölçümler.</p></div></div><div id="recordBodyList"></div></div>
+          <div class="card"><div class="section-head"><div><h3>Seans / Sosyal Kayıtlar</h3><p class="hint">Session RPE, süre, not ve sosyal plan.</p></div></div><div id="recordSessionList"></div></div>
+          <div class="card"><div class="section-head"><div><h3>Capability Lab</h3><p class="hint">Yetenek, kuvvet, koşu ve atletik test geçmişi.</p></div></div><div id="recordCapabilityList"></div></div>
+          <div class="card"><div class="section-head"><div><h3>Karakter Test Verileri</h3><p class="hint">Manuel athletic test değerleri de buradan temizlenebilir veya düzeltilebilir.</p></div></div><div id="recordCharacterList"></div></div>
+        </div>
+      </section>
+
+      <section id="settings" class="page">
+        <div class="card">
+          <div class="section-head"><div><h3>Profil ve Hedefler</h3><p>Optimizer bu hedefleri kullanır.</p></div><button id="saveSettingsBtn" class="primary">Kaydet</button></div>
+          <div class="form-grid">
+            <label>Hedef uyku (saat) <input id="targetSleep" type="number" step="0.25" value="8"></label>
+            <label>Hazırlanma süresi (dk) <input id="prepMinutes" type="number" value="45"></label>
+            <label>İşe ulaşım (dk) <input id="commuteMinutes" type="number" value="35"></label>
+            <label>Hedef protein (g) <input id="targetProtein" type="number" value="150"></label>
+            <label>Hedef kalori <input id="targetCalories" type="number" value="2850"></label>
+            <label>Kişisel su hedefi (L, referans) <input id="targetWater" type="number" step="0.1" value="3"></label>
+            <label>Hedef kilo (kg) <input id="targetWeight" type="number" step="0.1" value="76"></label>
+            <label>Beslenme fazı
+              <select id="nutritionGoalMode">
+                <option value="auto">Otomatik / veriden çıkar</option>
+                <option value="lean_gain">Lean Gain / Bulk</option>
+                <option value="recomp">Maintenance / Recomp</option>
+                <option value="cut">Cut / Yağ kaybı</option>
+              </select>
+            </label>
+            <label>12W program başlangıcı <input id="programStartDate" type="date"></label>
+            <label>Spor günü sınırı <select id="dayBoundaryHour"><option value="0">00:00</option><option value="2">02:00</option><option value="4" selected>04:00</option><option value="5">05:00</option></select></label>
+            <label>Gece seansı cutoff <select id="settingsLateSessionCutoff"><option value="2">02:00</option><option value="4" selected>04:00</option><option value="6">06:00</option></select></label>
+            <label>Çevre ölçüm gürültü eşiği (cm) <input id="measurementMdcCm" type="number" min="0.1" max="2" step="0.1" value="0.5"></label>
+          </div>
+        </div>
+
+        <div class="card data-vault-card" style="margin-top:16px">
+          <div class="section-head">
+            <div>
+              <h3>Data Vault <small class="version-chip">Portable Backup v2</small></h3>
+              <p class="hint">Uygulama sürümü değişse bile kişisel verilerini tek dosyada taşı. İçe aktarmadan önce doğrulama ve otomatik geri dönüş noktası oluşturulur.</p>
+            </div>
+            <span id="vaultHealthBadge" class="plan-badge">Kontrol ediliyor…</span>
+          </div>
+
+          <div id="vaultSummary" class="grid four compact vault-summary"></div>
+
+          <div class="vault-action-grid">
+            <div class="vault-action-box">
+              <strong>Tam Yedek</strong>
+              <p>Tüm uygulama verileri + Photo Progress görselleri. En güvenli sürüm yükseltme dosyası.</p>
+              <button id="vaultExportFull" class="primary" type="button">Tam Yedeği İndir</button>
+            </div>
+            <div class="vault-action-box">
+              <strong>Hafif Veri Yedeği</strong>
+              <p>Günlük, antrenman, beslenme, ölçüm, plan, ayar ve analiz verileri. Fotoğraflar dahil değildir.</p>
+              <button id="vaultExportData" class="secondary" type="button">Veri Yedeğini İndir</button>
+            </div>
+            <div class="vault-action-box">
+              <strong>Yerel Geri Dönüş Noktası</strong>
+              <p>Tarayıcının IndexedDB alanına yerel checkpoint koyar. Yanlış import veya düzenleme için.</p>
+              <button id="vaultCheckpointBtn" class="secondary" type="button">Checkpoint Oluştur</button>
+            </div>
+          </div>
+
+          <div class="vault-import-zone">
+            <div>
+              <strong>Yedek Dosyasını İçe Aktar</strong>
+              <p class="hint">v6.7 portable backup, eski Athlete Life OS JSON yedekleri ve ham veri JSON'u desteklenir.</p>
+            </div>
+            <label class="import-label vault-file-label">Dosya Seç
+              <input id="vaultImportInput" type="file" accept="application/json,.json,.alosbackup">
+            </label>
+          </div>
+
+          <div id="vaultImportPreview" class="vault-preview" hidden>
+            <div class="section-head">
+              <div>
+                <h4 id="vaultPreviewTitle">Yedek bulundu</h4>
+                <p id="vaultPreviewMeta" class="hint"></p>
+              </div>
+              <span id="vaultIntegrityBadge" class="plan-badge">--</span>
+            </div>
+            <div id="vaultPreviewCounts" class="grid four compact"></div>
+            <div class="vault-mode-row">
+              <button id="vaultMergeBtn" type="button" class="secondary">Mevcut Veriye Birleştir</button>
+              <button id="vaultReplaceBtn" type="button" class="danger-btn">Tam Geri Yükle</button>
+              <button id="vaultCancelImport" type="button" class="secondary">Vazgeç</button>
+            </div>
+            <div class="insight-box neutral">
+              <b>Birleştir:</b> mevcut veriyi korur, yedekteki eksik tarihleri ekler ve aynı kayıtlarda yedek verisini kullanır.
+              <b>Tam Geri Yükle:</b> mevcut kişisel veriyi yedekteki veriyle değiştirir. Her iki işlemden hemen önce otomatik checkpoint oluşturulur.
+            </div>
+          </div>
+
+          <div class="vault-checkpoints">
+            <div class="section-head">
+              <div><h4>Yerel Checkpoint'ler</h4><p class="hint">Aynı tarayıcı/origin içinde tutulur; dış yedek dosyasının yerine geçmez.</p></div>
+              <button id="vaultRefreshCheckpoints" type="button" class="secondary">Yenile</button>
+            </div>
+            <div id="vaultCheckpointList"></div>
+          </div>
+
+          <div class="vault-status-row">
+            <span id="backupStatus" class="save-status"></span>
+            <small id="vaultLastBackupText" class="hint"></small>
+          </div>
+        </div>
+
+        <div class="card system-integrity-card" style="margin-top:16px">
+          <div class="section-head">
+            <div>
+              <h3>System Integrity / Engine Mesh Test <small class="version-chip">v9.2.1 Fixture Isolation</small></h3>
+              <p class="hint">Coach, training, nutrition, pain, recovery, adherence, body map, capability, guided runner ve Data Vault bağlantılarını geçici sandbox verisiyle test eder. Kişisel kayıtlarını değiştirmez.</p>
+            </div>
+            <span id="systemIntegrityBadge" class="plan-badge">TEST EDİLMEDİ</span>
+          </div>
+          <div id="systemIntegritySummary" class="grid four compact"></div>
+          <div class="integrity-actions">
+            <button id="runSystemIntegrity" type="button" class="primary">Tüm Motorları Test Et</button>
+            <button id="copySystemIntegrity" type="button" class="secondary">Rapor Özeti</button>
+          </div>
+          <div id="systemIntegrityProgress" class="insight-box neutral" style="margin-top:10px">Test henüz çalıştırılmadı.</div>
+          <div id="systemIntegrityResults" class="integrity-results"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="socialDialog">
+    <form method="dialog" class="dialog-card">
+      <h3>Sürpriz Sosyal Plan</h3>
+      <p>Planı eklediğinde uyku ve antrenman etkisi yeniden hesaplanır.</p>
+      <label>Plan türü
+        <select id="socialType"><option>Arkadaşlarla dışarı</option><option>Aile</option><option>Yemek</option><option>Sinema</option><option>Diğer</option></select>
+      </label>
+      <label>Başlangıç <input id="socialStart" type="time" value="21:00"></label>
+      <label>Bitiş <input id="socialEnd" type="time" value="00:30"></label>
+      <label>Öncelik
+        <select id="socialPriority"><option>Normal</option><option>Önemli</option><option>Kaçırmak istemiyorum</option></select>
+      </label>
+      <div class="dialog-actions">
+        <button value="cancel" class="secondary">Vazgeç</button>
+        <button id="saveSocialBtn" value="default" class="primary">Planı Ekle</button>
+      </div>
+    </form>
+  </dialog>
+
+
+
+  <dialog id="gapBackfillDialog" class="record-edit-dialog">
+    <form method="dialog" class="dialog-card record-edit-card">
+      <div class="section-head">
+        <div>
+          <h3 id="gapBackfillTitle">Geçmiş Antrenmanı Kaydet</h3>
+          <p id="gapBackfillSubtitle" class="hint"></p>
+        </div>
+      </div>
+      <div class="form-grid">
+        <label>Yaklaşık başlangıç saati
+          <input id="gapBackfillTime" type="time">
+        </label>
+        <label>Süre (dk)
+          <input id="gapBackfillDuration" type="number" min="0" step="5" value="60">
+        </label>
+        <label>Session RPE
+          <input id="gapBackfillRpe" type="number" min="0" max="10" step="0.5" value="7">
+        </label>
+        <label>Planın ne kadarı tamamlandı?
+          <select id="gapBackfillCompletion">
+            <option value="100">Tamamı / %100</option>
+            <option value="75">%75 civarı</option>
+            <option value="50">%50 civarı</option>
+          </select>
+        </label>
+        <label class="span-2">Not
+          <input id="gapBackfillNote" type="text" placeholder="Hatırladığın ek bilgi">
+        </label>
+      </div>
+      <div class="insight-box warn" style="margin-top:12px">
+        Quick Backfill ayrıntılı set verisi değildir. Kas stimulus/recovery hesabına <b>orta güven</b> ile katılır; PR ve progresyon testlerinde kullanılmaz.
+      </div>
+      <div class="dialog-actions">
+        <button value="cancel" class="secondary">Vazgeç</button>
+        <button id="gapBackfillSave" type="button" class="primary">Geçmiş Seansı Kaydet</button>
+      </div>
+    </form>
+  </dialog>
+
+
+  <dialog id="nutritionEditDialog" class="record-edit-dialog">
+    <form method="dialog" class="dialog-card record-edit-card">
+      <div class="section-head">
+        <div><h3 id="nutritionEditTitle">Besin Kaydını Düzenle</h3><p id="nutritionEditSubtitle" class="hint"></p></div>
+      </div>
+      <div class="form-grid">
+        <label>Öğün
+          <select id="nutritionEditMeal">
+            <option>Kahvaltı</option><option>Öğle</option><option>Akşam</option>
+            <option>Antrenman Öncesi</option><option>Antrenman Sonrası</option>
+            <option>Atıştırmalık</option><option>İş Molası</option>
+          </select>
+        </label>
+        <label>Besin <select id="nutritionEditFood"></select></label>
+        <label>Porsiyon <input id="nutritionEditServings" type="number" min="0.01" step="0.25" value="1"></label>
+        <label>Saat <input id="nutritionEditTime" type="time"></label>
+      </div>
+      <div id="nutritionEditPreview" class="nutrition-edit-preview"></div>
+      <div class="dialog-actions">
+        <button value="cancel" class="secondary">Vazgeç</button>
+        <button id="nutritionEditSaveBtn" type="button" class="primary">Değişiklikleri Kaydet</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="recordEditDialog" class="record-edit-dialog">
+    <form method="dialog" class="dialog-card record-edit-card">
+      <div class="section-head">
+        <div><h3 id="recordEditTitle">Kaydı Düzenle</h3><p id="recordEditSubtitle" class="hint"></p></div>
+      </div>
+      <div id="recordEditFields" class="form-grid"></div>
+      <div id="recordEditWarning" class="insight-box neutral" style="margin-top:12px" hidden></div>
+      <div class="dialog-actions">
+        <button value="cancel" class="secondary">Vazgeç</button>
+        <button id="recordEditSaveBtn" value="default" class="primary" type="button">Değişiklikleri Kaydet</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="recordUndoToast" class="record-undo-toast" hidden>
+    <span id="recordUndoText">Kayıt güncellendi.</span>
+    <button id="recordToastUndo" type="button">Geri Al</button>
+  </div>
+
+
+
+  <nav class="quick-nav" aria-label="Hızlı gezinme">
+    <button data-goto="today">Bugün</button>
+    <button data-goto="training">Antrenman</button>
+    <button data-goto="coach">Koç</button>
+    <button data-goto="nutrition">Beslenme</button>
+    <button data-goto="reports">Rapor</button>
+    <button data-goto="records">Kayıtlar</button>
+  </nav>
+
+
+  <script src="nutrition-library.js?v=7.19"></script>
+  <script src="nutrition-ledger-engine.js?v=7.17"></script>
+  <script src="water-ledger-engine.js?v=7.18"></script>
+  <script src="hydration-intelligence-engine.js?v=7.19"></script>
+  <script src="health-state-engine.js?v=7.15"></script>
+  <script src="capability-catalog.js?v=9.2.3"></script>
+  <script src="exercise-knowledge-library.js"></script>
+  <script src="load-prescription-engine.js?v=7.14"></script>
+  <script src="physiological-impact-engine.js?v=7.14"></script>
+  <script src="engine-bus.js?v=8.0"></script>
+  <script src="data-lineage-engine.js?v=8.0"></script>
+  <script src="schema-migration-engine.js?v=9.0"></script>
+  <script src="event-store-engine.js?v=8.0"></script>
+  <script src="app.js?v=9.2.6"></script>
+  <script src="nutrition-record-engine.js?v=7.17"></script>
+  <script src="periodic-trend-engine.js?v=7.17"></script>
+  <script src="movement-intelligence-engine.js?v=7.15"></script>
+  <script src="ad-hoc-session-engine.js?v=7.15"></script>
+  <script src="pain-intelligence-core.js"></script>
+  <script src="pain-intelligence-engine.js"></script>
+  <script src="bodymap3d.js"></script>
+  <script src="performance-trend-v2.js?v=8.0"></script>
+  <script src="personal-calibration-engine.js?v=8.0"></script>
+  <script src="tissue-load-engine.js?v=8.0"></script>
+  <script src="adaptive-nutrition-engine.js?v=8.0"></script>
+  <script src="sports-science-policy.js?v=9.2"></script>
+  <script src="adaptive-coach-solver.js?v=9.1"></script>
+  <script src="canonical-session-engine.js?v=9.0"></script>
+  <script src="training-session-service.js?v=9.0"></script>
+  <script src="adaptive-intelligence.js?v=9.0"></script>
+  <script src="record-manager.js"></script>
+  <script src="adherence-engine.js"></script>
+  <script src="gap-reconciliation.js"></script>
+  <script src="athlete-profile-engine.js?v=9.2.3"></script>
+  <script src="nutrition-impact-engine.js?v=7.20"></script>
+  <script src="rest-interval-engine.js"></script>
+  <script src="guided-workout-core.js?v=7.14"></script>
+  <script src="substitution-intelligence-core.js?v=7.14"></script>
+  <script src="guided-workout-engine.js?v=9.2"></script>
+  <script src="backup-vault.js?v=9.2.6"></script>
+  <script src="system-integrity-engine.js?v=9.2.1"></script>
+  <script src="training-mesh-dashboard.js?v=7.15"></script>
+  <script src="release-integrity-v8.js?v=9.0"></script>
+  <script src="architecture-bootstrap.js?v=9.0"></script>
+  <script src="athlete-coordinator.js?v=9.0"></script>
+</body>
+</html>

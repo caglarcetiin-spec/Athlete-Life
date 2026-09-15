@@ -1,0 +1,85 @@
+{
+  "version": "2026.09",
+  "engine": "Nutrition Impact Engine v1",
+  "principles": [
+    {
+      "id": "protein_rt",
+      "title": "Protein + resistance training",
+      "source": "Morton et al., British Journal of Sports Medicine, 2018",
+      "pmid": "28698222",
+      "doi": "10.1136/bjsports-2017-097608",
+      "summary": "Protein supplementation augments resistance-training adaptations; meta-regression found a breakpoint around 1.6 g/kg/day, with uncertainty around the estimate.",
+      "used_for": [
+        "protein_adequacy",
+        "hypertrophy_environment",
+        "muscle_retention"
+      ]
+    },
+    {
+      "id": "low_energy",
+      "title": "Low energy availability / RED-S context",
+      "source": "IOC Consensus Statement on Relative Energy Deficiency in Sport, 2023",
+      "doi": "10.1136/bjsports-2023-106994",
+      "summary": "Prolonged inadequate energy availability can impair health and performance. Athlete Life OS uses risk signals only; it does not diagnose RED-S or calculate true energy availability without FFM and exercise energy expenditure.",
+      "used_for": [
+        "underfueling_risk",
+        "performance_risk",
+        "recovery_risk"
+      ]
+    },
+    {
+      "id": "carb_rt",
+      "title": "Carbohydrate and resistance-training performance",
+      "source": "Henselmans et al., Nutrients, 2022",
+      "pmid": "35215506",
+      "doi": "10.3390/nu14040856",
+      "summary": "Carbohydrate effects on resistance exercise are context dependent; benefits are more plausible with high-volume, glycogen-depleting, fasted or repeated training.",
+      "used_for": [
+        "performance_fueling",
+        "glycogen_context"
+      ]
+    },
+    {
+      "id": "carb_meta",
+      "title": "Acute carbohydrate feeding and resistance exercise",
+      "source": "King et al., Sports Medicine, 2022",
+      "pmid": "35809162",
+      "doi": "10.1007/s40279-022-01716-w",
+      "summary": "Meta-analysis reported higher resistance-training volume with carbohydrate, especially in sessions over 45 min and after prolonged fasting.",
+      "used_for": [
+        "performance_fueling"
+      ]
+    },
+    {
+      "id": "surplus",
+      "title": "Energy surplus size in trained lifters",
+      "source": "Helms et al., Journal of the International Society of Sports Nutrition, 2023",
+      "pmid": "37914977",
+      "doi": "10.1080/15502783.2023.2276174",
+      "summary": "Larger surplus did not clearly improve muscle thickness or strength compared with smaller surplus in the small trial, while faster mass gain was associated with greater skinfold gain.",
+      "used_for": [
+        "gain_quality",
+        "excess_surplus_risk"
+      ]
+    },
+    {
+      "id": "hydration",
+      "title": "Exercise and fluid replacement",
+      "source": "American College of Sports Medicine Position Stand, 2007",
+      "pmid": "17277604",
+      "doi": "10.1249/mss.0b013e31802ca597",
+      "summary": "Hydration needs are highly individual; sweat-rate and body-mass change are preferred for individualisation. Excessive dehydration can compromise performance, especially in demanding conditions.",
+      "used_for": [
+        "hydration_context",
+        "sweat_rate_prompt"
+      ]
+    }
+  ],
+  "engineering_notes": [
+    "The app does not contain a validated equation that converts calories, water, protein or micronutrients into an exact percentage of muscle growth.",
+    "Composite 0–100 scores are decision-support heuristics that combine measured trends and evidence-informed thresholds.",
+    "Observed body-weight and waist trends are weighted more heavily than a fixed calorie target when sufficient longitudinal data exists.",
+    "True energy availability requires fat-free mass and exercise energy expenditure; the app therefore reports an under-fuelling risk signal rather than RED-S diagnosis.",
+    "Micronutrient food-log coverage cannot diagnose a deficiency; lab testing and clinical assessment are separate."
+  ]
+}

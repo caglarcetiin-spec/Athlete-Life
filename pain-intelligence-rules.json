@@ -1,0 +1,19 @@
+{
+  "version": "7.7",
+  "scope": "training load management, not diagnosis",
+  "severity_guardrails": {
+    "1-3": "monitor; do not force progression if pain rises during the session",
+    "4-6": "when movement joint-load is high, reduce/modify and use only pain-free range/variation",
+    "7-10": "when movement loads the painful region, avoid forcing the movement; consider assessment, especially if persistent"
+  },
+  "red_flags": [
+    "trauma-related onset",
+    "marked swelling",
+    "numbness/tingling",
+    "new weakness",
+    "instability/giving way",
+    "cannot bear weight/use limb",
+    "significant night/rest pain"
+  ],
+  "note": "These thresholds are app safety guardrails, not validated diagnostic cutoffs. Exercise-specific joint-load scores are engineering/biomechanical heuristics."
+}

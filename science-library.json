@@ -1,0 +1,319 @@
+{
+  "version": "2026.09",
+  "purpose": "Evidence library for resistance-training adaptation estimation. It does not convert training logs directly into true muscle-growth percentages.",
+  "principles": [
+    {
+      "id": "rt_volume",
+      "topic": "Weekly resistance-training volume",
+      "evidence_level": "A",
+      "rule": "Hypertrophy is generally enhanced by higher weekly training volume; ACSM 2026 highlights ~10 sets per muscle group per week as a useful evidence-based reference, not a universal optimum.",
+      "engine_use": "Reference point for local muscle stimulus; uses a saturating rather than unlimited linear relationship.",
+      "source": {
+        "title": "ACSM Position Stand: Resistance Training Prescription for Muscle Function, Hypertrophy, and Physical Performance in Healthy Adults",
+        "year": 2026,
+        "pmid": "41843416",
+        "doi": "10.1249/MSS.0000000000003897"
+      }
+    },
+    {
+      "id": "volume_dose_response",
+      "topic": "Volume dose-response",
+      "evidence_level": "A",
+      "rule": "Meta-analysis supports a graded association between weekly set volume and hypertrophy, with substantial individual variability.",
+      "engine_use": "More useful weekly sets raise predicted stimulus, with diminishing returns.",
+      "source": {
+        "title": "Dose-response relationship between weekly resistance training volume and increases in muscle mass",
+        "year": 2017,
+        "pmid": "27433992",
+        "doi": "10.1080/02640414.2016.1210197"
+      }
+    },
+    {
+      "id": "rir",
+      "topic": "Proximity to failure / RIR",
+      "evidence_level": "A",
+      "rule": "Hypertrophy tends to improve as sets terminate closer to failure, but the exact dose-response is uncertain and momentary failure is not required.",
+      "engine_use": "RIR adjusts effective-set quality; the model avoids assigning a magical failure threshold.",
+      "source": {
+        "title": "Exploring the Dose-Response Relationship Between Estimated Resistance Training Proximity to Failure, Strength Gain, and Muscle Hypertrophy",
+        "year": 2024,
+        "pmid": "38970765",
+        "doi": "10.1007/s40279-024-02069-2"
+      }
+    },
+    {
+      "id": "protein",
+      "topic": "Protein intake",
+      "evidence_level": "A",
+      "rule": "Protein supplementation/intake augments resistance-training gains; meta-regression suggests a breakpoint around ~1.6 g/kg/day for fat-free-mass gains in healthy adults.",
+      "engine_use": "Protein adequacy is treated as a recovery/nutrition environment modifier rather than a direct growth percentage.",
+      "source": {
+        "title": "A systematic review, meta-analysis and meta-regression of the effect of protein supplementation on resistance training-induced gains",
+        "year": 2018,
+        "pmid": "28698222",
+        "doi": "10.1136/bjsports-2017-097608"
+      }
+    },
+    {
+      "id": "sleep",
+      "topic": "Sleep restriction",
+      "evidence_level": "B",
+      "rule": "Severe repeated sleep restriction can reduce myofibrillar protein synthesis; acute sleep deprivation can also lower muscle protein synthesis. These mechanistic findings do not provide a direct long-term hypertrophy conversion factor.",
+      "engine_use": "Repeated inadequate sleep lowers adaptation confidence/environment; it is never converted into an exact muscle-loss percentage.",
+      "source": {
+        "title": "The effect of sleep restriction, with or without high-intensity interval exercise, on myofibrillar protein synthesis",
+        "year": 2020,
+        "pmid": "32078168",
+        "doi": "10.1113/JP278828"
+      }
+    },
+    {
+      "id": "energy_surplus",
+      "topic": "Energy surplus / body-mass gain",
+      "evidence_level": "B",
+      "rule": "A larger surplus is not clearly better for hypertrophy; faster body-mass gain may primarily increase fat gain.",
+      "engine_use": "Body-mass trend is used mainly to flag under-fuelling or overly rapid gain, not to award large hypertrophy bonuses.",
+      "source": {
+        "title": "Effect of Small and Large Energy Surpluses on Strength, Muscle, and Skinfold Thickness in Resistance-Trained Individuals",
+        "year": 2023,
+        "pmid": "37914977",
+        "doi": "10.1080/15502783.2023.2276174"
+      }
+    },
+    {
+      "id": "concurrent",
+      "topic": "Concurrent endurance + resistance training",
+      "evidence_level": "A",
+      "rule": "Concurrent training can preserve hypertrophy in many contexts, but modality/dose and lower-body strength or muscle-fibre outcomes can show interference; running may be more problematic in some analyses.",
+      "engine_use": "Running creates only a modest conditional penalty when lower-body resistance load, running load and poor recovery overlap.",
+      "source": {
+        "title": "Comparative efficacy of concurrent training types on lower limb strength and muscular hypertrophy",
+        "year": 2024,
+        "pmid": "38187085"
+      }
+    },
+    {
+      "id": "measurement_ultrasound",
+      "topic": "Direct muscle-size measurement",
+      "evidence_level": "A",
+      "rule": "MRI/CT are reference methods; ultrasound is a valid practical method for skeletal-muscle thickness/CSA when measurement technique is standardized.",
+      "engine_use": "Direct imaging is highest-confidence evidence if user supplies it; circumference is considered an indirect proxy.",
+      "source": {
+        "title": "Human skeletal muscle size with ultrasound imaging: a comprehensive review",
+        "year": 2022,
+        "pmid": "35358402",
+        "doi": "10.1152/japplphysiol.00041.2022"
+      }
+    },
+    {
+      "id": "measurement_error",
+      "topic": "Measurement error",
+      "evidence_level": "B",
+      "rule": "Muscle-thickness measurement has meaningful absolute error even when relative reliability is high; small changes must be interpreted against repeated-measure error.",
+      "engine_use": "The app raises confidence only after repeated standardized measurements and sufficient elapsed time.",
+      "source": {
+        "title": "Stressing the Relevance of Differentiating between Systematic and Random Measurement Errors in Ultrasound Muscle Thickness Diagnostics",
+        "year": 2024,
+        "pmid": "39147945",
+        "doi": "10.1186/s40798-024-00755-z"
+      }
+    },
+    {
+      "id": "duration",
+      "topic": "Time needed for measurable hypertrophy",
+      "evidence_level": "B",
+      "rule": "Training studies typically assess hypertrophy across multiple weeks; a 2024 quadriceps ultrasound meta-analysis found significant effects in subgroup analysis after eight weeks.",
+      "engine_use": "Daily growth is never reported. Confidence rises with 4–8+ weeks of consistent data.",
+      "source": {
+        "title": "Effect of resistance training on quadriceps femoris muscle thickness obtained by ultrasound",
+        "year": 2024,
+        "pmid": "38876638",
+        "doi": "10.1016/j.jbmt.2024.02.007"
+      }
+    },
+    {
+      "id": "acsm_2026_overview",
+      "topic": "Resistance training prescription overview",
+      "evidence_level": "A+",
+      "rule": "ACSM 2026 overview of 137 systematic reviews (>30,000 participants): hypertrophy is most consistently enhanced by higher weekly volume; strength favors heavier loads and complete ROM; failure, equipment type and complex periodization are not mandatory for adaptation.",
+      "engine_use": "Top-level guardrails for exercise selection, volume and progression; prevents novelty/randomness from outranking continuity and dose.",
+      "source": {
+        "title": "Resistance Training Prescription for Muscle Function, Hypertrophy, and Physical Performance in Healthy Adults: An Overview of Reviews",
+        "year": 2026,
+        "pmid": "41843416",
+        "doi": "10.1249/MSS.0000000000003897"
+      }
+    },
+    {
+      "id": "dose_response_2026",
+      "topic": "Weekly volume and frequency dose-response",
+      "evidence_level": "A",
+      "rule": "Recent meta-regression supports a positive dose-response between weekly resistance-training volume and hypertrophy/strength with diminishing returns; frequency mainly helps distribute productive volume rather than acting as an independent magic variable.",
+      "engine_use": "Uses ~10 weekly sets per muscle as a reference, a productive floor and a soft upper guardrail instead of unlimited linear volume scoring.",
+      "source": {
+        "title": "The Resistance Training Dose Response: Meta-Regressions Exploring the Effects of Weekly Volume and Frequency on Muscle Hypertrophy and Strength Gains",
+        "year": 2026,
+        "pmid": "41343037",
+        "doi": "10.1007/s40279-025-02344-w"
+      }
+    },
+    {
+      "id": "proximity_failure_2023",
+      "topic": "Failure vs non-failure",
+      "evidence_level": "A",
+      "rule": "Momentary muscular failure is not required for hypertrophy. Training sufficiently close to failure can be productive while avoiding unnecessary fatigue from forcing every set to failure.",
+      "engine_use": "Default hypertrophy work is biased toward roughly 1-3 RIR; failure is optional and fatigue-costed.",
+      "source": {
+        "title": "Influence of Resistance Training Proximity-to-Failure on Skeletal Muscle Hypertrophy: A Systematic Review with Meta-analysis",
+        "year": 2023,
+        "pmid": "36334240",
+        "doi": "10.1007/s40279-022-01784-y"
+      }
+    },
+    {
+      "id": "rir_dose_2024",
+      "topic": "RIR dose-response",
+      "evidence_level": "A",
+      "rule": "Meta-regression indicates muscle hypertrophy tends to improve as sets terminate closer to failure, although the relationship is not precise enough to justify a single mandatory RIR target for all work.",
+      "engine_use": "Exercise quality score rewards productive proximity-to-failure without demanding 0 RIR.",
+      "source": {
+        "title": "Exploring the Dose-Response Relationship Between Estimated Resistance Training Proximity to Failure, Strength Gain, and Muscle Hypertrophy",
+        "year": 2024,
+        "pmid": "38970765",
+        "doi": "10.1007/s40279-024-02069-2"
+      }
+    },
+    {
+      "id": "load_spectrum",
+      "topic": "Training load spectrum",
+      "evidence_level": "A",
+      "rule": "Hypertrophy can occur across a broad loading range when sets are sufficiently challenging, while higher loads are more specific for maximal strength gains.",
+      "engine_use": "Keeps hypertrophy exercise choice flexible while prioritizing >=80% 1RM-like loading for maximal-strength objectives.",
+      "source": {
+        "title": "Muscle hypertrophy and strength gains after resistance training with different volume-matched loads: a systematic review and meta-analysis",
+        "year": 2022,
+        "pmid": "35015560",
+        "doi": "10.1139/apnm-2021-0515"
+      }
+    },
+    {
+      "id": "rom_2021",
+      "topic": "Range of motion",
+      "evidence_level": "A",
+      "rule": "Full ROM generally supports strength and lower-body hypertrophy; long-muscle-length work may offer regional hypertrophy advantages but the magnitude and generalizability remain uncertain.",
+      "engine_use": "Defaults dynamic hypertrophy movements to controlled full ROM unless skill, pain or anatomy requires another range.",
+      "source": {
+        "title": "Effects of range of motion on resistance training adaptations: A systematic review and meta-analysis",
+        "year": 2021,
+        "pmid": "34170576"
+      }
+    },
+    {
+      "id": "frequency_distribution",
+      "topic": "Training frequency",
+      "evidence_level": "A",
+      "rule": "When weekly volume is equated, hypertrophy differences between frequencies are small; frequency is best used to distribute volume, manage fatigue and maintain set quality.",
+      "engine_use": "Prefers repeated exposures when useful but does not score frequency independently of volume and recovery.",
+      "source": {
+        "title": "How many times per week should a muscle be trained to maximize muscle hypertrophy?",
+        "year": 2019,
+        "pmid": "30558493"
+      }
+    },
+    {
+      "id": "periodization_strength",
+      "topic": "Periodization",
+      "evidence_level": "A",
+      "rule": "Periodization can improve maximal strength compared with non-periodized training when volume is equated, especially in trained individuals; hypertrophy differences are less consistent.",
+      "engine_use": "Uses phases to organize strength/skill emphasis and fatigue, not as a guaranteed hypertrophy multiplier.",
+      "source": {
+        "title": "Effects of Periodization on Strength and Muscle Hypertrophy in Volume-Equated Resistance Training Programs",
+        "year": 2022,
+        "pmid": "35044672",
+        "doi": "10.1007/s40279-021-01636-1"
+      }
+    },
+    {
+      "id": "calisthenics_specificity",
+      "topic": "Calisthenics / isometric specificity",
+      "evidence_level": "B",
+      "rule": "Calisthenics skill and isometric strength are highly task-specific; straight-arm holds and ring skills should be practiced fresh and progressed by quality, leverage, hold time and/or external load rather than by bodybuilding volume alone.",
+      "engine_use": "Skill elements are ordered before fatigue-heavy hypertrophy work; static quality deterioration stops progression before junk volume accumulates.",
+      "source": {
+        "title": "Movement-specific evidence is maintained in movement-science-evidence.json",
+        "year": 2026
+      }
+    }
+  ],
+  "measurement_protocols": {
+    "circumference": {
+      "confidence": "medium-low for local muscle size",
+      "instructions": [
+        "Measure at the same anatomical landmark each time.",
+        "Use the same time of day and similar hydration/feeding state.",
+        "Avoid measuring immediately after training or with a pump.",
+        "Keep tape tension consistent and the muscle state consistent (relaxed or flexed).",
+        "Take 3 measurements and store the median.",
+        "Prefer weekly or biweekly measurements; interpret 4–8 week trends rather than day-to-day change."
+      ]
+    },
+    "body_weight": {
+      "confidence": "supporting evidence only",
+      "instructions": [
+        "Morning, after bathroom, before food/drink when possible.",
+        "Use 7-day rolling average rather than a single measurement."
+      ]
+    },
+    "performance": {
+      "confidence": "indirect",
+      "instructions": [
+        "Track load, reps, RIR and static-hold quality.",
+        "Improving performance supports adaptation but does not prove local hypertrophy."
+      ]
+    },
+    "ultrasound": {
+      "confidence": "high if standardized",
+      "instructions": [
+        "Use the same site, posture, device/settings and preferably the same operator.",
+        "Avoid post-exercise swelling when comparing scans."
+      ]
+    }
+  },
+  "engine": {
+    "name": "Evidence-Weighted Hypertrophy Trend Engine",
+    "outputs": [
+      "training_stimulus",
+      "adaptation_environment",
+      "expected_adaptation_trend",
+      "measured_growth",
+      "confidence"
+    ],
+    "important": "Expected adaptation trend is a decision-support score, not a biological percentage of muscle growth.",
+    "heuristic_weights_note": "The exact combination weights are engineering heuristics because research does not provide a validated equation that converts sleep, protein, RIR and sets into an individual's percentage muscle growth.",
+    "training_policy_version": "9.2",
+    "policy_file": "sports-science-policy.js",
+    "evidence_refresh": "2026-09-15",
+    "guardrails": {
+      "hypertrophy_weekly_sets_reference": 10,
+      "hypertrophy_productive_min": 6,
+      "hypertrophy_soft_upper": 18,
+      "hypertrophy_rir_default": [
+        1,
+        3
+      ],
+      "strength_heavy_load_pct_1rm": 80,
+      "skill_order": "first_when_fresh",
+      "recovery_inputs": [
+        "elapsed_time",
+        "sleep",
+        "protein",
+        "energy",
+        "hydration",
+        "pain",
+        "recent_local_load"
+      ]
+    },
+    "program_engine_version": "9.2",
+    "program_continuity_rule": "Exercise identity/order stays stable inside the programmed microcycle; daily readiness changes dose before changing exercise identity."
+  }
+}

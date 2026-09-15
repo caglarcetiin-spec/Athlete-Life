@@ -1,0 +1,20 @@
+{
+  "version": "7.14",
+  "principle": "History-first load prescription; conservative profile baseline only when same-movement history is unavailable.",
+  "units": {
+    "DB Hammer Curl": "kg / dumbbell",
+    "DB Lateral Raise": "kg / dumbbell",
+    "Weighted Pull-Up": "kg external belt load",
+    "Weighted Ring Dip": "kg external belt load",
+    "OHP": "kg total load",
+    "RDL": "kg total load",
+    "EZ-Bar Curl": "kg total load"
+  },
+  "progression": {
+    "increase": "If planned sets reach the top of the target rep range with RIR >= 2, use the movement-specific smallest practical increment.",
+    "hold": "If the target range is achieved with RIR 1-2, keep the current load and improve repeatability.",
+    "reduce": "If at least half of performed sets fall below the target minimum or RIR reaches 0, reduce roughly 5-10% and restore quality.",
+    "readiness": "Readiness below 68 applies a conservative load reduction; pain/red-flag logic can suppress load prescription."
+  },
+  "baseline_warning": "Bodyweight ratios are app calibration heuristics, not normative strength standards. They are intentionally labeled lower confidence and are replaced by real personal history after the first logged sessions."
+}

@@ -1,0 +1,41 @@
+{
+  "version": "2026.09",
+  "engine": "Rest Interval Engine v1",
+  "principles": [
+    {
+      "id": "grgic_strength_2018",
+      "title": "Rest interval duration and strength adaptations",
+      "source": "Grgic et al., Sports Medicine, 2018",
+      "pmid": "28933024",
+      "summary": "Systematic review: trained individuals generally appear to benefit from longer inter-set rest (>2 min) when the goal is to maximize strength, although meaningful gains can occur with shorter rests."
+    },
+    {
+      "id": "schoenfeld_2016",
+      "title": "Longer inter-set rest in resistance-trained men",
+      "source": "Schoenfeld et al., Journal of Strength and Conditioning Research, 2016",
+      "pmid": "26605807",
+      "doi": "10.1519/JSC.0000000000001272",
+      "summary": "In a small randomized trial of trained men, 3-min rest produced greater strength gains than 1-min rest and some hypertrophy outcomes also favored the longer-rest condition."
+    },
+    {
+      "id": "grgic_hypertrophy_2017",
+      "title": "Short vs long rest and hypertrophy",
+      "source": "Grgic et al., European Journal of Sport Science, 2017",
+      "pmid": "28641044",
+      "summary": "Systematic review found no evidence that short rest is required for hypertrophy; longer rest can help preserve training volume."
+    },
+    {
+      "id": "longo_2022",
+      "title": "Volume load versus rest interval",
+      "source": "Longo et al., Journal of Strength and Conditioning Research, 2022",
+      "pmid": "35622106",
+      "summary": "When volume load was considered, maintaining load/volume appeared more important than using a specific rest interval. Rest is therefore treated as a performance-preservation tool, not a magic hypertrophy variable."
+    }
+  ],
+  "engineering_notes": [
+    "Rest targets are evidence-informed heuristics, not a validated personal prescription.",
+    "The engine gives ranges rather than a single mandatory number.",
+    "Longer rest is not automatically penalized when it preserves quality; excessively short rest is flagged when performance drops.",
+    "Calisthenics static-skill rest recommendations are extrapolated from strength/power recovery principles because direct high-quality normative research for advanced planche/front-lever training is limited."
+  ]
+}

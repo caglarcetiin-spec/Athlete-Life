@@ -1,0 +1,71 @@
+{
+  "version": "2026.09",
+  "principles": [
+    {
+      "id": "isometric_review_2019",
+      "title": "Isometric training and long-term adaptations",
+      "pmid": "30580468",
+      "doi": "10.1111/sms.13375",
+      "summary": "Systematic review reports strength, neuromuscular and hypertrophy adaptations from isometric training; outcomes depend on muscle length, intensity and intent.",
+      "use": [
+        "static_hold_interpretation",
+        "isometric_adaptation"
+      ]
+    },
+    {
+      "id": "isometric_meta_2025",
+      "title": "Isometric vs dynamic resistance training",
+      "pmid": "40817007",
+      "doi": "10.1016/j.jsams.2025.07.011",
+      "summary": "Meta-analysis supports task specificity: isometric training is particularly effective for isometric strength, while transfer across contraction modes is incomplete.",
+      "use": [
+        "static_skill_specificity"
+      ]
+    },
+    {
+      "id": "ring_dip_emg",
+      "title": "Bench, bar and ring dips",
+      "pmid": "36293792",
+      "doi": "10.3390/ijerph192013211",
+      "summary": "Ring dips showed high upper-limb activation; several muscles were more activated on rings than bench dips and some exceeded bar dips.",
+      "use": [
+        "ring_dip_muscle_map"
+      ]
+    },
+    {
+      "id": "ring_muscle_up_emg",
+      "title": "Ring vs bar muscle-up muscle activity",
+      "pmid": "38288256",
+      "summary": "Ring muscle-up produced greater activation in several upper-limb muscles during pull and push phases compared with bar muscle-up.",
+      "use": [
+        "ring_muscle_up_profile"
+      ]
+    },
+    {
+      "id": "unstable_pushup",
+      "title": "Push-ups under stable and unstable conditions",
+      "pmid": "29541105",
+      "summary": "Suspension instability altered stabilizer recruitment, including serratus/core-related activation; instability does not uniformly increase every muscle.",
+      "use": [
+        "ring_pushup_stability"
+      ]
+    },
+    {
+      "id": "ring_static_emg",
+      "title": "Static strength elements on rings",
+      "pmid": "35323611",
+      "doi": "10.3390/jfmk7010028",
+      "summary": "Static ring strength elements showed high muscular demand, stabilization requirements and EMG fatigue changes over short holds.",
+      "use": [
+        "ring_static_control",
+        "static_fatigue"
+      ]
+    }
+  ],
+  "limitations": [
+    "Movement-specific muscle maps combine direct evidence where available with biomechanics/anatomical inference where direct studies do not exist.",
+    "The app never treats muscle coefficients as exact EMG percentages or exact muscle-growth percentages.",
+    "Static hold seconds are converted into bounded stimulus-equivalent units for trend tracking; this is an engineering heuristic, not a validated physiological equation.",
+    "Muscle-up is modeled as a mixed explosive skill/strength movement; low-rep power work should not be interpreted as equivalent to bodybuilding volume."
+  ]
+}

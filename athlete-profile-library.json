@@ -1,0 +1,133 @@
+{
+  "version": "2026.09",
+  "philosophy": {
+    "tiers": [
+      "Foundation",
+      "Developing",
+      "Intermediate",
+      "Advanced",
+      "Elite Skill Tier"
+    ],
+    "note": "Tiers are Athlete Life OS performance bands, not population percentiles or claims of competitive elite status.",
+    "confidence": "Each domain level is shown separately from data confidence."
+  },
+  "sources": [
+    {
+      "id": "acsm2026",
+      "title": "ACSM Position Stand: Resistance Training Prescription for Muscle Function, Hypertrophy, and Physical Performance in Healthy Adults",
+      "year": 2026,
+      "pmid": "41843416",
+      "use": "Strength/power testing context and progressive resistance-training interpretation."
+    },
+    {
+      "id": "pullup1rm",
+      "title": "Relationship of lat-pull repetitions and pull-ups to maximal lat-pull and pull-up strength",
+      "year": 2009,
+      "pmid": "19387371",
+      "use": "Supports loaded pull-up 1RM/relative-load testing as a meaningful upper-body strength measure."
+    },
+    {
+      "id": "cooperReliability",
+      "title": "Validity and reliability analysis of Cooper's 12-minute run and the multistage shuttle run in healthy adults",
+      "year": 2011,
+      "pmid": "20647946",
+      "use": "Field aerobic tests are practical/reliable but have individual prediction error."
+    },
+    {
+      "id": "cooper2026",
+      "title": "Cooper's 12 Minute Run Systematically Underestimates VO2max in Collegiate Team Sport Athletes",
+      "year": 2026,
+      "pmid": "42516264",
+      "use": "Cooper is treated as screening/performance evidence rather than exact VO2max truth."
+    },
+    {
+      "id": "cmj",
+      "title": "Assessment of Countermovement Jump: What Should We Report?",
+      "year": 2023,
+      "pmid": "36676138",
+      "use": "CMJ performance variables can be reliable when test protocol is standardized."
+    },
+    {
+      "id": "wa2025",
+      "title": "World Athletics Scoring Tables of Athletics",
+      "year": 2025,
+      "url": "https://worldathletics.org/about-iaaf/documents/technical-information",
+      "use": "Official athletics performance-comparison framework; app does not currently claim WA points unless a table is explicitly encoded."
+    }
+  ],
+  "strengthBands": {
+    "weighted_pullup_total_bw_ratio": [
+      1.05,
+      1.2,
+      1.4,
+      1.6
+    ],
+    "weighted_dip_total_bw_ratio": [
+      1.1,
+      1.3,
+      1.55,
+      1.85
+    ],
+    "bench_bw_ratio": [
+      0.75,
+      1.0,
+      1.25,
+      1.5
+    ],
+    "ohp_bw_ratio": [
+      0.45,
+      0.6,
+      0.8,
+      1.0
+    ],
+    "squat_bw_ratio": [
+      1.0,
+      1.35,
+      1.7,
+      2.0
+    ],
+    "deadlift_bw_ratio": [
+      1.2,
+      1.6,
+      2.0,
+      2.4
+    ]
+  },
+  "runningBands": {
+    "5k_min": [
+      35,
+      30,
+      25,
+      20
+    ],
+    "10k_min": [
+      75,
+      62,
+      52,
+      42
+    ],
+    "half_min": [
+      165,
+      135,
+      115,
+      95
+    ],
+    "marathon_min": [
+      360,
+      300,
+      255,
+      210
+    ],
+    "cooper_m": [
+      1800,
+      2200,
+      2600,
+      3000
+    ]
+  },
+  "notes": [
+    "Strength and running bands are transparent Athlete OS heuristics for within-app classification. They are not medical norms.",
+    "Calisthenics classification is movement-difficulty based because robust population normative datasets for advanced static skills are not available.",
+    "Competitive/elite status in a sport should be based on formal competition standards, federation rankings or official scoring systems, not this app alone."
+  ]
+}

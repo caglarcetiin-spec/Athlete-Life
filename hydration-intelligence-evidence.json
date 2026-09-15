@@ -1,0 +1,22 @@
+{
+  "version": "7.19",
+  "sources": [
+    {
+      "name": "ACSM Position Stand: Exercise and Fluid Replacement",
+      "pmid": "17277604",
+      "doi": "10.1249/mss.0b013e31802ca597",
+      "principle": "Exercise fluid replacement should be individualized because sweat rate and electrolyte loss vary."
+    },
+    {
+      "name": "Dietary Reference Intakes for Water, Potassium, Sodium, Chloride, and Sulfate",
+      "organization": "Institute of Medicine / National Academies",
+      "doi": "10.17226/10925",
+      "principle": "Total water includes drinking water, beverages and food moisture; AI is not an exact individual requirement."
+    }
+  ],
+  "limits": [
+    "30–40 mL/kg is an app coaching range, not a medical requirement.",
+    "Without sweat-rate data the exercise adjustment remains deliberately broad.",
+    "No dehydration percentage or exact missing liters are inferred."
+  ]
+}

@@ -1,0 +1,86 @@
+window.CAPABILITY_CATALOG={
+  "calisthenics":[
+    {"id":"muscle_up","name":"Strict Bar Muscle-Up","metric":"reps","difficulty":3,"group":"Muscle-Up"},
+    {"id":"explosive_muscle_up","name":"Explosive Bar Muscle-Up","metric":"reps","difficulty":4,"group":"Muscle-Up"},
+    {"id":"slow_muscle_up","name":"Slow / No-Kip Bar Muscle-Up","metric":"reps","difficulty":5,"group":"Muscle-Up"},
+    {"id":"weighted_muscle_up","name":"Weighted Bar Muscle-Up","metric":"load_reps","difficulty":6,"group":"Muscle-Up"},
+    {"id":"ring_muscle_up","name":"Strict Ring Muscle-Up","metric":"reps","difficulty":4,"group":"Muscle-Up"},
+    {"id":"weighted_ring_muscle_up","name":"Weighted Ring Muscle-Up","metric":"load_reps","difficulty":6,"group":"Muscle-Up"},
+
+    {"id":"pullup","name":"Strict Pull-Up","metric":"reps","difficulty":1,"group":"Pull"},
+    {"id":"chest_to_bar","name":"Chest-to-Bar Pull-Up","metric":"reps","difficulty":2,"group":"Pull"},
+    {"id":"weighted_pullup","name":"Weighted Pull-Up","metric":"load_reps","difficulty":3,"group":"Pull"},
+    {"id":"one_arm_pullup","name":"One-Arm Pull-Up","metric":"reps","difficulty":5,"group":"Pull"},
+
+    {"id":"dip","name":"Parallel Bar Dip","metric":"reps","difficulty":1,"group":"Push"},
+    {"id":"weighted_dip","name":"Weighted Dip","metric":"load_reps","difficulty":3,"group":"Push"},
+    {"id":"handstand","name":"Freestanding Handstand","metric":"seconds","difficulty":2,"group":"Handstand / Push"},
+    {"id":"hspu","name":"Wall Handstand Push-Up","metric":"reps","difficulty":3,"group":"Handstand / Push"},
+    {"id":"free_hspu","name":"Freestanding Handstand Push-Up","metric":"reps","difficulty":5,"group":"Handstand / Push"},
+
+    {"id":"l_sit","name":"L-Sit","metric":"seconds","difficulty":2,"group":"Core / Static"},
+    {"id":"v_sit","name":"V-Sit","metric":"seconds","difficulty":4,"group":"Core / Static"},
+    {"id":"back_lever","name":"Full Back Lever","metric":"seconds","difficulty":3,"group":"Lever / Static"},
+    {"id":"front_lever","name":"Full Front Lever","metric":"seconds","difficulty":4,"group":"Lever / Static"},
+    {"id":"front_lever_pull","name":"Front Lever Pull / Raise","metric":"reps","difficulty":5,"group":"Lever / Static"},
+    {"id":"tuck_planche","name":"Tuck Planche","metric":"seconds","difficulty":2,"group":"Planche"},
+    {"id":"adv_tuck_planche","name":"Advanced Tuck Planche","metric":"seconds","difficulty":3,"group":"Planche"},
+    {"id":"straddle_planche","name":"Straddle Planche","metric":"seconds","difficulty":4,"group":"Planche"},
+    {"id":"full_planche","name":"Full Planche","metric":"seconds","difficulty":5,"group":"Planche"},
+    {"id":"planche_pushup","name":"Planche Push-Up","metric":"reps","difficulty":6,"group":"Planche"},
+    {"id":"human_flag","name":"Human Flag","metric":"seconds","difficulty":4,"group":"Other Skills"},
+    {"id":"dragon_flag","name":"Dragon Flag","metric":"reps","difficulty":2,"group":"Core / Static"},
+
+    {"id":"ring_false_grip_hang","name":"False-Grip Hang","metric":"seconds","difficulty":1,"group":"Rings / Gymnastics"},
+    {"id":"ring_support","name":"Ring Support Hold","metric":"seconds","difficulty":1,"group":"Rings / Gymnastics"},
+    {"id":"ring_rto_support","name":"RTO Support Hold","metric":"seconds","difficulty":2,"group":"Rings / Gymnastics"},
+    {"id":"ring_pullup","name":"Strict Ring Pull-Up","metric":"reps","difficulty":2,"group":"Rings / Gymnastics"},
+    {"id":"ring_arched_pullup","name":"Archer Ring Pull-Up","metric":"reps","difficulty":4,"group":"Rings / Gymnastics"},
+    {"id":"ring_row","name":"Ring Row","metric":"reps","difficulty":1,"group":"Rings / Gymnastics"},
+    {"id":"ring_dip","name":"Strict Ring Dip","metric":"reps","difficulty":2,"group":"Rings / Gymnastics"},
+    {"id":"weighted_ring_dip","name":"Weighted Ring Dip","metric":"load_reps","difficulty":4,"group":"Rings / Gymnastics"},
+    {"id":"ring_l_sit","name":"Ring L-Sit","metric":"seconds","difficulty":3,"group":"Rings / Gymnastics"},
+    {"id":"skin_the_cat","name":"Skin-the-Cat","metric":"reps","difficulty":2,"group":"Rings / Gymnastics"},
+    {"id":"german_hang","name":"German Hang","metric":"seconds","difficulty":2,"group":"Rings / Gymnastics"},
+    {"id":"ring_front_lever","name":"Ring Front Lever","metric":"seconds","difficulty":5,"group":"Rings / Gymnastics"},
+    {"id":"ring_back_lever","name":"Ring Back Lever","metric":"seconds","difficulty":4,"group":"Rings / Gymnastics"},
+    {"id":"ring_handstand","name":"Ring Handstand","metric":"seconds","difficulty":5,"group":"Rings / Gymnastics"},
+    {"id":"ring_hspu","name":"Ring Handstand Push-Up","metric":"reps","difficulty":7,"group":"Rings / Gymnastics"},
+    {"id":"iron_cross","name":"Iron Cross","metric":"seconds","difficulty":7,"group":"Rings / Gymnastics"},
+    {"id":"maltese","name":"Maltese","metric":"seconds","difficulty":8,"group":"Rings / Gymnastics"}
+  ],
+  "strength":[
+    {"id":"bench","name":"Bench Press","type":"barbell"},{"id":"ohp","name":"Overhead Press","type":"barbell"},{"id":"squat","name":"Back Squat","type":"barbell"},{"id":"front_squat","name":"Front Squat","type":"barbell"},{"id":"deadlift","name":"Deadlift","type":"barbell"},{"id":"rdl","name":"Romanian Deadlift","type":"barbell"},{"id":"weighted_pullup","name":"Weighted Pull-Up","type":"bodyweight_plus"},{"id":"weighted_dip","name":"Weighted Dip","type":"bodyweight_plus"},{"id":"barbell_row","name":"Barbell Row","type":"barbell"},{"id":"bulgarian","name":"Bulgarian Split Squat","type":"external"}
+  ],
+  "running":[{"id":"1k","name":"1 km","distanceKm":1},{"id":"3k","name":"3 km","distanceKm":3},{"id":"5k","name":"5 km","distanceKm":5},{"id":"10k","name":"10 km","distanceKm":10},{"id":"half","name":"Half Marathon","distanceKm":21.0975},{"id":"marathon","name":"Marathon","distanceKm":42.195},{"id":"custom","name":"Custom Distance","distanceKm":null}],
+  "power":[{"id":"vertical_jump","name":"Vertical / CMJ","unit":"cm"},{"id":"broad_jump","name":"Standing Broad Jump","unit":"cm"},{"id":"sprint10","name":"10 m Sprint","unit":"sec"},{"id":"sprint30","name":"30 m Sprint","unit":"sec"},{"id":"cooper","name":"Cooper 12 min","unit":"m"},{"id":"max_pullups","name":"Max Strict Pull-Up","unit":"reps"},{"id":"max_pushups","name":"Max Push-Up","unit":"reps"},{"id":"burpee5","name":"5 min Burpee","unit":"reps"}],
+  "balance_control":[
+    {"id":"single_leg_open","name":"Single-Leg Balance · Eyes Open","unit":"sec","higher":true,"bands":[20,40,60,90]},
+    {"id":"single_leg_closed","name":"Single-Leg Balance · Eyes Closed","unit":"sec","higher":true,"bands":[5,10,20,30]},
+    {"id":"handstand_control","name":"Freestanding Handstand Control","unit":"sec","higher":true,"bands":[10,20,40,60]},
+    {"id":"ring_support_control","name":"Ring Support Stability","unit":"sec","higher":true,"bands":[15,30,45,60]},
+    {"id":"y_balance","name":"Y-Balance Composite","unit":"%","higher":true,"bands":[80,90,95,100]}
+  ],
+  "work_capacity":[
+    {"id":"max_pullups_wc","name":"Max Strict Pull-Up","unit":"reps","higher":true,"bands":[5,10,15,22]},
+    {"id":"max_pushups_wc","name":"Max Push-Up","unit":"reps","higher":true,"bands":[15,30,45,60]},
+    {"id":"burpee5_wc","name":"5 min Burpee","unit":"reps","higher":true,"bands":[35,50,65,80]},
+    {"id":"ring_dip_density10","name":"10 min Ring Dip Density","unit":"reps","higher":true,"bands":[20,35,50,65]},
+    {"id":"pullup_density10","name":"10 min Pull-Up Density","unit":"reps","higher":true,"bands":[20,35,50,70]}
+  ],
+  "mobility":[
+    {"id":"ankle_knee_wall","name":"Ankle Knee-to-Wall","unit":"cm","higher":true,"bands":[5,8,10,12]},
+    {"id":"shoulder_flexion","name":"Active Shoulder Flexion","unit":"deg","higher":true,"bands":[150,165,175,180]},
+    {"id":"active_straight_leg","name":"Active Straight-Leg Raise","unit":"deg","higher":true,"bands":[60,75,90,100]},
+    {"id":"wrist_extension","name":"Loaded Wrist Extension","unit":"deg","higher":true,"bands":[55,65,75,85]},
+    {"id":"deep_squat_hold","name":"Deep Squat Hold","unit":"sec","higher":true,"bands":[30,60,120,180]},
+    {"id":"german_hang_mobility","name":"German Hang Comfortable Hold","unit":"sec","higher":true,"bands":[10,20,30,45]}
+  ],
+  "endurance":[
+    {"id":"cooper_endurance","name":"Cooper 12 min Distance","unit":"m","higher":true,"bands":[1800,2200,2600,3000]},
+    {"id":"plank_hold","name":"Front Plank Hold","unit":"sec","higher":true,"bands":[60,120,180,240]},
+    {"id":"dead_hang","name":"Dead Hang","unit":"sec","higher":true,"bands":[30,60,90,120]},
+    {"id":"wall_sit","name":"Wall Sit","unit":"sec","higher":true,"bands":[60,120,180,240]},
+    {"id":"zone2_duration","name":"Continuous Zone 2 Duration","unit":"min","higher":true,"bands":[20,30,45,60]}
+  ]
+};

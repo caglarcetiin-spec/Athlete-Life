@@ -1,0 +1,323 @@
+
+(function(){
+"use strict";
+
+const APP_VERSION="10.0.0";
+const SCHEMA_VERSION=2;
+const VAULT_DB="AthleteLifeOSVault";
+const VAULT_STORE="snapshots";
+const PHOTO_DB="AthleteLifeOSPhotos";
+const PHOTO_STORE="checkins";
+const LAST_BACKUP_KEY="athleteLifeOSLastPortableBackup";
+let pendingImport=null,autoCheckpointTimer=null,lastNoteSave=0;
+
+function status(text,bad=false){
+ const el=document.getElementById("backupStatus");if(el){el.textContent=text;el.classList.toggle("bad",bad)}
+}
+function downloadBlob(content,name,type="application/json"){
+ const blob=new Blob([content],{type}),url=URL.createObjectURL(blob),a=document.createElement("a");
+ a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+function stableStringify(obj){
+ if(obj===null||typeof obj!=="object")return JSON.stringify(obj);
+ if(Array.isArray(obj))return "["+obj.map(stableStringify).join(",")+"]";
+ return "{"+Object.keys(obj).sort().map(k=>JSON.stringify(k)+":"+stableStringify(obj[k])).join(",")+"}";
+}
+async function sha256(obj){
+ if(!crypto?.subtle)return null;
+ const bytes=new TextEncoder().encode(stableStringify(obj));
+ const hash=await crypto.subtle.digest("SHA-256",bytes);
+ return Array.from(new Uint8Array(hash)).map(b=>b.toString(16).padStart(2,"0")).join("");
+}
+function counts(data,photos=[]){
+ const training=Object.values(data?.trainingLogs||{}).reduce((n,x)=>n+(x?.length||0),0);
+ const foods=Object.values(data?.foodLogs||{}).reduce((n,x)=>n+(x?.length||0),0);
+ return {
+  days:Object.keys(data?.daily||{}).length,
+  training,
+  foods,
+  measurements:(data?.bodyMeasurements||[]).length,
+  plans:Object.keys(data?.planHistory||{}).length,
+  adherence:Object.keys(data?.adherencePlans||{}).length,
+  photos:photos?.length||0
+ };
+}
+function countCards(c){
+ return [
+  ["Gün",c.days],["Antrenman",c.training],["Besin Kaydı",c.foods],["Ölçüm",c.measurements],
+  ["Plan",c.plans],["Adherence",c.adherence],["Foto",c.photos]
+ ];
+}
+function renderSummary(){
+ const el=document.getElementById("vaultSummary");if(!el)return;
+ const c=counts(db,[]);
+ el.innerHTML=countCards(c).slice(0,4).map(x=>`<div class="mini"><span>${x[0]}</span><strong>${x[1]}</strong></div>`).join("");
+ const badge=document.getElementById("vaultHealthBadge");
+ if(badge){badge.textContent="Veri hazır · Schema "+SCHEMA_VERSION;badge.className="plan-badge"}
+ const last=localStorage.getItem(LAST_BACKUP_KEY),txt=document.getElementById("vaultLastBackupText");
+ if(txt)txt.textContent=last?`Son dış yedek: ${new Date(last).toLocaleString("tr-TR")}`:"Henüz v6.7 portable yedek alınmadı.";
+}
+function openIDB(name,version,upgrade){
+ return new Promise((res,rej)=>{
+  const r=indexedDB.open(name,version);r.onupgradeneeded=()=>upgrade?.(r.result);r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);
+ });
+}
+async function vaultDB(){
+ return openIDB(VAULT_DB,1,d=>{if(!d.objectStoreNames.contains(VAULT_STORE))d.createObjectStore(VAULT_STORE,{keyPath:"id"})});
+}
+async function photoDB(){
+ return openIDB(PHOTO_DB,1,d=>{if(!d.objectStoreNames.contains(PHOTO_STORE))d.createObjectStore(PHOTO_STORE,{keyPath:"id"})});
+}
+function idbGetAll(dbp,store){
+ return new Promise((res,rej)=>{
+  const tx=dbp.transaction(store,"readonly"),r=tx.objectStore(store).getAll();r.onsuccess=()=>res(r.result||[]);r.onerror=()=>rej(r.error);
+ });
+}
+function idbPutAll(dbp,store,rows,clearFirst=false){
+ return new Promise((res,rej)=>{
+  const tx=dbp.transaction(store,"readwrite"),s=tx.objectStore(store);
+  if(clearFirst)s.clear();(rows||[]).forEach(x=>s.put(x));
+  tx.oncomplete=()=>res();tx.onerror=()=>rej(tx.error);
+ });
+}
+async function getPhotos(){
+ try{return await idbGetAll(await photoDB(),PHOTO_STORE)}catch(e){console.warn("Photo backup unavailable",e);return []}
+}
+async function makePayload(includePhotos=true){
+ const photos=includePhotos?await getPhotos():[];
+ const content={
+  app:"Athlete Life OS",
+  format:"alos-portable-backup",
+  schemaVersion:SCHEMA_VERSION,
+  appVersion:APP_VERSION,
+  exportedAt:new Date().toISOString(),
+  device:{userAgent:navigator.userAgent,timezone:Intl.DateTimeFormat().resolvedOptions().timeZone||null},
+  data:JSON.parse(JSON.stringify(db)),
+  events:window.AthleteEventStore?.load?.()||null,
+  photos:photos
+ };
+ const integrity=await sha256(content);
+ return {...content,integrity:{algorithm:integrity?"SHA-256":"unavailable",sha256:integrity}};
+}
+async function exportBackup(full){
+ status(full?"Tam yedek hazırlanıyor…":"Veri yedeği hazırlanıyor…");
+ try{
+  window.ALOSFlushPendingUIState?.("pre-backup-flush");
+  const payload=await makePayload(full),stamp=todayKey(),kind=full?"FULL":"DATA";
+  const backupAt=new Date().toISOString();
+  try{
+    db.meta={...(db.meta||{}),lastBackupAt:backupAt};
+    window.ALOSPersistence?.saveSnapshot?.(db,full?"full-backup":"data-backup");
+    await createCheckpoint(full?"portable full backup · last known good":"portable data backup · last known good");
+  }catch(e){console.warn("Internal backup mirror failed",e)}
+  downloadBlob(JSON.stringify(payload,null,2),`Athlete_Life_OS_${kind}_v${APP_VERSION}_${stamp}.alosbackup`,"application/json");
+  localStorage.setItem(LAST_BACKUP_KEY,backupAt);renderSummary();
+  status(`✓ ${full?"Tam":"Veri"} yedek indirildi${full?` · ${payload.photos.length} foto dahil`:""}`);
+ }catch(e){console.error(e);status("Yedek oluşturulamadı: "+e.message,true)}
+}
+function sanitizeIncoming(raw){
+ const payload=raw&&typeof raw==="object"?raw:null;if(!payload)throw new Error("Geçersiz JSON");
+ if(payload.format==="alos-portable-backup"){
+   if(!payload.data||typeof payload.data!=="object")throw new Error("Yedekte data bölümü yok");
+   return {kind:"portable",payload,data:payload.data,events:payload.events||null,photos:Array.isArray(payload.photos)?payload.photos:[]};
+ }
+ if(payload.app==="Athlete Life OS"&&payload.data&&typeof payload.data==="object"){
+   return {kind:"legacy",payload,data:payload.data,events:payload.events||null,photos:[]};
+ }
+ // Raw DB compatibility
+ if(payload.daily||payload.trainingLogs||payload.foodLogs||payload.settings){
+   return {kind:"raw",payload:{app:"Athlete Life OS",schemaVersion:0,appVersion:"unknown"},data:payload,events:null,photos:[]};
+ }
+ throw new Error("Athlete Life OS veri yapısı bulunamadı");
+}
+async function verifyImport(parsed){
+ if(parsed.kind!=="portable"||!parsed.payload.integrity?.sha256)return {state:"legacy",text:"Eski format · hash yok"};
+ const content={...parsed.payload};delete content.integrity;
+ const current=await sha256(content);
+ if(!current)return {state:"unknown",text:"Hash kontrolü desteklenmiyor"};
+ return current===parsed.payload.integrity.sha256?{state:"good",text:"SHA-256 doğrulandı"}:{state:"bad",text:"Bütünlük hatası"};
+}
+function mergeArray(existing=[],incoming=[],keyFn){
+ const map=new Map();existing.forEach(x=>map.set(keyFn(x),x));incoming.forEach(x=>map.set(keyFn(x),x));return [...map.values()];
+}
+function deepDateMap(a={},b={}){
+ return {...(a||{}),...(b||{})};
+}
+function mergeDB(current,incoming){
+ const out=JSON.parse(JSON.stringify(current||{})),inc=JSON.parse(JSON.stringify(incoming||{}));
+ const mapKeys=["daily","week","weekOptimizations","foodLogs","trainingLogs","social","water","waterLogs","scheduleByDate","planHistory","sessionFeedback","painLogs","futurePlans","adherencePlans","deviationReasons","gapReconciliation"];
+ mapKeys.forEach(k=>out[k]=deepDateMap(out[k],inc[k]));
+ if(inc.settings)out.settings={...(out.settings||{}),...inc.settings};
+ if(inc.meta)out.meta={...(out.meta||{}),...inc.meta};
+ if(Array.isArray(inc.bodyMeasurements))out.bodyMeasurements=mergeArray(out.bodyMeasurements||[],inc.bodyMeasurements,x=>`${x.date||""}|${x.weight||""}|${x.waist||""}|${x.armR||""}|${x.thighR||""}`);
+ if(Array.isArray(inc.capabilityRecords))out.capabilityRecords=mergeArray(out.capabilityRecords||[],inc.capabilityRecords,x=>String(x.id||`${x.domain}|${x.testId}|${x.date}|${x.value||x.load||x.minutes||""}`));
+ if(Array.isArray(inc.adHocSessions))out.adHocSessions=mergeArray(out.adHocSessions||[],inc.adHocSessions,x=>String(x.id||`${x.date}|${x.createdAt}|${x.structure}`));
+ if(Array.isArray(inc.guidedWorkoutHistory))out.guidedWorkoutHistory=mergeArray(out.guidedWorkoutHistory||[],inc.guidedWorkoutHistory,x=>String(x.id||`${x.targetDate}|${x.startedAt}|${x.archivedAt||""}`));
+ if(Array.isArray(inc.runs))out.runs=mergeArray(out.runs||[],inc.runs,x=>String(x.id||`${x.date||""}|${x.distanceKm||x.km||""}|${x.minutes||x.time||""}`));
+ if(Array.isArray(inc.photoProgress))out.photoProgress=mergeArray(out.photoProgress||[],inc.photoProgress,x=>String(x.id||`${x.date||""}|${x.createdAt||""}`));
+ if(Array.isArray(inc.generatedWeekPlan))out.generatedWeekPlan=inc.generatedWeekPlan;
+ if(inc.adaptiveModel&&typeof inc.adaptiveModel==="object")out.adaptiveModel={...(out.adaptiveModel||{}),...inc.adaptiveModel};
+ if(inc.lifecycle&&typeof inc.lifecycle==="object")out.lifecycle={...(out.lifecycle||{}),...inc.lifecycle,closedDays:deepDateMap(out.lifecycle?.closedDays,inc.lifecycle.closedDays),missedDays:[...new Set([...(out.lifecycle?.missedDays||[]),...(inc.lifecycle.missedDays||[])])],unverifiedDays:[...new Set([...(out.lifecycle?.unverifiedDays||[]),...(inc.lifecycle.unverifiedDays||[])])]};
+ if(inc.activeGuidedWorkout!=null && out.activeGuidedWorkout==null)out.activeGuidedWorkout=inc.activeGuidedWorkout;
+ // Singular user-model objects: imported values win because they represent explicit backup state.
+ ["characterData","characterOverrides","customFoods","responseModel","testingHistory"].forEach(k=>{if(inc[k]!=null)out[k]=inc[k]});
+ // Keep any future top-level keys instead of dropping them.
+ Object.keys(inc).forEach(k=>{if(out[k]===undefined)out[k]=inc[k]});
+ return out;
+}
+function normalizeForApp(incoming){
+ const x=JSON.parse(JSON.stringify(incoming||{}));
+ x.settings=x.settings||{};
+ x.daily=x.daily||{};x.week=x.week||{};x.weekOptimizations=x.weekOptimizations||{};x.foodLogs=x.foodLogs||{};x.trainingLogs=x.trainingLogs||{};
+ x.social=x.social||{};x.water=x.water||{};x.waterLogs=x.waterLogs||{};x.scheduleByDate=x.scheduleByDate||{};x.planHistory=x.planHistory||{};
+ x.sessionFeedback=x.sessionFeedback||{};x.painLogs=x.painLogs||{};x.futurePlans=x.futurePlans||{};
+ x.adherencePlans=x.adherencePlans||{};x.deviationReasons=x.deviationReasons||{};x.gapReconciliation=x.gapReconciliation||{};
+ x.bodyMeasurements=Array.isArray(x.bodyMeasurements)?x.bodyMeasurements:[];x.capabilityRecords=Array.isArray(x.capabilityRecords)?x.capabilityRecords:[];x.adHocSessions=Array.isArray(x.adHocSessions)?x.adHocSessions:[];
+ x.guidedWorkoutHistory=Array.isArray(x.guidedWorkoutHistory)?x.guidedWorkoutHistory:[];x.runs=Array.isArray(x.runs)?x.runs:[];x.photoProgress=Array.isArray(x.photoProgress)?x.photoProgress:[];x.generatedWeekPlan=Array.isArray(x.generatedWeekPlan)?x.generatedWeekPlan:[];
+ x.adaptiveModel=x.adaptiveModel||{};x.lifecycle=x.lifecycle||{};
+ x.meta={...(x.meta||{}),lastImportedBy:"9.3.0",lastImportAt:new Date().toISOString()};
+ return x;
+}
+async function createCheckpoint(reason="manual"){
+ const dbp=await vaultDB(),photos=await getPhotos(),snapshot={
+  id:Date.now(),createdAt:new Date().toISOString(),reason,appVersion:APP_VERSION,
+  data:JSON.parse(JSON.stringify(db)),events:window.AthleteEventStore?.load?.()||null,photos
+ };
+ await idbPutAll(dbp,VAULT_STORE,[snapshot],false);
+ // keep newest 6
+ const all=(await idbGetAll(dbp,VAULT_STORE)).sort((a,b)=>b.id-a.id);
+ if(all.length>6){
+  await new Promise((res,rej)=>{
+   const tx=dbp.transaction(VAULT_STORE,"readwrite"),s=tx.objectStore(VAULT_STORE);
+   all.slice(6).forEach(x=>s.delete(x.id));tx.oncomplete=()=>res();tx.onerror=()=>rej(tx.error);
+  });
+ }
+ localStorage.setItem("athleteLifeOSLastCheckpoint",new Date().toISOString());
+ try{await window.ALOSDurablePersistence?.forceJournal?.(db,"vault-checkpoint:"+reason)}catch(e){console.warn("Durable checkpoint mirror failed",e)}
+ renderCheckpoints();status("✓ Yerel checkpoint oluşturuldu");
+ return snapshot;
+}
+async function renderCheckpoints(){
+ const el=document.getElementById("vaultCheckpointList");if(!el)return;
+ try{
+  const all=(await idbGetAll(await vaultDB(),VAULT_STORE)).sort((a,b)=>b.id-a.id);
+  if(!all.length){el.innerHTML='<div class="record-empty">Henüz yerel checkpoint yok.</div>';return}
+  el.className="vault-checkpoint-list";
+  el.innerHTML=all.map(x=>{
+   const c=counts(x.data,x.photos);
+   return `<div class="vault-checkpoint-item"><div><strong>${new Date(x.createdAt).toLocaleString("tr-TR")}</strong><span>${x.reason} · ${c.days} gün · ${c.training} antrenman · ${c.foods} besin · ${c.photos} foto</span></div><div class="vault-checkpoint-actions"><button type="button" class="record-action" data-restore-cp="${x.id}">Geri Yükle</button><button type="button" class="record-action delete" data-delete-cp="${x.id}">Sil</button></div></div>`;
+  }).join("");
+  el.querySelectorAll("[data-restore-cp]").forEach(b=>b.onclick=()=>restoreCheckpoint(+b.dataset.restoreCp));
+  el.querySelectorAll("[data-delete-cp]").forEach(b=>b.onclick=()=>deleteCheckpoint(+b.dataset.deleteCp));
+ }catch(e){el.innerHTML='<div class="record-empty">Checkpoint alanına erişilemedi.</div>'}
+}
+async function restoreCheckpoint(id){
+ const all=await idbGetAll(await vaultDB(),VAULT_STORE),x=all.find(a=>a.id===id);if(!x)return;
+ if(!confirm("Bu checkpoint geri yüklensin mi? Mevcut durum önce yeni bir checkpoint olarak saklanacak."))return;
+ await createCheckpoint("before checkpoint restore");
+ const restored=normalizeForApp(x.data);
+ window.ALOSPersistence?.saveSnapshot?.(restored,"checkpoint-restore")||localStorage.setItem("athleteLifeOS",JSON.stringify(restored));
+ if(x.events)window.AthleteEventStore?.save?.(x.events);
+ if(Array.isArray(x.photos))await idbPutAll(await photoDB(),PHOTO_STORE,x.photos,true);
+ status("✓ Checkpoint geri yüklendi; uygulama yenileniyor");setTimeout(()=>location.reload(),450);
+}
+async function deleteCheckpoint(id){
+ if(!confirm("Bu yerel checkpoint silinsin mi?"))return;
+ const dbp=await vaultDB();await new Promise((res,rej)=>{const tx=dbp.transaction(VAULT_STORE,"readwrite");tx.objectStore(VAULT_STORE).delete(id);tx.oncomplete=()=>res();tx.onerror=()=>rej(tx.error)});
+ renderCheckpoints();
+}
+async function previewFile(file){
+ status("Yedek doğrulanıyor…");
+ const raw=JSON.parse(await file.text()),parsed=sanitizeIncoming(raw),verification=await verifyImport(parsed);
+ if(verification.state==="bad")throw new Error("Dosyanın SHA-256 bütünlük kontrolü başarısız.");
+ pendingImport={...parsed,verification,fileName:file.name};
+ const c=counts(parsed.data,parsed.photos),box=document.getElementById("vaultImportPreview");
+ box.hidden=false;document.getElementById("vaultPreviewTitle").textContent=file.name;
+ document.getElementById("vaultPreviewMeta").textContent=`Format: ${parsed.kind} · App ${parsed.payload.appVersion||parsed.payload.version||"eski"} · Schema ${parsed.payload.schemaVersion??"eski"} · ${parsed.payload.exportedAt?new Date(parsed.payload.exportedAt).toLocaleString("tr-TR"):"tarih yok"}`;
+ const badge=document.getElementById("vaultIntegrityBadge");badge.textContent=verification.text;badge.className="plan-badge "+(verification.state==="good"?"vault-integrity-good":verification.state==="bad"?"vault-integrity-warn":"");
+ document.getElementById("vaultPreviewCounts").innerHTML=countCards(c).slice(0,4).map(x=>`<div class="mini"><span>${x[0]}</span><strong>${x[1]}</strong></div>`).join("");
+ status("✓ Yedek okundu; içe aktarma modunu seç");
+}
+async function applyImport(mode){
+ if(!pendingImport)return;
+ if(mode==="replace"&&!confirm("TAM GERİ YÜKLE mevcut kişisel veriyi yedekteki veriyle değiştirecek. Devam edilsin mi?"))return;
+ status("Güvenli geri dönüş noktası oluşturuluyor…");
+ await createCheckpoint("before import");
+ const finalData=normalizeForApp(mode==="merge"?mergeDB(db,pendingImport.data):pendingImport.data);
+ window.ALOSPersistence?.saveSnapshot?.(finalData,"backup-import")||localStorage.setItem("athleteLifeOS",JSON.stringify(finalData));
+ if(pendingImport.events?.events){
+   const currentEvents=window.AthleteEventStore?.load?.()||{schemaVersion:1,events:[]};
+   if(mode==="replace")window.AthleteEventStore?.save?.(pendingImport.events);
+   else{
+     const map=new Map((currentEvents.events||[]).map(e=>[e.id,e]));(pendingImport.events.events||[]).forEach(e=>map.set(e.id,e));
+     window.AthleteEventStore?.save?.({...currentEvents,events:[...map.values()]});
+   }
+ }
+ if(pendingImport.photos?.length){
+   await idbPutAll(await photoDB(),PHOTO_STORE,pendingImport.photos,mode==="replace");
+ }
+ localStorage.setItem("athleteLifeOSLastImport",new Date().toISOString());
+ status(`✓ ${mode==="merge"?"Veriler birleştirildi":"Yedek geri yüklendi"}; uygulama yenileniyor`);
+ setTimeout(()=>location.reload(),550);
+}
+function cancelPreview(){
+ pendingImport=null;const p=document.getElementById("vaultImportPreview");if(p)p.hidden=true;
+ const i=document.getElementById("vaultImportInput");if(i)i.value="";
+ status("");
+}
+function noteSave(){
+ const now=Date.now();if(now-lastNoteSave<1500)return;lastNoteSave=now;
+ clearTimeout(autoCheckpointTimer);
+ autoCheckpointTimer=setTimeout(async()=>{
+   try{
+    const last=localStorage.getItem("athleteLifeOSLastCheckpoint");
+    if(!last||Date.now()-new Date(last).getTime()>24*60*60*1000)await createCheckpoint("automatic daily");
+   }catch(e){console.warn("Auto checkpoint failed",e)}
+ },2500);
+}
+function hasMeaningfulData(x){return (window.ALOSPersistence?.dataWeight?.(x)||0)>0}
+async function autoRecoverLatestCheckpointIfNeeded(){
+ try{
+  if(hasMeaningfulData(db))return false;
+  const all=(await idbGetAll(await vaultDB(),VAULT_STORE)).sort((a,b)=>b.id-a.id);
+  const latest=all.find(x=>hasMeaningfulData(x?.data));
+  if(!latest)return false;
+  const restored=normalizeForApp(latest.data);
+  window.ALOSPersistence?.saveSnapshot?.(restored,"automatic-checkpoint-recovery")||localStorage.setItem("athleteLifeOS",JSON.stringify(restored));
+  localStorage.setItem("athleteLifeOSAutoRecoveredAt",new Date().toISOString());
+  status("✓ Son yerel yedek otomatik geri yüklendi; uygulama yenileniyor");
+  setTimeout(()=>location.reload(),120);
+  return true;
+ }catch(e){console.warn("Automatic checkpoint recovery unavailable",e);return false}
+}
+function bind(){
+ document.getElementById("vaultExportFull")?.addEventListener("click",()=>exportBackup(true));
+ document.getElementById("quickBackupBtn")?.addEventListener("click",async e=>{
+   const btn=e.currentTarget,original=btn.textContent;
+   btn.disabled=true;btn.textContent="Yedek hazırlanıyor…";
+   try{await exportBackup(true)}finally{btn.disabled=false;btn.textContent=original}
+ });
+ document.getElementById("vaultExportData")?.addEventListener("click",()=>exportBackup(false));
+ document.getElementById("vaultCheckpointBtn")?.addEventListener("click",()=>createCheckpoint("manual"));
+ document.getElementById("vaultRefreshCheckpoints")?.addEventListener("click",renderCheckpoints);
+ document.getElementById("vaultImportInput")?.addEventListener("change",async e=>{
+   const f=e.target.files?.[0];if(!f)return;
+   try{await previewFile(f)}catch(err){console.error(err);status("Yedek okunamadı: "+err.message,true);cancelPreview()}
+ });
+ document.getElementById("vaultMergeBtn")?.addEventListener("click",()=>applyImport("merge"));
+ document.getElementById("vaultReplaceBtn")?.addEventListener("click",()=>applyImport("replace"));
+ document.getElementById("vaultCancelImport")?.addEventListener("click",cancelPreview);
+}
+async function init(){
+ bind();renderSummary();await renderCheckpoints();
+ try{if(await window.ALOSDurablePersistence?.recoverIfNewer?.()){status("✓ Daha yeni sağlam veritabanı revisionı geri yüklendi; uygulama yenileniyor");setTimeout(()=>location.reload(),120);return}}catch(e){console.warn("Durable revision recovery unavailable",e)}
+ if(await autoRecoverLatestCheckpointIfNeeded())return;
+ // Establish a local baseline once per installation/version without producing a download.
+ try{
+  if(!localStorage.getItem("athleteLifeOSVaultBaseline67")){await createCheckpoint("v6.7 baseline");localStorage.setItem("athleteLifeOSVaultBaseline67","1")}
+ }catch(e){console.warn(e)}
+}
+
+window.BackupVault={noteSave,createCheckpoint,exportBackup,renderSummary,selfTestPayload:()=>makePayload(false),mergeDB,normalizeForApp,autoRecoverLatestCheckpointIfNeeded};
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();
+})();

@@ -1,0 +1,14 @@
+const fs=require('fs'),vm=require('vm'),assert=require('assert');
+const app=fs.readFileSync('app.js','utf8'),guided=fs.readFileSync('guided-workout-engine.js','utf8'),html=fs.readFileSync('index.html','utf8');
+assert(app.includes('function trainingViewDate()'),'central training view date exists');
+assert(app.includes('db.meta.midnightUiRolloverV91'),'midnight migration exists');
+assert(app.includes('weekKeysFor(trainingViewDate())'),'week navigation follows selected date');
+assert(guided.includes('startWorkout(selectedTrainingDay())'),'runner start follows selected date');
+assert(guided.includes('stale_idle_target_replaced'),'idle stale runner is replaced');
+assert(html.includes('trainingPrevDay')&&html.includes('trainingNextDay'),'day navigation UI exists');
+assert(html.includes('sports-science-policy.js?v=9.2'),'science policy is wired');
+const ctx={window:{db:{daily:{},trainingLogs:{},foodLogs:{},water:{},settings:{targetWeight:70,targetCalories:2800,targetWater:3}},EXERCISE_KNOWLEDGE:{},EXERCISE_SCIENCE:{},V5_EXERCISE_MUSCLES:{},NutritionLedger:{totals:()=>({})},NUTRITION_LIBRARY:[]}};vm.createContext(ctx);vm.runInContext(fs.readFileSync('sports-science-policy.js','utf8'),ctx);
+assert.equal(ctx.window.SportsSciencePolicy.version,'9.2');
+assert.equal(ctx.window.SportsSciencePolicy.policy.hypertrophy.weeklySetsReference,10);
+const lib=JSON.parse(fs.readFileSync('science-library.json','utf8'));assert.equal(lib.engine.training_policy_version,'9.2');assert(lib.principles.some(x=>x.id==='acsm_2026_overview'));
+console.log('v9.1 sync + science policy tests: PASS');
