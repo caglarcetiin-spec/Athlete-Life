@@ -16,8 +16,8 @@ from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import urlparse
 
-HOST = "127.0.0.1"
-PORT = 8765
+HOST = "0.0.0.0"
+PORT = int(os.environ.get("PORT", "10000"))
 APP_VERSION = "10.0.0"
 ROOT = Path(__file__).resolve().parent
 DATA_DIR = Path(os.environ.get("ATHLETE_LIFE_OS_DATA_DIR", Path.home() / ".athlete-life-os"))
