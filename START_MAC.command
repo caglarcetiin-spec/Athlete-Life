@@ -1,3 +1,6 @@
 #!/bin/bash
 cd "$(dirname "$0")"
-python3 launch.py
+if [ -x .venv/bin/python ]; then
+  exec .venv/bin/python launch.py
+fi
+exec python3 launch.py

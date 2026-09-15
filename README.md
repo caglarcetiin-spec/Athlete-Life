@@ -1,3 +1,7 @@
+## MongoDB desteği
+
+Veri deposu artık yapılandırılabilir. Bağlantı ve mevcut veri aktarımı için [MongoDB kurulum kılavuzuna](MONGODB_SETUP.md) bakın. Bağlantı kurulana kadar SQLite varsayılan olarak çalışır.
+
 # Athlete Life OS v9.0 — Ortak Plan ve Veri Koordinasyonu
 
 Güncel mimari, doğrulama kapsamı ve geçiş adımları: [V9_ARCHITECTURE_REVIEW.md](V9_ARCHITECTURE_REVIEW.md).

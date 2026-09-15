@@ -9,7 +9,7 @@ def req(path, method='GET', body=None):
 
 def main():
     with tempfile.TemporaryDirectory() as td:
-        env=os.environ.copy();env['ATHLETE_LIFE_OS_DATA_DIR']=td
+        env=os.environ.copy();env['ATHLETE_LIFE_OS_DATA_DIR']=td;env['PORT']='8765';env['STORAGE_BACKEND']='sqlite'
         p=subprocess.Popen([sys.executable,str(ROOT/'launch.py')],cwd=ROOT,env=env,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
         try:
             for _ in range(50):
