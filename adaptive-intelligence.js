@@ -73,7 +73,7 @@ function renderSessionRouter(){
 }
 function manualTrainingContext(now=new Date(),report=true){
  const input=q("manualTrainingDate"),raw=(input?.value||"").trim();
- const value=/^\d{2}\.\d{2}\.\d{4}$/.test(raw)?raw.split(".").reverse().join("-"):raw;
+ const value=window.EntryFields?.date(raw)||(/^\d{2}\.\d{2}\.\d{4}$/.test(raw)?raw.split(".").reverse().join("-"):raw);
  const parsed=new Date(value+"T12:00:00Z");
  const valid=/^\d{4}-\d{2}-\d{2}$/.test(value)&&!isNaN(parsed)&&parsed.toISOString().slice(0,10)===value&&value<=calKey(now);
  if(!valid){if(report){input?.setCustomValidity?.("GG.AA.YYYY biçiminde bugün veya geçmişte bir tarih gir.");input?.reportValidity?.();const st=q("manualTrainingSaveStatus");if(st)st.textContent="Kayıt eklenmedi. GG.AA.YYYY biçiminde geçerli bir tarih gir.";}return null}

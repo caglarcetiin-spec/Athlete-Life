@@ -15,16 +15,22 @@ const groups=[
  {id:'profile',name:'Profilim',pages:[['account-profile','Hesabım'],['character','Spor profilim'],['settings','Tercihler ve veriler'],['guide','Görünüm ve rehber']]}
 ];
 let selected='workspace-today',last=null,ready=false;
+let navIndex=0,navPages=[],navToken=Math.random().toString(36).slice(2);const scrollPositions=new Map(),newFeatures=new Set();
+function route(){try{const page=decodeURIComponent(location.hash.slice(1));return groups.some(g=>g.pages.some(p=>p[0]===page))?page:null}catch(_){return null}}
+function historyControls(){if(q('workspace-back'))q('workspace-back').disabled=navIndex===0;if(q('workspace-forward'))q('workspace-forward').disabled=navIndex>=navPages.length-1}
+function identity(){const b=q('account-profile-open'),u=ALOSAccount.user;if(!b)return;b.classList.add('account-profile-chip');b.innerHTML=`<span class="profile-chip-avatar" aria-hidden="true">${esc(u.name.trim().slice(0,1).toLocaleUpperCase('tr'))}</span><span><span class="profile-chip-label">Profilim</span><strong>${esc(u.name)}</strong></span>`;b.setAttribute('aria-label','Profilim: '+u.name)}
 const mode=()=>window.AccountGuide?.mode(db())||'professional';
 const firstPage=g=>mode()==='simple'?({today:'simple-home',training:'simple-activity',health:'simple-health',profile:'account-profile',growth:'simple-progress',nutrition:'nutrition'})[g]:({today:'workspace-today',training:'workspace-training',health:'health-overview',profile:'account-profile',growth:'workspace-analysis',nutrition:'nutrition'})[g];
 function refreshNavigation(){
- document.body.dataset.interfaceMode=mode();
- document.querySelectorAll('[data-workspace-group]').forEach(b=>{const g=groups.find(g=>g.id===b.dataset.workspaceGroup);b.hidden=mode()==='simple'&&['nutrition','growth'].includes(g.id);const label=b.querySelector('[data-nav-label]');if(label)label.textContent=mode()==='simple'&&g.id==='training'?'Hareket':g.name});
+ document.body.dataset.interfaceMode=mode();identity();
+ document.querySelectorAll('[data-workspace-group]').forEach(b=>{const g=groups.find(g=>g.id===b.dataset.workspaceGroup);b.hidden=mode()==='simple'&&['nutrition','growth'].includes(g.id);const label=b.querySelector('[data-nav-label]');if(label)label.textContent=mode()==='simple'&&g.id==='training'?'Hareket':g.name;b.classList.toggle('feature-revealed',newFeatures.has(g.id));let badge=b.querySelector('.nav-new');if(newFeatures.has(g.id)&&!badge){badge=document.createElement('span');badge.className='nav-new';badge.textContent='Yeni';b.append(badge)}if(!newFeatures.has(g.id))badge?.remove()});
 }
 
-function navigate(page){
+function navigate(page,{replace=false,pop=false}={}){
  const group=groups.find(g=>g.pages.some(p=>p[0]===page));if(!group)return;
- selected=page;
+ scrollPositions.set(selected,window.scrollY);
+ if(!pop){if(replace||!navPages.length){navPages[navIndex]=page;history.replaceState({alosPage:page,alosIndex:navIndex,alosToken:navToken},'',location.pathname+location.search+'#'+page)}else if(page!==selected){navPages=navPages.slice(0,navIndex+1);navPages.push(page);navIndex++;history.pushState({alosPage:page,alosIndex:navIndex,alosToken:navToken},'',location.pathname+location.search+'#'+page)}}
+ selected=page;newFeatures.delete(group.id);historyControls();
  document.querySelectorAll('.page').forEach(el=>el.classList.toggle('active',el.id===page));
  document.querySelectorAll('[data-workspace-group]').forEach(el=>el.setAttribute('aria-current',el.dataset.workspaceGroup===group.id?'page':'false'));
  refreshNavigation();
@@ -34,7 +40,15 @@ function navigate(page){
  const pageLabel=group.pages.find(p=>p[0]===page)[1];q('pageTitle').textContent=pageLabel===group.name?pageLabel:group.name+' · '+pageLabel;
  if(page==='workspace-plan')renderPlans();
  window.dispatchEvent(new CustomEvent('workspace:navigate',{detail:{page}}));
- window.scrollTo({top:0,behavior:'instant'});
+ window.scrollTo({top:pop?(scrollPositions.get(page)||0):0,behavior:'instant'});
+}
+function announceMode(next){
+ newFeatures.clear();if(next==='professional')['training','nutrition','growth','tools'].forEach(id=>newFeatures.add(id));
+ q('workspace-mode-notice')?.remove();const note=document.createElement('section');note.id='workspace-mode-notice';note.className='mode-announcement';note.setAttribute('aria-label','Görünüm değişikliği');
+ note.innerHTML=`<div role="status"><strong>${next==='professional'?'Profesyonel görünüm açıldı':'Basit görünüm açıldı'}</strong><p>${next==='professional'?'Antrenman ayrıntıları, Beslenme, Gelişim ve Araçlar artık görünür. Yeni işaretli bölümlerden başlayabilirsin.':'Dört ana menüyle devam ediyorsun. Ayrıntılı araçların ve kayıtların korunuyor.'}</p></div>${next==='professional'?'<div class="mode-shortcuts"><button data-mode-page="workspace-training">Antrenmanı keşfet</button><button data-mode-page="nutrition">Beslenme</button><button data-mode-page="workspace-analysis">Gelişim</button></div>':''}<button type="button" class="secondary" id="dismiss-mode-notice">Anladım</button>`;
+ q('workspace-subnav').before(note);note.querySelectorAll('[data-mode-page]').forEach(b=>b.onclick=()=>navigate(b.dataset.modePage));q('dismiss-mode-notice').onclick=()=>note.remove();
+ const tools=q('design-tools-open');if(tools){tools.classList.toggle('feature-revealed',next==='professional');tools.textContent=next==='professional'?'Araçlar · Yeni':'Araçlar';}
+ refreshNavigation();
 }
 function action(name){
  if(name==='profile')return window.AthleteSports.openProfile();
@@ -117,10 +131,15 @@ function init(){
  old.querySelectorAll('button[data-page]').forEach(b=>b.onclick=()=>navigate(b.dataset.page));
  const skip=document.createElement('a');skip.className='workspace-skip';skip.href='#pageTitle';skip.textContent='İçeriğe geç';document.body.prepend(skip);q('pageTitle').tabIndex=-1;
  const note=document.querySelector('.sidebar-note');if(note)note.innerHTML='<strong>Her branş, kendi ölçümüyle.</strong><span>Planın senin kararın. Kayıtların birlikte okunur.</span>';
- ready=true;refresh();navigate('workspace-today');
+ const historyBar=document.createElement('nav');historyBar.className='workspace-history-nav';historyBar.setAttribute('aria-label','Gezinme geçmişi');historyBar.innerHTML='<button type="button" class="secondary" id="workspace-back" aria-label="Önceki sayfaya dön" disabled>← Geri</button><button type="button" class="secondary" id="workspace-forward" aria-label="Sonraki sayfaya git" disabled>İleri →</button>';document.querySelector('.topbar').prepend(historyBar);
+ q('workspace-back').onclick=()=>history.back();q('workspace-forward').onclick=()=>history.forward();
+ window.addEventListener('popstate',e=>{const page=route()||firstPage('today');if(e.state?.alosToken===navToken){navIndex=e.state.alosIndex}else{navIndex=0;navPages=[page]}navigate(page,{pop:true})});
+ window.addEventListener('account:profile-updated',identity);
+ document.addEventListener('click',e=>{if(e.target.closest('#design-tools-open')){newFeatures.delete('tools');q('design-tools-open').classList.remove('feature-revealed');q('design-tools-open').textContent='Araçlar'}});
+ ready=true;refresh();navigate(route()||firstPage('today'),{replace:true});
  window.EngineBus?.subscribe?.('athlete.state.ready',refresh,'workspace-view');
  window.EngineBus?.subscribe?.('sports.context.changed',refresh,'workspace-sports');
 }
-window.AthleteWorkspace={refresh,snapshot:()=>last||W.snapshot(db()),navigate,openPeriod,refreshNavigation,current:()=>selected,home:()=>navigate(firstPage('today'))};
+window.AthleteWorkspace={refresh,snapshot:()=>last||W.snapshot(db()),navigate,openPeriod,refreshNavigation,current:()=>selected,home:()=>navigate(firstPage('today')),restore:()=>navigate(route()||firstPage('today'),{replace:true}),announceMode};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();

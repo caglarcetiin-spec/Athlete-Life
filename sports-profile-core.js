@@ -8,6 +8,7 @@ const days=['Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi','Paz
 const uid=()=>root.crypto?.randomUUID?.()||Date.now().toString(36)+'-'+Math.random().toString(36).slice(2);
 function dayKey(now=new Date()){return `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;}
 function parseDate(value){
+ if(root.EntryFields)return root.EntryFields.date(value);
  let key=String(value||'').trim();if(/^\d{2}\.\d{2}\.\d{4}$/.test(key))key=key.split('.').reverse().join('-');
  if(!/^\d{4}-\d{2}-\d{2}$/.test(key))return null;
  const d=new Date(key+'T12:00:00Z');return Number.isFinite(+d)&&d.toISOString().slice(0,10)===key?key:null;

@@ -45,15 +45,18 @@ function execution(db,input,previous){
  const block=(db.multisportPeriods||[]).find(p=>p.id===input.periodId)?.blocks.find(b=>b.id===input.planBlockId);
  const same=previous?.periodId===input.periodId&&previous?.planBlockId===input.planBlockId;
  const effective=block&&root.PersonalHealth?root.PersonalHealth.adjustBlock(db,block,root.PersonalHealth.date(input.date)):block;
- const steps=validateSteps(same&&previous?.workout?.steps?previous.workout.steps:effective?.steps||[]);
+ const manual=!input.periodId&&!input.planBlockId;
+ const steps=validateSteps(manual?(input.workout?.steps??previous?.workout?.steps??[]):same&&previous?.workout?.steps?previous.workout.steps:effective?.steps||[]);
  if(!steps.length){if(input.workout?.actual?.some(x=>x.done))throw new Error('Bu çalışma planla eşleşmiyor.');return null;}
  const actual=validateExecution(steps,input.workout?.actual||(same?previous?.workout?.actual:[])||[]);
- return {version:1,steps:copy(steps),actual,plannedSets:steps.reduce((n,s)=>n+s.sets,0),recordedSets:actual.filter(x=>x.done).length};
+ return {version:1,origin:manual?'manual':'plan',steps:copy(steps),actual,plannedSets:steps.reduce((n,s)=>n+s.sets,0),recordedSets:actual.filter(x=>x.done).length};
 }
 function project(db,row){
  // One editable owner: the sport session. Legacy engines read a tagged projection.
  const trainingLogs={};
  for(const [date,rows] of Object.entries(db.trainingLogs||{})){const kept=rows.filter(r=>!(r.source==='sport_program'&&r.sportSessionId===row.id));if(kept.length)trainingLogs[date]=kept;}
+ // A matched movement session already owns the movement analysis. Keep its original rows.
+ if(row.linkedSessionId)return trainingLogs;
  const generated=[];
  for(const a of row.workout?.actual||[]){
   const s=row.workout.steps.find(s=>s.id===a.stepId);if(!a.done||s?.type!=='resistance')continue;

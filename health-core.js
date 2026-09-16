@@ -10,6 +10,7 @@ function number(v,optional=false){
  return Number(s);
 }
 function date(v){
+ if(typeof EntryFields!=='undefined'){const d=EntryFields.date(v);if(!d||d<'1900-01-01')throw Error('Geçerli bir tarih seç.');return d}
  let s=text(v,20);if(/^\d{2}\.\d{2}\.\d{4}$/.test(s))s=s.split('.').reverse().join('-');
  if(!/^\d{4}-\d{2}-\d{2}$/.test(s)||s<'1900-01-01'||Number.isNaN(Date.parse(s))||new Date(s+'T12:00:00Z').toISOString().slice(0,10)!==s)throw Error('Geçerli bir tarih gir: GG.AA.YYYY.');
  return s;

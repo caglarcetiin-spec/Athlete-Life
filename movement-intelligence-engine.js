@@ -157,7 +157,7 @@ function labelText(id,text){
  const l=q(id);if(!l)return;
  const input=l.querySelector("input");if(!input)return;
  Array.from(l.childNodes).filter(n=>n.nodeType===3).forEach(n=>n.remove());
- l.insertBefore(document.createTextNode(text+" "),input);
+ l.insertBefore(document.createTextNode(text+" "),input.closest(".entry-field")||input);
 }
 function updateInputMode(){
  const k=selectedKnowledge();if(!k)return;

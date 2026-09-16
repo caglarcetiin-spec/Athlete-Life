@@ -16,7 +16,7 @@ const kinds={illness:'Hastalık',injury:'Sakatlık / ağrı',fatigue:'Halsizlik 
 const states={ongoing:'Devam ediyor',recovering:'Toparlanıyorum',resolved:'Tamamen sona erdi'};
 const bleeding={none:'Kanama yok',spotting:'Lekelenme',light:'Hafif',medium:'Orta',heavy:'Yoğun'};
 function today(now=new Date()){return `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`}
-function date(v){let s=String(v||'').trim();if(/^\d{2}\.\d{2}\.\d{4}$/.test(s))s=s.split('.').reverse().join('-');if(!/^\d{4}-\d{2}-\d{2}$/.test(s)||s<'1900-01-01'||!Number.isFinite(Date.parse(s))||new Date(s+'T12:00:00Z').toISOString().slice(0,10)!==s)throw Error('Geçerli bir tarih gir: GG.AA.YYYY.');return s}
+function date(v){if(typeof EntryFields!=='undefined'){const d=EntryFields.date(v);if(!d||d<'1900-01-01')throw Error('Geçerli bir tarih seç.');return d}let s=String(v||'').trim();if(/^\d{2}\.\d{2}\.\d{4}$/.test(s))s=s.split('.').reverse().join('-');if(!/^\d{4}-\d{2}-\d{2}$/.test(s)||s<'1900-01-01'||!Number.isFinite(Date.parse(s))||new Date(s+'T12:00:00Z').toISOString().slice(0,10)!==s)throw Error('Geçerli bir tarih gir: GG.AA.YYYY.');return s}
 function addDays(d,n){const v=new Date(date(d)+'T12:00:00Z');v.setUTCDate(v.getUTCDate()+n);return v.toISOString().slice(0,10)}
 function days(a,b){return Math.round((Date.parse(b)-Date.parse(a))/86400000)}
 function text(v,max=1000){return String(v??'').trim().slice(0,max)}
