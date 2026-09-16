@@ -41,6 +41,7 @@ const EXERCISES=[
 ];
 
 const ALOS_LKG_KEY="athleteLifeOSLastKnownGood";
+function __alosEscapeText(value){return String(value??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function __alosSafeParse(raw,fallback=null){try{return raw?JSON.parse(raw):fallback}catch(e){return fallback}}
 function __alosDataWeight(x){return window.ALOSDurablePersistence?.weight?.(x)||0}
 function __alosBootState(){
@@ -95,6 +96,7 @@ function save(){
 // v9.3 durability guard: persist any in-memory mutation even if a feature forgot to call save().
 let __alosLastContentChecksum=window.ALOSDurablePersistence?.contentChecksum?.(db)||null;
 function __alosAutosaveIfDirty(reason="dirty-guard"){
+ if(window.ALOSAccount?.locked)return false;
  try{
   const sum=window.ALOSDurablePersistence?.contentChecksum?.(db);
   if(sum&&sum!==__alosLastContentChecksum){__alosPersistSnapshot(db,reason);__alosLastContentChecksum=window.ALOSDurablePersistence?.contentChecksum?.(db)||sum;return true}
@@ -174,9 +176,9 @@ function renderToday(){
  const load=Math.round(clamp(workLoad+train+stress,0,100));
  q("dailyLoad").textContent=d?load+"/100":"--";
  q("lifeBalance").textContent=d?Math.round(clamp((r||50)*.55+(100-load)*.25+80*.2,0,100))+"/100":"--";
- const hs=window.HealthStateEngine?.assess?.(d||{})||null, hb=q("healthStateBadge"),ha=q("healthStateAdvice");
+ const hs=window.HealthStateEngine?.assessFor?.(db,todayKey())||null, hb=q("healthStateBadge"),ha=q("healthStateAdvice");
  if(hs&&hb){hb.textContent=hs.label.toUpperCase();hb.className=`plan-badge ${hs.action==="stop_hard_training"?"bad":hs.action==="recovery"||hs.action==="reduce"?"warn":"good"}`;}
- if(hs&&ha){ha.className=`insight-box ${hs.action==="stop_hard_training"?"bad":hs.action==="recovery"||hs.action==="reduce"?"warn":"good"}`;ha.innerHTML=`<strong>${hs.label}</strong><br>${hs.reason}<br><small>Readiness etkisi −${hs.readinessPenalty} puan · hacim ×${hs.volumeFactor.toFixed(2)} · yoğunluk ×${hs.intensityFactor.toFixed(2)}</small>`;}
+ if(hs&&ha){ha.className=`insight-box ${hs.action==="stop_hard_training"?"bad":hs.action==="recovery"||hs.action==="reduce"?"warn":"good"}`;ha.innerHTML=`<strong>${__alosEscapeText(hs.label)}</strong><br>${__alosEscapeText(hs.reason)}<br><small>Readiness etkisi −${hs.readinessPenalty} puan · hacim ×${hs.volumeFactor.toFixed(2)} · yoğunluk ×${hs.intensityFactor.toFixed(2)}</small>`;}
  renderTodayPlan();
  renderTradeoff();
 }
@@ -1878,7 +1880,7 @@ function programBaseSlotV92(k){
  return {...slot,baseDate:k,weekday:wd};
 }
 function hardConstraintForProgramV92(k,type){
- const d=db.daily[k]||{},actual=readiness(d),health=window.HealthStateEngine?.assess?.(d)||{action:"normal",label:"Normal"},conflicts=painConflicts(type,k),pain=maxPain(k);
+ const d=db.daily[k]||{},actual=readiness(d),health=window.HealthStateEngine?.assessFor?.(db,k)||{action:"normal",label:"Normal"},conflicts=painConflicts(type,k),pain=maxPain(k);
  const hardHealth=["recovery","stop_hard_training"].includes(health.action);
  const lowReadiness=actual!=null&&actual<55;
  const hardPain=pain>=7||conflicts.length>=2;
@@ -1960,7 +1962,7 @@ function programWeekV5(k=todayKey()){
 function currentProgramWeek(){return programWeekV5().week}
 function phaseForWeekV5(w){return phaseForWeek(w)}
 function planLoadModifier(k,type){
- const d=db.daily[k]||{},r=readiness(d)??forecastReadinessV5(k,0), pain=maxPain(k), recovery=Math.max(muscleRecoveryPenalty(type,k),window.TrainingPeriods?.recoveryPenalty(k)||0),health=window.HealthStateEngine?.assess?.(d)||{volumeFactor:1,intensityFactor:1,action:"normal",label:"Normal"};
+ const d=db.daily[k]||{},r=readiness(d)??forecastReadinessV5(k,0), pain=maxPain(k), recovery=Math.max(muscleRecoveryPenalty(type,k),window.TrainingPeriods?.recoveryPenalty(k)||0),health=window.HealthStateEngine?.assessFor?.(db,k)||{volumeFactor:1,intensityFactor:1,action:"normal",label:"Normal"};
  let base;
  if(r<55||pain>=7)base={volume:.5,intensity:.75,label:"Minimum / Recovery"};
  else if(r<68||pain>=5||recovery>14)base={volume:.8,intensity:.9,label:"Kısaltılmış"};
@@ -1986,7 +1988,7 @@ function smartProgressionNote(name){
  return stable&&rir>=2?"Bir sonraki seans küçük progresyon":"Kaliteyi koru";
 }
 function resolvedTemplate(k){
- const plan=planForDate(k)||{type:"recovery",name:"Recovery / Rest"},health=window.HealthStateEngine?.assess?.(db.daily[k]||{})||{action:"normal"};
+ const plan=planForDate(k)||{type:"recovery",name:"Recovery / Rest"},health=window.HealthStateEngine?.assessFor?.(db,k)||{action:"normal"};
  const effectivePlan=["recovery","stop_hard_training"].includes(health.action)?{...plan,type:"recovery",name:health.action==="stop_hard_training"?"Health Recovery / Rest":"Recovery / Minimum Day",reason:`Sağlık durumu: ${health.label}`} : plan;
  const custom=plan.periodId&&effectivePlan===plan?window.TrainingPeriods?.template(k):null;
  const rawBase=custom||templateForType(effectivePlan.type), base=custom||window.SportsSciencePolicy?.optimizeTemplate?.(k,effectivePlan.type,rawBase)||rawBase, mod=planLoadModifier(k,effectivePlan.type), pain=painForDate(k);
@@ -2006,7 +2008,7 @@ function resolvedTemplate(k){
      if((it.name.includes("Pull")||it.name.includes("Lever")||it.name==="Muscle-Up")&&pain.elbow>=6)risk="Dirsek nedeniyle yoğunluğu azalt / ağrısız varyasyon";
      if(["RDL","Bulgarian Split Squat","Backpack/Goblet Squat","Single-Leg RDL"].includes(it.name)&&(pain.knee>=6||pain.back>=6||pain.hip>=6))risk="Alt vücut eklem verisi nedeniyle hareketi değiştir";
    }
-   return {...it,risk,painAdvice:painAdvice||null};
+   return {...it,targetRir:mod.health?.personal?.minRir!=null?Math.max(it.targetRir||0,mod.health.personal.minRir):it.targetRir,risk,painAdvice:painAdvice||null};
  });
  return {...base,...effectivePlan,items:filtered,modifier:mod,health};
 }
@@ -2666,7 +2668,7 @@ function renderCommandCenter(){
 }
 function renderCoachV5(){
  if(window.TrainingPeriods?.renderCoach?.())return;
- if(!q("coachReadiness"))return;const k=todayKey(),p=planForDate(k)||buildFuturePlanV5(14)[k],cs=window.CanonicalSessionEngine?.get?.(k),t=canonicalTemplate(k),raw=readiness(db.daily[k]),r=raw??(cs?.predictedReadiness??p.predictedReadiness),mod=t.modifier,health=window.HealthStateEngine?.assess?.(db.daily[k]||{});q("coachReadiness").textContent=(raw==null?"≈ ":"")+r+"/100";q("coachSession").textContent=t.name||p.name;q("coachIntensity").textContent=mod.label;q("coachDuration").textContent=Math.round((t.duration||45)*mod.volume)+" dk";q("coachWorkout").innerHTML=t.items.map(x=>`<div class="coach-row"><strong>${x.name}</strong><span>${x.prescription}${x.targetRir!=null?` · RIR ${x.targetRir}`:""}${x.restTargetSec!=null?` · ${x.restTargetSec} sn dinlenme`:""}${x.loadRecommendation?.applicable&&x.loadRecommendation?.display?` · <b>${x.loadRecommendation.display}</b>`:""}</span><span>${x.risk||x.progression||x.loadRecommendation?.rationale||x.note}</span></div>`).join("");const conflicts=painConflicts(cs?.planType||p.type,k),pw=programWeekV5(k);q("coachDecision").textContent=`Döngü ${pw.cycle}, hafta ${pw.week}/${pw.weeks||12} (${pw.label||phaseForWeekV5(pw.week).name}). Canonical ${cs?.snapshotId||"—"} · Plan v${cs?.planVersion||p.version||1}; ${cs?.reason||p.reason}. ${health&&health.action!=="normal"?`Sağlık durumu: ${health.label} — ${health.reason} `:""}${conflicts.length?`Eklem uyumluluğu nedeniyle ${conflicts.join(", ")} yükü azaltıldı.`:"Belirgin eklem çakışması yok."} ${window.PeriodicTrendEngine?.summary?.("monthly")?.comment||""} ${nutritionGoalAdvice().text}`;const focus=t.items.slice(0,3).map(x=>x.name);q("coachProgression").innerHTML=focus.map(n=>`<div class="rec-card good"><strong>${n}</strong>${smartProgressionNote(n)}</div>`).join("");
+ if(!q("coachReadiness"))return;const k=todayKey(),p=planForDate(k)||buildFuturePlanV5(14)[k],cs=window.CanonicalSessionEngine?.get?.(k),t=canonicalTemplate(k),raw=readiness(db.daily[k]),r=raw??(cs?.predictedReadiness??p.predictedReadiness),mod=t.modifier,health=window.HealthStateEngine?.assessFor?.(db,k);q("coachReadiness").textContent=(raw==null?"≈ ":"")+r+"/100";q("coachSession").textContent=t.name||p.name;q("coachIntensity").textContent=mod.label;q("coachDuration").textContent=Math.round((t.duration||45)*mod.volume)+" dk";q("coachWorkout").innerHTML=t.items.map(x=>`<div class="coach-row"><strong>${x.name}</strong><span>${x.prescription}${x.targetRir!=null?` · RIR ${x.targetRir}`:""}${x.restTargetSec!=null?` · ${x.restTargetSec} sn dinlenme`:""}${x.loadRecommendation?.applicable&&x.loadRecommendation?.display?` · <b>${x.loadRecommendation.display}</b>`:""}</span><span>${x.risk||x.progression||x.loadRecommendation?.rationale||x.note}</span></div>`).join("");const conflicts=painConflicts(cs?.planType||p.type,k),pw=programWeekV5(k);q("coachDecision").textContent=`Döngü ${pw.cycle}, hafta ${pw.week}/${pw.weeks||12} (${pw.label||phaseForWeekV5(pw.week).name}). Canonical ${cs?.snapshotId||"—"} · Plan v${cs?.planVersion||p.version||1}; ${cs?.reason||p.reason}. ${health&&health.action!=="normal"?`Sağlık durumu: ${health.label} — ${health.reason} `:""}${conflicts.length?`Eklem uyumluluğu nedeniyle ${conflicts.join(", ")} yükü azaltıldı.`:"Belirgin eklem çakışması yok."} ${window.PeriodicTrendEngine?.summary?.("monthly")?.comment||""} ${nutritionGoalAdvice().text}`;const focus=t.items.slice(0,3).map(x=>x.name);q("coachProgression").innerHTML=focus.map(n=>`<div class="rec-card good"><strong>${n}</strong>${smartProgressionNote(n)}</div>`).join("");
 }
 renderCoach=renderCoachV5;
 function renderTomorrowCoachV5(){

@@ -26,7 +26,7 @@ function audit(date=today()){
 }
 function safety(date=today()){
  // Execution prescription is immutable, but a new health signal must still stop a start.
- const h=window.HealthStateEngine?.assess?.(data().daily?.[today()]||{});
+ const h=window.HealthStateEngine?.assessFor?.(data(),today())||window.HealthStateEngine?.assess?.(data().daily?.[today()]||{});
  return {blocked:h?.action==="stop_hard_training",reason:h?.reason||"",health:h,date};
 }
 function summary(date=today()){

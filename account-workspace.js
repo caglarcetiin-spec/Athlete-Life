@@ -7,22 +7,31 @@ const q=id=>document.getElementById(id),db=()=>window.ALOSRuntime.getDb();
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmt=n=>Number(n).toLocaleString('tr-TR',{maximumFractionDigits:1});
 const groups=[
- {id:'today',name:'Bugün',pages:[['workspace-today','Özet']]},
- {id:'training',name:'Antrenman',pages:[['workspace-training','Seanslarım'],['workspace-plan','Dönemlerim'],['week','Takvim ve vardiya'],['training','Hareket ve set kaydı'],['coach','Program incelemesi']]},
+ {id:'today',name:'Bugün',pages:[['workspace-today','Özet'],['simple-home','Bugün']]},
+ {id:'training',name:'Antrenman',pages:[['simple-activity','Hareket günlüğü'],['workspace-training','Seanslarım'],['workspace-plan','Dönemlerim'],['week','Takvim ve vardiya'],['training','Hareket ve set kaydı'],['coach','Program incelemesi']]},
  {id:'nutrition',name:'Beslenme',pages:[['nutrition','Günlük beslenme']]},
- {id:'health',name:'Sağlık',pages:[['health-overview','Genel bakış'],['health-sleep','Uyku'],['health-labs','Kan tahlilleri'],['health-report','Sağlık raporu'],['today','Günlük durum'],['reports','Vücut ve toparlanma']]},
- {id:'growth',name:'Gelişim',pages:[['workspace-analysis','Ortak analiz'],['analytics','Grafikler'],['detailed','Ölçümler'],['records','Kayıt yönetimi']]},
- {id:'profile',name:'Profilim',pages:[['account-profile','Hesabım'],['character','Spor profilim'],['settings','Tercihler ve veriler']]}
+ {id:'health',name:'Sağlık',pages:[['simple-health','Sağlığım'],['health-overview','Genel bakış'],['health-recovery','Toparlanma geçmişi'],['health-cycle','Regl günlüğü'],['health-profile','Sağlık profilim'],['health-sleep','Uyku'],['health-labs','Kan tahlilleri'],['health-report','Sağlık raporu'],['today','Günlük durum'],['reports','Vücut ve toparlanma']]},
+ {id:'growth',name:'Gelişim',pages:[['simple-progress','Gelişimim'],['workspace-analysis','Ortak analiz'],['analytics','Grafikler'],['detailed','Ölçümler'],['records','Kayıt yönetimi']]},
+ {id:'profile',name:'Profilim',pages:[['account-profile','Hesabım'],['character','Spor profilim'],['settings','Tercihler ve veriler'],['guide','Görünüm ve rehber']]}
 ];
 let selected='workspace-today',last=null,ready=false;
+const mode=()=>window.AccountGuide?.mode(db())||'professional';
+const firstPage=g=>mode()==='simple'?({today:'simple-home',training:'simple-activity',health:'simple-health',profile:'account-profile',growth:'simple-progress',nutrition:'nutrition'})[g]:({today:'workspace-today',training:'workspace-training',health:'health-overview',profile:'account-profile',growth:'workspace-analysis',nutrition:'nutrition'})[g];
+function refreshNavigation(){
+ document.body.dataset.interfaceMode=mode();
+ document.querySelectorAll('[data-workspace-group]').forEach(b=>{const g=groups.find(g=>g.id===b.dataset.workspaceGroup);b.hidden=mode()==='simple'&&['nutrition','growth'].includes(g.id);const label=b.querySelector('[data-nav-label]');if(label)label.textContent=mode()==='simple'&&g.id==='training'?'Hareket':g.name});
+}
+
 function navigate(page){
  const group=groups.find(g=>g.pages.some(p=>p[0]===page));if(!group)return;
  selected=page;
  document.querySelectorAll('.page').forEach(el=>el.classList.toggle('active',el.id===page));
  document.querySelectorAll('[data-workspace-group]').forEach(el=>el.setAttribute('aria-current',el.dataset.workspaceGroup===group.id?'page':'false'));
- q('workspace-subnav').innerHTML=group.pages.map(([id,name])=>`<button type="button" data-destination="${id}" ${id===page?'aria-current="page"':''}>${name}</button>`).join('');
+ refreshNavigation();
+ const visible=group.pages.filter(([id])=>!id.startsWith('simple-')&&(id!=='health-cycle'||db().personalHealthProfile?.cycleTracking));
+ q('workspace-subnav').innerHTML=mode()==='simple'?(page===firstPage(group.id)?'':`<button type="button" data-destination="${firstPage(group.id)}">← ${group.id==='training'?'Hareket':group.name}</button>`):visible.map(([id,name])=>`<button type="button" data-destination="${id}" ${id===page?'aria-current="page"':''}>${name}</button>`).join('');
  q('workspace-subnav').querySelectorAll('button').forEach(b=>b.onclick=()=>navigate(b.dataset.destination));
- q('pageTitle').textContent=group.name+' · '+group.pages.find(p=>p[0]===page)[1];
+ const pageLabel=group.pages.find(p=>p[0]===page)[1];q('pageTitle').textContent=pageLabel===group.name?pageLabel:group.name+' · '+pageLabel;
  if(page==='workspace-plan')renderPlans();
  window.dispatchEvent(new CustomEvent('workspace:navigate',{detail:{page}}));
  window.scrollTo({top:0,behavior:'instant'});
@@ -47,11 +56,11 @@ function historyHTML(rows){
 function refresh(){
  if(!ready||window.ALOSAccount.locked)return last;
  last=W.snapshot(db());const s=last;
- q('workspace-today').innerHTML=`<section class="card workspace-hero"><p class="sports-eyebrow">${esc(s.date)} · SENİN GÜNÜN</p><h3>${esc(window.ALOSAccount.user.name)}, bugün nasıl gidiyor?</h3><p>${s.period?esc(s.period.name)+' · '+(s.plan[0]?.week||Math.floor((Date.parse(s.date)-Date.parse(s.period.startDate))/604800000)+1)+'. hafta':'Kendi ritmine uygun bir dönem oluştur.'}</p><div class="workspace-stats">${metric(s.today.sessions,'Bugünkü seans')}${metric(fmt(s.today.minutes),'Kayıtlı dakika')}${metric(s.context.availableMinutes??'—','Ayırdığın dakika')}</div><div class="sports-actions"><button class="primary" data-action="daily">Günlük durumumu gir</button><button class="secondary" id="workspace-quick-record">Seans kaydet</button></div></section><section class="card"><h3>Bugünkü planın</h3>${s.plan.map(b=>`<article class="workspace-row"><div><strong>${esc(b.sportName)} · ${esc(b.durationMin)} dk</strong><p>${esc(b.prescription||'Çalışma tarifi belirtilmedi')}</p><small>${b.targetRir!==null?'Hedef RIR '+esc(b.targetRir)+' · ':''}${b.restSec!==null?'Dinlenme '+esc(b.restSec)+' sn':''}</small></div><button class="secondary" data-record-block="${esc(b.id)}">Gerçekleşeni kaydet</button></article>`).join('')||'<p class="hint">Bugün için çok branşlı çalışma planlanmamış.</p>'}</section><section class="card"><h3>Gözden geçir</h3>${s.findings.slice(0,3).map(f=>`<article class="workspace-row"><div><strong>${esc(f.title)}</strong><p>${esc(f.detail)}</p></div><button class="secondary" data-action="${f.action}">Aç</button></article>`).join('')||'<p class="hint">Kayıt bütünlüğü açısından ek uyarı yok. Bu, fizyolojik hazır oluş onayı değildir.</p>'}</section>`;
+ q('workspace-today').innerHTML=`<section class="card workspace-hero"><p class="sports-eyebrow">${esc(s.date)} · SENİN GÜNÜN</p><h3>${esc(window.ALOSAccount.user.name)}, bugün nasıl gidiyor?</h3><p>${s.period?esc(s.period.name)+' · '+(s.plan[0]?.week||Math.floor((Date.parse(s.date)-Date.parse(s.period.startDate))/604800000)+1)+'. hafta':'Kendi ritmine uygun bir dönem oluştur.'}</p><div class="workspace-stats">${metric(s.today.sessions,'Bugünkü seans')}${metric(fmt(s.today.minutes),'Kayıtlı dakika')}${metric(s.context.availableMinutes??'—','Ayırdığın dakika')}</div><div class="sports-actions"><button class="primary" data-action="daily">Günlük durumumu gir</button><button class="secondary" id="workspace-quick-record">Seans kaydet</button></div></section><section class="card"><h3>Bugünkü planın</h3>${s.plan.map(b=>`<article class="workspace-row"><div><strong>${esc(b.sportName)} · ${esc(b.durationMin)} dk${b.healthPaused?' · Sağlık nedeniyle öneri beklemede':b.healthAdjustment?' · Hafifletilmiş öneri':''}</strong><p>${esc(b.prescription||'Çalışma tarifi belirtilmedi')}</p><small>${b.targetRir!==null?'Hedef RIR '+esc(b.targetRir)+' · ':''}${b.restSec!==null?'Dinlenme '+esc(b.restSec)+' sn':''}</small></div><button class="secondary" data-record-block="${esc(b.id)}">Gerçekleşeni kaydet</button></article>`).join('')||'<p class="hint">Bugün için çok branşlı çalışma planlanmamış.</p>'}</section><section class="card"><h3>Gözden geçir</h3>${s.findings.slice(0,3).map(f=>`<article class="workspace-row"><div><strong>${esc(f.title)}</strong><p>${esc(f.detail)}</p></div><button class="secondary" data-action="${f.action}">Aç</button></article>`).join('')||'<p class="hint">Kayıt bütünlüğü açısından ek uyarı yok. Bu, fizyolojik hazır oluş onayı değildir.</p>'}</section>`;
  q('workspace-quick-record').onclick=()=>window.AthleteSports.openSession();bind(q('workspace-today'));
  q('workspace-analysis').innerHTML=`<section class="card"><p class="sports-eyebrow">SON 7 GÜN · ${esc(s.recent.from)} / ${esc(s.date)}</p><h3>Verinin anlattığı</h3><div class="workspace-stats">${metric(s.recent.sessions,'Toplam seans')}${metric(fmt(s.recent.minutes),'Kayıtlı dakika')}${metric(fmt(s.recent.loadAU),'Bilinen yük · AU')}${metric(s.recent.rated+'/'+s.recent.sessions,'Süre ve zorluk bulunan')}</div><p class="hint">${esc(s.notice)}</p><p class="hint">Önceki 7 gün: ${fmt(s.previous.minutes)} dk · ${fmt(s.previous.loadAU)} AU (${s.previous.rated}/${s.previous.sessions} tam kayıt). Eksik kayıtlar karşılaştırmayı sınırlar.</p></section><section class="card"><h3>Yorumlar ve dayanakları</h3>${s.findings.map(f=>`<article class="workspace-finding"><strong>${esc(f.title)}</strong><p>${esc(f.detail)}</p><small>Kural temelli kontrol · kaynak: ${esc(sourceLabel(f.source))}</small><button class="secondary" data-action="${f.action}">İlgili bölümü aç</button></article>`).join('')||'<p>Şu anda ek kontrol önerisi yok.</p>'}</section><section class="card"><h3>Aynı koşullardaki değişim</h3>${s.progress.length?s.progress.map(p=>`<article class="workspace-finding"><strong>${esc(p.sportName)} · ${esc(p.discipline)}</strong><p>${esc(p.conditions)} · ${p.count} kayıt</p><p>${esc(p.firstDate)}: ${fmt(p.firstValue)} → ${esc(p.date)}: ${fmt(p.value)} ${esc(p.unit)}</p><small>İlk ve son kayıt farkı: ${fmt(p.change)} ${esc(p.unit)}. Koşullar kullanıcı beyanıyla eşleşir; bu fark tek başına gelişim kanıtı değildir.</small></article>`).join(''):'<p class="hint">Karşılaştırma için aynı branş, alt disiplin ve koşullarla en az iki ölçümlü seans gir. Tempo karşılaştırmasında mesafe de eşleşmeli.</p>'}</section><section class="card"><h3>Analiz kapsamı</h3><ul><li>Branşlar ve hareket kayıtları aynı seans listesinde okunur. Aynı seansı kimliğiyle eşleştirmek çift sayımı önler.</li><li>Yük: yalnız girilmiş süre × seans zorluğu. Eksik değerler tahminle doldurulmaz.</li><li>Tempo ve başarı oranları ilgili branşa aittir; bütün sporları tek performans puanına çevirmeyiz.</li><li>Kas haritası mevcut hareket modelinin tahminidir. Genel branş kaydından kas hasarı veya iyileşme yüzdesi üretilmez.</li><li>Program ve ilerleme kuralı sana aittir. Yorumlar programı otomatik değiştirmez.</li></ul><a href="https://www.frontiersin.org/journals/neuroscience/articles/10.3389/fnins.2017.00612/full" target="_blank" rel="noopener noreferrer">Seans zorluğu ve yük izleme yöntemi</a></section>`;
  window.SportScienceUI?.render(q('workspace-analysis'),s.science);bind(q('workspace-analysis'));
- renderHistory();renderPlans();return s;
+ renderHistory();renderPlans();window.PersonalHealthUI?.refresh();window.AccountGuidance?.refresh();return s;
 }
 function renderHistory(){
  const el=q('workspace-training'),previousFilter=q('workspace-history-search')?.value||'';
@@ -101,8 +110,8 @@ function init(){
  const main=document.querySelector('main.main');if(!main)return;
  for(const id of ['workspace-today','workspace-plan','workspace-training','workspace-analysis']){const section=document.createElement('section');section.id=id;section.className='page';main.append(section)}
  const old=document.querySelector('.sidebar nav');old.classList.add('account-legacy-nav');old.setAttribute('aria-hidden','true');
- const nav=document.createElement('nav');nav.className='workspace-nav';nav.setAttribute('aria-label','Ana gezinme');nav.innerHTML=groups.map(g=>`<button type="button" data-workspace-group="${g.id}">${g.name}</button>`).join('');old.after(nav);
- nav.querySelectorAll('button').forEach(b=>b.onclick=()=>navigate(groups.find(g=>g.id===b.dataset.workspaceGroup).pages[0][0]));
+ const nav=document.createElement('nav');nav.className='workspace-nav';nav.setAttribute('aria-label','Ana gezinme');nav.innerHTML=groups.map(g=>`<button type="button" data-workspace-group="${g.id}"><span data-nav-label>${g.name}</span></button>`).join('');old.after(nav);
+ nav.querySelectorAll('button').forEach(b=>b.onclick=()=>navigate(firstPage(b.dataset.workspaceGroup)));
  const sub=document.createElement('nav');sub.id='workspace-subnav';sub.setAttribute('aria-label','Bölüm içeriği');document.querySelector('.topbar').after(sub);
  window.goToPage=navigate;
  old.querySelectorAll('button[data-page]').forEach(b=>b.onclick=()=>navigate(b.dataset.page));
@@ -112,6 +121,6 @@ function init(){
  window.EngineBus?.subscribe?.('athlete.state.ready',refresh,'workspace-view');
  window.EngineBus?.subscribe?.('sports.context.changed',refresh,'workspace-sports');
 }
-window.AthleteWorkspace={refresh,snapshot:()=>last||W.snapshot(db()),navigate,openPeriod};
+window.AthleteWorkspace={refresh,snapshot:()=>last||W.snapshot(db()),navigate,openPeriod,refreshNavigation,current:()=>selected,home:()=>navigate(firstPage('today'))};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();

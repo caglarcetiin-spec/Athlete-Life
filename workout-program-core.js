@@ -44,7 +44,8 @@ function validateExecution(steps,input=[]){
 function execution(db,input,previous){
  const block=(db.multisportPeriods||[]).find(p=>p.id===input.periodId)?.blocks.find(b=>b.id===input.planBlockId);
  const same=previous?.periodId===input.periodId&&previous?.planBlockId===input.planBlockId;
- const steps=validateSteps(same&&previous?.workout?.steps?previous.workout.steps:block?.steps||[]);
+ const effective=block&&root.PersonalHealth?root.PersonalHealth.adjustBlock(db,block,root.PersonalHealth.date(input.date)):block;
+ const steps=validateSteps(same&&previous?.workout?.steps?previous.workout.steps:effective?.steps||[]);
  if(!steps.length){if(input.workout?.actual?.some(x=>x.done))throw new Error('Bu çalışma planla eşleşmiyor.');return null;}
  const actual=validateExecution(steps,input.workout?.actual||(same?previous?.workout?.actual:[])||[]);
  return {version:1,steps:copy(steps),actual,plannedSets:steps.reduce((n,s)=>n+s.sets,0),recordedSets:actual.filter(x=>x.done).length};

@@ -36,9 +36,17 @@ function assess(d={}){
  return {version:V,status,fatigue,illness,flags:f,redFlag:red,action,volumeFactor:volume,intensityFactor:intensity,readinessPenalty:penalty,label,reason,symptomCount};
 }
 function readinessPenalty(d){return assess(d).readinessPenalty}
+function assessFor(db,date){
+ const base=assess(db.daily?.[date]||{}),personal=window.PersonalHealth?.dose?.(db,date);
+ if(!personal)return base;
+ const c=personal.context,detail=c.reasons.map(r=>r.message).join(' ');
+ if(personal.blocked)return {...base,action:'stop_hard_training',volumeFactor:0,intensityFactor:0,readinessPenalty:Math.max(base.readinessPenalty,30),label:'Sağlık durumunu değerlendir',reason:detail||base.reason,personal};
+ if(personal.volumeFactor<1||personal.loadFactor<1)return {...base,action:base.action==='normal'?'reduce':base.action,volumeFactor:Math.min(base.volumeFactor,personal.volumeFactor),intensityFactor:Math.min(base.intensityFactor,personal.loadFactor),label:base.action==='stop_hard_training'?base.label:'Kontrollü dönüş',reason:[base.action==='normal'?'':base.reason,detail,c.adaptation?'Seçtiğin hafif hafta uygulanıyor.':''].filter(Boolean).join(' '),personal};
+ return {...base,personal};
+}
 function coachTypeOverride(d,proposed){
  const a=assess(d);return ["recovery","stop_hard_training"].includes(a.action)?"recovery":proposed;
 }
-window.HealthStateEngine={version:V,assess,readinessPenalty,coachTypeOverride};
-if(typeof module!=="undefined"&&module.exports)module.exports={assess,readinessPenalty,coachTypeOverride};
+window.HealthStateEngine={version:V,assess,assessFor,readinessPenalty,coachTypeOverride};
+if(typeof module!=="undefined"&&module.exports)module.exports={assess,assessFor,readinessPenalty,coachTypeOverride};
 })();

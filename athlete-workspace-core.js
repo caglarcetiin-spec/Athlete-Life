@@ -57,7 +57,7 @@ function planned(db,date){
  const p=periodFor(db,date);if(!p)return [];
  const day=(new Date(date+'T12:00:00Z').getUTCDay()+6)%7;
  const week=Math.floor((Date.parse(date)-Date.parse(p.startDate))/604800000)+1;
- return p.blocks.filter(b=>b.day===day).map(b=>({...clone(b),periodId:p.id,periodName:p.name,date,week}));
+ return p.blocks.filter(b=>b.day===day).map(b=>({...clone(b),periodId:p.id,periodName:p.name,date,week})).map(b=>root.PersonalHealth?root.PersonalHealth.adjustBlock(db,b,date):b);
 }
 function validatePeriod(db,input,today=K.dayKey()){
  if(!String(input.name||'').trim()||String(input.name).length>100)throw new Error('Dönem adı 1–100 karakter olmalı.');
@@ -94,6 +94,7 @@ function reviewPeriod(db,input,today=K.dayKey()){
  const selected=(db.athleteProfile?.sports||[]).map(s=>s.sportId);
  if(selected.some(id=>!p.blocks.some(b=>b.sportId===id)))notes.push('Profilindeki bazı branşlar bu dönemde yer almıyor; bu bilinçli bir öncelik olabilir.');
  const science=root.SportScience?.reviewBlocks(p.blocks,db.athleteProfile)||[];
+ const personalHealth=root.PersonalHealth?.context(db,today);if(personalHealth){notes.push(...personalHealth.notes.map(n=>n.message));notes.push(...personalHealth.reasons.map(n=>'Güncel sağlık: '+n.message))}
  return {period:p,minutes,notes,science,notice:'Takvim, çalışma ayrıntısı ve kaynaklı antrenman ilkeleri birlikte incelenir. Program yalnız sen onayladığında etkinleşir.'};
 }
 function activate(db,input,today=K.dayKey(),expected=JSON.stringify(db.multisportPeriods||[])){
@@ -137,7 +138,7 @@ function snapshot(db,date=K.dayKey()){
  if(!db.daily?.[date])finding('daily','Bugünkü durumunu ekle','Uyku ve sağlık kaydı yok; antrenmana hazır olduğun varsayılmıyor.','daily:'+date,'daily');
  if(recent.missingDuration||recent.missingEffort)finding('missing','Yük özetinde eksik veri var',`${recent.sessions} seansın ${recent.rated} tanesinde süre ve zorluk birlikte var. Eksikler sıfır yük anlamına gelmez.`,'session-ledger','record');
  if(recent.issues.length)finding('links','Seans bağlantılarını kontrol et',recent.issues.map(i=>i.message).join(' '),'session-ledger','record');
- const health=root.HealthStateEngine?.assess?.(db.daily?.[date]||{});
+ const health=root.HealthStateEngine?.assessFor?.(db,date)||root.HealthStateEngine?.assess?.(db.daily?.[date]||{});
  if(health&&health.action!=='normal')finding('health','Sağlık kaydını dikkate al',health.reason,'health:'+date,'daily');
  const used=plan.reduce((n,b)=>n+b.durationMin,0);
  if(context.availableMinutes!==null&&used>context.availableMinutes)finding('time','Plan zamanına sığmıyor',`${used} dakika çalışma, ${context.availableMinutes} dakika ayrılan zaman. Süreyi veya günü düzenleyebilirsin.`,'profile+period','plan');

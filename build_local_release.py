@@ -9,7 +9,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 NAME = 'Athlete_Life_Local_2026-09-16'
-EXTRAS = '''health_report.py health_report_pdf.py health-report-ui.js assets/report-fonts/LICENSE_LIBERATION premium-workspace.css health-lab-library.js health-core.js wellness-ui.js appearance.css appearance.js accounts.html accounts.css accounts-ui.js account-context.js
+EXTRAS = '''personal-health-core.js personal-health-ui.js account-guidance-core.js account-guidance-ui.js account-guidance.css health_report.py health_report_pdf.py health-report-ui.js assets/report-fonts/LICENSE_LIBERATION premium-workspace.css health-lab-library.js health-core.js wellness-ui.js appearance.css appearance.js accounts.html accounts.css accounts-ui.js account-context.js
 account-sync.js account-security.js account-photos.js sport-catalog.js
 sport-science-engine.js sport-science-ui.js workout-program-core.js workout-program-ui.js
 account-design.js account-design.css account-personal-model.js account-personal-ui.js private_delivery.py

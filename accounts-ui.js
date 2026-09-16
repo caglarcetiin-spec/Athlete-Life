@@ -10,7 +10,7 @@ function select(next){
  q('account-name').required=signup;q('account-confirm').required=signup;
  q('account-password').minLength=signup?15:1;q('account-password').autocomplete=signup?'new-password':'current-password';
  q('form-title').textContent=signup?'Kendi yolculuğunu başlat.':'Yeniden hoş geldin.';
- q('form-description').textContent=signup?'Sana ait bir profil, sana ait kayıtlar.':'Kaldığın yerden devam et.';
+ q('form-description').textContent=signup?'Hesabını oluştur; ardından Basit veya Profesyonel görünümünü seç. Kısa rehber ilk adımlarında yanında.':'Kaldığın yerden devam et.';
  q('account-submit').textContent=signup?'Profilimi oluştur':'Giriş yap';q('account-message').textContent='';
  q(signup?'account-name':'account-username').focus();
 }

@@ -177,7 +177,7 @@ function init(){
  const card=document.createElement('section');card.id='sports-profile-card';card.className='card';target.prepend(card);render();
  window.EngineBus?.register?.('AthleteSports',{version:'1',inputs:['athleteProfile','sportSessions','trainingPeriods'],outputs:['sports.context.changed']});
  window.EngineBus?.subscribe?.('athlete.state.ready',render,'sports-profile-view');
- if(!db().athleteProfile?.completedAt)openProfile();
+ // AccountGuidance provides a shorter, optional welcome flow.
 }
 window.AthleteSports={persist,dialog,openProfile,openLibrary,openSession,render,context:date=>K.context(db(),date),summary:options=>K.summary(db(),options)};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();

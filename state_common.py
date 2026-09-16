@@ -17,6 +17,7 @@ def checksum(data) -> str:
 
 def data_weight(data: dict) -> int:
     keys = (
+        "healthEpisodes", "healthAdjustments", "personalHealthHistory", "cycleDays", "healthLabRecords", "healthLabHistory",
         "daily", "scheduleByDate", "weekOptimizations", "trainingLogs",
         "foodLogs", "waterLogs", "painLogs", "sessionFeedback", "futurePlans",
         "capabilityRecords", "guidedWorkoutHistory",
@@ -28,6 +29,8 @@ def data_weight(data: dict) -> int:
         if isinstance(v, dict): n += len(v)
         elif isinstance(v, list): n += len(v)
     if isinstance(data.get("athleteProfile"), dict) and data["athleteProfile"].get("completedAt"):
+        n += 1
+    if isinstance(data.get("personalHealthProfile"), dict):
         n += 1
     return n
 

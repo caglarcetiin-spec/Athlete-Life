@@ -110,7 +110,7 @@ function analyze(d,k=today()){
  const labels={chest:"Göğüs",lats:"Sırt",quads:"Ön bacak",hamstrings:"Arka bacak"};
  if(d.goal!=="endurance")Object.entries(labels).forEach(([m,label])=>{if(!muscles[m])notes.push(`${label}: programda belirgin yük yok.`);else if((frequencies[m]||0)<2)notes.push(`${label}: haftada tek gün. İkinci, daha hafif teması değerlendir.`);if((muscles[m]||0)>20)notes.push(`${label}: haftalık hacim yüksek (${muscles[m].toFixed(1)} ağırlıklı set); toparlanma ve performansı izle.`);});
  if(d.weekly.every(r=>r.length))notes.push("Her gün seans var; en az bir dinlenme veya çok hafif gün ayırmayı değerlendir.");
- const daily=data().daily?.[k],ready=daily?window.readiness?.(daily):null,health=window.HealthStateEngine?.assess?.(daily||{});
+ const daily=data().daily?.[k],ready=daily?window.readiness?.(daily):null,health=window.HealthStateEngine?.assessFor?.(data(),k);
  if(ready==null)notes.push("Bugünün uyku/enerji kaydı eksik; günlük dozun güveni sınırlı.");else if(ready<68)notes.push(`Bugünkü hazır oluş ${Math.round(ready)}/100: günlük reçete hacmi ve yükü azaltabilir.`);
  if(health?.action&&health.action!=="normal")notes.push(`Sağlık: ${health.label}. Günlük güvenlik sınırı bu taslağa da uygulanır.`);
  const environment=window.SportsSciencePolicy?.recoveryEnvironment?.(k);

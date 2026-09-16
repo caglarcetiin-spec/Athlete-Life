@@ -5,7 +5,7 @@ const V="8.0";
 const clamp=(x,a,b)=>Math.max(a,Math.min(b,+x||0));
 function weights(){return {muscle:9,planche:10,frontLever:9,run:6,weightGain:8}}
 function constraints(date,type){
- const d=window.db?.daily?.[date]||window.ALOSRuntime?.getDb?.()?.daily?.[date]||{},health=window.HealthStateEngine?.assess?.(d)||{},pain=window.maxPain?.(date)||0,time=window.availableMinutes?.(date)||75;
+ const d=window.db?.daily?.[date]||window.ALOSRuntime?.getDb?.()?.daily?.[date]||{},health=window.HealthStateEngine?.assessFor?.(window.ALOSRuntime?.getDb?.()||{},date)||{},pain=window.maxPain?.(date)||0,time=window.availableMinutes?.(date)||75;
  const mesh=window.AthleteLoadMesh?.rollingBefore?.(date,2)||{},trend=window.PerformanceTrendV2?.summary?.("monthly",date)||{};
  const shared=window.AthleteWorkspaceCore?.snapshot?.(window.ALOSRuntime?.getDb?.()||{},date)||null;
  return {health,pain,time:shared?.context.availableMinutes==null?time:Math.min(time,shared.context.availableMinutes),mesh,trend,sharedTraining:shared,plannedType:type};

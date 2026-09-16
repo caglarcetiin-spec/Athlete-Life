@@ -176,6 +176,34 @@ class HTTPTests(unittest.TestCase):
         self.assertIsNone(self.request('GET', '/api/state', token=other_token,
                                       user=self.accounts.session(other_token))[1]['data'])
 
+    def test_guidance_and_personal_health_follow_account_between_devices(self):
+        person = self.accounts.signup('guide_owner', PASSWORD, 'Guide Test')
+        token = self.accounts.start_session(person); user = self.accounts.session(token)
+        records = {'settings': {'interfaceMode':'simple','theme':'dark','welcomeCompletedAt':'2026-09-16'},
+            'personalHealthProfile':{'sex':'female','birthDate':'1995-09-10','cycleTracking':True},
+            'cycleDays':{'2026-09-16':{'bleeding':'medium','pain':4}},
+            'healthEpisodes':[{'id':'synthetic-episode','state':'recovering'}],
+            'personalHealthHistory':[{'kind':'episode','id':'synthetic-episode'}],
+            'healthAdjustments':[{'id':'synthetic-week','volumeFactor':0.7}],
+            'sportSessions':[{'id':'existing','durationMin':20}]}
+        self.assertEqual(self.request('POST','/api/state',{'data':records,'baseRevision':0},token,user)[0],200)
+        second = self.accounts.start_session(person); session = self.accounts.session(second)
+        remote = self.request('GET','/api/state',token=second,user=session)[1]
+        for key in records: self.assertEqual(remote['data'][key],records[key])
+        remote['data']['settings']['interfaceMode']='professional'
+        self.assertEqual(self.request('POST','/api/state',{'data':remote['data'],'baseRevision':remote['revision']},second,session)[0],200)
+        saved = self.request('GET','/api/state',token=token,user=user)[1]['data']
+        for key in records:
+            if key != 'settings': self.assertEqual(saved[key],records[key])
+        self.assertEqual(saved['settings']['interfaceMode'],'professional')
+        other=self.accounts.signup('guide_other',PASSWORD,'Other')
+        other_token=self.accounts.start_session(other);other_session=self.accounts.session(other_token)
+        self.assertIsNone(self.request('GET','/api/state',token=other_token,user=other_session)[1]['data'])
+        for asset in ['/personal-health-core.js','/personal-health-ui.js','/account-guidance-core.js','/account-guidance-ui.js','/account-guidance.css']:
+            self.assertEqual(self.request('GET',asset,token=token,user=user)[0],200)
+        source=self.request('GET','/index.html',token=token,user=user)[1]
+        self.assertLess(source.index('src="personal-health-core.js"'),source.index('src="app.js'))
+
     def test_health_report_is_private_read_only_and_revision_bound(self):
         person = self.accounts.signup('report_owner', PASSWORD, 'PDF Deneme')
         token = self.accounts.start_session(person); user = self.accounts.session(token)

@@ -1,0 +1,10 @@
+'use strict';
+const assert=require('node:assert/strict');
+const {ctx}=require('./integration-v9.test.js');
+const old={settings:{interfaceMode:'professional'},personalHealthProfile:{birthDate:'1990-01-01',cycleTracking:true},healthEpisodes:[{id:'illness',assessmentDate:'2026-09-15',state:'ongoing'},{id:'other',state:'resolved'}],cycleDays:{'2026-09-15':{date:'2026-09-15',pain:5},'2026-09-14':{date:'2026-09-14',pain:2}},personalHealthHistory:[],healthAdjustments:[{id:'week',from:'2026-09-15',to:'2026-09-21'}],sportSessions:[{id:'existing'}]};
+const incoming={settings:{interfaceMode:'simple'},personalHealthProfile:{birthDate:'1990-01-01',cycleTracking:false},healthEpisodes:[{id:'illness',assessmentDate:'2026-09-16',state:'recovering'}],cycleDays:{'2026-09-15':{date:'2026-09-15',pain:3}},healthAdjustments:[{id:'week',from:'2026-09-15',to:'2026-09-21'}]};
+const original=JSON.stringify(old),merged=ctx.BackupVault.mergeDB(old,incoming);
+assert.equal(merged.settings.interfaceMode,'simple');assert.equal(merged.healthEpisodes.length,2);assert.equal(Object.keys(merged.cycleDays).length,2);assert.equal(merged.healthAdjustments.length,1);assert.equal(merged.sportSessions[0].id,'existing');
+assert.equal(merged.personalHealthHistory.length,3);assert.equal(merged.personalHealthHistory.find(x=>x.kind==='cycle').before.pain,5);assert.equal(merged.personalHealthHistory.find(x=>x.kind==='episode').before.state,'ongoing');assert.equal(JSON.stringify(old),original);
+const repeated=ctx.BackupVault.mergeDB(merged,incoming);assert.equal(repeated.personalHealthHistory.length,3);assert.equal(JSON.stringify(ctx.BackupVault.normalizeForApp(merged).cycleDays),JSON.stringify(merged.cycleDays));
+console.log('Personal health backup: merge, collision history, idempotency and unrelated records PASS');
