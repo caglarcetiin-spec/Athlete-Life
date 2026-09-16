@@ -144,8 +144,8 @@ class AccountHandler(SimpleHTTPRequestHandler):
             return self.send_bytes(200, f'window.ALOSAccountConfig={config};'.encode(), 'text/javascript; charset=utf-8')
         if path == 'index.html':
             source = (ROOT / 'index.html').read_text()
-            source = source.replace('</head>', '<link rel="stylesheet" href="accounts.css"><link rel="stylesheet" href="sports-profile.css"><link rel="stylesheet" href="account-workspace.css"><link rel="stylesheet" href="account-design.css"><link rel="stylesheet" href="appearance.css"><link rel="stylesheet" href="premium-workspace.css"><script src="account-bootstrap.js"></script><script src="account-context.js"></script><script src="appearance.js"></script><script src="account-personal-model.js"></script><script src="entry-fields-core.js"></script><script src="personal-health-core.js"></script><script src="account-guidance-core.js"></script><link rel="stylesheet" href="account-guidance.css"><link rel="stylesheet" href="account-entry.css"><link rel="stylesheet" href="training-planner.css"></head>')
-            source = source.replace('</body>', '<script src="sport-catalog.js"></script><script src="sport-science-engine.js"></script><script src="workout-program-core.js"></script><script src="sports-profile-core.js"></script><script src="athlete-workspace-core.js"></script><script src="training-planner-core.js"></script><script src="sports-profile-ui.js"></script><script src="account-workspace.js"></script><script src="account-security.js"></script><script src="account-photos.js"></script><script src="sport-science-ui.js"></script><script src="workout-program-ui.js"></script><script src="account-design.js"></script><script src="account-personal-ui.js"></script><script src="health-lab-library.js"></script><script src="health-core.js"></script><script src="wellness-ui.js"></script><script src="health-report-ui.js"></script><script src="personal-health-ui.js"></script><script src="account-guidance-ui.js"></script><script src="account-entry-ui.js"></script><script src="training-planner-ui.js"></script></body>')
+            source = source.replace('</head>', '<link rel="stylesheet" href="accounts.css"><link rel="stylesheet" href="sports-profile.css"><link rel="stylesheet" href="account-workspace.css"><link rel="stylesheet" href="account-design.css"><link rel="stylesheet" href="appearance.css"><link rel="stylesheet" href="premium-workspace.css"><script src="account-bootstrap.js"></script><script src="account-context.js"></script><script src="appearance.js"></script><script src="account-personal-model.js"></script><script src="entry-fields-core.js"></script><script src="personal-health-core.js"></script><script src="account-guidance-core.js"></script><link rel="stylesheet" href="account-guidance.css"><link rel="stylesheet" href="account-entry.css"><link rel="stylesheet" href="training-planner.css"><link rel="stylesheet" href="workspace-polish.css"></head>')
+            source = source.replace('</body>', '<script src="sport-catalog.js"></script><script src="sport-science-engine.js"></script><script src="workout-program-core.js"></script><script src="sports-profile-core.js"></script><script src="athlete-workspace-core.js"></script><script src="training-planner-core.js"></script><script src="sports-profile-ui.js"></script><script src="account-workspace.js"></script><script src="account-security.js"></script><script src="account-photos.js"></script><script src="sport-science-ui.js"></script><script src="workout-program-ui.js"></script><script src="account-design.js"></script><script src="account-personal-ui.js"></script><script src="health-lab-library.js"></script><script src="health-core.js"></script><script src="wellness-ui.js"></script><script src="health-report-ui.js"></script><script src="personal-health-ui.js"></script><script src="account-guidance-ui.js"></script><script src="account-entry-ui.js"></script><script src="training-planner-ui.js"></script><script src="workspace-lifecycle-core.js"></script><script src="workspace-lifecycle-ui.js"></script><script src="profile-avatar.js"></script></body>')
             source = source.replace('src="server-sync.js', 'src="account-sync.js')
             source = source.replace('>Çağlar</button>', '>Profilim</button>')
             source = source.replace('Çağlar için Hibrit Taslak Doldur', 'Hibrit Örnek Taslak Doldur')
@@ -157,10 +157,10 @@ class AccountHandler(SimpleHTTPRequestHandler):
             return self.send_bytes(200, code.encode(), 'text/javascript')
         target = (ROOT / path).resolve()
         scripts = set(re.findall(r'<script src="([^"?]+)', (ROOT / 'index.html').read_text()))
-        scripts |= {'training-planner-core.js', 'training-planner-ui.js', 'entry-fields-core.js', 'account-entry-ui.js', 'personal-health-core.js', 'personal-health-ui.js', 'account-guidance-core.js', 'account-guidance-ui.js', 'health-report-ui.js', 'health-lab-library.js', 'health-core.js', 'wellness-ui.js', 'account-context.js', 'account-sync.js', 'sport-catalog.js', 'sport-science-engine.js', 'workout-program-core.js', 'workout-program-ui.js', 'sport-science-ui.js', 'account-design.js', 'account-personal-model.js', 'account-personal-ui.js', 'sports-profile-core.js', 'sports-profile-ui.js', 'athlete-workspace-core.js', 'account-workspace.js', 'account-security.js', 'account-photos.js'}
+        scripts |= {'workspace-lifecycle-core.js', 'workspace-lifecycle-ui.js', 'profile-avatar.js', 'training-planner-core.js', 'training-planner-ui.js', 'entry-fields-core.js', 'account-entry-ui.js', 'personal-health-core.js', 'personal-health-ui.js', 'account-guidance-core.js', 'account-guidance-ui.js', 'health-report-ui.js', 'health-lab-library.js', 'health-core.js', 'wellness-ui.js', 'account-context.js', 'account-sync.js', 'sport-catalog.js', 'sport-science-engine.js', 'workout-program-core.js', 'workout-program-ui.js', 'sport-science-ui.js', 'account-design.js', 'account-personal-model.js', 'account-personal-ui.js', 'sports-profile-core.js', 'sports-profile-ui.js', 'athlete-workspace-core.js', 'account-workspace.js', 'account-security.js', 'account-photos.js'}
         is_library = path in LIBRARIES or re.fullmatch(r'[a-z-]+-(evidence|rules)\.json', path)
         is_asset = path.startswith('assets/') and target.suffix.lower() in {'.png', '.jpg', '.svg', '.glb', '.woff', '.woff2', '.ico'}
-        if not target.is_relative_to(ROOT) or not target.is_file() or not (path in scripts or path in {'training-planner.css', 'account-entry.css', 'account-guidance.css', 'premium-workspace.css', 'styles.css', 'sports-profile.css', 'account-workspace.css', 'account-design.css'} or is_library or is_asset):
+        if not target.is_relative_to(ROOT) or not target.is_file() or not (path in scripts or path in {'workspace-polish.css', 'training-planner.css', 'account-entry.css', 'account-guidance.css', 'premium-workspace.css', 'styles.css', 'sports-profile.css', 'account-workspace.css', 'account-design.css'} or is_library or is_asset):
             return self.json(404, {'ok': False, 'error': 'Bulunamadı.'})
         return super().do_GET()
 
@@ -200,6 +200,20 @@ class AccountHandler(SimpleHTTPRequestHandler):
             csrf = self.headers.get('X-ALOS-CSRF') or body.get('csrf', '')
             if not isinstance(csrf, str) or not secrets.compare_digest(csrf, user['csrf']):
                 raise AccountError('Oturum doğrulanamadı. Sayfayı yenile.', 403)
+            if path in ('/api/activity/report/preview', '/api/activity/report/pdf'):
+                from activity_report import build_report, render_pdf
+                state = self.server.states.read_state(user['id'])
+                revision = state['revision'] if state else 0
+                if type(body.get('baseRevision')) is not int or body['baseRevision'] != revision:
+                    raise AccountError('Kayıtlar değişti. Raporu güncel verilerle yeniden önizle.', 409)
+                try:
+                    report = build_report(state['data'] if state else {}, user, body.get('from'), body.get('to'), body.get('archiveId', ''), revision)
+                except ValueError as error:
+                    raise AccountError(str(error)) from None
+                if path.endswith('/preview'):
+                    return self.json(200, {'ok': True, 'report': {**report, 'sections': [{'title': s['title'], 'count': s['count']} for s in report['sections']]}})
+                pdf = render_pdf(report)
+                return self.send_bytes(200, pdf, 'application/pdf')
             if path in ('/api/health/report/preview', '/api/health/report/pdf'):
                 from health_report import build_summary
                 from health_report_pdf import fit_summary, render_pdf

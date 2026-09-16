@@ -17,7 +17,7 @@ def checksum(data) -> str:
 
 def data_weight(data: dict) -> int:
     keys = (
-        "athleteGoals", "goalMeasurements", "goalHistory", "workoutRunHistory", "healthEpisodes", "healthAdjustments", "personalHealthHistory", "cycleDays", "healthLabRecords", "healthLabHistory",
+        "workspaceArchives", "removedSportSessions", "athleteGoals", "goalMeasurements", "goalHistory", "workoutRunHistory", "healthEpisodes", "healthAdjustments", "personalHealthHistory", "cycleDays", "healthLabRecords", "healthLabHistory",
         "daily", "scheduleByDate", "weekOptimizations", "trainingLogs",
         "foodLogs", "waterLogs", "painLogs", "sessionFeedback", "futurePlans",
         "capabilityRecords", "guidedWorkoutHistory",

@@ -1761,12 +1761,13 @@ function sessionTypeFromLogs(k){
 }
 function completedSessionType(k){return db.sessionFeedback[k]?.type||sessionTypeFromLogs(k)}
 function effectiveSetFactor(r){
- const rir=Number(r.rir),base=!Number.isFinite(rir)?.85:rir<=1?1:rir===2?.9:rir===3?.75:.6;
+ const rir=r.rir==null||r.rir===""?NaN:Number(r.rir),base=!Number.isFinite(rir)?.85:rir<=1?1:rir===2?.9:rir===3?.75:.6;
  const confidence=r?.dataConfidence==="medium"?.65:r?.dataConfidence==="low"?.40:1;
  return base*confidence;
 }
 function muscleSetsForRow(r){
- const map=V5_EXERCISE_MUSCLES[r.name]||window.EXERCISE_KNOWLEDGE?.[r.name]?.muscles||{};
+ const alias={"Bodyweight Squat":"Squat","Incline Push-Up":"Push-Up","Assisted Pull-Up":"Pull-Up","Band Row":"Ring Row","Dumbbell Row":"Barbell Row"};
+ const map=V5_EXERCISE_MUSCLES[r.name]||V5_EXERCISE_MUSCLES[alias[r.name]]||window.EXERCISE_KNOWLEDGE?.[r.name]?.muscles||{};
  const fallback=(r.sets||[]).filter(x=>+x>0).length*effectiveSetFactor(r);
  const dose=typeof window.exerciseDoseUnits==="function"?window.exerciseDoseUnits(r):fallback;
  const out={};Object.entries(map).forEach(([m,c])=>out[m]=dose*c);return out;
@@ -1783,6 +1784,12 @@ function recoveryReferenceTime(k=todayKey()){
  return new Date(k+"T23:59:59");
 }
 function trainingRowTime(key,row){
+ if(row?.timestampPrecision==="date"){
+  const run=(db.workoutRunHistory||[]).find(r=>r.sportSessionId===row.sportSessionId&&row.sportSessionId);
+  const precise=run?.finishedAt?new Date(run.finishedAt):null;
+  if(precise&&!Number.isNaN(+precise)&&`${precise.getFullYear()}-${String(precise.getMonth()+1).padStart(2,"0")}-${String(precise.getDate()).padStart(2,"0")}`===key)return precise;
+  return new Date(key+"T00:00:00");
+ }
  if(row?.historicalEntry&&!row.performedAt)return new Date(key+"T18:00:00");
  const raw=row?.performedAt||row?.recordedAt||row?.completedAt||db.sessionFeedback?.[key]?.completedAt;
  const t=raw?new Date(raw):new Date(key+"T18:00:00");
@@ -1796,7 +1803,7 @@ function trainingRowTime(key,row){
  return t;
 }
 function rowRecoveryHalfLifeHours(row){
- const rir=Number(row?.rir),nearFailure=Number.isFinite(rir)?clamp((3-rir)/3,0,1):.45;
+ const rir=row?.rir==null||row.rir===""?NaN:Number(row.rir),nearFailure=Number.isFinite(rir)?clamp((3-rir)/3,0,1):.45;
  const impact=window.AthleteLoadMesh?.movementImpact?.(row,{})||window.PhysiologicalImpactEngine?.movementImpact?.(row,{})||{};
  const cost=+impact?.loads?.recoveryCost||50,mechanical=+impact?.loads?.mechanicalDemand||50,neural=+impact?.loads?.neuralDemand||50;
  // Engineering estimate, not a biological assay: typical resistance-session recovery often spans ~24–72 h,
@@ -1831,10 +1838,11 @@ function muscleRecoveryDetail(m,k=todayKey()){
    entries.push({key,name:r.name,at:at.toISOString(),hours,initial:dose,remaining,halfLife:effectiveHalfLife});
   });
  }
- const load=entries.reduce((a,x)=>a+x.remaining,0),readiness=clamp(Math.round(100-load*7.5),0,100),latest=entries.sort((a,b)=>b.at.localeCompare(a.at))[0]||null;
- const targetLoad=(100-85)/7.5;let etaHours=0;
+ const load=entries.reduce((a,x)=>a+x.remaining,0),readiness=100/(1+load*.075),latest=entries.sort((a,b)=>b.at.localeCompare(a.at))[0]||null;
+ const targetLoad=(100/85-1)/.075;let etaHours=0;
  if(load>targetLoad&&load>0){const weightedHalf=entries.length?entries.reduce((a,x)=>a+x.halfLife*x.remaining,0)/Math.max(.001,load):36;etaHours=Math.max(0,weightedHalf*Math.log2(load/targetLoad));}
- return {load,readiness,latest,etaHours,entries};
+ const initialLoad=entries.reduce((n,e)=>n+e.initial,0);
+ return {load,readiness,latest,etaHours,entries,initialLoad,releasedPercent:initialLoad?100*(1-load/initialLoad):null,calculatedAt:ref.toISOString()};
 }
 function sessionMuscleKeys(type){return type==="pull"?["lats","upperBack","biceps","forearms","rearDelts","scapular"]:type==="push"?["chest","frontDelts","sideDelts","triceps","scapular"]:type==="legs"?["quads","glutes","hamstrings","adductors","calves","spinalErectors"]:type==="run"?["quads","hamstrings","glutes","calves"]:[]}
 function muscleRecoveryPenalty(type,k=todayKey()){
@@ -1876,6 +1884,7 @@ const ATHLETE_PROGRAM_MICROCYCLE_V92={
   0:{type:"recovery",name:"Recovery / Rest"}
 };
 function programBaseSlotV92(k){
+ if(window.ALOSAccount&&db.workspaceGeneration&&!(db.trainingPeriods||[]).length)return {type:"recovery",name:"Yeni dönemini oluştur",key:k};
  const wd=new Date(k+"T12:00:00").getDay(),slot=ATHLETE_PROGRAM_MICROCYCLE_V92[wd]||ATHLETE_PROGRAM_MICROCYCLE_V92[0];
  return {...slot,baseDate:k,weekday:wd};
 }
@@ -1898,7 +1907,7 @@ function programPhaseLoadV92(k){
 }
 function buildFuturePlanV5(days=14,reason="program_engine_v9.2"){
  ensureLifecycle();db.futurePlans=db.futurePlans||{};db.programEngine=db.programEngine||{version:"9.2.8",assignments:{},history:[]};
- db.programEngine.version="9.2";db.programEngine.assignments=db.programEngine.assignments||{};
+ db.programEngine.version="9.2";db.programEngine.assignments=db.programEngine.assignments||{};db.programEngine.history=Array.isArray(db.programEngine.history)?db.programEngine.history:[];
  const start=todayKey(),end=addDaysKey(start,days-1),all=futureDateKeys(days,start);
  // Only unlocked today/future projections may be rebuilt. Started canonical sessions are immutable.
  all.forEach(k=>{if(!window.CanonicalSessionEngine?.isLocked?.(k))delete db.futurePlans[k]});
@@ -2233,7 +2242,7 @@ function recoveryReadinessForMuscle(m,k=todayKey()){
 }
 
 window.ALOSRecovery={
- version:"9.2.8",
+ version:"10.2-time",
  ledger:(k=todayKey())=>muscleRecoveryLedger(k),
  detail:(m,k=todayKey())=>muscleRecoveryDetail(m,k),
  readiness:(m,k=todayKey())=>recoveryReadinessForMuscle(m,k),
@@ -2255,7 +2264,7 @@ function overlayMetric(m,stim){
  }
  if(bodymapOverlayMode==="recovery"){
    const detail=muscleRecoveryDetail(m),value=detail.readiness;
-   return {available:true,value,label:`${value}/100`,sub:detail.entries.length?"Tahmini toparlanma":"Yakın dönem yük kaydı yok",color:overlayColor("recovery",value)};
+   return {available:true,value,label:`${value.toFixed(1)}/100`,sub:detail.entries.length?"Tahmini toparlanma":"Yakın dönem yük kaydı yok",color:overlayColor("recovery",value)};
  }
  const pain=musclePainScore(m);
  const value=pain*10;
@@ -2280,10 +2289,8 @@ function overlayColor(mode,value){
    return "rgba(35,134,54,.76)";
  }
  if(mode==="recovery"){
-   if(value>=80)return "rgba(63,185,80,.70)";
-   if(value>=60)return "rgba(210,153,34,.66)";
-   if(value>=40)return "rgba(255,140,0,.70)";
-   return "rgba(248,81,73,.75)";
+   const t=clamp(value/100,0,1);
+   return `rgba(${Math.round(248+(63-248)*t)},${Math.round(81+(185-81)*t)},${Math.round(73+7*t)},.70)`;
  }
  if(value<20)return "rgba(63,185,80,.54)";
  if(value<40)return "rgba(210,153,34,.60)";
@@ -2385,7 +2392,7 @@ function trendSeriesForMuscle(m){
    return keys.filter((_,i)=>i%7===6||i===keys.length-1).map(k=>({date:k,value:Math.min(100,stimulusScore(m,muscleStimulus(7,k)[m]||0,7)),unit:"%"}));
  }
  if(bodymapOverlayMode==="recovery"){
-   return keys.map(k=>({date:k,value:recoveryReadinessForMuscle(m,k),unit:"%"}));
+   return keys.map(k=>({date:k,value:recoveryReadinessForMuscle(m,k),unit:"puan"}));
  }
  return keys.map(k=>({date:k,value:musclePainScore(m,k)*10,unit:"%"}));
 }
@@ -2624,14 +2631,15 @@ function renderMuscleDetail(m,stim=muscleStimulus(muscleReportDays)){
    <div class="summary-item"><span>Anatomik bölge</span><strong>${face}</strong></div>
    <div class="summary-item"><span>Training Stimulus</span><strong>${Math.min(100,score)}%</strong></div>
    <div class="summary-item"><span>Efektif set</span><strong>${sets.toFixed(1)}</strong></div>
-   <div class="summary-item"><span>Recovery readiness</span><strong>${recReady}%</strong></div>
-   <div class="summary-item"><span>Recovery yükü</span><strong>${recLoad.toFixed(1)}</strong></div>
+   <div class="summary-item"><span>Tahmini toparlanma puanı</span><strong>${recReady.toFixed(1)}/100</strong></div>
+   <div class="summary-item"><span>Kalan modellenmiş yük</span><strong>${recLoad.toFixed(2)}</strong></div>
    <div class="summary-item"><span>Son kas yükü</span><strong>${recDetail.latest?`${new Date(recDetail.latest.at).toLocaleString("tr-TR")} · ${recDetail.latest.name}`:"Kayıt yok"}</strong></div>
-   <div class="summary-item"><span>≈ %85 readiness ETA</span><strong>${recDetail.etaHours>1?`${Math.round(recDetail.etaHours)} saat`:"Hazır / çok yakın"}</strong></div>
+   <div class="summary-item"><span>≈ 85 puana kalan süre</span><strong>${recDetail.etaHours>1?`${Math.round(recDetail.etaHours)} saat`:"Hazır / çok yakın"}</strong></div>
    <div class="summary-item"><span>Pain / yük sinyali</span><strong>${pain}/10</strong></div>
    <div class="summary-item"><span>Hipertrofi ortamı</span><strong>${env}</strong></div>
    <div class="summary-item"><span>Measured Growth</span><strong>${measured?`${measured.pct>=0?"+":""}${measured.pct.toFixed(2)}% (${measured.from}→${measured.to} cm) · ${measured.confidence==="direct"?"doğrudan":"proxy"}`:"Ölçüm yok / uygun ölçüm alanı yok"}</strong></div>
  </div>
+ <p class="hint">${recDetail.latest?`Son yükten bu yana ${recDetail.latest.hours.toFixed(1)} saat geçti. Başlangıç yükünün %${recDetail.releasedPercent.toFixed(1)} kadarı zaman modelinde azaldı. ${recDetail.entries.some(e=>(db.trainingLogs[e.key]||[]).some(r=>r.timestampPrecision==="date"))?"Saati bilinmeyen kayıtlar gün başlangıcından hesaplanır; yaklaşık bir gündür.":""}`:"Bu bölgede eşleşen yük kaydı bulunmuyor."} Puan gerçek kas hasarı veya iyileşme yüzdesi değildir. Uyku ve beslenme kayıtların tahmini etkiler; ağrı bildirimlerin kendiliğinden silinmez.</p>
  <p class="hint">Ana kaynaklar: ${ex.length?ex.map(x=>`${x[0]} (${x[1].toFixed(1)})`).join(", "):"Bu dönemde kayıt yok"}. Stimulus bir antrenman uyaran skorudur; measured growth ise yalnızca çevre ölçümlerinden gelir.</p>`;
 }
 function initMuscleReport(){

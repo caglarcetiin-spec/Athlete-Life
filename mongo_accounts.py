@@ -42,8 +42,8 @@ class MongoAccounts:
         username, name = username.strip().lower(), name.strip()
         if not re.fullmatch(r'[a-z0-9_.-]{3,40}', username):
             raise AccountError('Kullanıcı adı 3–40 karakter olmalı; harf, rakam, nokta, tire kullanabilirsin.')
-        if not 15 <= len(password) <= 128:
-            raise AccountError('Şifren 15–128 karakter olmalı. Birkaç kelimelik bir ifade kullanabilirsin.')
+        if not 8 <= len(password) <= 128:
+            raise AccountError('Şifren 8–128 karakter olmalı. Birkaç kelimelik bir ifade kullanabilirsin.')
         if not 1 <= len(name) <= 60:
             raise AccountError('Görünen adını gir (en fazla 60 karakter).')
         identifier = secrets.token_hex(16)
@@ -107,8 +107,8 @@ class MongoAccounts:
         return self.public(row)
 
     def change_password(self, user, current, new):
-        if not 15 <= len(new) <= 128:
-            raise AccountError('Yeni şifren 15–128 karakter olmalı.')
+        if not 8 <= len(new) <= 128:
+            raise AccountError('Yeni şifren 8–128 karakter olmalı.')
         row = self.verified_user(user['username'], current)
         result = self.users.update_one({'_id': row['_id'], 'password_hash': row['password_hash']},
                                        {'$set': {'password_hash': password_hash(new)}, '$inc': {'auth_epoch': 1}})
@@ -125,8 +125,8 @@ class MongoAccounts:
         return codes
 
     def recover(self, username, code, new_password):
-        if not isinstance(code, str) or len(code) > 128 or not isinstance(new_password, str) or not 15 <= len(new_password) <= 128:
-            raise AccountError('Kurtarma kodunu ve 15–128 karakterlik yeni şifreyi kontrol et.')
+        if not isinstance(code, str) or len(code) > 128 or not isinstance(new_password, str) or not 8 <= len(new_password) <= 128:
+            raise AccountError('Kurtarma kodunu ve 8–128 karakterlik yeni şifreyi kontrol et.')
         digest = token_hash(code.strip().lower())
         row = self.users.find_one_and_update(
             {'username': username.strip().lower(), 'recovery_codes': digest},

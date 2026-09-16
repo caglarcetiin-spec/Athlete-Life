@@ -8,4 +8,13 @@ assert(first.load>0);assert(later.load<first.load);assert(later.readiness>first.
 ctx.db.trainingLogs={'2026-09-16':[{name:'Weighted Pull-Up',sets:[8,8,8],rir:2,performedAt:'2026-09-16T23:00:00+03:00'}]};
 assert.equal(ctx.ALOSRecovery.detail('lats',ctx.todayKey()).load,0,'future performance timestamp must not affect current recovery');
 assert.equal(run('bodymapOverlayMode'),'recovery');
+// Dense weeks must still show time progress, rather than remaining clamped at zero.
+ctx.db.trainingLogs={'2026-09-15':Array.from({length:40},()=>({name:'Bodyweight Squat',sets:[10],rir:2,timestampPrecision:'date',performedAt:'2026-09-15T12:00:00'}))};
+now='2026-09-16T01:00:00+03:00';const heavy=ctx.ALOSRecovery.detail('quads',ctx.todayKey());
+now='2026-09-16T07:00:00+03:00';const improving=ctx.ALOSRecovery.detail('quads',ctx.todayKey());
+assert(heavy.load>0,'starter movement aliases map to muscle regions');assert(heavy.readiness>0);assert(improving.readiness>heavy.readiness);assert(improving.releasedPercent>heavy.releasedPercent);
+assert.notEqual(run('overlayColor("recovery",60)'),run('overlayColor("recovery",61)'),'small changes update color');
+ctx.db.trainingLogs={'2026-09-16':[{name:'Incline Push-Up',sets:[8],rir:null,timestampPrecision:'date',performedAt:'2026-09-16T12:00:00'}]};
+assert(ctx.ALOSRecovery.detail('chest',ctx.todayKey()).load>0,'date-only morning workouts are not future workouts');
+assert(ctx.ALOSRecovery.halfLife({rir:null})<ctx.ALOSRecovery.halfLife({rir:0}),'missing RIR is not failure');
 console.log('PASS: elapsed time improves recovery, import-time correction, future records excluded, recovery default');

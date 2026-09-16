@@ -1,0 +1,13 @@
+const assert=require('assert'),L=require('./workspace-lifecycle-core.js');
+const {ctx,run}=require('./integration-v9.test.js');
+ctx.ALOSAccount={user:{id:'synthetic'}};ctx.db.activeGuidedWorkout=null;
+ctx.db.trainingPeriods=[{id:'legacy',startDate:'2026-09-01',endDate:'2026-12-01'}];
+const expected=L.signature(ctx.db);ctx.AthleteLoadMesh.restampDay(ctx.todayKey());
+assert.equal(L.signature(ctx.db),expected,'derived physiology timestamps must not block reset');
+Object.assign(ctx.db,L.reset(ctx.db,{scope:'all',keep:true,expected}));
+const outcome=ctx.AthleteCoordinator.flush('test-reset',true);
+assert.deepEqual(outcome.errors,[]);assert.equal(ctx.db.trainingPeriods.length,0);assert.equal(Object.keys(ctx.db.trainingLogs).length,0);
+assert.equal(ctx.AthleteEventStore.state().training.rows.length,0);assert.equal(Object.keys(ctx.db.daily).length,0);
+assert.equal(ctx.ALOSRecovery.detail('lats').load,0);assert.equal(ctx.db.workspaceArchives.length,1);
+assert.equal(run('programBaseSlotV92(todayKey()).type'),'recovery','old sample program must not restart after reset');
+console.log('PASS full engine reset: no ghost events, no old periods or sample plan, no coordinator errors, archive preserved');

@@ -204,6 +204,27 @@ class HTTPTests(unittest.TestCase):
         source=self.request('GET','/index.html',token=token,user=user)[1]
         self.assertLess(source.index('src="personal-health-core.js"'),source.index('src="app.js'))
 
+    def test_general_report_archive_isolation_and_revision(self):
+        person=self.accounts.signup('general_owner',PASSWORD,'Genel Deneme')
+        token=self.accounts.start_session(person);user=self.accounts.session(token)
+        state={'workspaceArchives':[{'id':'past','name':'Eski dönem','data':{'sportSessions':[{'date':'2026-09-10','sportName':'Kuvvet','durationMin':40}]}}]}
+        self.assertEqual(self.request('POST','/api/state',{'data':state,'baseRevision':0},token,user)[0],200)
+        body={'from':'2026-09-01','to':'2026-09-30','baseRevision':1,'archiveId':'past'}
+        self.assertEqual(self.request('POST','/api/activity/report/preview',body)[0],401)
+        self.assertEqual(self.request('POST','/api/activity/report/preview',body,token,user,**{'X-ALOS-CSRF':'wrong'})[0],403)
+        result=self.request('POST','/api/activity/report/preview',body,token,user)
+        self.assertEqual(result[0],200);self.assertEqual(result[1]['report']['entries'],1)
+        status,pdf,headers=self.request('POST','/api/activity/report/pdf',body,token,user)
+        self.assertEqual(status,200);self.assertTrue(pdf.startswith(b'%PDF-'))
+        self.assertEqual(self.request('POST','/api/activity/report/preview',{**body,'archiveId':''},token,user)[1]['report']['entries'],0)
+        other=self.accounts.signup('general_other',PASSWORD,'Other')
+        other_token=self.accounts.start_session(other);other_user=self.accounts.session(other_token)
+        self.assertEqual(self.request('POST','/api/activity/report/preview',{**body,'baseRevision':0},other_token,other_user)[0],400)
+        self.assertEqual(self.request('POST','/api/activity/report/pdf',{**body,'baseRevision':0},token,user)[0],409)
+        self.assertEqual(self.request('GET','/api/state',token=token,user=user)[1]['revision'],1)
+        for asset in ['/workspace-polish.css','/profile-avatar.js','/workspace-lifecycle-core.js','/workspace-lifecycle-ui.js']:
+            self.assertEqual(self.request('GET',asset,token=token,user=user)[0],200)
+
     def test_health_report_is_private_read_only_and_revision_bound(self):
         person = self.accounts.signup('report_owner', PASSWORD, 'PDF Deneme')
         token = self.accounts.start_session(person); user = self.accounts.session(token)

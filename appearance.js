@@ -11,8 +11,8 @@ function draw(next){
  mode=next;root.dataset.theme=mode;root.style.colorScheme=mode;
  const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=mode==='dark'?'#0d1513':'#edf3f0';
  document.querySelectorAll('[data-theme-toggle]').forEach(button=>{
-  const target=mode==='dark'?'Açık':'Koyu';button.textContent=(mode==='dark'?'☀ ':'☾ ')+target;
-  button.setAttribute('aria-label',target+' temaya geç');button.title=target+' temaya geç';
+  const target=mode==='dark'?'Açık':'Koyu';button.textContent=(mode==='dark'?'☾ Koyu':'☀ Açık');button.setAttribute('aria-pressed',String(mode==='dark'));
+  button.setAttribute('aria-label',(mode==='dark'?'Koyu':'Açık')+' tema etkin; '+target.toLocaleLowerCase('tr')+' temaya geç');button.title=target+' temaya geç';
  });
  document.querySelectorAll('[data-theme-choice]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.themeChoice===mode)));
  window.dispatchEvent(new Event('resize')); // Canvas charts resolve the same root tokens.

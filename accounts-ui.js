@@ -8,7 +8,7 @@ function select(next){
  q('login-tab').setAttribute('aria-pressed',String(!signup));q('signup-tab').setAttribute('aria-pressed',String(signup));
  for(const id of ['name-field','confirm-field','password-hint'])q(id).hidden=!signup;
  q('account-name').required=signup;q('account-confirm').required=signup;
- q('account-password').minLength=signup?15:1;q('account-password').autocomplete=signup?'new-password':'current-password';
+ q('account-password').minLength=signup?8:1;q('account-password').autocomplete=signup?'new-password':'current-password';
  q('form-title').textContent=signup?'Kendi yolculuğunu başlat.':'Yeniden hoş geldin.';
  q('form-description').textContent=signup?'Hesabını oluştur; ardından Basit veya Profesyonel görünümünü seç. Kısa rehber ilk adımlarında yanında.':'Kaldığın yerden devam et.';
  q('account-submit').textContent=signup?'Profilimi oluştur':'Giriş yap';q('account-message').textContent='';
