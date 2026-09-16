@@ -15,7 +15,9 @@ ilk oluşturulan profile bir kez aktarılır. Sonraki hesaplar boş başlar.
 
 Hesaplı kayıtlar MongoDB'de `account_state_revisions` koleksiyonunu kullanır.
 Eski tek kullanıcılı kayıtlar `state_revisions` içinde korunur. Hesap kimlikleri
-ve fotoğraflar bu sürümde sunucunun yerel veri klasöründe tutulur.
+ve fotoğraflar varsayılan olarak yerel veri klasöründe tutulur;
+`ACCOUNT_STORAGE_BACKEND=mongodb` ile MongoDB'de kalıcı olarak saklanır.
+Render kurulumu ve mevcut hesapları taşıma: [Render kılavuzu](deployment/RENDER.md).
 
 ## Önceki sürümlerin notları
 

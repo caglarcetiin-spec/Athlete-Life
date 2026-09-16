@@ -141,4 +141,8 @@ def main():
 
 
 if __name__ == "__main__":
+    if os.environ.get('RENDER') == 'true':
+        # Preserve the existing Render service command while switching its app.
+        from start_render import main as render_main
+        raise SystemExit(render_main())
     raise SystemExit(main())

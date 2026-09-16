@@ -195,7 +195,7 @@ class AccountHandler(SimpleHTTPRequestHandler):
                 if delivery:
                     delivery.apply(user, accounts, self.server.states, self.server.photos)
                 accounts.logout(self.token())
-                return self.json(200, {'ok': True, 'user': user}, cookie=accounts.start_session(user))
+                return self.json(200, {'ok': True, 'user': Accounts.public(user)}, cookie=accounts.start_session(user))
             user = self.session(bound=True, body=body)
             csrf = self.headers.get('X-ALOS-CSRF') or body.get('csrf', '')
             if not isinstance(csrf, str) or not secrets.compare_digest(csrf, user['csrf']):
@@ -259,11 +259,18 @@ def validate_public_origin(origin):
     return origin
 
 
-def make_server(accounts, states, port=10001, public_origin=None):
+def make_server(accounts, states, port=10001, public_origin=None, bind_host='127.0.0.1', photos=None):
     origin = validate_public_origin(public_origin)
-    server = ThreadingHTTPServer(('127.0.0.1', port), AccountHandler)
+    if bind_host not in ('127.0.0.1', '0.0.0.0'):
+        raise ValueError('Unsupported bind address')
+    if bind_host != '127.0.0.1' and not origin:
+        raise ValueError('An HTTPS public origin is required for external binding')
+    server = ThreadingHTTPServer((bind_host, port), AccountHandler)
     server.accounts, server.states = accounts, states
-    server.photos = AccountPhotos(accounts.path.parent / 'photos.sqlite3')
+    if photos is None and getattr(accounts, 'backend', None) == 'mongodb':
+        from mongo_account_photos import MongoAccountPhotos
+        photos = MongoAccountPhotos(accounts.database)
+    server.photos = photos if photos is not None else AccountPhotos(accounts.path.parent / 'photos.sqlite3')
     server.origin = origin or f'http://127.0.0.1:{server.server_address[1]}'
     server.secure_cookies = bool(origin)
     return server
@@ -272,6 +279,8 @@ def make_server(accounts, states, port=10001, public_origin=None):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--port', type=int, default=10001)
+    parser.add_argument('--host', choices=['127.0.0.1', '0.0.0.0'], default='127.0.0.1',
+                        help='Use 0.0.0.0 only behind the hosting provider HTTPS proxy')
     parser.add_argument('--data-dir', type=Path, default=Path.home() / '.athlete-life-os' / 'accounts')
     parser.add_argument('--backend', choices=['sqlite', 'mongodb'])
     parser.add_argument('--no-browser', action='store_true')
@@ -282,7 +291,6 @@ def main():
     load_environment()
     backend = args.backend or os.environ.get('STORAGE_BACKEND', 'sqlite')
     try:
-        accounts = Accounts(args.data_dir / 'accounts.sqlite3')
         if backend == 'mongodb':
             uri = os.environ.get('MONGODB_URI', '').strip()
             if not uri:
@@ -292,12 +300,26 @@ def main():
             states = SQLiteAccountStates(args.data_dir / 'states.sqlite3')
         else:
             raise ValueError('Geçersiz depolama türü')
-        server = make_server(accounts, states, args.port, args.public_origin)
+        photos = None
+        authority = os.environ.get('ACCOUNT_STORAGE_BACKEND', 'sqlite')
+        if authority == 'mongodb':
+            if backend != 'mongodb' or args.seed_backup:
+                raise ValueError('Cloud accounts require MongoDB and an explicit identity migration')
+            from mongo_accounts import MongoAccounts
+            from mongo_account_photos import MongoAccountPhotos
+            database = states.collection.database
+            accounts = MongoAccounts(database)
+            photos = MongoAccountPhotos(database)
+        elif authority == 'sqlite':
+            accounts = Accounts(args.data_dir / 'accounts.sqlite3')
+        else:
+            raise ValueError('Geçersiz hesap depolama türü')
+        server = make_server(accounts, states, args.port, args.public_origin, args.host, photos)
         if args.seed_backup:
             from private_delivery import PrivateDelivery
             server.private_delivery = PrivateDelivery(args.seed_backup, accounts)
-    except Exception:
-        print('Hesaplı sürüm başlatılamadı. Port, veritabanı ayarı ve bağımlılıkları kontrol et.')
+    except Exception as error:
+        print('Hesaplı sürüm başlatılamadı (' + type(error).__name__ + '). Port, veritabanı ayarı ve bağımlılıkları kontrol et.', flush=True)
         return 1
     with server:
         print(f'Hesaplı yerel sürüm: {server.origin} · veriler: {states.backend}', flush=True)

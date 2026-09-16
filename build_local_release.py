@@ -15,7 +15,7 @@ sport-science-engine.js sport-science-ui.js workout-program-core.js workout-prog
 account-design.js account-design.css account-personal-model.js account-personal-ui.js private_delivery.py
 sports-profile-core.js sports-profile-ui.js sports-profile.css
 athlete-workspace-core.js account-workspace.js account-workspace.css
-accounts.py account_states.py account_photos.py account_server.py
+accounts.py account_states.py account_photos.py account_server.py mongo_accounts.py mongo_account_photos.py
 state_common.py state_repository.py mongo_store.py sqlite_store.py
 start_local.py START_LOCAL_MAC.command requirements.txt BASLA.md
 service-worker.js SCIENCE_MODELS.md REVISION_V2.md'''.split()

@@ -41,6 +41,12 @@ class LaunchDefaultsTests(unittest.TestCase):
         self.assertEqual((remote['--backend'], remote['--port']), ('mongodb', '10004'))
         self.assertEqual(local['--data-dir'], remote['--data-dir'])
 
+    def test_cloud_authority_does_not_reseed_existing_accounts(self):
+        self.private_seed()
+        options = self.options(environment={'STORAGE_BACKEND': 'mongodb', 'ACCOUNT_STORAGE_BACKEND': 'mongodb'})
+        self.assertEqual(options['--port'], '10004')
+        self.assertNotIn('--seed-backup', options)
+
 
 if __name__ == '__main__':
     unittest.main()

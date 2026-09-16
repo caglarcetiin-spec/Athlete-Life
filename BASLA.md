@@ -66,7 +66,10 @@ Atlas ağ erişimi ve kullanıcı yetkileri ayrıca yapılandırılmış olmalı
 MongoDB seçimi mevcut yerel kayıtları kendiliğinden taşımaz. Önce yedek ve
 ayrı veri aktarımı gerekir. Hesaplı kayıtlar `account_state_revisions`
 koleksiyonuna gider; eski tek kullanıcılı `state_revisions` ile aynı değildir.
-Kimlik ve fotoğraf deposu bu sürümde yerel sunucudaki SQLite dosyalarıdır.
+Kimlik ve fotoğraf deposu varsayılan olarak yerel SQLite dosyalarıdır.
+Hesap aktarımı sonrasında `ACCOUNT_STORAGE_BACKEND=mongodb` seçilirse
+kimlikler, oturumlar ve fotoğraflar da MongoDB'de saklanır.
+İnternet üzerinden kullanım için [Render kılavuzuna](deployment/RENDER.md) bak.
 İlk profil yedeği, o açılışta seçili depoya aktarılır. MongoDB bağlantı hatasında
 SQLite'a sessizce geçilmez. Eski `state_revisions` kayıtları korunur.
 

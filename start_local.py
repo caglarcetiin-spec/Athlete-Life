@@ -16,7 +16,7 @@ def launch_defaults(root, argv, environment, home):
     data_dir = home / '.athlete-life-os' / ('private-edition' if private else 'local-edition')
     port = ('10004' if backend == 'mongodb' else '10003') if private else '10002'
     defaults = ['--port', port, '--data-dir', str(data_dir), '--backend', backend]
-    if private:
+    if private and environment.get('ACCOUNT_STORAGE_BACKEND') != 'mongodb':
         defaults += ['--seed-backup', str(private_seed)]
     return defaults
 
