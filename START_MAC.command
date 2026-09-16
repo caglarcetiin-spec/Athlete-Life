@@ -1,6 +1,3 @@
-#!/bin/bash
-cd "$(dirname "$0")"
-if [ -x .venv/bin/python ]; then
-  exec .venv/bin/python launch.py
-fi
-exec python3 launch.py
+#!/bin/zsh
+cd "${0:A:h}" || exit 1
+exec ./START_LOCAL_MAC.command "$@"

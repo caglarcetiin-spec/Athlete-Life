@@ -59,7 +59,7 @@ async function undo(){
      const rec=pendingPhotoUndo;pendingPhotoUndo=null;
      const dbp=await new Promise((res,rej)=>{const r=indexedDB.open("AthleteLifeOSPhotos",1);r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)});
      const tx=dbp.transaction("checkins","readwrite");tx.objectStore("checkins").put(rec);
-     tx.oncomplete=()=>{updateUndoButton();toast("Foto progress geri alındı.");window.renderAdaptiveIntelligence?.()};
+     tx.oncomplete=()=>{window.AccountPhotos?.restored?.(rec.id);updateUndoButton();toast("Foto progress geri alındı.");window.renderAdaptiveIntelligence?.()};
      return;
    }catch(e){console.error(e)}
  }
@@ -136,6 +136,7 @@ function deleteDaily(date){
 
 function editTraining(date,index){
  const r=db.trainingLogs?.[date]?.[index];if(!r)return;
+ if(window.ALOSAccount&&r.source==='sport_program')return window.AthleteSports?.openSession(r.sportSessionId);
  const sets=[...(r.sets||[])];while(sets.length<5)sets.push("");
  let fields=selectHTML("name","Hareket",r.name,EXERCISES.map(x=>[x.n,x.n]));
  fields+=inputHTML("load","Ek yük (kg)","number",r.load||0,'step="0.5"');
@@ -164,7 +165,7 @@ function editTraining(date,index){
  }, "Gerçek Athlete Day'i değiştirirsen kayıt farklı tarihe taşınır; plan tarihi ayrı korunabilir.");
 }
 function deleteTraining(date,index){
- const r=db.trainingLogs?.[date]?.[index];if(!r||!confirmDelete(`${r.name} antrenman kaydı`))return;
+ const r=db.trainingLogs?.[date]?.[index];if(window.ALOSAccount&&r?.source==='sport_program')return window.AthleteSports?.openSession(r.sportSessionId);if(!r||!confirmDelete(`${r.name} antrenman kaydı`))return;
  pushUndo(`${r.name} antrenman silme`);db.trainingLogs[date].splice(index,1);if(!db.trainingLogs[date].length)delete db.trainingLogs[date];afterMutation();toast("Antrenman kaydı silindi.");
 }
 
@@ -276,7 +277,7 @@ function renderRecordCenter(){
 
  if(q("recordTrainingList"))q("recordTrainingList").innerHTML=train.length?`<div class="record-list">${train.map(r=>{
    const rr=(r.restBetweenSets||[]).filter(x=>+x>0),avgR=rr.length?Math.round(rr.reduce((a,b)=>a+(+b||0),0)/rr.length):null;
-   return listItem(r.name,`${r.load?`+${r.load} kg · `:""}${(r.sets||[]).join("/")} · RIR ${r.rir??"—"} · rest ${avgR?fmtRestSec(avgR):"—"} / plan ${fmtRestSec(r.plannedRestSec||restIntervalPrescription(r.name).target)} · gerçek ${r._actualKey} · plan ${r.scheduledFor||r._actualKey}`,`RecordManager.editTraining('${r._actualKey}',${r._index})`,`RecordManager.deleteTraining('${r._actualKey}',${r._index})`,r.lateOrCatchup||r._actualKey!==date?"telafi":"");
+   return listItem(r.name,`${r.load?`+${r.load} kg · `:""}${(r.sets||[]).join("/")} · RIR ${r.rir??"—"} · rest ${avgR?fmtRestSec(avgR):"—"} / plan ${fmtRestSec(r.plannedRestSec||restIntervalPrescription(r.name).target)} · gerçek ${r._actualKey} · plan ${r.scheduledFor||r._actualKey}`,`RecordManager.editTraining('${r._actualKey}',${r._index})`,(window.ALOSAccount&&r.source==='sport_program')?null:`RecordManager.deleteTraining('${r._actualKey}',${r._index})`,r.lateOrCatchup||r._actualKey!==date?"telafi":"");
  }).join("")}</div>`:empty("Bu tarihle ilişkili antrenman kaydı yok.");
 
  if(q("recordPainList"))q("recordPainList").innerHTML=painRows.length?`<div class="record-list">${window.PainIntelligence.recordsHTML(date)}</div>`:empty("Bu tarihte pain/joint kaydı yok.");
@@ -314,7 +315,7 @@ async function deletePhoto(id){
      pendingPhotoUndo=rec;
      updateUndoButton();
    };
-   tx.oncomplete=()=>{toast("Foto progress silindi. Geri Al ile kurtarabilirsin.");window.renderAdaptiveIntelligence?.()};
+   tx.oncomplete=()=>{window.AccountPhotos?.removed?.(id);toast("Foto progress silindi. Geri Al ile kurtarabilirsin.");window.renderAdaptiveIntelligence?.()};
  }catch(e){console.error(e)}
 }
 

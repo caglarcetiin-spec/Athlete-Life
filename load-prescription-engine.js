@@ -57,6 +57,7 @@ function recommend(name,prescription="",date=null,opts={}){
  if(!isWeighted(name))return {applicable:false,name};
  const rx=parseRx(prescription),hist=rows(name),last=hist.at(-1),bw=bodyweight(),ready=opts.readinessScore??readinessFor(date),pain=window.PainIntelligence?.exerciseAdvice?.(name,date||window.todayKey?.());
  if(pain?.level>=3)return {applicable:true,name,value:null,display:"Ağrı/red-flag nedeniyle bugün yük önermiyorum",confidence:85,source:"pain_guard",rationale:pain.short||"İlgili eklemi zorlayan yükten kaçın."};
+ if(window.ALOSAccount&&!last&&!anchorLoad(profile))return {applicable:true,name,value:null,display:'Başlangıç yükünü kendin belirle; bu harekette kişisel ölçüm veya kayıt yok.',confidence:null,source:'missing-personal-baseline',rationale:'Örnek bir sporcunun vücut ağırlığı veya sabit oranları yeni hesaba uygulanmaz.'};
  let value=null,source="",confidence=0,rationale="",range=null;
  if(last&&(+last.load||0)>0){
    value=+last.load;source="history";confidence=88;

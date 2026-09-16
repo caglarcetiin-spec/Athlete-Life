@@ -39,7 +39,8 @@ function optimizeTemplate(date,type,template){
 function recoveryEnvironment(date){
  const d=db().daily?.[date]||{},sleep=sleepHours(d),bw=bodyweight();
  const rows=db().foodLogs?.[date]||[];const totals=window.NutritionLedger?.totals?.(rows,window.NUTRITION_LIBRARY||[])||{};
- const protein=+totals.p||0,water=((db().water?.[date]||0)/1000)+((+totals.water||0)/1000),targetWater=+db().settings?.targetWater||3;
+ const waterRows=db().waterLogs?.[date],drinkMl=Array.isArray(waterRows)?waterRows.reduce((s,r)=>s+Math.max(0,+r.ml||0),0):(+db().water?.[date]||0);
+ const protein=+totals.p||0,water=(drinkMl/1000)+((+totals.water||0)/1000),targetWater=+db().settings?.targetWater||3;
  const sleepScore=sleep?clamp((sleep-5)/3.5,0,1):.72,proteinScore=protein?clamp(protein/(bw*1.6),0,1):.75,energyScore=totals.kcal?clamp(+totals.kcal/(+db().settings?.targetCalories||2800),.55,1):.78,hydrationScore=water?clamp(water/targetWater,.5,1):.8;
  return {sleepHours:sleep,proteinG:protein,score:clamp(.42*sleepScore+.28*proteinScore+.18*energyScore+.12*hydrationScore,.45,1.05)};
 }

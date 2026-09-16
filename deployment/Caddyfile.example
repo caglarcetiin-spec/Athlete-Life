@@ -1,0 +1,7 @@
+# Replace with your owned domain. Keep the Python service bound to loopback.
+athlete.example.org {
+    request_body {
+        max_size 16MB
+    }
+    reverse_proxy 127.0.0.1:10001
+}

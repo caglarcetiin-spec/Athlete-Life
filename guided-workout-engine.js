@@ -73,10 +73,10 @@ function planItems(target){
    const loadRec=it.loadRecommendation||{applicable:false};
    const m=String(it.note||"").match(/\+\s*([\d.]+)\s*kg/i);
    return {
-     index:i,name:it.name,prescription:String(it.prescription||"—"),note:it.note||"",progression:it.progression||"",risk:it.risk||"",
+     index:i,name:it.name,prescription:String(it.prescription||"—"),note:it.note||"",progression:it.progression||"",risk:it.risk||"",targetRir:it.targetRir??null,
      setCount,resultMin:p.min,resultMax:p.max,metric:p.unit||metricFallback(k),parseValid:p.valid,
      integrityIssue:!p.valid?`Reçete çözümlenemedi: ${String(it.prescription||"")}`:null,
-     workWindow:workWindow(k,p),restTargetSec:+it.restTargetSec||rest.target,restMinSec:+it.restMinSec||rest.min,restMaxSec:+it.restMaxSec||rest.max,
+     workWindow:workWindow(k,p),restTargetSec:it.restTargetSec??rest.target,restMinSec:it.restMinSec??rest.min,restMaxSec:it.restMaxSec??rest.max,
      load:loadRec?.value??(m?+m[1]:0),loadRecommendation:loadRec,knowledge:k
    };
  });
@@ -244,6 +244,8 @@ function completionSummaryForSession(s){
 function completionSummaryForTarget(target){
  const running=active();
  if(running&&running.targetDate===target)return completionSummaryForSession(running);
+ // Historical adherence may exist without a saved executable prescription.
+ if(!window.CanonicalSessionEngine?.get?.(target))return {status:"unverified",completionPct:null,plannedSets:0,performedSets:0,details:[],targetDate:target};
  const p=planItems(target),fake={targetDate:target,actualAthleteDay:target,items:p.items,exerciseClosures:{},id:"summary_only"};
  const x=C.completionSummary(fake.items,i=>performedCount(fake,i),()=>null);
  return {...x,targetDate:target,actualAthleteDay:null,sessionClosure:null};
@@ -728,7 +730,7 @@ function render(){
  renderSubstitution(s);
  q("guidedCurrentExercise").textContent=it.name;
  q("guidedCurrentInstruction").textContent=`Set ${C.safeProgress(Math.min(s.setIndex+1,it.setCount),it.setCount)} · ${it.prescription} · ${it.note}${it.risk?` · ⚠ ${it.risk}`:""}${it.integrityIssue?` · ⚠ ${it.integrityIssue}`:""}`;
- q("guidedTargetChips").innerHTML=`<span>${setTargetText(it)}</span>${it.loadRecommendation?.applicable&&it.loadRecommendation?.display?`<span>Yük ${it.loadRecommendation.display}</span>`:""}<span>Rest ${fmtRestSec(it.restTargetSec)}</span><span>${it.workWindow.basis}</span>`;
+ q("guidedTargetChips").innerHTML=`<span>${setTargetText(it)}</span>${it.targetRir!=null?`<span>Hedef RIR ${it.targetRir}</span>`:""}${it.loadRecommendation?.applicable&&it.loadRecommendation?.display?`<span>Yük ${it.loadRecommendation.display}</span>`:""}<span>Dinlenme ${fmtRestSec(it.restTargetSec)}</span><span>${it.workWindow.basis}</span>`;
  renderQueue(s);hideStagePanels();
  const sf=q("guidedStartSet"),st=q("guidedStopSet");
  if(sf){sf.hidden=s.phase!=="ready";sf.disabled=!!s.planConflict;sf.textContent=`Set ${C.safeProgress(s.setIndex+1,it.setCount)} Başlat`}

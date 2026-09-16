@@ -1,0 +1,38 @@
+(()=>{
+'use strict';if(!window.ALOSAccount)return;
+const P=window.WorkoutProgram,esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const clone=x=>JSON.parse(JSON.stringify(x));
+function editor(steps,onSave){
+ const draft=clone(steps||[]),modal=AthleteSports.dialog('workout-steps-editor','Hareket, set ve interval ayrıntıları'),content=modal.querySelector('.sports-content'),message=modal.querySelector('.sports-message');
+ function field(key,label,s,type='number',extra=''){return `<label>${label}<input data-step-field="${key}" type="${type}" value="${esc(s[key]??'')}" ${extra}></label>`;}
+ function collect(){content.querySelectorAll('[data-step-index]').forEach((el,i)=>{for(const input of el.querySelectorAll('[data-step-field]'))draft[i][input.dataset.stepField]=input.value});}
+ function draw(){
+  content.innerHTML=`<p class="hint">Hedefleri burada tanımla; yapılan tekrar ve süreler seans kaydında ayrıca girilir. Boş bırakılan yük veya RIR tahmin edilmez.</p><datalist id="program-exercises">${Object.keys(window.EXERCISE_KNOWLEDGE||{}).map(n=>`<option value="${esc(n)}">`).join('')}</datalist>${draft.map((s,i)=>`<fieldset data-step-index="${i}" class="program-step"><legend>Adım ${i+1}</legend><div class="sports-search"><label>Tür<select data-step-field="type">${Object.entries(P.types).map(([id,name])=>`<option value="${id}" ${id===s.type?'selected':''}>${name}</option>`).join('')}</select></label>${field('name','Hareket / etap / teknik adı',s,'text','maxlength="120" list="program-exercises"')}${field('sets','Set / tur',s,'number','min="1" max="30" step="1"')}${field('reps','Her sette tekrar · isteğe bağlı',s,'number','min="1" max="1000" step="1"')}${field('seconds','Her turda süre · sn',s,'number','min="0.1" max="86400" step="any"')}${field('distanceM','Her turda mesafe · m',s,'number','min="0.1" max="1000000" step="any"')}${field('loadKg','Direnç setinde dış yük · kg',s,'number','min="0" max="1500" step="any"')}${field('rir','Direnç setinde hedef RIR',s,'number','min="0" max="10" step="any"')}${field('restSec','Set / tur arası dinlenme · sn',s,'number','min="0" max="3600" step="any"')}</div><details><summary>Manuel ilerleme kuralım</summary><p class="hint">Aynı hedef ve koşullarda iki ayrı günün tüm setlerini karşıladığında artışı incelemen önerilir. Sistem hedefi kendiliğinden değiştirmez.</p><div class="sports-search"><label>Artırılacak hedef<select data-step-field="progressionMetric"><option value="">Artış tanımlamıyorum</option>${Object.entries({loadKg:'Dış yük · kg',reps:'Tekrar',seconds:'Süre · sn',distanceM:'Mesafe · m'}).map(([id,n])=>`<option value="${id}" ${s.progressionMetric===id?'selected':''}>${n}</option>`).join('')}</select></label>${field('increment','Başarılı olduğumda artış adımı',s,'number','min="0.01" max="1000" step="any"')}</div></details><button type="button" class="sports-quiet" data-step-remove="${i}">Bu taslak adımı kaldır</button></fieldset>`).join('')}<div class="sports-actions"><button type="button" id="program-step-add" class="secondary">Adım ekle</button><button type="button" id="program-steps-save" class="primary">Ayrıntıları taslağa kaydet</button></div>`;
+  content.querySelector('#program-step-add').onclick=()=>{collect();draft.push({type:'resistance',name:'',sets:3});draw()};
+  content.querySelectorAll('[data-step-remove]').forEach(b=>b.onclick=()=>{collect();draft.splice(+b.dataset.stepRemove,1);draw()});
+  content.querySelector('#program-steps-save').onclick=()=>{try{collect();const validated=P.validateSteps(draft);onSave(validated);modal.close();}catch(e){message.textContent=e.message}};
+ }
+ draw();modal.showModal();
+}
+function attachSession({modal,initial,owner,previous}){
+ const form=modal.querySelector('form'),box=document.createElement('section');box.id='session-workout';box.className='program-execution';modal.querySelector('#session-links').after(box);
+ let current=null,steps=[],drafts={};
+ function collect(){return [...box.querySelectorAll('[data-execution]')].map(el=>({stepId:el.dataset.stepId,index:+el.dataset.index,done:el.querySelector('[data-actual=done]').checked,...Object.fromEntries([...el.querySelectorAll('input[data-actual]:not([type=checkbox])')].map(e=>[e.dataset.actual,e.value]))}));}
+ function update(){
+  const id=modal.querySelector('#session-plan')?.value||null,periodId=modal.querySelector('#session-plan')?.selectedOptions[0]?.dataset.period;
+  if(current)drafts[current]=collect();
+  const block=owner.multisportPeriods?.find(p=>p.id===periodId)?.blocks.find(b=>b.id===id);
+  current=periodId+':'+id;
+  const same=previous?.planBlockId===id&&previous?.periodId===periodId;
+  steps=(same&&previous.workout?.steps)||block?.steps||[];
+  const actual=drafts[current]||(same?previous.workout?.actual:[])||[];
+  if(!steps.length){box.innerHTML='';return;}
+  box.innerHTML=`<h3>Planlanan çalışma → gerçekleşen setler</h3><p class="hint">Yalnız yaptığın setleri işaretle ve gerçek değerleri gir. Hedefler otomatik olarak yapılmış sayılmaz. İşaretlenmeyenler doğrulanmamış kalır.</p>${steps.map(s=>`<details class="program-step" open><summary>${esc(s.name)} · ${s.sets} ${s.type==='resistance'?'set':'tur'}</summary><p class="hint">Hedef: ${[s.reps!==null?s.reps+' tekrar':null,s.seconds!==null?s.seconds+' sn':null,s.distanceM!==null?s.distanceM+' m':null,s.loadKg!==null?s.loadKg+' kg dış yük':null,s.rir!==null?'RIR '+s.rir:null,s.restSec!==null?s.restSec+' sn dinlenme':null].filter(Boolean).map(esc).join(' · ')}</p>${Array.from({length:s.sets},(_,i)=>{const a=actual.find(a=>a.stepId===s.id&&a.index===i)||{};const input=(key,label)=>`<label>${label}<input data-actual="${key}" type="number" min="0" step="any" value="${esc(a[key]??'')}" placeholder="Gerçek"></label>`;return `<fieldset data-execution data-step-id="${esc(s.id)}" data-index="${i}"><legend>${i+1}. ${s.type==='resistance'?'set':'tur'}</legend><label class="sports-check"><input data-actual="done" type="checkbox" ${a.done?'checked':''}>Yaptım</label><div class="sports-search">${s.reps!==null?input('reps','Tekrar'):''}${s.seconds!==null?input('seconds','Süre · sn'):''}${s.distanceM!==null?input('distanceM','Mesafe · m'):''}${s.type==='resistance'?input('loadKg','Dış yük · kg')+input('rir','RIR · isteğe bağlı'):''}${input('restSec','Önceki setten dinlenme · sn')}</div></fieldset>`}).join('')}</details>`).join('')}`;
+ }
+ form.addEventListener('change',e=>{if(['session-plan','session-date','session-sport'].includes(e.target.id))update()});
+ update();return {read:()=>({actual:collect()}),update};
+}
+function describe(steps=[]){return steps.map(s=>`<li>${esc(s.name)} · ${s.sets} ${s.type==='resistance'?'set':'tur'}${s.reps!==null?' × '+s.reps+' tekrar':''}${s.seconds!==null?' × '+s.seconds+' sn':''}${s.distanceM!==null?' × '+s.distanceM+' m':''}${s.loadKg!==null?' · '+s.loadKg+' kg':''}${s.rir!==null?' · RIR '+s.rir:''}${s.restSec!==null?' · '+s.restSec+' sn dinlenme':''}</li>`).join('');}
+function progress(db,block,periodId){return P.progression(db,block.id,periodId).map(p=>`<p class="hint">${esc(p.name)}: ${p.ready?`Tanımladığın artışı inceleyebilirsin (${p.current} → ${p.suggested}).`:'İki ayrı günde aynı hedef, koşul ve tüm setlerin karşılanması henüz doğrulanmadı.'} ${esc(p.reason)}</p>`).join('');}
+window.WorkoutProgramUI={editor,attachSession,describe,progress};
+})();

@@ -9,6 +9,16 @@ const JOINTS={
 const SIDES={left:"Sol",right:"Sağ",bilateral:"İki taraf",midline:"Orta hat"};
 const CONTEXTS={movement:"hareket sırasında",after_training:"antrenman sonrası",rest:"dinlenirken",morning:"sabah",daily:"günlük yaşamda"};
 const SENSATIONS={ache:"sızı/ağrı",sharp:"keskin",stiffness:"sertlik",burning:"yanma",tingling:"uyuşma/karıncalanma",other:"diğer"};
+let editingEntry=null;
+
+function updateEditControls(){
+ const saveButton=q("savePainLogBtn");if(!saveButton)return;
+ saveButton.textContent=editingEntry?"Ağrı Kaydını Güncelle":"Ağrı Kaydını Ekle";
+ let cancel=q("cancelPainEditBtn");
+ if(!cancel){cancel=document.createElement("button");cancel.id="cancelPainEditBtn";cancel.type="button";cancel.className="secondary";cancel.textContent="Düzenlemeyi İptal Et";saveButton.after(cancel)}
+ cancel.hidden=!editingEntry;cancel.onclick=cancelEdit;
+}
+function cancelEdit(){editingEntry=null;resetForm();updateEditControls()}
 
 function id(){return `pain_${Date.now()}_${Math.random().toString(36).slice(2,7)}`}
 function allEntries(){
@@ -34,6 +44,8 @@ function redFlagsFromUI(){
  };
 }
 function resetForm(){
+ const defaults={painLogDate:todayKey(),painJoint:"wrist",painSide:"left",painContext:"movement",painOnset:"gradual",painSensation:"ache"};
+ Object.entries(defaults).forEach(([key,value])=>{if(q(key))q(key).value=value});
  if(q("painSeverity"))q("painSeverity").value=0;
  if(q("painDurationDays"))q("painDurationDays").value=0;
  if(q("painNote"))q("painNote").value="";
@@ -42,19 +54,35 @@ function resetForm(){
 }
 function saveEntry(){
  const date=q("painLogDate")?.value||todayKey(),severity=+q("painSeverity")?.value||0;
- if(severity<=0)return alert("Ağrı şiddetini 1–10 arasında gir.");
+ if(!Number.isFinite(severity)||severity<1||severity>10){alert("Ağrı şiddetini 1–10 arasında gir.");return false}
+ const parsed=new Date(date+"T12:00:00Z");
+ if(!/^\d{4}-\d{2}-\d{2}$/.test(date)||isNaN(parsed)||parsed.toISOString().slice(0,10)!==date){alert("Geçerli bir kayıt tarihi seç.");return false}
+ const found=editingEntry?findEntry(editingEntry.id):null;
+ const previous=found?db.painLogs[found._date][found._index]:null;
+ if(editingEntry&&(editingEntry.owner!==db||!previous||JSON.stringify(previous)!==editingEntry.snapshot)){
+  alert("Bu kayıt düzenleme sırasında değişti. İptal edip güncel kaydı yeniden aç.");return false;
+ }
+ const now=new Date().toISOString();
  const row={
-   id:id(),date,joint:q("painJoint")?.value||"wrist",side:q("painSide")?.value||"left",
+   ...previous,id:previous?.id||id(),date,joint:q("painJoint")?.value||"wrist",side:q("painSide")?.value||"left",
    severity:Math.min(10,Math.max(1,severity)),context:q("painContext")?.value||"movement",
    onset:q("painOnset")?.value||"gradual",sensation:q("painSensation")?.value||"ache",
    durationDays:+q("painDurationDays")?.value||0,triggerExercise:q("painTriggerExercise")?.value||"",
-   note:q("painNote")?.value||"",redFlags:redFlagsFromUI(),status:"active",
-   createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()
+   note:q("painNote")?.value||"",redFlags:redFlagsFromUI(),status:previous?.status||"active",
+   createdAt:previous?.createdAt||now,updatedAt:now
  };
- db.painLogs[date]=Array.isArray(db.painLogs[date])?db.painLogs[date]:[];
- db.painLogs[date].push(row);save();
- resetForm();refreshAfterChange("pain log added");
+ const before=db.painLogs,next={...before};
+ if(found&&found._date===date)next[date]=before[date].map((r,i)=>i===found._index?row:r);
+ else{
+  if(found){next[found._date]=before[found._date].filter((_,i)=>i!==found._index);if(!next[found._date].length)delete next[found._date]}
+  next[date]=[...(Array.isArray(next[date])?next[date]:[]),row];
+ }
+ db.painLogs=next;
+ try{if(save()===false)throw new Error("Save rejected")}
+ catch(error){db.painLogs=before;alert("Kayıt kaydedilemedi. Önceki kayıt korundu; değişikliklerini tekrar kaydedebilirsin.");return false}
+ cancelEdit();refreshAfterChange(previous?"pain log updated":"pain log added");
  const st=q("painSaveStatus");if(st){st.textContent="✓ Kaydedildi";st.classList.add("ok");setTimeout(()=>{st.textContent="";st.classList.remove("ok")},2200)}
+ return true;
 }
 function resolveEntry(entryId){
  const r=findEntry(entryId);if(!r)return;
@@ -67,6 +95,8 @@ function deleteEntry(entryId){
 }
 function editEntry(entryId){
  const r=findEntry(entryId);if(!r)return;
+ resetForm();
+ editingEntry={id:entryId,owner:db,snapshot:JSON.stringify(db.painLogs[r._date][r._index])};
  q("painLogDate").value=r._date;q("painJoint").value=r.joint;q("painSide").value=r.side;q("painSeverity").value=r.severity;
  q("painContext").value=r.context||"movement";q("painOnset").value=r.onset||"gradual";q("painSensation").value=r.sensation||"ache";
  q("painDurationDays").value=r.durationDays||0;q("painTriggerExercise").value=r.triggerExercise||"";q("painNote").value=r.note||"";
@@ -74,12 +104,8 @@ function editEntry(entryId){
    const map={swelling:"painFlagSwelling",numbness:"painFlagNumbness",weakness:"painFlagWeakness",instability:"painFlagInstability",cannotUse:"painFlagCannotUse",nightRestPain:"painFlagNightRestPain"};
    if(map[k]&&q(map[k]))q(map[k]).checked=!!v;
  });
- deleteEntrySilent(entryId);
- const b=q("savePainLogBtn");if(b)b.textContent="Ağrı Kaydını Güncelle";
-}
-function deleteEntrySilent(entryId){
- const r=findEntry(entryId);if(!r)return;
- db.painLogs[r._date].splice(r._index,1);if(!db.painLogs[r._date].length)delete db.painLogs[r._date];save();
+ updateEditControls();
+ q("painLogDate")?.focus();
 }
 function jointLoadProfile(name){
  const k=window.movementKnowledge?.(name)||window.EXERCISE_KNOWLEDGE?.[name]||{},s=String(name||"").toLowerCase(),p=String(k.pattern||"").toLowerCase();
@@ -175,9 +201,10 @@ function init(){
  db.painLogs=db.painLogs||{};
  if(q("painLogDate"))q("painLogDate").value=todayKey();
  initExerciseSelect();q("savePainLogBtn")?.addEventListener("click",saveEntry);
+ updateEditControls();
  renderActiveList();renderAdvice();
  if(activeEntries(todayKey()).length){try{buildFuturePlanV5(14,"pain intelligence startup")}catch(e){}}
 }
-window.PainIntelligence={activeEntries,entriesForDate,entryLabel,findEntry,saveEntry,resolveEntry,deleteEntry,editEntry,exerciseAdvice,jointLoadProfile,activeHotspots,open3D,recordsHTML,render:()=>{renderActiveList();renderAdvice()},refreshAfterChange};
+window.PainIntelligence={activeEntries,entriesForDate,entryLabel,findEntry,saveEntry,resolveEntry,deleteEntry,editEntry,cancelEdit,exerciseAdvice,jointLoadProfile,activeHotspots,open3D,recordsHTML,render:()=>{renderActiveList();renderAdvice()},refreshAfterChange};
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();
 })();

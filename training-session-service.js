@@ -15,7 +15,7 @@ function rows(target){
 }
 function contract(items){
  return JSON.stringify((items||[]).map(i=>({name:i.name,prescription:i.prescription,
-  load:i.loadRecommendation?.value??null,rest:+i.restTargetSec||0,min:+i.restMinSec||0,max:+i.restMaxSec||0})));
+  load:i.loadRecommendation?.value??null,rir:i.targetRir??null,rest:+i.restTargetSec||0,min:+i.restMinSec||0,max:+i.restMaxSec||0})));
 }
 function audit(date=today()){
  const p=prescription(date),s=data().activeGuidedWorkout;
@@ -32,6 +32,7 @@ function safety(date=today()){
 function summary(date=today()){
  const p=prescription(date),actual=rows(date),readiness=window.readiness?.(data().daily?.[date]);
  return {date,snapshotId:p.snapshotId,prescription:p,actual,readiness:readiness??null,
+  sharedTraining:window.AthleteWorkspaceCore?.snapshot?.(data(),date)||null,
   readinessKind:readiness==null?"missing":"derived_from_self_report",safety:safety(date),
   modelNotice:"Toparlanma, doku yükü ve performans puanları model tahminidir; klinik ölçüm veya sakatlık olasılığı değildir."};
 }

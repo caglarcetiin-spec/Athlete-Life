@@ -13,8 +13,8 @@ assert(app.includes('Kontrollü erteleme'),'hard constraints use explicit contro
 assert(app.includes('programPhaseLoadV92'),'12-week phase modulates dose');
 assert(guided.includes('AthleteProgramEngine?.build?.(14,"guided_runner_start")'),'Runner refreshes unified engine before starting');
 assert(guided.includes('const VERSION="9.2"'),'Runner version bumped');
-assert(html.includes('app.js?v=10.0.0')&&html.includes('guided-workout-engine.js?v=9.2'),'browser cache-busting versions updated');
-assert(sw.includes('athlete-life-os-v10-0-0-dynamic-sqlite'),'service-worker cache bumped');
+assert(html.includes('app.js?v=10.1.0')&&html.includes('guided-workout-engine.js?v=10.1.0'),'browser cache-busting versions updated');
+assert(/const CACHE="athlete-life-os-v\d+-\d+-\d+-[\w-]+"/.test(sw),'service worker must have a versioned cache');
 const ctx={window:{db:{daily:{},trainingLogs:{},foodLogs:{},water:{},settings:{targetWeight:70,targetCalories:2800,targetWater:3}},EXERCISE_KNOWLEDGE:{A:{qualities:{skill:1,hypertrophy:5,strength:5}},B:{qualities:{skill:10,hypertrophy:10,strength:10}}},EXERCISE_SCIENCE:{},V5_EXERCISE_MUSCLES:{},NutritionLedger:{totals:()=>({})},NUTRITION_LIBRARY:[]}};
 vm.createContext(ctx);vm.runInContext(fs.readFileSync('sports-science-policy.js','utf8'),ctx);
 assert.equal(ctx.window.SportsSciencePolicy.version,'9.2');

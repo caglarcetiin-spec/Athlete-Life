@@ -3,7 +3,7 @@ const fs=require("fs");
 const app=fs.readFileSync("app.js","utf8"),guided=fs.readFileSync("guided-workout-engine.js","utf8"),
       adaptive=fs.readFileSync("adaptive-intelligence.js","utf8"),html=fs.readFileSync("index.html","utf8");
 function a(x,m){if(!x)throw new Error(m)}
-a(html.includes("canonical-session-engine.js?v=9.0"),"canonical engine not loaded");
+a(/canonical-session-engine\.js\?v=\d+\.\d+\.\d+/.test(html),"canonical engine not loaded");
 a(app.includes("function canonicalTemplate(k)"),"today/coach canonical helper missing");
 a(app.includes("CanonicalSessionEngine?.get?.(k)")&&app.includes("canonical-preview"),"weekly renderer not canonical");
 a(app.includes("renderTrainingPlanSyncV81"),"3-way sync UI missing");

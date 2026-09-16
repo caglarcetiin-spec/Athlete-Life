@@ -7,7 +7,8 @@ function weights(){return {muscle:9,planche:10,frontLever:9,run:6,weightGain:8}}
 function constraints(date,type){
  const d=window.db?.daily?.[date]||window.ALOSRuntime?.getDb?.()?.daily?.[date]||{},health=window.HealthStateEngine?.assess?.(d)||{},pain=window.maxPain?.(date)||0,time=window.availableMinutes?.(date)||75;
  const mesh=window.AthleteLoadMesh?.rollingBefore?.(date,2)||{},trend=window.PerformanceTrendV2?.summary?.("monthly",date)||{};
- return {health,pain,time,mesh,trend,plannedType:type};
+ const shared=window.AthleteWorkspaceCore?.snapshot?.(window.ALOSRuntime?.getDb?.()||{},date)||null;
+ return {health,pain,time:shared?.context.availableMinutes==null?time:Math.min(time,shared.context.availableMinutes),mesh,trend,sharedTraining:shared,plannedType:type};
 }
 function candidateScore(c,ctx,w=weights()){
  let score=50,why=[];

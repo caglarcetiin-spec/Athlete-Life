@@ -1,0 +1,18 @@
+const a=require('node:assert/strict'),P=require('./workout-program-core'),K=require('./sports-profile-core'),W=require('./athlete-workspace-core');
+const step={id:'squat',type:'resistance',name:'Back Squat',sets:2,reps:8,loadKg:40,rir:2,restSec:120,progressionMetric:'loadKg',increment:2.5};
+const draft={name:'Manual',startDate:'2026-09-16',weeks:3,blocks:[{id:'wed',day:2,sportId:'strength',durationMin:45,steps:[step],prescription:'Squat',progression:'İki seans hedefi'}]};
+const db={trainingLogs:{'2026-09-01':[{name:'Preserved',sets:[1]}]}};
+Object.assign(db,W.activate(db,draft,'2026-09-16'));const period=db.multisportPeriods[0],block=period.blocks[0];
+a.equal(block.steps[0].sets,2);a.throws(()=>P.validateSteps([{...step,sets:0}]));a.throws(()=>P.validateSteps([{...step,type:'interval'}]));
+const input={sportId:'strength',date:'2026-09-16',durationMin:45,effort:5,discipline:'Squat',conditions:'Aynı bar ve derinlik',periodId:period.id,planBlockId:block.id,workout:{actual:[]}};
+Object.assign(db,K.applySession(db,input,{today:'2026-09-30'}));let row=db.sportSessions[0];a.equal(row.workout.recordedSets,0);a(!db.trainingLogs[row.date],'blank targets must not become performed sets');
+const actual=[0,1].map(index=>({stepId:'squat',index,done:true,reps:8,loadKg:40,rir:2,restSec:120}));
+a.throws(()=>P.validateExecution(block.steps,[{...actual[0],loadKg:''}]));a.throws(()=>P.validateExecution(block.steps,[actual[0],actual[0]]));a.throws(()=>P.validateExecution(block.steps,[{...actual[0],stepId:'unknown'}]));
+Object.assign(db,K.applySession(db,{...input,workout:{actual}},{id:row.id,expected:JSON.stringify(row),today:'2026-09-30'}));row=db.sportSessions[0];
+a.equal(db.trainingLogs[row.date].length,2);a.equal(P.summary(row).externalVolume,640);a.equal(W.ledger(db,{to:'2026-09-30'}).sessions,2,'one unrelated legacy session plus one structured sport session');
+a.equal(W.ledger(db,{from:'2026-09-16',to:'2026-09-16'}).loadAU,225,'projections must not double load');
+Object.assign(db,K.applySession(db,{...input,date:'2026-09-23',workout:{actual}},{today:'2026-09-30'}));a(P.progression(db,'wed',period.id)[0].ready);
+const before=JSON.stringify(db);const patch=K.applySession(db,{...input,date:'2026-09-23',workout:{actual:[{...actual[0],reps:6},actual[1]]}},{id:row.id,expected:JSON.stringify(row),today:'2026-09-30'});a.equal(JSON.stringify(db),before,'patch must not mutate');Object.assign(db,patch);
+a(!db.trainingLogs['2026-09-16'],'moving a session must remove its old projections');a.equal(db.trainingLogs['2026-09-23'].length,4);a.equal(db.trainingLogs['2026-09-01'][0].name,'Preserved');a(!P.progression(db,'wed',period.id).length,'two records on same day do not trigger progression');
+const bad={...draft,startDate:'2026-10-10',blocks:[{...draft.blocks[0],durationMin:1,steps:[{id:'r',type:'interval',name:'Koşu',sets:2,seconds:60,restSec:60}]}]};a(W.reviewPeriod(db,bad,'2026-09-16').notes.some(n=>n.includes('süresini aşıyor')));
+console.log('PASS: manual plan → observed sets → shared movement projection, no inferred actuals/double counting, edit/date correction and explicit progression.');

@@ -1,0 +1,87 @@
+// Real UI test with temporary accounts; no live database or existing browser state.
+const assert=require('node:assert/strict'),fs=require('node:fs'),os=require('node:os'),path=require('node:path');
+const {spawn}=require('node:child_process'),{chromium}=require('playwright');
+const root=fs.mkdtempSync(path.join(os.tmpdir(),'alos-sports-browser-'));
+const server=spawn(process.env.AL_OS_TEST_PYTHON||'.venv-modern/bin/python',['-B','account_server.py','--port','0','--data-dir',root,'--backend','sqlite','--no-browser'],{cwd:__dirname,stdio:['ignore','pipe','pipe']});
+let browser;
+async function main(){
+ const origin=await new Promise((resolve,reject)=>{
+  const timer=setTimeout(()=>reject(new Error('Server timeout')),10000);
+  server.stdout.on('data',chunk=>{const match=String(chunk).match(/http:\/\/127\.0\.0\.1:\d+/);if(match){clearTimeout(timer);resolve(match[0])}});
+  server.once('exit',code=>{clearTimeout(timer);reject(new Error('Server exited '+code))});
+ });
+ browser=await chromium.launch({headless:true,executablePath:process.env.AL_OS_TEST_BROWSER||'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'});
+ const context=await browser.newContext({viewport:{width:1280,height:950}}),page=await context.newPage(),errors=[];
+ page.on('pageerror',e=>errors.push(e.message));
+ await page.goto(origin);await page.getByRole('button',{name:'Profil oluştur',exact:true}).click();
+ await page.locator('#account-name').fill('Deneme Sporcusu');await page.locator('#account-username').fill('sports_test');
+ for(const id of ['account-password','account-confirm'])await page.locator('#'+id).fill('temporary sports test password');
+ await page.getByRole('button',{name:'Profilimi oluştur'}).click();await page.waitForURL('**/index.html');
+ await page.locator('#sports-setup').waitFor({state:'visible'});
+ await page.screenshot({path:path.join(root,'onboarding-desktop.png')});
+ await page.locator('#setup-next').click();assert((await page.locator('#sports-setup .sports-message').innerText()).includes('En az bir branş'));
+ await page.locator('#setup-search').fill('yuzme');await page.locator('[data-sport="swimming"]').click();
+ await page.locator('#setup-search').fill('kalistenik');await page.locator('[data-sport="calisthenics"]').click();
+ await page.locator('#setup-next').click();
+ await page.locator('[data-experience="calisthenics"]').selectOption('regular');
+ await page.locator('input[name=goal][value=hybrid]').check();await page.locator('#setup-next').click();
+ await page.locator('[data-day="0"]').fill('45');await page.locator('[data-day="2"]').fill('60');
+ await page.locator('input[name=equipment][value=pool]').check();await page.locator('input[name=equipment][value=bodyweight]').check();
+ await page.locator('#setup-next').click();await page.locator('#setup-next').click();
+ await page.waitForFunction(()=>!document.getElementById('sports-setup').open);
+ let data=await page.evaluate(()=>JSON.parse(JSON.stringify(ALOSRuntime.getDb())));
+ assert.equal(data.athleteProfile.sports.length,2);assert.equal(data.athleteProfile.availability[0],45);
+ assert.equal(data.athleteProfile.sports.find(x=>x.sportId==='calisthenics').experience,'regular');
+ const before=JSON.stringify(data.athleteProfile);
+ await page.locator('#sports-edit-profile').click();await page.locator('#setup-search').fill('futbol');await page.locator('[data-sport="football"]').click();
+ await page.locator('#sports-setup [data-close]').click();
+ assert.equal(await page.evaluate(()=>JSON.stringify(ALOSRuntime.getDb().athleteProfile)),before,'cancel must preserve profile');
+
+ await page.locator('#sports-add-session').click();await page.locator('#session-sport').selectOption('swimming');
+ await page.locator('#session-date').fill('10.09.2026');await page.locator('#session-minutes').fill('40');
+ await page.locator('#session-effort').fill('5');await page.locator('[data-metric="distanceM"]').fill('1000');
+ await page.locator('[data-metric="movingMinutes"]').fill('20');await page.locator('#session-notes').fill('Teknik ve rahat tempo');
+ await page.locator('#session-save').click();await page.waitForFunction(()=>!document.getElementById('sports-session').open);
+ data=await page.evaluate(()=>JSON.parse(JSON.stringify(ALOSRuntime.getDb())));
+ const first=data.sportSessions[0];assert.equal(first.date,'2026-09-10');assert.equal(first.metrics.distanceM,1000);
+ assert((await page.locator('#sports-profile-card').innerText()).includes('Aktif tempo: 2 dk / 100 m'));
+ await page.locator('[data-edit-session]').first().click();await page.locator('#session-minutes').fill('999');await page.locator('#session-cancel').click();
+ assert.equal(await page.evaluate(()=>ALOSRuntime.getDb().sportSessions[0].durationMin),40);
+ await page.locator('[data-edit-session]').first().click();await page.locator('#session-minutes').fill('45');await page.locator('#session-save').click();
+ await page.waitForFunction(()=>!document.getElementById('sports-session').open);
+ data=await page.evaluate(()=>JSON.parse(JSON.stringify(ALOSRuntime.getDb())));
+ assert.equal(data.sportSessions.length,1);assert.equal(data.sportSessions[0].id,first.id);assert.equal(data.sportSessionHistory[0].record.durationMin,40);
+
+ await page.locator('#sports-edit-profile').click();await page.locator('.sports-custom summary').click();
+ await page.locator('#custom-name').fill('Kişisel denge parkuru');await page.locator('#custom-family').selectOption('gymnastics');await page.locator('#custom-schema').selectOption('attempts');
+ await page.locator('#custom-add').click();for(let i=0;i<4;i++)await page.locator('#setup-next').click();
+ await page.waitForFunction(()=>!document.getElementById('sports-setup').open);
+ assert.equal(await page.evaluate(()=>ALOSRuntime.getDb().customSports.length),1);
+ assert.equal(await page.evaluate(()=>ALOSRuntime.getDb().athleteProfileHistory.length),1);
+ let reloads=0;page.on('framenavigated',frame=>{if(frame===page.mainFrame())reloads++});
+ await page.reload();await page.waitForFunction(()=>window.AthleteSports&&document.getElementById('sports-profile-card'));
+ assert.equal(await page.locator('#sports-setup').count(),0,'completed onboarding must not repeat');
+ assert.equal(await page.evaluate(()=>ALOSRuntime.getDb().sportSessions[0].durationMin),45);
+ await page.evaluate(()=>goToPage('character'));await page.screenshot({path:path.join(root,'profile-desktop.png')});
+ await page.locator('#sports-open-library').click();await page.locator('#library-search').fill('tirmanis');
+ await page.locator('#library-family').selectOption('adaptive');await page.locator('#library-list [data-id="para-climbing"]').click();
+ assert((await page.locator('#library-detail').innerText()).includes('Deneme sayısı'));
+ await page.setViewportSize({width:390,height:844});
+ assert(await page.evaluate(()=>document.getElementById('sports-library').scrollWidth<=document.getElementById('sports-library').clientWidth));
+ await page.screenshot({path:path.join(root,'library-mobile.png')});
+ await page.locator('#sports-library [data-close]').click();await page.locator('#sports-edit-profile').click();
+ assert(await page.evaluate(()=>document.getElementById('sports-setup').scrollWidth<=document.getElementById('sports-setup').clientWidth));
+ await page.screenshot({path:path.join(root,'onboarding-mobile.png')});
+ await page.locator('#sports-setup [data-close]').click();
+ assert.equal(reloads,1,'account server revision must not be overridden by automatic local checkpoint recovery');
+ const portable=await page.evaluate(async()=>await BackupVault.selfTestPayload());
+ assert.equal(portable.data.sportSessions.length,1);assert.equal(portable.data.customSports.length,1);
+ assert.equal(portable.data.athleteProfile.sports.length,3);
+ assert.deepEqual(errors,[],'Browser errors');
+ console.log('PASS: onboarding, cancellation, historical sport session/edit, custom sport, reload, searchable catalogue, mobile layout and portable backup.');
+ console.log('Screenshots: '+root);
+}
+main().catch(error=>{console.error(error);process.exitCode=1}).finally(async()=>{
+ if(browser)await browser.close();server.kill('SIGTERM');
+ for(const name of fs.readdirSync(root))if(!name.endsWith('.png'))fs.rmSync(path.join(root,name),{recursive:true,force:true});
+});

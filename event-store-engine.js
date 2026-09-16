@@ -8,6 +8,15 @@ const now=()=>new Date().toISOString();
 const uid=(type="evt")=>`${type}_${Date.now()}_${Math.random().toString(36).slice(2,9)}`;
 function safeParse(s,fallback){try{return JSON.parse(s)}catch(e){return fallback}}
 function load(){
+ const imported=safeParse(localStorage.getItem("athleteLifeOS"),null)?._portableImport;
+ if(imported?.sha256 && Array.isArray(imported.events?.events) && localStorage.getItem(STORAGE_KEY+".import")!==imported.sha256){
+  const existing=safeParse(localStorage.getItem(STORAGE_KEY),null);
+  const merged=JSON.parse(JSON.stringify(imported.events));
+  const ids=new Set(merged.events.map(e=>e.id));
+  for(const event of existing?.events||[])if(!ids.has(event.id)){merged.events.push(event);ids.add(event.id)}
+  localStorage.setItem(STORAGE_KEY,JSON.stringify(merged));
+  localStorage.setItem(STORAGE_KEY+".import",imported.sha256);
+ }
  const raw=localStorage.getItem(STORAGE_KEY),x=safeParse(raw,null);
  return x&&Array.isArray(x.events)?x:{schemaVersion:SCHEMA,createdAt:now(),events:[]};
 }

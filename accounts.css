@@ -1,0 +1,40 @@
+:root{--account-bg:#f4f6f3;--account-ink:#172b27;--account-muted:#576862;--account-accent:#246851;--account-line:#d9e2dc}
+.account-welcome{margin:0;background:var(--account-bg);color:var(--account-ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.5}
+.account-welcome *,.account-dialog *{box-sizing:border-box}
+.account-welcome [hidden],.account-dialog [hidden]{display:none!important}
+.welcome-layout{min-height:100dvh;max-width:1180px;margin:auto;display:grid;grid-template-columns:1.15fr 1fr;align-items:center;gap:90px;padding:60px 40px}
+.account-brand{display:flex;align-items:center;gap:12px;font-weight:750;font-size:28px;text-decoration:none;color:inherit;margin-bottom:86px}
+.account-brand>span{font-size:17px;font-weight:650;letter-spacing:-.4px}
+.account-eyebrow{font-size:11px;letter-spacing:1.9px;font-weight:650;color:var(--account-accent)}
+.welcome-story h1{font-size:clamp(42px,5vw,66px);letter-spacing:-3px;line-height:1.06;font-weight:650;margin:22px 0}
+.welcome-lead{color:var(--account-muted);font-size:19px;line-height:1.7}
+.welcome-points{display:flex;gap:20px;flex-wrap:wrap;margin-top:44px;font-size:12px;font-weight:600}
+.welcome-note{font-size:12px;color:var(--account-muted);margin-top:54px}
+.account-card{background:#fff;border:1px solid var(--account-line);border-radius:24px;padding:34px;box-shadow:0 16px 60px #18332908}
+.account-tabs{display:flex;background:#edf1ed;border-radius:12px;padding:4px;gap:4px;margin-bottom:32px}
+.account-tabs button{flex:1;min-height:42px;border:0;border-radius:9px;background:transparent;color:var(--account-muted);font:600 13px inherit;cursor:pointer}
+.account-tabs button[aria-pressed=true]{background:#fff;color:var(--account-ink);box-shadow:0 2px 5px #0000000a}
+.account-card h2{font-size:26px;letter-spacing:-.8px;margin:0 0 6px}
+.account-muted{color:var(--account-muted);font-size:13px}
+.account-card form{margin-top:24px}
+.account-card label,.account-dialog label{display:block;font-size:13px;font-weight:600;margin-top:18px}
+.account-card input,.account-dialog input{display:block;width:100%;min-height:47px;border:1px solid var(--account-line);border-radius:10px;background:#fff;padding:11px 13px;font:inherit;color:var(--account-ink);margin:7px 0}
+.account-card input:focus,.account-dialog input:focus{outline:2px solid var(--account-accent);outline-offset:2px}
+.account-card button:focus-visible,.account-dialog button:focus-visible{outline:3px solid var(--account-accent);outline-offset:3px}
+.password-field{position:relative;display:block}
+.password-field input{padding-right:70px}
+.password-field button{position:absolute;right:9px;top:6px;min-height:34px;border:0;background:none;color:var(--account-muted);cursor:pointer}
+.account-primary{width:100%;min-height:47px;background:var(--account-accent);color:#fff;border:0;border-radius:10px;font:inherit;font-weight:600;cursor:pointer}
+.account-primary:disabled{opacity:.65;cursor:wait}
+.account-message{min-height:22px;color:#993c2c;font-size:13px;line-height:1.5}
+.account-footnote{font-size:11px;color:var(--account-muted);margin:22px 0 0;line-height:1.6}
+.account-status{font-size:12px;max-width:260px;color:var(--muted,#576862)}
+.account-dialog{background:#fff;color:var(--account-ink);border:1px solid var(--account-line);border-radius:20px;width:min(440px,calc(100% - 32px));padding:26px;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.account-dialog::backdrop{background:#10282085}
+.account-dialog h2{margin:0 0 8px;font-size:24px}.account-dialog details{margin:24px 0}.account-dialog summary{cursor:pointer;font-size:14px}
+.account-actions{display:flex;gap:10px;margin-top:16px}.account-actions button{min-height:42px;flex:1;border:1px solid var(--account-line);border-radius:9px;background:#fff;color:var(--account-ink);cursor:pointer}
+.account-lock{position:fixed;inset:0;z-index:2147483647;background:var(--account-bg);color:var(--account-ink);display:grid;place-content:center;text-align:center;padding:28px;font-family:system-ui}
+.account-lock a{color:var(--account-accent)}
+@media(max-width:850px){.welcome-layout{gap:35px;padding:40px 25px}.account-card{padding:25px}.welcome-story h1{font-size:48px}.welcome-points{flex-direction:column;gap:9px}.account-brand{margin-bottom:50px}}
+@media(max-width:640px){.welcome-layout{display:block;min-height:auto;padding:28px 20px 45px}.account-brand{margin-bottom:32px}.welcome-story h1{font-size:42px;letter-spacing:-2px}.welcome-lead{font-size:16px}.welcome-points,.welcome-note{display:none}.account-card{margin-top:30px}.account-card h2{font-size:24px}}
+@media(prefers-reduced-motion:reduce){.account-welcome *{scroll-behavior:auto}}

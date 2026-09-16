@@ -1,6 +1,8 @@
 const fs=require('fs'),vm=require('vm'),assert=require('assert');
 const storage={},callbacks=[],nodes=new Map(),timers=[];
 const noop=()=>{};
+// This scenario exercises Tuesday's run plan, independently of the real date.
+class ScenarioDate extends Date{constructor(...args){super(...(args.length?args:['2026-09-15T12:00:00+03:00']))}static now(){return new ScenarioDate().getTime()}}
 function element(id){
  if(nodes.has(id))return nodes.get(id);
  const el={id,hidden:false,value:'',textContent:'',innerHTML:'',dataset:{},options:[],style:{},
@@ -10,7 +12,9 @@ function element(id){
  getContext:()=>new Proxy({},{get:()=>noop,set:()=>true}),focus:noop,click(){this.onclick?.()},
  showModal:noop,close:noop};nodes.set(id,el);return el;
 }
-const ctx={console,Date,Math,JSON,Intl,Map,Set,URL,Blob,performance:{now:()=>Date.now()},
+const testConsole={...console,warn:(...args)=>{if(args[0]==='Durable journal mirror failed'&&String(args[1]).includes('IndexedDB unavailable'))return;console.warn(...args)}};
+const ctx={console:testConsole,Date:ScenarioDate,Math,JSON,Intl,Map,Set,URL,Blob,performance:{now:()=>Date.now()},
+ XMLHttpRequest:class{open(){}setRequestHeader(){}send(){this.status=200;this.responseText='{"ok":true,"data":null}'}},
  localStorage:{getItem:k=>storage[k]??null,setItem:(k,v)=>storage[k]=v,removeItem:k=>delete storage[k]},
  document:{readyState:'loading',addEventListener:(type,fn)=>callbacks.push(fn),getElementById:element,
  querySelectorAll:()=>[],querySelector:()=>null,documentElement:element('root'),createElement:element,createTextNode:x=>x},
@@ -113,3 +117,4 @@ const nutrition=ctx.AdaptiveNutrition.targets(day);
 assert(nutrition.energyConsistent);assert(Math.abs(nutrition.kcal-nutrition.macroKcal)<=4);
 assert.equal(nutrition.canonicalSnapshotId,ctx.CanonicalSessionEngine.get(day).snapshotId);
 console.log('v9 actual-script integration PASS: DB bridge, today/catch-up isolation, full prescription contract, immutable reads, first set lock, live safety gate, non-destructive restart, physiology, event corrections/deletion, calibration, ordered pipeline.');
+module.exports={ctx,element,callbacks,storage,run,scripts};

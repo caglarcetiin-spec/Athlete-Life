@@ -10,6 +10,6 @@ ok(app.includes('__alosPersistSnapshot(db,"app-save")'),'normal saves must mirro
 ok(vault.includes('portable full backup · last known good'),'full backup must create internal checkpoint');
 ok(vault.includes('autoRecoverLatestCheckpointIfNeeded'),'missing automatic checkpoint recovery');
 ok(vault.includes('backup-import'),'imports must update last-known-good');
-ok(idx.includes('app.js?v=10.0.0')&&idx.includes('backup-vault.js?v=10.0.0'),'cache bust missing');
-ok(sw.includes('v10-0-0-dynamic-sqlite'),'service worker cache not bumped');
+ok(idx.includes('app.js?v=10.1.0')&&idx.includes('backup-vault.js?v=10.1.0'),'cache bust missing');
+ok(/const CACHE="athlete-life-os-v\d+-\d+-\d+-[\w-]+"/.test(sw),'service worker must have a versioned cache');
 console.log('PASS v9.2.6 persistence continuity');

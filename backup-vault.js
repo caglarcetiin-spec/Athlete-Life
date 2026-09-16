@@ -2,7 +2,7 @@
 (function(){
 "use strict";
 
-const APP_VERSION="10.0.0";
+const APP_VERSION="10.1.0";
 const SCHEMA_VERSION=2;
 const VAULT_DB="AthleteLifeOSVault";
 const VAULT_STORE="snapshots";
@@ -35,6 +35,7 @@ function counts(data,photos=[]){
  return {
   days:Object.keys(data?.daily||{}).length,
   training,
+  sportSessions:(data?.sportSessions||[]).length,
   foods,
   measurements:(data?.bodyMeasurements||[]).length,
   plans:Object.keys(data?.planHistory||{}).length,
@@ -44,7 +45,7 @@ function counts(data,photos=[]){
 }
 function countCards(c){
  return [
-  ["Gün",c.days],["Antrenman",c.training],["Besin Kaydı",c.foods],["Ölçüm",c.measurements],
+  ["Gün",c.days],["Antrenman",c.training],...(c.sportSessions?[["Branş Seansı",c.sportSessions]]:[]),["Besin Kaydı",c.foods],["Ölçüm",c.measurements],
   ["Plan",c.plans],["Adherence",c.adherence],["Foto",c.photos]
  ];
 }
@@ -153,6 +154,15 @@ function mergeDB(current,incoming){
  if(Array.isArray(inc.capabilityRecords))out.capabilityRecords=mergeArray(out.capabilityRecords||[],inc.capabilityRecords,x=>String(x.id||`${x.domain}|${x.testId}|${x.date}|${x.value||x.load||x.minutes||""}`));
  if(Array.isArray(inc.adHocSessions))out.adHocSessions=mergeArray(out.adHocSessions||[],inc.adHocSessions,x=>String(x.id||`${x.date}|${x.createdAt}|${x.structure}`));
  if(Array.isArray(inc.guidedWorkoutHistory))out.guidedWorkoutHistory=mergeArray(out.guidedWorkoutHistory||[],inc.guidedWorkoutHistory,x=>String(x.id||`${x.targetDate}|${x.startedAt}|${x.archivedAt||""}`));
+ if(Array.isArray(inc.trainingPeriods))out.trainingPeriods=mergeArray(out.trainingPeriods||[],inc.trainingPeriods,x=>String(x.id));
+ if(inc.trainingPeriodDraft)out.trainingPeriodDraft=inc.trainingPeriodDraft;
+ if(Array.isArray(inc.trainingPeriodDrafts))out.trainingPeriodDrafts=mergeArray(out.trainingPeriodDrafts||[],inc.trainingPeriodDrafts,x=>String(x.savedAt));
+ ["sportSessions","customSports","multisportPeriods"].forEach(k=>{if(Array.isArray(inc[k]))out[k]=mergeArray(out[k]||[],inc[k],x=>String(x.id))});
+ ["athleteProfileHistory","sportSessionHistory"].forEach(k=>{if(Array.isArray(inc[k]))out[k]=mergeArray(out[k]||[],inc[k],x=>JSON.stringify(x))});
+ if(inc.athleteProfile){
+   if(out.athleteProfile&&JSON.stringify(out.athleteProfile)!==JSON.stringify(inc.athleteProfile))out.athleteProfileHistory=[...(out.athleteProfileHistory||[]),{profile:out.athleteProfile,replacedAt:new Date().toISOString(),reason:"backup-merge"}];
+   out.athleteProfile=inc.athleteProfile;
+ }
  if(Array.isArray(inc.runs))out.runs=mergeArray(out.runs||[],inc.runs,x=>String(x.id||`${x.date||""}|${x.distanceKm||x.km||""}|${x.minutes||x.time||""}`));
  if(Array.isArray(inc.photoProgress))out.photoProgress=mergeArray(out.photoProgress||[],inc.photoProgress,x=>String(x.id||`${x.date||""}|${x.createdAt||""}`));
  if(Array.isArray(inc.generatedWeekPlan))out.generatedWeekPlan=inc.generatedWeekPlan;
@@ -277,6 +287,9 @@ function noteSave(){
 }
 function hasMeaningfulData(x){return (window.ALOSPersistence?.dataWeight?.(x)||0)>0}
 async function autoRecoverLatestCheckpointIfNeeded(){
+ // Account bootstrap already chose the remote revision or durable outbox.
+ // A local display-cache revision is not a newer server revision.
+ if(window.ALOSAccount)return false;
  try{
   if(hasMeaningfulData(db))return false;
   const all=(await idbGetAll(await vaultDB(),VAULT_STORE)).sort((a,b)=>b.id-a.id);
@@ -310,7 +323,7 @@ function bind(){
 }
 async function init(){
  bind();renderSummary();await renderCheckpoints();
- try{if(await window.ALOSDurablePersistence?.recoverIfNewer?.()){status("✓ Daha yeni sağlam veritabanı revisionı geri yüklendi; uygulama yenileniyor");setTimeout(()=>location.reload(),120);return}}catch(e){console.warn("Durable revision recovery unavailable",e)}
+ try{if(!window.ALOSAccount&&await window.ALOSDurablePersistence?.recoverIfNewer?.()){status("✓ Daha yeni sağlam veritabanı revisionı geri yüklendi; uygulama yenileniyor");setTimeout(()=>location.reload(),120);return}}catch(e){console.warn("Durable revision recovery unavailable",e)}
  if(await autoRecoverLatestCheckpointIfNeeded())return;
  // Establish a local baseline once per installation/version without producing a download.
  try{

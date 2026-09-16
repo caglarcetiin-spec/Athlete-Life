@@ -84,7 +84,7 @@ function rowsForPlan(k){
  return out;
 }
 function firstTrainingTime(k){
- const rows=rowsForPlan(k).filter(r=>r.performedAt||r.recordedAt);
+ const rows=rowsForPlan(k).filter(r=>r.performedAt||(!r.historicalEntry&&r.recordedAt));
  if(rows.length){
    const times=rows.map(r=>new Date(r.performedAt||r.recordedAt)).filter(d=>!Number.isNaN(+d)).sort((a,b)=>a-b);
    if(times.length)return times[0].getHours()*60+times[0].getMinutes();

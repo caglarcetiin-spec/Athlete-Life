@@ -203,6 +203,25 @@ function saveDaily(){
   const st=q("dailySaveStatus"); if(st){st.textContent="Kayıt hatası";st.classList.add("bad")}
  }
 }
+async function saveHealthStatus(){
+ const status=q("healthSaveStatus"),button=q("saveHealthBtn"),day=todayKey();
+ if(button)button.disabled=true;
+ try{
+  const previous=db.daily[day]||{},next={...previous};
+  ["healthStatus","fatigueLevel","illnessSeverity","healthNote"].forEach(key=>{
+   const el=q(key);if(el)next[key]=el.type==="number"?Number(el.value)||0:el.value;
+  });
+  ["healthFever","healthCough","healthSoreThroat","healthHeadache","healthGI","healthDizziness","healthChestBreathing"].forEach(key=>{next[key]=!!q(key)?.checked});
+  next.healthSavedAt=new Date().toISOString();db.daily[day]=next;
+  try{save()}catch(error){db.daily[day]=previous;throw error}
+  const report=window.AthleteCoordinator?.flush?.("health-save",true);
+  safeRender(renderToday);safeRender(renderCoach);safeRender(renderCharacter);
+  if(status)status.textContent="Sağlık durumu bu cihaza kaydedildi; sunucuya gönderiliyor…";
+  const synced=await window.ALOSServerSync?.flush?.();
+  if(status)status.textContent=(synced?"✓ Sağlık durumu cihaza ve veritabanına kaydedildi.":"✓ Bu cihaza kaydedildi. Veritabanı senkronizasyonu bekliyor.")+(report?.ok===false?" Bazı hesaplamalar yenilenemedi.":"");
+ }catch(error){console.error("Health save failed",error);if(status)status.textContent="Sağlık durumu kaydedilemedi. Tekrar dene."}
+ finally{if(button)button.disabled=false}
+}
 function saveTodayShift(){
  try{
   const k=todayKey();
@@ -275,18 +294,31 @@ function renderTradeoff(){
  q("tradeoffBox").className="insight-box "+(delay>90?"bad":delay>30?"warn":"good");
  q("tradeoffBox").innerHTML=`<strong>${s.type}</strong><br>Plan ${s.start}–${s.end}. Tahmini uyku gecikmesi: <b>${delay} dk</b>.<br>Yarınki readiness yaklaşık <b>${projected}/100</b> olabilir. ${delay>60?"Ağır antrenmanı taşımak veya hacmi azaltmak mantıklı olabilir.":"Planın etkisi yönetilebilir görünüyor."}`;
 }
+function weekPlannerDate(){return db.uiState?.weekSelectedDate||todayKey()}
+function weeklyUiSignature(){return JSON.stringify(DAYS.map((_,i)=>[q(`ws${i}`)?.value,q(`wsh${i}`)?.value,q(`wso${i}`)?.value]));}
+function displayCalendarDate(key){return String(key).split("-").reverse().join(".")}
+function selectPlannerWeek(key){
+ const d=new Date(key+"T12:00:00Z");
+ if(!/^\d{4}-\d{2}-\d{2}$/.test(key)||isNaN(d)||d.toISOString().slice(0,10)!==key)return false;
+ persistWeeklyScheduleFromUI("week-navigation");
+ db.uiState=db.uiState||{};db.uiState.weekSelectedDate=key;save();initWeek();return true;
+}
 function persistWeeklyScheduleFromUI(reason="weekly-autosave",{rebuild=false}={}){
  const root=q("weekPlanner");if(!root)return false;
- const keys=weekKeysFor(todayKey());db.week=db.week||{};db.scheduleByDate=db.scheduleByDate||{};
+ if(!root.dataset.weekStart)return false;
+ const signature=weeklyUiSignature();
+ if(signature===root.dataset.weekSignature&&!["weekly-manual-save","weekly-optimize"].includes(reason))return false;
+ const keys=weekKeysFor(root.dataset.weekStart);db.week=db.week||{};db.scheduleByDate=db.scheduleByDate||{};
  let touched=false;
  DAYS.forEach((day,i)=>{
   const se=q(`ws${i}`),sh=q(`wsh${i}`),so=q(`wso${i}`);if(!se||!sh||!so)return;
   const row={status:se.value||"off",shift:sh.value||"morning",social:so.value||""};
-  db.week[i]={...(db.week[i]||{}),...row,date:keys[i]};
+  if(keys[0]===weekKeysFor(todayKey())[0])db.week[i]={...(db.week[i]||{}),...row,date:keys[i]};
   db.scheduleByDate[keys[i]]={...(db.scheduleByDate[keys[i]]||{}),...row};
   touched=true;
  });
  if(!touched)return false;
+ root.dataset.weekSignature=signature;
  __alosPersistSnapshot(db,reason);
  const st=q("weekSaveStatus");if(st){st.textContent="✓ Vardiya planı kaydedildi";st.classList.add("ok");clearTimeout(window.__weekSaveTimer);window.__weekSaveTimer=setTimeout(()=>{st.textContent="";st.classList.remove("ok")},1800)}
  if(rebuild){buildFuturePlanV5(14,"weekly schedule saved");refreshLifeOSV5(false)}
@@ -296,8 +328,8 @@ window.ALOSFlushPendingUIState=function(reason="ui-flush"){
  try{persistWeeklyScheduleFromUI(reason,{rebuild:false})}catch(e){console.warn("Weekly UI flush failed",e)}
  return db;
 };
-function weekOptimizationKey(baseKey=todayKey()){return weekKeysFor(baseKey)[0]}
-function computeWeekOptimizationRows(keys=weekKeysFor(todayKey())){
+function weekOptimizationKey(baseKey=weekPlannerDate()){return weekKeysFor(baseKey)[0]}
+function computeWeekOptimizationRows(keys=weekKeysFor(weekPlannerDate())){
  return DAYS.map((day,i)=>{
   const status=q(`ws${i}`)?.value||db.scheduleByDate[keys[i]]?.status||"off",shift=q(`wsh${i}`)?.value||db.scheduleByDate[keys[i]]?.shift||"morning",social=q(`wso${i}`)?.value||db.scheduleByDate[keys[i]]?.social||"";
   let wake,train,sleep,work;
@@ -311,19 +343,26 @@ function renderSavedWeekOptimization(){
  const out=q("weekOutput");if(!out)return;
  const key=weekOptimizationKey(),saved=db.weekOptimizations?.[key];
  if(!saved?.rows?.length){out.innerHTML="";return}
- out.innerHTML=`<div class="week-output-meta">✓ Son optimize edilmiş hafta · ${new Date(saved.generatedAt||Date.now()).toLocaleString("tr-TR")}</div>`+saved.rows.map(r=>`<div class="week-row"><strong>${r.day} · ${r.date.slice(5)}</strong><span>İş: ${r.work}</span><span>Önerilen pencere: ${r.window}</span><span>Uyku hedefi: ${r.sleepTarget}${r.social?` · Sosyal: ${r.social}`:""}</span></div>`).join("");
+ out.innerHTML=`<div class="week-output-meta">✓ Seçili haftanın önerileri · ${new Date(saved.generatedAt||Date.now()).toLocaleString("tr-TR")}</div>`+saved.rows.map(r=>`<div class="week-row"><strong>${r.day} · ${displayCalendarDate(r.date)}</strong><span>İş: ${r.work}</span><span>Önerilen pencere: ${r.window}</span><span>Uyku hedefi: ${r.sleepTarget}${r.social?` · Sosyal: ${r.social}`:""}</span></div>`).join("");
 }
 function initWeek(){
- const root=q("weekPlanner");root.innerHTML="";const keys=weekKeysFor(todayKey());DAYS.forEach((day,i)=>{const def=i===0?{status:"off",shift:"morning"}:i===1?{status:"work",shift:"evening"}:{status:"work",shift:["mid","morning","evening"][i%3]};const w=db.scheduleByDate[keys[i]]||db.week[i]||def;const el=document.createElement("div");el.className="day-card";el.innerHTML=`<h4>${day}<small>${keys[i].slice(5)}</small></h4><label>Durum<select id="ws${i}"><option value="work">Çalışma</option><option value="off">İzin</option><option value="annual">Yıllık izin</option></select></label><label>Vardiya<select id="wsh${i}"><option value="morning">10–18</option><option value="mid">12–20</option><option value="evening">14–22</option></select></label><label>Sosyal plan<input id="wso${i}" placeholder="örn. 21:00–00:30"></label>`;root.appendChild(el);q(`ws${i}`).value=w.status;q(`wsh${i}`).value=w.shift;q(`wso${i}`).value=w.social||"";
+ const root=q("weekPlanner");root.innerHTML="";const keys=weekKeysFor(weekPlannerDate());root.dataset.weekStart=keys[0];
+ if(q("weekDate"))q("weekDate").value=weekPlannerDate();
+ if(q("weekRangeLabel"))q("weekRangeLabel").textContent=`${displayCalendarDate(keys[0])} – ${displayCalendarDate(keys[6])}`;
+ if(q("weekApply"))q("weekApply").onclick=()=>selectPlannerWeek(q("weekDate").value);
+ if(q("weekPrevious"))q("weekPrevious").onclick=()=>selectPlannerWeek(addDaysKey(weekPlannerDate(),-7));
+ if(q("weekNext"))q("weekNext").onclick=()=>selectPlannerWeek(addDaysKey(weekPlannerDate(),7));
+ if(q("weekCurrent"))q("weekCurrent").onclick=()=>selectPlannerWeek(todayKey());
+ DAYS.forEach((day,i)=>{const legacy=db.week?.[i],sameLegacy=legacy?.date===keys[i]||(!legacy?.date&&keys[0]===weekKeysFor(todayKey())[0]);const w=db.scheduleByDate[keys[i]]||(sameLegacy?legacy:null)||{status:"off",shift:"morning"};const el=document.createElement("div");el.className="day-card";el.innerHTML=`<h4><span>${day}</span><time datetime="${keys[i]}">${displayCalendarDate(keys[i])}</time></h4><label>Durum<select id="ws${i}"><option value="work">Çalışma</option><option value="off">İzin</option><option value="annual">Yıllık izin</option></select></label><label>Vardiya<select id="wsh${i}"><option value="morning">10–18</option><option value="mid">12–20</option><option value="evening">14–22</option></select></label><label>Sosyal plan<input id="wso${i}" placeholder="örn. 21:00–00:30"></label>`;root.appendChild(el);q(`ws${i}`).value=w.status;q(`wsh${i}`).value=w.shift;q(`wso${i}`).value=w.social||"";
   [q(`ws${i}`),q(`wsh${i}`)].forEach(x=>x?.addEventListener("change",()=>persistWeeklyScheduleFromUI("weekly-autosave",{rebuild:false})));
   q(`wso${i}`)?.addEventListener("change",()=>persistWeeklyScheduleFromUI("weekly-autosave",{rebuild:false}));
  });
- renderSavedWeekOptimization();
+ root.dataset.weekSignature=weeklyUiSignature();renderSavedWeekOptimization();
 }
 function optimizeWeek(){
  persistWeeklyScheduleFromUI("weekly-optimize",{rebuild:false});
- const keys=weekKeysFor(todayKey()),rows=computeWeekOptimizationRows(keys);
- rows.forEach((r,i)=>{db.week[i]={...(db.week[i]||{}),status:r.status,shift:r.shift,social:r.social,date:r.date};db.scheduleByDate[r.date]={...(db.scheduleByDate[r.date]||{}),status:r.status,shift:r.shift,social:r.social};});
+ const keys=weekKeysFor(weekPlannerDate()),rows=computeWeekOptimizationRows(keys);
+ rows.forEach((r,i)=>{if(keys[0]===weekKeysFor(todayKey())[0])db.week[i]={...(db.week[i]||{}),status:r.status,shift:r.shift,social:r.social,date:r.date};db.scheduleByDate[r.date]={...(db.scheduleByDate[r.date]||{}),status:r.status,shift:r.shift,social:r.social};});
  db.weekOptimizations=db.weekOptimizations||{};db.weekOptimizations[keys[0]]={weekStart:keys[0],weekEnd:keys[6],generatedAt:new Date().toISOString(),rows};
  save();renderSavedWeekOptimization();buildFuturePlanV5(14,"weekly schedule update");refreshLifeOSV5(false);
 }
@@ -662,7 +701,7 @@ function renderNutritionAdvice(){
  const tCal=db.settings.targetCalories||0, tP=db.settings.targetProtein||0;
  let lines=[];
  const adaptiveTarget=window.AdaptiveNutrition?.targets?.(todayKey());
- if(adaptiveTarget)lines.push({c:"good",t:"Adaptif günlük hedef",x:`${adaptiveTarget.kcal} kcal · ${adaptiveTarget.proteinG} g protein · ${adaptiveTarget.carbsG} g karbonhidrat · ${adaptiveTarget.fatG} g yağ. ${adaptiveTarget.rationale} · calibration güven ${adaptiveTarget.calibrationConfidence}/100.`});
+ if(adaptiveTarget)lines.push({c:"good",t:"Adaptif günlük hedef",x:`${adaptiveTarget.kcal} kcal · ${adaptiveTarget.proteinG} g protein · ${adaptiveTarget.carbsG} g karbonhidrat · ${adaptiveTarget.fatG} g yağ. ${adaptiveTarget.rationale}${adaptiveTarget.kind==="user-defined"?"":" · calibration güven "+adaptiveTarget.calibrationConfidence+"/100."}`});
  const calDiff=Math.round(tCal-m.kcal);
  if(calDiff>350) lines.push({c:"warn",t:"Kalori düşük",x:`Yaklaşık ${calDiff} kcal hedefin altında görünüyorsun. Gün bitmediyse dengeli bir ana öğün veya ara öğün ekleyebilirsin.`});
  else if(calDiff>100) lines.push({c:"warn",t:"Kalori hedefinin biraz altındasın",x:`Yaklaşık ${calDiff} kcal alanın var.`});
@@ -1132,7 +1171,8 @@ function estimateFutureReadiness(key,index){
 }
 function shiftDataForKey(key){
   const daily=(db.daily||{})[key]||{}, dated=(db.scheduleByDate||{})[key]||{};
-  let indexed={}; const wk=weekKeysFor(key),i=wk.indexOf(key); if(i>=0) indexed=(db.week||{})[i]||{};
+  let indexed={}; const wk=weekKeysFor(key),i=wk.indexOf(key),legacy=(db.week||{})[i];
+  if(legacy&&(legacy.date===key||(!legacy.date&&wk[0]===weekKeysFor(todayKey())[0])))indexed=legacy;
   return {status:daily.workStatus||dated.status||dated.workStatus||indexed.status||indexed.workStatus||"work",shift:daily.shift||dated.shift||dated.shiftType||indexed.shift||indexed.shiftType||"morning"};
 }
 function scoreFutureDay(key,type,index){
@@ -1537,6 +1577,7 @@ function phaseForWeek(w){
   return {name:"Test / Realization",focus:"PR, ölçüm, koşu ve Character değerlendirmesi"};
 }
 function renderCoachMonth(){
+  if(window.TrainingPeriods?.renderRoadmap("month"))return;
   if(!q("monthTarget")) return;
   const w=currentProgramWeek(), p=phaseForWeek(w);
   q("monthTarget").textContent=p.name;
@@ -1551,6 +1592,7 @@ function renderCoachMonth(){
   q("coachMonthDecision").textContent=`Şu anda 12 haftalık sistemin ${w}. haftasındasın: ${p.name}. Önümüzdeki 4 haftada amaç, 76 kg hedefi için kontrollü kilo artışını sürdürürken planche/front lever/muscle-up seviyesini korumak ve ana strength hareketlerinde progresyon üretmek.`;
 }
 function renderCoachTwelve(){
+  if(window.TrainingPeriods?.renderRoadmap("period"))return;
   if(!q("coach12WeekRoadmap")) return;
   const phases=[
     ["1–3","Base + Hypertrophy","Hacim, teknik kalite, 76 kg hedefi için lean-gain başlangıcı"],
@@ -1721,7 +1763,7 @@ function effectiveSetFactor(r){
  return base*confidence;
 }
 function muscleSetsForRow(r){
- const map=V5_EXERCISE_MUSCLES[r.name]||{};
+ const map=V5_EXERCISE_MUSCLES[r.name]||window.EXERCISE_KNOWLEDGE?.[r.name]?.muscles||{};
  const fallback=(r.sets||[]).filter(x=>+x>0).length*effectiveSetFactor(r);
  const dose=typeof window.exerciseDoseUnits==="function"?window.exerciseDoseUnits(r):fallback;
  const out={};Object.entries(map).forEach(([m,c])=>out[m]=dose*c);return out;
@@ -1738,9 +1780,17 @@ function recoveryReferenceTime(k=todayKey()){
  return new Date(k+"T23:59:59");
 }
 function trainingRowTime(key,row){
+ if(row?.historicalEntry&&!row.performedAt)return new Date(key+"T18:00:00");
  const raw=row?.performedAt||row?.recordedAt||row?.completedAt||db.sessionFeedback?.[key]?.completedAt;
  const t=raw?new Date(raw):new Date(key+"T18:00:00");
- return Number.isNaN(+t)?new Date(key+"T18:00:00"):t;
+ if(Number.isNaN(+t))return new Date(key+"T18:00:00");
+ // Import/edit time is not performance time. Retain explicit performedAt and overnight sessions.
+ if(!row?.performedAt){const calendar=`${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,"0")}-${String(t.getDate()).padStart(2,"0")}`;
+  const next=new Date(key+"T12:00:00");next.setDate(next.getDate()+1);
+  const overnight=t.getHours()<4&&t.toDateString()===next.toDateString();
+  if(calendar!==key&&!overnight)return new Date(key+"T18:00:00");
+ }
+ return t;
 }
 function rowRecoveryHalfLifeHours(row){
  const rir=Number(row?.rir),nearFailure=Number.isFinite(rir)?clamp((3-rir)/3,0,1):.45;
@@ -1761,7 +1811,7 @@ function muscleRecoveryLedger(k=todayKey()){
  for(let back=0;back<8;back++){
   const key=addDaysKey(k,-back);if(key<startKey)continue;
   (db.trainingLogs[key]||[]).forEach(r=>{
-   const at=trainingRowTime(key,r),hours=Math.max(0,(ref-at)/3600000);if(hours<0)return;
+   const at=trainingRowTime(key,r);if(at>ref)return;const hours=Math.max(0,(ref-at)/3600000);
    const env=recoveryEnvironmentBetween(key,k),halfLife=rowRecoveryHalfLifeHours(r),effectiveHalfLife=halfLife/clamp(.82+env*.23,.92,1.06);
    const retention=Math.pow(.5,hours/Math.max(12,effectiveHalfLife));
    Object.entries(muscleSetsForRow(r)).forEach(([m,v])=>out[m]+=v*retention);
@@ -1774,7 +1824,7 @@ function muscleRecoveryDetail(m,k=todayKey()){
  for(let back=0;back<8;back++){
   const key=addDaysKey(k,-back);(db.trainingLogs[key]||[]).forEach(r=>{
    const dose=muscleSetsForRow(r)[m]||0;if(!dose)return;
-   const at=trainingRowTime(key,r),hours=Math.max(0,(ref-at)/3600000),env=recoveryEnvironmentBetween(key,k),halfLife=rowRecoveryHalfLifeHours(r),effectiveHalfLife=halfLife/clamp(.82+env*.23,.92,1.06),remaining=dose*Math.pow(.5,hours/Math.max(12,effectiveHalfLife));
+   const at=trainingRowTime(key,r);if(at>ref)return;const hours=Math.max(0,(ref-at)/3600000),env=recoveryEnvironmentBetween(key,k),halfLife=rowRecoveryHalfLifeHours(r),effectiveHalfLife=halfLife/clamp(.82+env*.23,.92,1.06),remaining=dose*Math.pow(.5,hours/Math.max(12,effectiveHalfLife));
    entries.push({key,name:r.name,at:at.toISOString(),hours,initial:dose,remaining,halfLife:effectiveHalfLife});
   });
  }
@@ -1835,6 +1885,7 @@ function hardConstraintForProgramV92(k,type){
   reason:hardHealth?`Sağlık: ${health.label}`:lowReadiness?`Readiness ${actual}/100`:hardPain?`Ağrı/eklem: ${conflicts.join(", ")||pain+"/10"}`:""};
 }
 function programPhaseLoadV92(k){
+ const manual=window.TrainingPeriods?.phase(k);if(manual)return manual;
  const pw=programWeekV5(k),phase=phaseForWeekV5(pw.week);
  if([4,8].includes(pw.week))return {volume:.65,intensity:.88,label:`${phase.name} · planlı deload`};
  if(pw.week===12)return {volume:.70,intensity:.92,label:`${phase.name} · realization`};
@@ -1854,6 +1905,7 @@ function buildFuturePlanV5(days=14,reason="program_engine_v9.2"){
    const occupied=new Set();
    // Keep persisted, valid deferrals stable. This prevents daily readiness changes from shuffling the week.
    wk.forEach(base=>{
+     if(window.TrainingPeriods?.planForDate(base))return;
      const a=db.programEngine.assignments[base];
      if(a&&a.targetDate>=start&&a.targetDate<=end&&daysBetween(base,a.targetDate)>=0&&daysBetween(base,a.targetDate)<=3)occupied.add(a.targetDate);
      else if(a&&a.targetDate<start&&!completedSessionType(a.targetDate))delete db.programEngine.assignments[base];
@@ -1865,7 +1917,7 @@ function buildFuturePlanV5(days=14,reason="program_engine_v9.2"){
      if(a.targetDate===base&&base>=start&&!window.CanonicalSessionEngine?.isLocked?.(base)){
        const hard=hardConstraintForProgramV92(base,slot.type);
        if(hard.defer){
-         const candidate=wk.find(k=>k>base&&k<=end&&daysBetween(base,k)<=3&&programBaseSlotV92(k).type==="recovery"&&!occupied.has(k)&&!window.CanonicalSessionEngine?.isLocked?.(k));
+         const candidate=wk.find(k=>k>base&&k<=end&&daysBetween(base,k)<=3&&!window.TrainingPeriods?.planForDate(k)&&programBaseSlotV92(k).type==="recovery"&&!occupied.has(k)&&!window.CanonicalSessionEngine?.isLocked?.(k));
          if(candidate){
            a.targetDate=candidate;a.reason=`Kontrollü erteleme · ${hard.reason}`;a.deferredAt=new Date().toISOString();a.hardConstraint=hard.reason;occupied.add(candidate);
          }
@@ -1875,6 +1927,8 @@ function buildFuturePlanV5(days=14,reason="program_engine_v9.2"){
    });
    wk.filter(k=>k>=start&&k<=end).forEach((k,i)=>{
      if(window.CanonicalSessionEngine?.isLocked?.(k))return;
+     const manual=window.TrainingPeriods?.planForDate(k);
+     if(manual){const sh=shiftDataForKey(k),pw=window.TrainingPeriods.phase(k);const p={...manual,baseDate:k,baseType:manual.type,window:recommendedWindow(sh.shift,sh.status),status:sh.status,shift:sh.shift,predictedReadiness:forecastReadinessV5(k,i),state:k===start?"today":"forecast",programWeek:pw?.week,phase:pw?.label||"Dönem değerlendirmesi",adaptation:"Kullanıcının onayladığı dönem"};p.version=savePlanVersion(k,p,reason);db.futurePlans[k]=p;return;}
      const base=programBaseSlotV92(k),incoming=Object.values(db.programEngine.assignments).find(a=>a?.targetDate===k&&a.baseDate!==k&&a.type!=="recovery");
      const own=db.programEngine.assignments[k];
      let type=base.type,name=base.name,adaptation="Ana mikrocycle",baseDate=k;
@@ -1896,15 +1950,16 @@ window.AthleteProgramEngine={version:"9.2.8",microcycle:ATHLETE_PROGRAM_MICROCYC
 // v5 replaces the old planner entry point
 buildFuturePlan=buildFuturePlanV5;
 
-function planForDate(k){return (db.futurePlans||{})[k]||null}
+function planForDate(k){return (db.futurePlans||{})[k]||db.planHistory?.[k]?.versions?.at(-1)?.plan||null}
 function programWeekV5(k=todayKey()){
+ const manual=window.TrainingPeriods?.phase(k);if(manual)return manual;
  let start=db.settings.programStartDate; if(!start){start=k;db.settings.programStartDate=start;save()}
  const raw=Math.floor(daysBetween(start,k)/7)+1; return {week:((Math.max(1,raw)-1)%12)+1,cycle:Math.floor((Math.max(1,raw)-1)/12)+1,raw};
 }
 function currentProgramWeek(){return programWeekV5().week}
 function phaseForWeekV5(w){return phaseForWeek(w)}
 function planLoadModifier(k,type){
- const d=db.daily[k]||{},r=readiness(d)??forecastReadinessV5(k,0), pain=maxPain(k), recovery=muscleRecoveryPenalty(type,k),health=window.HealthStateEngine?.assess?.(d)||{volumeFactor:1,intensityFactor:1,action:"normal",label:"Normal"};
+ const d=db.daily[k]||{},r=readiness(d)??forecastReadinessV5(k,0), pain=maxPain(k), recovery=Math.max(muscleRecoveryPenalty(type,k),window.TrainingPeriods?.recoveryPenalty(k)||0),health=window.HealthStateEngine?.assess?.(d)||{volumeFactor:1,intensityFactor:1,action:"normal",label:"Normal"};
  let base;
  if(r<55||pain>=7)base={volume:.5,intensity:.75,label:"Minimum / Recovery"};
  else if(r<68||pain>=5||recovery>14)base={volume:.8,intensity:.9,label:"Kısaltılmış"};
@@ -1932,13 +1987,15 @@ function smartProgressionNote(name){
 function resolvedTemplate(k){
  const plan=planForDate(k)||{type:"recovery",name:"Recovery / Rest"},health=window.HealthStateEngine?.assess?.(db.daily[k]||{})||{action:"normal"};
  const effectivePlan=["recovery","stop_hard_training"].includes(health.action)?{...plan,type:"recovery",name:health.action==="stop_hard_training"?"Health Recovery / Rest":"Recovery / Minimum Day",reason:`Sağlık durumu: ${health.label}`} : plan;
- const rawBase=templateForType(effectivePlan.type), base=window.SportsSciencePolicy?.optimizeTemplate?.(k,effectivePlan.type,rawBase)||rawBase, mod=planLoadModifier(k,effectivePlan.type), pain=painForDate(k);
+ const custom=plan.periodId&&effectivePlan===plan?window.TrainingPeriods?.template(k):null;
+ const rawBase=custom||templateForType(effectivePlan.type), base=custom||window.SportsSciencePolicy?.optimizeTemplate?.(k,effectivePlan.type,rawBase)||rawBase, mod=planLoadModifier(k,effectivePlan.type), pain=painForDate(k);
  const readinessScore=db.daily?.[k]?readiness(db.daily[k]):null;
- const items=(base.items||[]).map(x=>{
+ let items=(base.items||[]).map(x=>{
    const rest=restIntervalPrescription(x[0],readinessScore),prescription=adjustPrescription(x[1],mod.volume);
    const loadRecommendation=window.LoadPrescriptionEngine?.recommend?.(x[0],prescription,k,{readinessScore,templateNote:x[2],modifier:mod})||{applicable:false};
    return {name:x[0],prescription,note:x[2],progression:smartProgressionNote(x[0]),loadRecommendation,restTargetSec:rest.target,restMinSec:rest.min,restMaxSec:rest.max,restKind:rest.kind};
  });
+ if(custom)items=window.TrainingPeriods.decorate(k,items,mod);
  const filtered=items.map(it=>{
    let risk="";
    const painAdvice=window.PainIntelligence?.exerciseAdvice?.(it.name,k);
@@ -2133,7 +2190,7 @@ const BODYMAP_GEOMETRY = {
 };
 
 
-let bodymapOverlayMode="stimulus";
+let bodymapOverlayMode="recovery";
 
 function growthMetricForMuscle(m,days=muscleReportDays){
  const directFields={
@@ -2194,8 +2251,8 @@ function overlayMetric(m,stim){
    return {available:true,value:g.pct,label:display,sub:`${g.from}→${g.to} cm · ${g.confidence==="direct"?"doğrudan":"proxy"}`,color:overlayColor("growth",g.pct)};
  }
  if(bodymapOverlayMode==="recovery"){
-   const value=recoveryReadinessForMuscle(m);
-   return {available:true,value,label:`${value}%`,sub:value>=75?"Hazır":value>=50?"Orta":"Yorgun",color:overlayColor("recovery",value)};
+   const detail=muscleRecoveryDetail(m),value=detail.readiness;
+   return {available:true,value,label:`${value}/100`,sub:detail.entries.length?"Tahmini toparlanma":"Yakın dönem yük kaydı yok",color:overlayColor("recovery",value)};
  }
  const pain=musclePainScore(m);
  const value=pain*10;
@@ -2515,6 +2572,7 @@ function renderScienceTrend(m){
 
 let muscleReportDays=7,selectedMuscleKey=null;
 function renderMuscleReport(){
+ if(q("recoveryClockStatus"))q("recoveryClockStatus").textContent=`Son hesaplama: ${new Date().toLocaleString("tr-TR")} · Her dakika yenilenir. Toparlanma puanı tahmindir; hasar veya iyileşme ölçümü değildir.`;
  const stim=muscleStimulus(muscleReportDays);
  const total=Object.values(stim).reduce((a,b)=>a+b,0);
  const top=Object.entries(stim).sort((a,b)=>b[1]-a[1])[0];
@@ -2603,38 +2661,49 @@ function renderPainCoach(){
  el.className="insight-box "+(peak>=7?"bad":"warn");el.textContent=`Legacy yük sinyali: ${pairs.map(x=>x[0]+" "+x[1]+"/10").join(", ")}.`;
 }
 function renderCommandCenter(){
- if(!q("cmdTodayTraining"))return;const t=planForDate(todayKey()),tm=planForDate(addDaysKey(todayKey(),1)),pw=programWeekV5(),r=readiness(db.daily[todayKey()])??forecastReadinessV5(todayKey());q("cmdTodayTraining").textContent=t?.name||"Plan hazırlanıyor";q("cmdTodayTime").textContent=t?.window||"--";q("cmdTomorrowTraining").textContent=tm?.name||"--";q("cmdTomorrowReadiness").textContent=tm?`≈ ${tm.predictedReadiness}/100 · ${tm.window}`:"--";q("cmdProgramWeek").textContent=`Döngü ${pw.cycle} · Hafta ${pw.week}/12`;q("cmdProgramPhase").textContent=phaseForWeekV5(pw.week).name;q("cmdRecovery").textContent=`${r}/100`;q("cmdRecoveryNote").textContent=maxPain()>=5?"Eklem yükünü izle":"Güncel readiness";q("engineStatus").textContent=`Aktif · Athlete Day ${todayKey()} · ${String(Number.isFinite(+db.settings.dayBoundaryHour)?+db.settings.dayBoundaryHour:0).padStart(2,"0")}:00 sınırı`;document.querySelectorAll(".command-tile").forEach(b=>b.onclick=()=>goToPage(b.dataset.command));
+ if(!q("cmdTodayTraining"))return;const t=planForDate(todayKey()),tm=planForDate(addDaysKey(todayKey(),1)),pw=programWeekV5(),r=readiness(db.daily[todayKey()])??forecastReadinessV5(todayKey());q("cmdTodayTraining").textContent=t?.name||"Plan hazırlanıyor";q("cmdTodayTime").textContent=t?.window||"--";q("cmdTomorrowTraining").textContent=tm?.name||"--";q("cmdTomorrowReadiness").textContent=tm?`≈ ${tm.predictedReadiness}/100 · ${tm.window}`:"--";q("cmdProgramWeek").textContent=`Döngü ${pw.cycle} · Hafta ${pw.week}/${pw.weeks||12}`;q("cmdProgramPhase").textContent=pw.label||phaseForWeekV5(pw.week).name;q("cmdRecovery").textContent=`${r}/100`;q("cmdRecoveryNote").textContent=maxPain()>=5?"Eklem yükünü izle":"Güncel readiness";q("engineStatus").textContent=`Aktif · Athlete Day ${todayKey()} · ${String(Number.isFinite(+db.settings.dayBoundaryHour)?+db.settings.dayBoundaryHour:0).padStart(2,"0")}:00 sınırı`;document.querySelectorAll(".command-tile").forEach(b=>b.onclick=()=>goToPage(b.dataset.command));
 }
 function renderCoachV5(){
- if(!q("coachReadiness"))return;const k=todayKey(),p=planForDate(k)||buildFuturePlanV5(14)[k],cs=window.CanonicalSessionEngine?.get?.(k),t=canonicalTemplate(k),raw=readiness(db.daily[k]),r=raw??(cs?.predictedReadiness??p.predictedReadiness),mod=t.modifier,health=window.HealthStateEngine?.assess?.(db.daily[k]||{});q("coachReadiness").textContent=(raw==null?"≈ ":"")+r+"/100";q("coachSession").textContent=t.name||p.name;q("coachIntensity").textContent=mod.label;q("coachDuration").textContent=Math.round((t.duration||45)*mod.volume)+" dk";q("coachWorkout").innerHTML=t.items.map(x=>`<div class="coach-row"><strong>${x.name}</strong><span>${x.prescription}${x.loadRecommendation?.applicable&&x.loadRecommendation?.display?` · <b>${x.loadRecommendation.display}</b>`:""}</span><span>${x.risk||x.progression||x.loadRecommendation?.rationale||x.note}</span></div>`).join("");const conflicts=painConflicts(cs?.planType||p.type,k),pw=programWeekV5(k);q("coachDecision").textContent=`Döngü ${pw.cycle}, hafta ${pw.week}/12 (${phaseForWeekV5(pw.week).name}). Canonical ${cs?.snapshotId||"—"} · Plan v${cs?.planVersion||p.version||1}; ${cs?.reason||p.reason}. ${health&&health.action!=="normal"?`Sağlık durumu: ${health.label} — ${health.reason} `:""}${conflicts.length?`Eklem uyumluluğu nedeniyle ${conflicts.join(", ")} yükü azaltıldı.`:"Belirgin eklem çakışması yok."} ${window.PeriodicTrendEngine?.summary?.("monthly")?.comment||""} ${nutritionGoalAdvice().text}`;const focus=t.items.slice(0,3).map(x=>x.name);q("coachProgression").innerHTML=focus.map(n=>`<div class="rec-card good"><strong>${n}</strong>${smartProgressionNote(n)}</div>`).join("");
+ if(window.TrainingPeriods?.renderCoach?.())return;
+ if(!q("coachReadiness"))return;const k=todayKey(),p=planForDate(k)||buildFuturePlanV5(14)[k],cs=window.CanonicalSessionEngine?.get?.(k),t=canonicalTemplate(k),raw=readiness(db.daily[k]),r=raw??(cs?.predictedReadiness??p.predictedReadiness),mod=t.modifier,health=window.HealthStateEngine?.assess?.(db.daily[k]||{});q("coachReadiness").textContent=(raw==null?"≈ ":"")+r+"/100";q("coachSession").textContent=t.name||p.name;q("coachIntensity").textContent=mod.label;q("coachDuration").textContent=Math.round((t.duration||45)*mod.volume)+" dk";q("coachWorkout").innerHTML=t.items.map(x=>`<div class="coach-row"><strong>${x.name}</strong><span>${x.prescription}${x.targetRir!=null?` · RIR ${x.targetRir}`:""}${x.restTargetSec!=null?` · ${x.restTargetSec} sn dinlenme`:""}${x.loadRecommendation?.applicable&&x.loadRecommendation?.display?` · <b>${x.loadRecommendation.display}</b>`:""}</span><span>${x.risk||x.progression||x.loadRecommendation?.rationale||x.note}</span></div>`).join("");const conflicts=painConflicts(cs?.planType||p.type,k),pw=programWeekV5(k);q("coachDecision").textContent=`Döngü ${pw.cycle}, hafta ${pw.week}/${pw.weeks||12} (${pw.label||phaseForWeekV5(pw.week).name}). Canonical ${cs?.snapshotId||"—"} · Plan v${cs?.planVersion||p.version||1}; ${cs?.reason||p.reason}. ${health&&health.action!=="normal"?`Sağlık durumu: ${health.label} — ${health.reason} `:""}${conflicts.length?`Eklem uyumluluğu nedeniyle ${conflicts.join(", ")} yükü azaltıldı.`:"Belirgin eklem çakışması yok."} ${window.PeriodicTrendEngine?.summary?.("monthly")?.comment||""} ${nutritionGoalAdvice().text}`;const focus=t.items.slice(0,3).map(x=>x.name);q("coachProgression").innerHTML=focus.map(n=>`<div class="rec-card good"><strong>${n}</strong>${smartProgressionNote(n)}</div>`).join("");
 }
 renderCoach=renderCoachV5;
 function renderTomorrowCoachV5(){
- if(!q("tomorrowWorkoutPlan"))return;const k=addDaysKey(todayKey(),1),p=planForDate(k)||buildFuturePlanV5(14)[k],t=canonicalTemplate(k);q("tomorrowStatusBadge").textContent=p.name;q("tomorrowWorkoutSummary").innerHTML=[["Tarih",p.key],["Forecast readiness",`≈ ${p.predictedReadiness}/100`],["Önerilen saat",p.window],["Plan versiyonu","v"+(p.version||1)]].map(x=>`<div class="mini-box"><span>${x[0]}</span><strong>${x[1]}</strong></div>`).join("");q("tomorrowWorkoutPlan").innerHTML=t.items.map((x,i)=>`<div class="today-plan-row"><strong>${i+1}. ${x.name}</strong><span>${x.prescription}${x.loadRecommendation?.applicable&&x.loadRecommendation?.display?` · Yük ${x.loadRecommendation.display}`:""}</span><span>${x.risk||x.progression||x.loadRecommendation?.rationale||""}</span><span class="tag">${p.type}</span></div>`).join("");q("tomorrowWorkoutReason").textContent=`Yarınki seans Program Engine v9.2 ana mikrocycle slotudur. Check-in programın kimliğini rastgele değiştirmez; yalnızca hacim, yük, RIR ve gerekli ise kontrollü erteleme uygulanır. ${p.adaptation||"Ana mikrocycle"}.`;
+ if(!q("tomorrowWorkoutPlan"))return;const k=addDaysKey(todayKey(),1),p=planForDate(k)||buildFuturePlanV5(14)[k],t=canonicalTemplate(k);q("tomorrowStatusBadge").textContent=p.name;q("tomorrowWorkoutSummary").innerHTML=[["Tarih",p.key],["Forecast readiness",`≈ ${p.predictedReadiness}/100`],["Önerilen saat",p.window],["Plan versiyonu","v"+(p.version||1)]].map(x=>`<div class="mini-box"><span>${x[0]}</span><strong>${x[1]}</strong></div>`).join("");q("tomorrowWorkoutPlan").innerHTML=t.items.map((x,i)=>`<div class="today-plan-row"><strong>${i+1}. ${x.name}</strong><span>${x.prescription}${x.targetRir!=null?` · RIR ${x.targetRir}`:""}${x.restTargetSec!=null?` · ${x.restTargetSec} sn dinlenme`:""}${x.loadRecommendation?.applicable&&x.loadRecommendation?.display?` · Yük ${x.loadRecommendation.display}`:""}</span><span>${x.risk||x.progression||x.loadRecommendation?.rationale||""}</span><span class="tag">${p.type}</span></div>`).join("");q("tomorrowWorkoutReason").textContent=p.reason||"Aktif programın günlük sağlık ve toparlanma verileriyle değerlendirilir.";
 }
 renderTomorrowCoach=renderTomorrowCoachV5;
 function renderTodayTrainingPlanV5(){
+ const selected=trainingViewDate(),known=planForDate(selected)||db.planHistory[selected]?.versions?.at(-1)?.plan;
+ if(selected<todayKey()&&!known){
+  if(q("todayPlanBadge"))q("todayPlanBadge").textContent="Geçmiş antrenman kaydı";
+  if(q("trainingSelectedDateLabel"))q("trainingSelectedDateLabel").textContent=selected;
+  if(q("selectedWorkoutHeading"))q("selectedWorkoutHeading").textContent="Geçmiş Antrenman";
+  if(q("todayTrainingPlan"))q("todayTrainingPlan").textContent="Bu gün için saklanmış plan yok. Antrenman Kaydı bölümünden yaptığın hareketleri ekleyebilirsin.";
+  if(q("todayPlanReason"))q("todayPlanReason").textContent="Kayıtlar seçili tarihin yük ve toparlanma hesaplarına katılır.";
+  return;
+ }
  const el=q("todayTrainingPlan");if(!el)return;const k=trainingViewDate(),p=planForDate(k)||buildFuturePlanV5(14)[k],t=canonicalTemplate(k);const cs=window.CanonicalSessionEngine?.get?.(k);q("todayPlanBadge").textContent=`${t.name||p.name} · v${cs?.planVersion||p.version||1}${cs?.locked?" · LOCK":""}`;
  const kd=new Date(k+"T12:00:00");if(q("trainingSelectedDateLabel"))q("trainingSelectedDateLabel").textContent=new Intl.DateTimeFormat("tr-TR",{weekday:"long",day:"numeric",month:"long",year:"numeric"}).format(kd);
- if(q("selectedWorkoutHeading"))q("selectedWorkoutHeading").textContent=(k===todayKey()?"Bugünün":"Seçili Günün")+" Hazır Antrenmanı";el.innerHTML=(t.items||[]).map((x,i)=>`<div class="today-plan-row"><strong>${i+1}. ${x.name}</strong><span>${x.prescription}${x.loadRecommendation?.applicable&&x.loadRecommendation?.display?` · Yük ${x.loadRecommendation.display}`:""}</span><span>${x.risk||x.progression||x.loadRecommendation?.rationale||""}</span><span class="tag">${t.modifier.label}</span></div>`).join("");const rr=readiness(db.daily[k]);q("todayPlanReason").textContent=`Program Engine v9.2 · ${p.phase||phaseForWeekV5(programWeekV5(k).week).name}. ${p.adaptation||"Ana mikrocycle"}. ${p.status==="work"?"Vardiya "+shiftLabel(p.shift):"İzin/serbest gün"} · ${p.window}. ${rr==null?`Readiness forecast ≈ ${p.predictedReadiness}/100.`:`Readiness ${rr}/100.`} Recovery cezası ${muscleRecoveryPenalty(p.type,k).toFixed(0)}. ${painConflicts(p.type,k).length?`Eklem sinyali: ${painConflicts(p.type,k).join(", ")}.`:"Eklem çakışması yok."} Günlük veri programın hareket kimliğini değiştirmez; doz ayarı yapar. Canonical: ${cs?.snapshotId||"oluşturuluyor"}${cs?.locked?` · kilit: ${cs.lockReason}`:""}`;
+ if(q("selectedWorkoutHeading"))q("selectedWorkoutHeading").textContent=(k===todayKey()?"Bugünün":"Seçili Günün")+" Hazır Antrenmanı";el.innerHTML=(t.items||[]).map((x,i)=>`<div class="today-plan-row"><strong>${i+1}. ${x.name}</strong><span>${x.prescription}${x.targetRir!=null?` · RIR ${x.targetRir}`:""}${x.restTargetSec!=null?` · ${x.restTargetSec} sn dinlenme`:""}${x.loadRecommendation?.applicable&&x.loadRecommendation?.display?` · Yük ${x.loadRecommendation.display}`:""}</span><span>${x.risk||x.progression||x.loadRecommendation?.rationale||""}</span><span class="tag">${t.modifier.label}</span></div>`).join("");const rr=readiness(db.daily[k]);q("todayPlanReason").textContent=`${p.reason||""} ${p.status==="work"?"Vardiya "+shiftLabel(p.shift):"Serbest gün"} · ${p.window||"Saat esnek"}. ${rr==null?"Bugünün hazır oluş kaydı eksik; tahmin kullanılıyor.":`Hazır oluş ${rr}/100.`} ${cs?.locked?"Başlamış seansın reçetesi korunuyor.":"Yeni kayıtlar günlük dozu günceller."}`;
 }
 renderTodayTrainingPlan=renderTodayTrainingPlanV5;
 function renderWeeklyTrainingPlanV5(){
  const el=q("weeklyTrainingPlan");if(!el)return;const keys=weekKeysFor(trainingViewDate()),today=todayKey();
  el.innerHTML=keys.map(k=>{
    const p=planForDate(k)||db.planHistory[k]?.versions?.at(-1)?.plan,cs=window.CanonicalSessionEngine?.get?.(k);
-   const d=new Date(k+"T12:00:00");if(!p&&!cs)return `<div class="plan-day"><div class="date">${dayNameTr(d)} • ${k.slice(5)}</div><h4>Plan yok</h4></div>`;
+   const d=new Date(k+"T12:00:00");if(!p&&!cs)return `<div class="plan-day"><div class="date">${dayNameTr(d)} • ${displayCalendarDate(k)}</div><h4>Plan yok</h4></div>`;
    const actual=completedSessionType(k),past=k<today,vr=db.gapReconciliation?.[k],type=cs?.planType||p?.type||"recovery";
    const status=past?(actual?(vr?.dataConfidence==="medium"?"Tamamlandı · Backfill":"Tamamlandı"):vr?.status==="missed"?"Kaçırıldı":vr?.status==="rested"?"Dinlenme seçildi":type==="recovery"?"Recovery":"Doğrulanmamış"):(k===today?"Bugün":"Forecast");
    const statusClass=actual?"good":vr?.status==="missed"?"bad":past?"warn":type==="recovery"?"rest":"good";
    const preview=(cs?.items||[]).map(x=>x.name).slice(0,4).join(" · ");
-   return `<div class="plan-day ${k===today?"today":""} ${k===trainingViewDate()?"selected":""}" role="button" tabindex="0" data-training-date="${k}" onclick="setTrainingViewDate('${k}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();setTrainingViewDate('${k}')}"><div class="date">${dayNameTr(d)} • ${k.slice(5)}</div><h4>${cs?.planName||p?.name||type}</h4><div class="shift">${(cs?.status||p?.status)==="work"?"Vardiya "+shiftLabel(cs?.shift||p?.shift):"İzin / serbest"}</div><div class="time">${cs?.window||p?.window||"—"}</div><div class="status ${statusClass}">${status} · ${(cs?.predictedReadiness??p?.predictedReadiness)?`≈${cs?.predictedReadiness??p?.predictedReadiness}/100`:""}</div><div class="session-version">canonical ${cs?.snapshotId?cs.snapshotId.split("_").slice(-1)[0]:"—"} · plan v${cs?.planVersion||p?.version||1}${cs?.locked?" · LOCK":""}</div>${preview?`<div class="canonical-preview">${preview}${(cs?.items||[]).length>4?" …":""}</div>`:""}<small class="edit-hint">Günü aç · kayıtları düzenle</small></div>`;
+   return `<div class="plan-day ${k===today?"today":""} ${k===trainingViewDate()?"selected":""}" role="button" tabindex="0" data-training-date="${k}" onclick="setTrainingViewDate('${k}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();setTrainingViewDate('${k}')}"><div class="date">${dayNameTr(d)} • ${displayCalendarDate(k)}</div><h4>${cs?.planName||p?.name||type}</h4><div class="shift">${(cs?.status||p?.status)==="work"?"Vardiya "+shiftLabel(cs?.shift||p?.shift):"İzin / serbest"}</div><div class="time">${cs?.window||p?.window||"—"}</div><div class="status ${statusClass}">${status} · ${(cs?.predictedReadiness??p?.predictedReadiness)?`≈${cs?.predictedReadiness??p?.predictedReadiness}/100`:""}</div><div class="session-version">canonical ${cs?.snapshotId?cs.snapshotId.split("_").slice(-1)[0]:"—"} · plan v${cs?.planVersion||p?.version||1}${cs?.locked?" · LOCK":""}</div>${preview?`<div class="canonical-preview">${preview}${(cs?.items||[]).length>4?" …":""}</div>`:""}<small class="edit-hint">Günü aç · kayıtları düzenle</small></div>`;
  }).join("");
 }
 renderWeeklyTrainingPlan=renderWeeklyTrainingPlanV5;
 window.renderTrainingPlanSyncV81=function renderTrainingPlanSyncV81(){
  const badge=q("trainingPlanSyncBadge"),detail=q("trainingPlanSyncDetail");if(!badge||!detail)return;
- const date=trainingViewDate(),audit=window.TrainingSessionService?.audit?.(date),p=window.CanonicalSessionEngine?.get?.(date);
+ const date=trainingViewDate(),p=window.CanonicalSessionEngine?.get?.(date),audit=p?window.TrainingSessionService?.audit?.(date):null;
+ if(!p){badge.textContent="SERBEST GEÇMİŞ KAYDI";badge.className="plan-badge";detail.textContent=`${date} için saklanmış reçete yok; hareketlerini manuel kaydedebilirsin.`;const preview=q("guidedPrescriptionPreview");if(preview)preview.textContent="Bu tarihin kaydı için Antrenman Kaydı bölümünü kullan.";return;}
  const preview=q("guidedPrescriptionPreview"),identity=q("guidedPreviewIdentity"),today=q("todayTrainingPlan");
  // One rendered projection: same names, order, sets, rest and load, no second recommendation.
  if(preview&&today){preview.innerHTML=today.innerHTML;preview.dataset.snapshotId=p?.snapshotId||"";today.dataset.snapshotId=p?.snapshotId||""}
@@ -2667,6 +2736,7 @@ function renderReportsV5(){renderDailyReport();renderWeeklyReport();renderMonthl
 renderReports=renderReportsV5;
 function renderV5All(){safeRender(renderPainCoach);safeRender(renderCommandCenter);safeRender(renderPlanVsActual);safeRender(renderCharacterConfidence);safeRender(renderMuscleReport)}
 function initTrainingDateNavigation(){
+ document.addEventListener("visibilitychange",()=>{if(!document.hidden){safeRender(renderMuscleReport);window.AthleteCoordinator?.schedule("window resumed");}});
  q("trainingPrevDay")?.addEventListener("click",()=>setTrainingViewDate(addDaysKey(trainingViewDate(),-1)));
  q("trainingNextDay")?.addEventListener("click",()=>setTrainingViewDate(addDaysKey(trainingViewDate(),1)));
  q("trainingTodayDay")?.addEventListener("click",()=>resetTrainingViewToToday());
@@ -2740,6 +2810,7 @@ function init(){
  // Critical controls first: even if a secondary analysis widget fails, data entry remains usable.
  lifecycleTick(false);
  if(q("saveDailyBtn")) q("saveDailyBtn").onclick=saveDaily;
+ if(q("saveHealthBtn")) q("saveHealthBtn").onclick=saveHealthStatus;
  if(q("saveShiftBtn")) q("saveShiftBtn").onclick=saveTodayShift;
  if(q("optimizeTodayBtn")) q("optimizeTodayBtn").onclick=()=>{safeRender(renderToday);safeRender(renderCoach)};
  if(q("saveWeekBtn")) q("saveWeekBtn").onclick=()=>persistWeeklyScheduleFromUI("weekly-manual-save",{rebuild:true});

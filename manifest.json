@@ -1,9 +1,10 @@
 {
-  "name": "Athlete Life OS v9.1",
-  "short_name": "AthleteOS",
-  "start_url": "./index.html",
+  "name": "Athlete Life",
+  "short_name": "Athlete Life",
+  "lang": "tr",
+  "start_url": "./accounts.html",
   "display": "standalone",
   "background_color": "#0d1117",
   "theme_color": "#0d1117",
-  "description": "Hybrid athlete life, training, recovery and performance operating system."
+  "description": "Kişisel antrenman, plan ve gelişim günlüğü."
 }

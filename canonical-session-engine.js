@@ -11,7 +11,7 @@ function plan(date){return rt()?.getPlan?.(date)||null}
 function resolved(date){return rt()?.getResolvedTemplate?.(date)||null}
 function compactItem(it,i){
  return {
-  index:i,name:it.name,prescription:String(it.prescription||"—"),note:it.note||"",progression:it.progression||"",risk:it.risk||"",
+  index:i,name:it.name,prescription:String(it.prescription||"—"),note:it.note||"",progression:it.progression||"",risk:it.risk||"",targetRir:it.targetRir??null,
   loadRecommendation:clone(it.loadRecommendation||null),restTargetSec:+it.restTargetSec||0,restMinSec:+it.restMinSec||0,restMaxSec:+it.restMaxSec||0,restKind:it.restKind||null,
   painAdvice:clone(it.painAdvice||null)
  };

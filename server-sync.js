@@ -40,13 +40,25 @@ function bootstrap(){
  }catch(e){console.warn("Server bootstrap failed",e)}
  return {source:"empty",data:local||null};
 }
-let pending=null,timer=null,lastAckRev=0;
+let pending=null,timer=null,lastAckRev=0,inFlight=null;
 function flush(){
- if(!pending)return Promise.resolve(false);const payload=pending;pending=null;
- return fetch(API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload),keepalive:true})
- .then(r=>r.ok?r.json():Promise.reject(new Error("HTTP "+r.status)))
- .then(j=>{lastAckRev=Number(j?.revision||rev(payload.data)||0);return true})
- .catch(e=>{console.warn("Server persistence delayed",e);pending=payload;return false});
+ if(inFlight)return inFlight;
+ if(!pending)return Promise.resolve(false);
+ clearTimeout(timer);
+ inFlight=(async()=>{
+  while(pending){
+   const payload=pending;pending=null;
+   try{
+    const response=await fetch(API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+    if(!response.ok)throw new Error("HTTP "+response.status);
+    const result=await response.json();
+    if(!result.ok)throw new Error("Save rejected");
+    lastAckRev=Number(result.revision||rev(payload.data)||0);
+   }catch(error){console.warn("Server persistence delayed",error);pending=pending||payload;return false}
+  }
+  return true;
+ })().finally(()=>{inFlight=null});
+ return inFlight;
 }
 function push(data,reason){
  pending={data:JSON.parse(JSON.stringify(data)),reason:reason||"client-save"};
@@ -60,8 +72,9 @@ function beacon(data,reason){
  try{fetch(API,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({data,reason:reason||"pagehide"}),keepalive:true});return true}catch(e){return false}
 }
 function health(){return fetch("/api/health",{cache:"no-store"}).then(r=>r.json()).catch(()=>({ok:false}))}
-function status(){return {lastAckRev,pending:!!pending}}
+function status(){return {lastAckRev,pending:!!pending,saving:!!inFlight}}
 window.ALOSServerSync={bootstrap,push,flush,beacon,health,status,compare};
+window.addEventListener("online",()=>{flush()});
 bootstrap();
 window.addEventListener("pagehide",()=>{try{const d=parse(localStorage.getItem(RAW_KEY));if(d)beacon(d,"pagehide-final") }catch(e){}});
 })();

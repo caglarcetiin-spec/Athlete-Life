@@ -1,0 +1,11 @@
+const assert=require('assert');const {ctx,run}=require('./integration-v9.test.js');
+ctx.db.trainingLogs={'2026-09-14':[{name:'Weighted Pull-Up',type:'WEIGHTED',sets:[8,8,8,8],rir:1,recordedAt:'2026-09-16T10:00:00+03:00'}]};
+assert.equal(ctx.ALOSRecovery.rowTime('2026-09-14',ctx.db.trainingLogs['2026-09-14'][0]).getDate(),14,'import date is not training date');
+const NativeDate=Date;let now='2026-09-15T12:00:00+03:00';
+ctx.Date=class extends NativeDate{constructor(...args){super(...(args.length?args:[now]));}static now(){return new NativeDate(now).getTime();}};
+const first=ctx.ALOSRecovery.detail('lats',ctx.todayKey());now='2026-09-16T12:00:00+03:00';const later=ctx.ALOSRecovery.detail('lats',ctx.todayKey());
+assert(first.load>0);assert(later.load<first.load);assert(later.readiness>first.readiness);assert(later.etaHours<=first.etaHours);
+ctx.db.trainingLogs={'2026-09-16':[{name:'Weighted Pull-Up',sets:[8,8,8],rir:2,performedAt:'2026-09-16T23:00:00+03:00'}]};
+assert.equal(ctx.ALOSRecovery.detail('lats',ctx.todayKey()).load,0,'future performance timestamp must not affect current recovery');
+assert.equal(run('bodymapOverlayMode'),'recovery');
+console.log('PASS: elapsed time improves recovery, import-time correction, future records excluded, recovery default');

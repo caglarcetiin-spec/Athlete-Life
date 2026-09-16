@@ -54,8 +54,9 @@ function initSessionRouter(){
    `<option value="calendar">Takvim günü · ${calendar} · ${planNameFor(calendar)}</option>`+
    missed.map(x=>`<option value="catchup:${x.key}">${x.status==="missed"?"Telafi":"Geçmiş giriş"} · ${x.key} · ${x.name}</option>`).join("")+
    `<option value="custom">Özel tarih…</option>`;
- sel.onchange=()=>{q("sessionCustomDateWrap").hidden=sel.value!=="custom";renderSessionRouter();renderTrainingAdaptive()};
- if(q("sessionCustomDate")){q("sessionCustomDate").value=auto;q("sessionCustomDate").onchange=()=>{renderSessionRouter();renderTrainingAdaptive()}}
+ const syncManualDate=()=>{const input=q("manualTrainingDate");if(input){input.value=selectedSessionTargetKey().split("-").reverse().join(".");input.setCustomValidity?.("");}};
+ sel.onchange=()=>{q("sessionCustomDateWrap").hidden=sel.value!=="custom";syncManualDate();renderSessionRouter();renderTrainingAdaptive()};
+ if(q("sessionCustomDate")){q("sessionCustomDate").value=auto;q("sessionCustomDate").onchange=()=>{syncManualDate();renderSessionRouter();renderTrainingAdaptive()}}
  const cutoff=q("lateSessionCutoff");if(cutoff){cutoff.value=String(db.settings.lateSessionCutoffHour||4);cutoff.onchange=()=>{db.settings.lateSessionCutoffHour=+cutoff.value;save();initSessionRouter();renderSessionRouter()}}
  renderSessionRouter();
 }
@@ -70,8 +71,17 @@ function renderSessionRouter(){
  ${!isToday?`⚠ Guided Runner <b>bugünün değil ${target}</b> planını çalıştıracak. Bu nedenle Bugünün Hazır Antrenmanı ile farklı görünmesi beklenen bir telafi/tarih seçimi farkıdır.`:late?`Bu seans <b>${target}</b> planına bağlanacak; gerçek yapıldığı zaman ayrıca saklanacak.`:`Guided Runner, Haftalık Plan ve Bugünün Hazır Antrenmanı aynı canonical reçeteyi kullanacak.`}`;
  const hint=q("guidedRouterHint");if(hint)hint.textContent=isToday?`Runner kaynağı: ${c?.snapshotId||"canonical today"}`:`Runner hedefi farklı tarih: ${target}`;
 }
+function manualTrainingContext(now=new Date(),report=true){
+ const input=q("manualTrainingDate"),raw=(input?.value||"").trim();
+ const value=/^\d{2}\.\d{2}\.\d{4}$/.test(raw)?raw.split(".").reverse().join("-"):raw;
+ const parsed=new Date(value+"T12:00:00Z");
+ const valid=/^\d{4}-\d{2}-\d{2}$/.test(value)&&!isNaN(parsed)&&parsed.toISOString().slice(0,10)===value&&value<=calKey(now);
+ if(!valid){if(report){input?.setCustomValidity?.("GG.AA.YYYY biçiminde bugün veya geçmişte bir tarih gir.");input?.reportValidity?.();const st=q("manualTrainingSaveStatus");if(st)st.textContent="Kayıt eklenmedi. GG.AA.YYYY biçiminde geçerli bir tarih gir.";}return null}
+ input?.setCustomValidity?.("");
+ return {actual:value,target:value,historical:value!==sessionActualKey(now)};
+}
 function renderTrainingAdaptive(){
- const target=selectedSessionTargetKey(),rows=rowsForTarget(target),p=planForDate(target)||db.planHistory[target]?.versions?.at(-1)?.plan;
+ const target=manualTrainingContext(new Date(),false)?.target||selectedSessionTargetKey(),rows=rowsForTarget(target),p=planForDate(target)||db.planHistory[target]?.versions?.at(-1)?.plan;
  if(q("exerciseLog"))q("exerciseLog").innerHTML=rows.length?rows.map(r=>{
    const total=(r.sets||[]).reduce((a,b)=>a+(+b||0),0),best=Math.max(...(r.sets||[0]).map(Number));
    const metric=r.approximateBackfill?`≈ ${(r.sets||[]).length} set · özet backfill`:(typeof window.exerciseMetricText==="function"?window.exerciseMetricText(r):(r.type==="STATIC"?`${best}s best / ${total}s total`:`${total} tekrar`));
@@ -87,7 +97,8 @@ function renderTrainingAdaptive(){
 }
 function addExerciseAdaptive(){
  const e=EXERCISES[Number(q("exerciseSelect").value)],sets=[1,2,3,4,5].map(i=>Number(q("set"+i).value)||0).filter(Boolean);if(!e||!sets.length)return;
- const now=new Date(),actual=sessionActualKey(now),target=selectedSessionTargetKey(),p=planForDate(target)||db.planHistory[target]?.versions?.at(-1)?.plan;
+ const now=new Date(),manual=manualTrainingContext(now);if(!manual)return;
+ const {actual,target,historical}=manual,p=planForDate(target)||db.planHistory[target]?.versions?.at(-1)?.plan;
  const rests=[q("rest12"),q("rest23"),q("rest34"),q("rest45")].map(x=>+(x?.value||0)).slice(0,Math.max(0,sets.length-1));
  const plannedRestSec=+q("exerciseRestPlanned")?.value||restIntervalPrescription(e.n,db.daily?.[target]?readiness(db.daily[target]):null).target;
  const mk=window.EXERCISE_KNOWLEDGE?.[e.n];
@@ -95,17 +106,19 @@ function addExerciseAdaptive(){
    metricUnit:mk?.metric||(e.type==="STATIC"?"seconds":"reps"),movementClass:mk?.contraction||null,knowledgeVersion:window.EXERCISE_KNOWLEDGE_META?.version||null,
    executionEquipment:window.MovementIntelligence?.selectedEquipment?.()||mk?.variantEquipment||mk?.equipment?.[0]||null,
    plannedRestSec,restBetweenSets:rests,
-   performedAt:now.toISOString(),calendarDate:calKey(now),athleteDay:actual,scheduledFor:target,planType:p?.type||null,planVersion:p?.version||null,lateOrCatchup:actual!==target};
+   recordedAt:now.toISOString(),performedAt:historical?null:now.toISOString(),performedDate:actual,historicalEntry:historical,calendarDate:historical?actual:calKey(now),athleteDay:actual,scheduledFor:target,planType:p?.type||null,planVersion:p?.version||null,lateOrCatchup:actual!==target};
  const canonical=window.CanonicalSessionEngine?.lock?.(target,"manual_first_set",{source:"manual"});
  row.canonicalSnapshotId=canonical?.snapshotId||null;row.planType=canonical?.planType||row.planType;row.planVersion=canonical?.planVersion||row.planVersion;
  db.trainingLogs[actual]=db.trainingLogs[actual]||[];window.AthleteLoadMesh?.stampRow?.(row,actual);db.trainingLogs[actual].push(row);save();
+ const status=q("manualTrainingSaveStatus");if(status)status.textContent=`✓ ${e.n}, ${actual} tarihine kaydedildi.`;
  ["rest12","rest23","rest34","rest45"].forEach(id=>{if(q(id))q(id).value=""});
- renderTrainingAdaptive();safeRender(renderToday);safeRender(renderCharacter);safeRender(renderMuscleReport);safeRender(renderAdaptiveIntelligence);window.MovementIntelligence?.render?.();window.GuidedWorkout?.syncFromLogs?.("manual/adaptive exercise added");
+ renderTrainingAdaptive();safeRender(renderToday);safeRender(renderCharacter);safeRender(renderMuscleReport);safeRender(renderAdaptiveIntelligence);window.MovementIntelligence?.render?.();if(!historical)window.GuidedWorkout?.syncFromLogs?.("manual/adaptive exercise added");
 }
 function completeSessionAdaptive(context={}){
  const runner=db.activeGuidedWorkout;
  if(runner&&runner.phase!=="complete")return alert("Önce Guided seansını bitir; çalışan seans sonuçları ayrı bir tarihe gönderilemez.");
- const now=new Date(),actual=context.actualAthleteDay||sessionActualKey(now),target=context.targetDate||selectedSessionTargetKey();
+ const now=new Date(),manual=context.targetDate?{actual:sessionActualKey(now),target:context.targetDate}:manualTrainingContext(now);if(!manual)return false;
+ const actual=context.actualAthleteDay||manual.actual,target=context.targetDate||manual.target;
  const cs=window.CanonicalSessionEngine?.get?.(target),p=cs?{type:cs.planType,version:cs.planVersion}:planForDate(target),logs=window.TrainingSessionService?.rows(target)||rowsForTarget(target);
  if(!logs.some(r=>(r.sets||[]).some(x=>+x>0))){alert("Kaydedilmiş set yok; yapılmamış antrenman tamamlandı olarak işlenmedi.");return false}
  const completion=window.GuidedWorkout?.completionSummaryForTarget?.(target)||null;
@@ -193,14 +206,38 @@ function renderUncertainty(){const el=q("adaptiveUncertainty");if(!el)return;let
 // ---------- Photo progress via IndexedDB ----------
 function photoDB(){return new Promise((res,rej)=>{const r=indexedDB.open("AthleteLifeOSPhotos",1);r.onupgradeneeded=()=>r.result.createObjectStore("checkins",{keyPath:"id"});r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
 function compressImage(file){return new Promise((res,rej)=>{const img=new Image(),url=URL.createObjectURL(file);img.onload=()=>{const max=720,s=Math.min(1,max/Math.max(img.width,img.height)),c=document.createElement("canvas");c.width=Math.round(img.width*s);c.height=Math.round(img.height*s);c.getContext("2d").drawImage(img,0,0,c.width,c.height);URL.revokeObjectURL(url);c.toBlob(b=>{const rr=new FileReader();rr.onload=()=>res(rr.result);rr.onerror=rej;rr.readAsDataURL(b)},"image/jpeg",.78)};img.onerror=rej;img.src=url})}
-async function savePhotoProgress(){const inputs=[["front",q("photoFront")],["side",q("photoSide")],["back",q("photoBack")]],photos={};for(const [k,i] of inputs){if(i?.files?.[0])photos[k]=await compressImage(i.files[0])}if(!Object.keys(photos).length)return;const dbp=await photoDB(),tx=dbp.transaction("checkins","readwrite");tx.objectStore("checkins").put({id:Date.now(),date:todayKey(),createdAt:new Date().toISOString(),photos});await new Promise(r=>tx.oncomplete=r);if(q("photoProgressStatus"))q("photoProgressStatus").textContent="✓ Foto check-in kaydedildi";renderPhotoGallery()}
-async function renderPhotoGallery(){const el=q("photoProgressGallery");if(!el||!indexedDB)return;try{const dbp=await photoDB(),tx=dbp.transaction("checkins","readonly"),req=tx.objectStore("checkins").getAll();req.onsuccess=()=>{const arr=req.result.sort((a,b)=>b.id-a.id).slice(0,6);el.innerHTML=arr.map(x=>`<div class="photo-checkin"><div class="section-head"><strong>${x.date}</strong><button type="button" class="record-action delete" onclick="RecordManager.deletePhoto(${x.id})">Sil</button></div><div class="photos">${["front","side","back"].map(k=>x.photos[k]?`<img src="${x.photos[k]}" alt="${k}">`:`<span></span>`).join("")}</div></div>`).join("")}}catch(e){console.warn(e)}}
+async function savePhotoProgress(){const inputs=[["front",q("photoFront")],["side",q("photoSide")],["back",q("photoBack")]],photos={};for(const [k,i] of inputs){if(i?.files?.[0])photos[k]=await compressImage(i.files[0])}if(!Object.keys(photos).length)return;const dbp=await photoDB(),tx=dbp.transaction("checkins","readwrite");tx.objectStore("checkins").put({id:Date.now(),date:todayKey(),createdAt:new Date().toISOString(),photos});await new Promise(r=>tx.oncomplete=r);if(q("photoProgressStatus"))q("photoProgressStatus").textContent="✓ Foto check-in kaydedildi";window.AccountPhotos?.changed?.();renderPhotoGallery()}
+async function renderPhotoGallery(){
+ const el=q("photoProgressGallery");if(!el||typeof indexedDB==="undefined"||!indexedDB)return;
+ const text=v=>String(v??"").replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const safeImage=v=>typeof v==="string"&&v.length<=2100000&&/^data:image\/(jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(v);
+ try{
+  const dbp=await photoDB(),tx=dbp.transaction("checkins","readonly"),req=tx.objectStore("checkins").getAll();
+  req.onsuccess=()=>{
+   const arr=req.result.filter(x=>Number.isSafeInteger(x.id)&&x.id>0).sort((a,b)=>b.id-a.id).slice(0,6);
+   el.innerHTML=arr.map(x=>`<div class="photo-checkin"><div class="section-head"><strong>${text(x.date)}</strong><button type="button" class="record-action delete" data-delete-photo="${x.id}">Sil</button></div><div class="photos">${[["front","Ön"],["side","Yan"],["back","Arka"]].map(([k,label])=>safeImage(x.photos?.[k])?`<img src="${x.photos[k]}" alt="${label}">`:'<span></span>').join("")}</div></div>`).join("");
+   el.querySelectorAll('[data-delete-photo]').forEach(button=>button.onclick=()=>window.RecordManager?.deletePhoto?.(+button.dataset.deletePhoto));
+  };
+  tx.oncomplete=()=>dbp.close();
+ }catch(e){console.warn(e)}
+}
+
 
 function renderAdaptiveIntelligence(){
  const dl=deloadProbability();if(q("adaptiveDeload"))q("adaptiveDeload").textContent=dl.p+"%";
  renderSFR();renderPersonalModel();renderPlateaus();renderAsymmetry();renderMeasurementScheduler();renderGoalConflicts();renderTestingCalendar();renderUncertainty();renderCoachWhy();renderPhotoGallery();
 }
 function bindAdaptive(){
+ const dateInput=q("manualTrainingDate");
+ if(dateInput){
+  dateInput.value=(window.trainingViewDate?.()||sessionActualKey()).split("-").reverse().join(".");
+  // Editing a date must never rebuild the form between its day/month/year segments.
+  dateInput.oninput=()=>dateInput.setCustomValidity?.("");
+  const apply=()=>{const context=manualTrainingContext();if(context){window.setTrainingViewDate?.(context.target);renderTrainingAdaptive();}};
+  dateInput.onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();apply();}};
+  if(q("applyManualTrainingDate"))q("applyManualTrainingDate").onclick=apply;
+  const calendar=q("manualTrainingCalendar");if(calendar){calendar.max=calKey();calendar.value=window.trainingViewDate?.()||sessionActualKey();calendar.onchange=()=>{if(calendar.value){dateInput.value=calendar.value.split("-").reverse().join(".");dateInput.setCustomValidity?.("");}};}
+ }
  initSessionRouter();renderTrainingAdaptive();
  if(q("addExerciseBtn"))q("addExerciseBtn").onclick=addExerciseAdaptive;
  if(q("completeSessionBtn"))q("completeSessionBtn").onclick=completeSessionAdaptive;
@@ -219,6 +256,8 @@ window.completeSessionAdaptive=completeSessionAdaptive;
 window.renderTrainingAdaptive=renderTrainingAdaptive;
 window.initSessionRouter=initSessionRouter;
 window.syncSessionRouterToTrainingDate=function(key){
+ const dateInput=q("manualTrainingDate");if(dateInput){dateInput.value=key.split("-").reverse().join(".");dateInput.setCustomValidity?.("");}
+ const calendar=q("manualTrainingCalendar");if(calendar){calendar.value=key;calendar.max=calKey();}
  const sel=q("sessionAttributionMode");if(!sel)return;
  initSessionRouter();
  let opt=[...sel.options].find(o=>o.value===`catchup:${key}`);
@@ -233,6 +272,7 @@ window.sessionActualKey=sessionActualKey;
 window.renderTrainingAdaptive=renderTrainingAdaptive;
 window.openHistoricalSessionTarget=function(key){
  goToPage("training");
+ if(window.setTrainingViewDate){window.setTrainingViewDate(key);return;}
  setTimeout(()=>{
    initSessionRouter();
    const sel=q("sessionAttributionMode");

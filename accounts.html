@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hoş geldin · Athlete Life</title>
+  <link rel="stylesheet" href="accounts.css">
+  <script src="accounts-ui.js" defer></script><script src="account-security.js" defer></script>
+</head>
+<body class="account-welcome">
+  <main class="welcome-layout">
+    <section class="welcome-story" aria-labelledby="welcome-title">
+      <a class="account-brand" href="/">A<span>Athlete Life</span></a>
+      <p class="account-eyebrow">SENİN RİTMİN. SENİN GELİŞİMİN.</p>
+      <h1 id="welcome-title">Her gün,<br>bir adım ileri.</h1>
+      <p class="welcome-lead">Antrenmanın, toparlanman ve gelişimin.<br>Kendi profilinde, bir arada.</p>
+      <div class="welcome-points"><span>01 · Planla</span><span>02 · Uygula</span><span>03 · Gelişimini izle</span></div>
+      <p class="welcome-note">Kayıtların sana ait. Yeni hesaplar kendi boş profiliyle başlar.</p>
+    </section>
+    <section class="account-card" aria-labelledby="form-title">
+      <div class="account-tabs" aria-label="Hesap işlemi">
+        <button id="login-tab" type="button" aria-pressed="true">Giriş yap</button>
+        <button id="signup-tab" type="button" aria-pressed="false">Profil oluştur</button>
+      </div>
+      <h2 id="form-title">Yeniden hoş geldin.</h2>
+      <p id="form-description" class="account-muted">Kaldığın yerden devam et.</p>
+      <form id="account-form">
+        <label id="name-field" hidden>Adın<input id="account-name" name="name" autocomplete="name" maxlength="60"></label>
+        <label>Kullanıcı adı<input id="account-username" name="username" autocomplete="username" required minlength="3" maxlength="40" pattern="[a-zA-Z0-9_.\-]{3,40}" autocapitalize="none" spellcheck="false" aria-describedby="username-hint"></label>
+        <small id="username-hint" class="account-muted">Harf, rakam, nokta, alt çizgi veya tire.</small>
+        <label>Şifre<span class="password-field"><input id="account-password" name="password" type="password" autocomplete="current-password" required maxlength="128"><button id="show-password" type="button" aria-label="Şifreyi göster" aria-pressed="false">Göster</button></span></label>
+        <small id="password-hint" class="account-muted" hidden>En az 15 karakter. Hatırlayacağın birkaç kelime kullanabilirsin.</small>
+        <label id="confirm-field" hidden>Şifreyi tekrar gir<input id="account-confirm" type="password" autocomplete="new-password" maxlength="128"></label>
+        <p id="account-message" class="account-message" role="status" aria-live="polite"></p>
+        <button id="account-submit" class="account-primary" type="submit">Giriş yap</button>
+      </form>
+      <p class="account-footnote">Kullanıcı adınla giriş yap. Daha önce oluşturduğun kurtarma koduyla şifreni yenileyebilirsin.</p>
+    </section>
+  </main>
+</body>
+</html>

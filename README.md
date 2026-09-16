@@ -1,4 +1,34 @@
+# Athlete Life · hesaplı uygulama
+
+Güncel sürüm, 16 Eylül 2026 tarihli yeni uygulamadır: hesap/profil ayrımı,
+beş ana bölüm, manuel antrenman dönemleri, branşa uygun analiz ve hazır 3D model.
+
+Mac'te **START_MAC.command** veya **START_LOCAL_MAC.command** dosyasını aç.
+Başlatıcı `.env` içindeki depolama seçimini kullanır; `STORAGE_BACKEND=mongodb`
+ayarında doğrudan MongoDB'ye bağlanır. Bağlantı hatasında başka bir depoya geçmez.
+Kurulum ve veri geçişi: [BASLA.md](BASLA.md).
+
+GitHub yalnız uygulama kaynaklarını içerir. `.env`, kişisel yedekler,
+hesap dosyaları ve özel teslim paketleri Git'e dahil edilmez.
+`private-data/first-profile.alosbackup` yerelde varsa doğrulanmış yedek
+ilk oluşturulan profile bir kez aktarılır. Sonraki hesaplar boş başlar.
+
+Hesaplı kayıtlar MongoDB'de `account_state_revisions` koleksiyonunu kullanır.
+Eski tek kullanıcılı kayıtlar `state_revisions` içinde korunur. Hesap kimlikleri
+ve fotoğraflar bu sürümde sunucunun yerel veri klasöründe tutulur.
+
+## Önceki sürümlerin notları
+
+Aşağıdaki sürüm ve başlatma açıklamaları tarihsel kayıttır. Güncel açılış için
+yukarıdaki başlatıcıyı kullan; `python3 launch.py` eski tek kullanıcılı sürümdür.
+
 ## MongoDB desteği
+
+16 Eylül düzeltmeleri: sağlık kartında **Sağlık Durumunu Kaydet** düğmesi;
+antrenman bölümünde takvim/haftalık gün seçimiyle **geçmiş güne kayıt**.
+Güncel kod bu proje klasöründedir; Downloads içindeki eski kopyayı çalıştırmak
+bu değişiklikleri açmaz. [Motor denetimi](SYSTEM_ENGINE_AUDIT.md) ve
+[tam modül/parametre listesi](SYSTEM_PARAMETER_INVENTORY.md) incelemeye hazırdır.
 
 Veri deposu artık yapılandırılabilir. Bağlantı ve mevcut veri aktarımı için [MongoDB kurulum kılavuzuna](MONGODB_SETUP.md) bakın. Bağlantı kurulana kadar SQLite varsayılan olarak çalışır.
 
@@ -1468,3 +1498,7 @@ The application server runs at `http://127.0.0.1:8765` and stores the canonical 
 - override with environment variable `ATHLETE_LIFE_OS_DATA_DIR`
 
 The browser copy is a cache/offline safety layer. SQLite is the cross-release durable application database. The server keeps up to 250 verified revisions and uses WAL + FULL synchronous commits.
+# 10.1 güncellemesi
+
+Tarih girişi, seçilebilir vardiya haftaları, otomatik 3D model, canlı toparlanma ve
+kullanıcı kontrollü antrenman dönemleri için [kullanım ve doğrulama notlarına](V10_1_CHANGES.md) bakın.

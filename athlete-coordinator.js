@@ -1,7 +1,7 @@
 (function(){
 "use strict";
 // Single dependency-ordered refresh boundary for all legacy save paths.
-// Inputs exclude generated plans, physiological snapshots and UI timer ticks.
+// Re-evaluate elapsed recovery every five minutes as well as on committed data changes.
 let pending=null,running=false,lastInput=null,lastDay=null,revision=0,lastReport=null;
 const db=()=>window.ALOSRuntime?.getDb?.()||{};
 function inputs(){
@@ -9,7 +9,7 @@ function inputs(){
   training:d.trainingLogs,feedback:d.sessionFeedback,pain:d.painLogs,settings:d.settings,
   schedule:d.scheduleByDate,week:d.week,body:d.bodyMeasurements,capabilities:d.capabilityRecords,
   character:d.characterData,overrides:d.characterOverrides,runs:d.runs,
-  adhoc:d.adHocSessions,gaps:d.gapReconciliation},(key,value)=>
+  adhoc:d.adHocSessions,gaps:d.gapReconciliation,periods:d.trainingPeriods,sportSessions:d.sportSessions,athleteProfile:d.athleteProfile,multisportPeriods:d.multisportPeriods,recoveryClock:Math.floor(Date.now()/300000)},(key,value)=>
    ["physiologySnapshot","lastCheckedAt","updatedAt"].includes(key)?undefined:value);
 }
 function schedule(reason="data_changed"){
@@ -26,12 +26,14 @@ function flush(reason="manual",force=false){
  try{
   stage("measured-records",()=>window.AthleteEventStore?.bootstrapFromLegacy?.(db()));
   stage("physiology",()=>Object.keys(db().trainingLogs||{}).forEach(k=>window.AthleteLoadMesh?.restampDay?.(k)));
+  stage("shared-sport-analysis",()=>window.AthleteWorkspace?.refresh?.());
   stage("calibration",()=>window.PersonalCalibration?.rebuild?.());
   stage("future-plan",()=>window.ALOSRuntime?.buildFuturePlan?.(14,"data revision: "+reason));
   stage("canonical-prescription",()=>window.TrainingSessionService?.prescription(day));
   stage("runner",()=>window.GuidedWorkout?.reconcilePlan?.());
   stage("analysis",()=>window.ALOSArchitecture?.modelSnapshot?.());
   stage("planner-view",()=>window.refreshTrainingPlanner?.(false));
+  stage("period-analysis",()=>window.TrainingPeriods?.render?.());
   stage("training-view",()=>window.renderTrainingAdaptive?.());
   stage("coach-view",()=>window.renderCoach?.());
   stage("nutrition-view",()=>window.ALOSRuntime?.renderNutrition?.());
@@ -62,7 +64,7 @@ function init(){
  window.EngineBus?.register?.("AthleteCoordinator",{version:"9.0",inputs:["committed athlete records"],outputs:["athlete.state.ready"]});
  document.getElementById("refreshAthleteState")?.addEventListener("click",()=>flush("manual",true));
  setTimeout(()=>flush("startup",true),0);
- setInterval(()=>{if(lastDay!==window.todayKey?.())schedule("athlete_day_changed")},30000);
+ setInterval(()=>schedule(lastDay!==window.todayKey?.()?"athlete_day_changed":"recovery_clock"),30000);
 }
 window.AthleteCoordinator={version:"9.0",schedule,flush,status:cloneReport,inputs};
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();

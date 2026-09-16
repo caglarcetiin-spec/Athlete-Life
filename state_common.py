@@ -20,12 +20,14 @@ def data_weight(data: dict) -> int:
         "daily", "scheduleByDate", "weekOptimizations", "trainingLogs",
         "foodLogs", "waterLogs", "painLogs", "sessionFeedback", "futurePlans",
         "capabilityRecords", "guidedWorkoutHistory",
+        "sportSessions", "customSports", "athleteProfileHistory", "sportSessionHistory","multisportPeriods",
     )
     n = 0
     for k in keys:
         v = data.get(k)
         if isinstance(v, dict): n += len(v)
         elif isinstance(v, list): n += len(v)
+    if isinstance(data.get("athleteProfile"), dict) and data["athleteProfile"].get("completedAt"):
+        n += 1
     return n
-
 

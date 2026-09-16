@@ -17,7 +17,7 @@ class LaunchTests(unittest.TestCase):
     def test_opens_only_after_binding_same_origin(self, server, browser, init_db):
         self.assertEqual(launch.main(), 0)
         self.assertEqual(server.call_args.args[0], (launch.HOST, launch.PORT))
-        browser.assert_called_once_with(f"http://{launch.HOST}:{launch.PORT}/index.html?v=10.0.0")
+        browser.assert_called_once_with(f"http://{launch.HOST}:{launch.PORT}/index.html?v={launch.APP_VERSION}")
 
 
 if __name__ == "__main__":

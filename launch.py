@@ -15,7 +15,7 @@ load_environment()
 
 HOST = "0.0.0.0"
 PORT = int(os.environ.get("PORT", "10000"))
-APP_VERSION = "10.0.0"
+APP_VERSION = "10.1.0"
 ROOT = Path(__file__).resolve().parent
 DATA_DIR = Path(os.environ.get("ATHLETE_LIFE_OS_DATA_DIR", Path.home() / ".athlete-life-os"))
 DB_PATH = DATA_DIR / "athlete-life-os.sqlite3"

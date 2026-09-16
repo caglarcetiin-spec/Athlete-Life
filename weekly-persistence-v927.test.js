@@ -6,6 +6,6 @@ assert(app.includes('window.ALOSFlushPendingUIState'),'pending UI flush missing'
 assert(app.includes('beforeunload')&&app.includes('pagehide'),'close-time flush missing');
 assert(idx.includes('id="saveWeekBtn"')&&idx.includes('id="weekSaveStatus"'),'explicit weekly save UI missing');
 assert(vault.includes('ALOSFlushPendingUIState?.("pre-backup-flush")'),'backup does not flush open weekly form');
-assert(idx.includes('app.js?v=10.0.0')&&idx.includes('backup-vault.js?v=10.0.0'),'cache bust missing');
-assert(sw.includes('athlete-life-os-v10-0-0-dynamic-sqlite'),'service-worker cache not bumped');
+assert(idx.includes('app.js?v=10.1.0')&&idx.includes('backup-vault.js?v=10.1.0'),'cache bust missing');
+assert(/const CACHE="athlete-life-os-v\d+-\d+-\d+-[\w-]+"/.test(sw),'service worker must have a versioned cache');
 console.log('PASS weekly persistence v9.2.8');

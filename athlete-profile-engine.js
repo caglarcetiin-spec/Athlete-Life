@@ -13,6 +13,31 @@ const STRENGTH_BANDS={
  deadlift:[1.20,1.60,2.00,2.40]
 };
 db.capabilityRecords=db.capabilityRecords||[];
+const editForms={
+ calisthenics:{prefix:"capSkill",button:"addSkillCapability",values:["Value","Load","Note"]},
+ strength:{prefix:"capStrength",button:"addStrengthCapability",values:["Load","Reps","BW"]},
+ running:{prefix:"capRun",button:"addRunCapability",values:["Distance","Minutes","Note"]},
+ power:{prefix:"capPower",button:"addPowerCapability",values:["Value","Note"]},
+ balance_control:{prefix:"capBalance",button:"addBalanceCapability",values:["Value","Note"]},
+ work_capacity:{prefix:"capWork",button:"addWorkCapability",values:["Value","Note"]},
+ mobility:{prefix:"capMobility",button:"addMobilityCapability",values:["Value","Note"]},
+ endurance:{prefix:"capEndurance",button:"addEnduranceCapability",values:["Value","Note"]}
+};
+const editingRecords=new Map();
+function updateEditControls(domain){
+ const form=editForms[domain],button=form&&q(form.button);if(!button)return;
+ button.textContent=editingRecords.has(domain)?"Kaydı Güncelle":"Kaydet";
+ let cancel=q(form.prefix+"CancelEdit");
+ if(!cancel){cancel=document.createElement("button");cancel.id=form.prefix+"CancelEdit";cancel.type="button";cancel.className="secondary";cancel.textContent="Düzenlemeyi İptal Et";button.after(cancel)}
+ cancel.hidden=!editingRecords.has(domain);cancel.onclick=()=>cancelEdit(domain);
+}
+function cancelEdit(domain){
+ const form=editForms[domain];if(!form)return;
+ editingRecords.delete(domain);
+ form.values.forEach(suffix=>{if(q(form.prefix+suffix))q(form.prefix+suffix).value=""});
+ if(q(form.prefix+"Date"))q(form.prefix+"Date").value=todayKey();
+ updateEditControls(domain);
+}
 
 function esc(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
 function tierFromIndex(i){return TIERS[Math.max(0,Math.min(4,i))]}
@@ -42,8 +67,24 @@ function genericResult(domain,r){
  return tierFromThreshold(v,t.bands||[25,50,75,90],t.higher!==false);
 }
 function addRecord(rec){
- rec={id:Date.now()+Math.floor(Math.random()*1000),createdAt:new Date().toISOString(),...rec};
- db.capabilityRecords.push(rec);save();renderAll();
+ const date=new Date(rec.date+"T12:00:00Z");
+ if(!/^\d{4}-\d{2}-\d{2}$/.test(rec.date||"")||isNaN(date)||date.toISOString().slice(0,10)!==rec.date){alert("Geçerli bir test tarihi seç.");return false}
+ const draft=editingRecords.get(rec.domain),before=db.capabilityRecords;
+ const index=draft?before.findIndex(r=>r.id===draft.id):-1,previous=index>=0?before[index]:null;
+ if(draft&&(draft.owner!==db||!previous||JSON.stringify(previous)!==draft.snapshot)){
+  alert("Bu kayıt düzenleme sırasında değişti. İptal edip güncel kaydı yeniden aç.");return false;
+ }
+ const now=new Date().toISOString();
+ if(previous)rec={...previous,...rec,id:previous.id,createdAt:previous.createdAt,updatedAt:now};
+ else{
+  let id=Date.now()+Math.floor(Math.random()*1000);while(before.some(r=>r.id===id))id++;
+  rec={...rec,id,createdAt:now};
+ }
+ db.capabilityRecords=previous?before.map((r,i)=>i===index?rec:r):[...before,rec];
+ try{if(save()===false)throw new Error("Save rejected")}
+ catch(error){db.capabilityRecords=before;alert("Kayıt kaydedilemedi. Önceki kayıt korundu; değişikliklerini tekrar kaydedebilirsin.");return false}
+ if(draft)cancelEdit(rec.domain);
+ renderAll();window.RecordManager?.render?.();return true;
 }
 function deleteRecord(id){
  if(!confirm("Bu capability kaydı silinsin mi?"))return;
@@ -51,7 +92,8 @@ function deleteRecord(id){
 }
 function editRecord(id){
  const r=db.capabilityRecords.find(x=>x.id===id);if(!r)return;
- // Keep editing intentionally simple and robust: load record into its form and delete old entry after re-save.
+ if(!editForms[r.domain])return;
+ editingRecords.set(r.domain,{id,owner:db,snapshot:JSON.stringify(r)});
  if(r.domain==="calisthenics"){
    activateTab("calisthenics");q("capSkillSelect").value=r.testId;q("capSkillSelect").dispatchEvent(new Event("change"));q("capSkillValue").value=r.value;q("capSkillLoad").value=r.load||"";q("capSkillDate").value=r.date;q("capSkillNote").value=r.note||"";
  }else if(r.domain==="strength"){
@@ -64,7 +106,8 @@ function editRecord(id){
    const cfg={balance_control:["balance","capBalance"],work_capacity:["work","capWork"],mobility:["mobility","capMobility"],endurance:["endurance","capEndurance"]}[r.domain];
    if(cfg){activateTab(cfg[0]);q(cfg[1]+"Select").value=r.testId;q(cfg[1]+"Select").dispatchEvent(new Event("change"));q(cfg[1]+"Value").value=r.value;q(cfg[1]+"Date").value=r.date;q(cfg[1]+"Note").value=r.note||"";}
  }
- db.capabilityRecords=db.capabilityRecords.filter(x=>x.id!==id);save();renderAll();
+ updateEditControls(r.domain);
+ q(editForms[r.domain].prefix+"Date")?.focus();
 }
 function skillPerformanceScore(r){
  const s=getSkill(r.testId);if(!s)return 0;
@@ -308,7 +351,7 @@ function bindForms(){
 
  q("addSkillCapability").onclick=()=>{
    const s=getSkill(q("capSkillSelect").value),v=+q("capSkillValue").value;if(!s||!v)return alert("Performans değerini gir.");
-   addRecord({domain:"calisthenics",testId:s.id,value:v,load:+q("capSkillLoad").value||0,date:q("capSkillDate").value||todayKey(),note:q("capSkillNote").value||"",dataConfidence:"high"});
+   if(!addRecord({domain:"calisthenics",testId:s.id,value:v,load:+q("capSkillLoad").value||0,date:q("capSkillDate").value||todayKey(),note:q("capSkillNote").value||"",dataConfidence:"high"}))return;
    q("capSkillValue").value="";q("capSkillLoad").value="";q("capSkillNote").value="";
  };
  q("addStrengthCapability").onclick=()=>{
@@ -319,23 +362,24 @@ function bindForms(){
  q("addRunCapability").onclick=()=>{
    const s=getRun(q("capRunSelect").value),dist=s?.id==="custom"?+q("capRunDistance").value:s?.distanceKm,mins=+q("capRunMinutes").value;
    if(!dist||!mins)return alert("Mesafe ve süre gerekli.");
-   addRecord({domain:"running",testId:s.id,distanceKm:dist,minutes:mins,date:q("capRunDate").value||todayKey(),note:q("capRunNote").value||"",dataConfidence:"high"});
+   if(!addRecord({domain:"running",testId:s.id,distanceKm:dist,minutes:mins,date:q("capRunDate").value||todayKey(),note:q("capRunNote").value||"",dataConfidence:"high"}))return;
    q("capRunMinutes").value="";q("capRunNote").value="";
  };
  q("addPowerCapability").onclick=()=>{
    const p=getPower(q("capPowerSelect").value),v=+q("capPowerValue").value;if(!p||!v)return alert("Test değerini gir.");
-   addRecord({domain:"power",testId:p.id,value:v,date:q("capPowerDate").value||todayKey(),note:q("capPowerNote").value||"",dataConfidence:"high"});
+   if(!addRecord({domain:"power",testId:p.id,value:v,date:q("capPowerDate").value||todayKey(),note:q("capPowerNote").value||"",dataConfidence:"high"}))return;
    q("capPowerValue").value="";q("capPowerNote").value="";
  };
  [["balance_control","capBalance","addBalanceCapability"],["work_capacity","capWork","addWorkCapability"],["mobility","capMobility","addMobilityCapability"],["endurance","capEndurance","addEnduranceCapability"]].forEach(([domain,prefix,button])=>{
-   q(button).onclick=()=>{const t=getGeneric(domain,q(prefix+"Select").value),v=+q(prefix+"Value").value;if(!t||!v)return alert("Test değerini gir.");addRecord({domain,testId:t.id,value:v,date:q(prefix+"Date").value||todayKey(),note:q(prefix+"Note").value||"",dataConfidence:"high"});q(prefix+"Value").value="";q(prefix+"Note").value="";};
+   q(button).onclick=()=>{const t=getGeneric(domain,q(prefix+"Select").value),v=+q(prefix+"Value").value;if(!t||!v)return alert("Test değerini gir.");if(!addRecord({domain,testId:t.id,value:v,date:q(prefix+"Date").value||todayKey(),note:q(prefix+"Note").value||"",dataConfidence:"high"}))return;q(prefix+"Value").value="";q(prefix+"Note").value="";};
  });
+ Object.keys(editForms).forEach(updateEditControls);
 }
 function renderAll(){renderRecords();renderIdentity();try{renderCharacter()}catch(e){}}
 function init(){
  bindForms();renderAll();
  document.querySelector('.nav-btn[data-page="character"]')?.addEventListener("click",()=>setTimeout(renderAll,0));
 }
-window.AthleteProfile={render:renderAll,delete:deleteRecord,edit:editRecord,domainSummary,identity};
+window.AthleteProfile={render:renderAll,delete:deleteRecord,edit:editRecord,cancelEdit,domainSummary,identity};
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();
 })();

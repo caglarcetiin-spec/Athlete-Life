@@ -13,7 +13,7 @@ class MongoStore:
     def __init__(self, uri, database):
         from pymongo import MongoClient
         from pymongo.write_concern import WriteConcern
-        self.client = MongoClient(uri, serverSelectionTimeoutMS=5000, connectTimeoutMS=5000,
+        self.client = MongoClient(uri, serverSelectionTimeoutMS=20000, connectTimeoutMS=10000,
                                   socketTimeoutMS=15000)
         self.collection = self.client[database].get_collection(
             "state_revisions", write_concern=WriteConcern(w="majority"))
