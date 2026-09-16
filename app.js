@@ -185,6 +185,7 @@ function saveDaily(){
   const keys=["bedTime","sleepTime","wakeTime","nightAwake","sleepQuality","energy","motivation","soreness","joint","stress","weight","waist","runKm","runMinutes","runRpe","workIntensity","steps","painShoulder","painElbow","painWrist","painBack","painHip","painKnee","painAnkle","healthStatus","fatigueLevel","illnessSeverity","healthNote"];
   let d=db.daily[todayKey()]||{};
   keys.forEach(k=>{
+    if(window.ALOSAccount&&window.HealthCore&&["bedTime","sleepTime","wakeTime","nightAwake","sleepQuality"].includes(k))return;
     const el=q(k); if(!el) return;
     d[k]=el.type==="number" ? (el.value===""?0:Number(el.value)) : el.value;
   });

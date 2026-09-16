@@ -1,0 +1,20 @@
+'use strict';
+const fs=require('fs'),vm=require('vm'),assert=require('assert');
+const {ctx,run}=require('./integration-v9.test.js');
+vm.runInContext(fs.readFileSync('health-lab-library.js','utf8'),ctx);
+vm.runInContext(fs.readFileSync('health-core.js','utf8'),ctx);
+// The unified daily form must never overwrite the dedicated sleep editor's saved values.
+ctx.ALOSAccount={user:{id:'synthetic'}};
+const day=ctx.todayKey();
+Object.assign(ctx.db,ctx.HealthCore.saveSleep(ctx.db,{date:day,sleepTime:'23:20',wakeTime:'07:40',nightAwake:20,sleepQuality:5},day));
+const before=JSON.stringify(ctx.db.daily[day]);ctx.document.getElementById('sleepTime').value='01:00';
+ctx.saveDaily();assert.equal(ctx.db.daily[day].sleepTime,'23:20');assert.equal(ctx.db.daily[day].wakeTime,'07:40');assert.equal(ctx.db.daily[day].sleepQuality,5);
+const report={date:day,lab:'Synthetic Lab',rows:[{marker:'ferritin',value:42,unit:'ng/mL'}]};
+const first=ctx.HealthCore.saveReport({},report,{maxDate:day});const id=first.healthLabRecords[0].id;
+const second=ctx.HealthCore.saveReport(first,{...report,rows:[{marker:'ferritin',value:55,unit:'ng/mL'}]},{id,expected:JSON.stringify(first.healthLabRecords[0]),maxDate:day});
+const merged=ctx.BackupVault.mergeDB({...second,sportSessions:[{id:'session-original'}]},{healthLabRecords:first.healthLabRecords});
+assert.equal(merged.healthLabRecords[0].rows[0].value,42);
+assert.equal(merged.healthLabHistory.at(-1).before.rows[0].value,55);
+assert.equal(merged.sportSessions[0].id,'session-original');
+assert(first.healthLabHistory.every(x=>x.after));
+console.log('PASS: sleep editor/daily check-in coexistence; backup merge preserves prior lab version and other records.');

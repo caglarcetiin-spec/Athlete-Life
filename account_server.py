@@ -144,8 +144,8 @@ class AccountHandler(SimpleHTTPRequestHandler):
             return self.send_bytes(200, f'window.ALOSAccountConfig={config};'.encode(), 'text/javascript; charset=utf-8')
         if path == 'index.html':
             source = (ROOT / 'index.html').read_text()
-            source = source.replace('</head>', '<link rel="stylesheet" href="accounts.css"><link rel="stylesheet" href="sports-profile.css"><link rel="stylesheet" href="account-workspace.css"><link rel="stylesheet" href="account-design.css"><link rel="stylesheet" href="appearance.css"><script src="account-bootstrap.js"></script><script src="account-context.js"></script><script src="appearance.js"></script><script src="account-personal-model.js"></script></head>')
-            source = source.replace('</body>', '<script src="sport-catalog.js"></script><script src="sport-science-engine.js"></script><script src="workout-program-core.js"></script><script src="sports-profile-core.js"></script><script src="athlete-workspace-core.js"></script><script src="sports-profile-ui.js"></script><script src="account-workspace.js"></script><script src="account-security.js"></script><script src="account-photos.js"></script><script src="sport-science-ui.js"></script><script src="workout-program-ui.js"></script><script src="account-design.js"></script><script src="account-personal-ui.js"></script></body>')
+            source = source.replace('</head>', '<link rel="stylesheet" href="accounts.css"><link rel="stylesheet" href="sports-profile.css"><link rel="stylesheet" href="account-workspace.css"><link rel="stylesheet" href="account-design.css"><link rel="stylesheet" href="appearance.css"><link rel="stylesheet" href="premium-workspace.css"><script src="account-bootstrap.js"></script><script src="account-context.js"></script><script src="appearance.js"></script><script src="account-personal-model.js"></script></head>')
+            source = source.replace('</body>', '<script src="sport-catalog.js"></script><script src="sport-science-engine.js"></script><script src="workout-program-core.js"></script><script src="sports-profile-core.js"></script><script src="athlete-workspace-core.js"></script><script src="sports-profile-ui.js"></script><script src="account-workspace.js"></script><script src="account-security.js"></script><script src="account-photos.js"></script><script src="sport-science-ui.js"></script><script src="workout-program-ui.js"></script><script src="account-design.js"></script><script src="account-personal-ui.js"></script><script src="health-lab-library.js"></script><script src="health-core.js"></script><script src="wellness-ui.js"></script></body>')
             source = source.replace('src="server-sync.js', 'src="account-sync.js')
             source = source.replace('>Çağlar</button>', '>Profilim</button>')
             source = source.replace('Çağlar için Hibrit Taslak Doldur', 'Hibrit Örnek Taslak Doldur')
@@ -157,10 +157,10 @@ class AccountHandler(SimpleHTTPRequestHandler):
             return self.send_bytes(200, code.encode(), 'text/javascript')
         target = (ROOT / path).resolve()
         scripts = set(re.findall(r'<script src="([^"?]+)', (ROOT / 'index.html').read_text()))
-        scripts |= {'account-context.js', 'account-sync.js', 'sport-catalog.js', 'sport-science-engine.js', 'workout-program-core.js', 'workout-program-ui.js', 'sport-science-ui.js', 'account-design.js', 'account-personal-model.js', 'account-personal-ui.js', 'sports-profile-core.js', 'sports-profile-ui.js', 'athlete-workspace-core.js', 'account-workspace.js', 'account-security.js', 'account-photos.js'}
+        scripts |= {'health-lab-library.js', 'health-core.js', 'wellness-ui.js', 'account-context.js', 'account-sync.js', 'sport-catalog.js', 'sport-science-engine.js', 'workout-program-core.js', 'workout-program-ui.js', 'sport-science-ui.js', 'account-design.js', 'account-personal-model.js', 'account-personal-ui.js', 'sports-profile-core.js', 'sports-profile-ui.js', 'athlete-workspace-core.js', 'account-workspace.js', 'account-security.js', 'account-photos.js'}
         is_library = path in LIBRARIES or re.fullmatch(r'[a-z-]+-(evidence|rules)\.json', path)
         is_asset = path.startswith('assets/') and target.suffix.lower() in {'.png', '.jpg', '.svg', '.glb', '.woff', '.woff2', '.ico'}
-        if not target.is_relative_to(ROOT) or not target.is_file() or not (path in scripts or path in {'styles.css', 'sports-profile.css', 'account-workspace.css', 'account-design.css'} or is_library or is_asset):
+        if not target.is_relative_to(ROOT) or not target.is_file() or not (path in scripts or path in {'premium-workspace.css', 'styles.css', 'sports-profile.css', 'account-workspace.css', 'account-design.css'} or is_library or is_asset):
             return self.json(404, {'ok': False, 'error': 'Bulunamadı.'})
         return super().do_GET()
 
@@ -200,6 +200,9 @@ class AccountHandler(SimpleHTTPRequestHandler):
             csrf = self.headers.get('X-ALOS-CSRF') or body.get('csrf', '')
             if not isinstance(csrf, str) or not secrets.compare_digest(csrf, user['csrf']):
                 raise AccountError('Oturum doğrulanamadı. Sayfayı yenile.', 403)
+            if path == '/api/auth/profile':
+                updated = accounts.update_profile(user, body.get('name'), body.get('email'), body.get('profileVersion'))
+                return self.json(200, {'ok': True, 'user': updated})
             if path == '/api/auth/recovery-codes':
                 current = body.get('currentPassword')
                 if not isinstance(current, str) or len(current) > 128:

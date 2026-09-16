@@ -62,6 +62,11 @@ class Accounts:
             );
             CREATE INDEX IF NOT EXISTS attempts_bucket ON attempts(bucket, occurred_at);
             """)
+            columns = {r['name'] for r in db.execute('PRAGMA table_info(users)')}
+            if 'email' not in columns:
+                db.execute("ALTER TABLE users ADD COLUMN email TEXT NOT NULL DEFAULT ''")
+            if 'profile_version' not in columns:
+                db.execute('ALTER TABLE users ADD COLUMN profile_version INTEGER NOT NULL DEFAULT 0')
         self.dummy_hash = password_hash(secrets.token_urlsafe(32))
 
     @contextmanager
@@ -77,7 +82,31 @@ class Accounts:
 
     @staticmethod
     def public(row):
-        return {key: row[key] for key in ('id', 'username', 'name')}
+        fields = dict(row)
+        return {**{key: fields[key] for key in ('id', 'username', 'name')},
+                'email': fields.get('email', ''), 'profileVersion': fields.get('profile_version', fields.get('profileVersion', 0))}
+
+    @staticmethod
+    def validate_profile(name, email, version):
+        if not isinstance(name, str) or not 1 <= len(name.strip()) <= 60 or any(ord(c) < 32 for c in name):
+            raise AccountError('Görünen adını gir (en fazla 60 karakter).')
+        if not isinstance(email, str) or len(email) > 254 or any(ord(c) < 32 for c in email):
+            raise AccountError('Geçerli bir e-posta adresi gir.')
+        email = email.strip()
+        if email and not re.fullmatch(r'[^\s@]+@[^\s@.]+(?:\.[^\s@.]+)+', email):
+            raise AccountError('Geçerli bir e-posta adresi gir.')
+        if type(version) is not int or version < 0:
+            raise AccountError('Profil sürümü gerekli.')
+        return name.strip(), email
+
+    def update_profile(self, user, name, email, version):
+        name, email = self.validate_profile(name, email, version)
+        with self.connect() as db:
+            result = db.execute('UPDATE users SET name=?, email=?, profile_version=profile_version+1 WHERE id=? AND profile_version=?',
+                                (name, email, user['id'], version))
+            if result.rowcount != 1:
+                raise AccountError('Profil başka bir ekranda değişti. Sayfayı yenileyip tekrar dene.', 409)
+            return self.public(db.execute('SELECT * FROM users WHERE id=?', (user['id'],)).fetchone())
 
     def throttle(self, peer, username):
         now = time.time()
@@ -101,10 +130,10 @@ class Accounts:
         if not 1 <= len(name) <= 60:
             raise AccountError('Görünen adını gir (en fazla 60 karakter).')
         encoded = password_hash(password)
-        user = {'id': secrets.token_hex(16), 'username': username, 'name': name}
+        user = {'id': secrets.token_hex(16), 'username': username, 'name': name, 'email': '', 'profileVersion': 0}
         try:
             with self.connect() as db:
-                db.execute('INSERT INTO users VALUES (?,?,?,?,?)',
+                db.execute('INSERT INTO users (id,username,name,password_hash,created_at) VALUES (?,?,?,?,?)',
                            (user['id'], username, name, encoded, time.time()))
         except sqlite3.IntegrityError:
             raise AccountError('Bu kullanıcı adı kullanılamıyor. Başka bir ad seç.', 409) from None
@@ -130,7 +159,7 @@ class Accounts:
         if not token or len(token) > 128:
             return None
         with self.connect() as db:
-            row = db.execute('''SELECT users.id, users.username, users.name, sessions.csrf
+            row = db.execute('''SELECT users.id, users.username, users.name, users.email, users.profile_version, sessions.csrf
                 FROM sessions JOIN users ON users.id=sessions.user_id
                 WHERE sessions.token_hash=? AND expires_at>?''', (token_hash(token), time.time())).fetchone()
         return {**self.public(row), 'csrf': row['csrf']} if row else None

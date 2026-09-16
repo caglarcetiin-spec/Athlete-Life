@@ -176,6 +176,31 @@ class HTTPTests(unittest.TestCase):
         self.assertIsNone(self.request('GET', '/api/state', token=other_token,
                                       user=self.accounts.session(other_token))[1]['data'])
 
+    def test_profile_and_wellness_contracts(self):
+        person = self.accounts.signup('wellness_contract', PASSWORD, 'Wellness')
+        token = self.accounts.start_session(person); user = self.accounts.session(token)
+        payload = {'name': 'New name', 'email': 'qa@example.invalid', 'profileVersion': 0, 'id': 'spoofed'}
+        self.assertEqual(self.request('POST', '/api/auth/profile', payload)[0], 401)
+        self.assertEqual(self.request('POST', '/api/auth/profile', payload, token, user, **{'X-ALOS-CSRF':'bad'})[0], 403)
+        self.assertEqual(self.request('POST', '/api/auth/profile', payload, token, user, Origin='https://foreign.invalid')[0], 403)
+        status, result, _ = self.request('POST', '/api/auth/profile', payload, token, user)
+        self.assertEqual(status, 200); self.assertEqual(result['user']['id'], user['id'])
+        self.assertEqual(result['user']['email'], 'qa@example.invalid')
+        self.assertEqual(self.request('POST', '/api/auth/profile', payload, token, user)[0], 409)
+        for asset in ['health-core.js','health-lab-library.js','wellness-ui.js','premium-workspace.css']:
+            self.assertEqual(self.request('GET', '/'+asset, token=token)[0], 200)
+            self.assertEqual(self.request('GET', '/'+asset)[0], 401)
+        records = {'healthLabRecords':[{'id':'synthetic-lab','rows':[{'value':42.5}]}], 'healthLabHistory':[{'action':'create'}], 'daily':{'2026-09-10':{'sleepTime':'23:00','wakeTime':'07:00','pain':3}}}
+        self.assertEqual(self.request('POST','/api/state',{'data':records,'baseRevision':0},token,user)[0],200)
+        second = self.accounts.start_session(person); second_user = self.accounts.session(second)
+        saved = self.request('GET','/api/state',token=second,user=second_user)[1]['data']
+        self.assertEqual(saved['healthLabRecords'],records['healthLabRecords'])
+        self.assertEqual(saved['daily'],records['daily'])
+        other = self.accounts.signup('wellness_other',PASSWORD,'Other')
+        other_token = self.accounts.start_session(other)
+        self.assertEqual(self.request('POST','/api/auth/profile',payload,other_token,user)[0],403)
+        self.assertIsNone(self.request('GET','/api/state',token=other_token,user=self.accounts.session(other_token))[1]['data'])
+
     def test_photo_and_recovery_routes(self):
         png = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+nmwAAAABJRU5ErkJggg=='
         user = self.accounts.signup('http_extensions', PASSWORD, 'Extension')

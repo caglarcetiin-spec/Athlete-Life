@@ -3,7 +3,8 @@
 'use strict';
 const config=window.ALOSAccountConfig;
 if(!config?.user?.id||!config.csrf)throw new Error('Account context required');
-const user=Object.freeze({...config.user}),prefix='alos-account:'+user.id+':';
+let user=Object.freeze({...config.user});
+const prefix='alos-account:'+user.id+':';
 let locked=false;
 function scopedStorage(native){
  const keys=()=>Array.from({length:native.length},(_,i)=>native.key(i)).filter(k=>k?.startsWith(prefix));
@@ -44,7 +45,13 @@ async function checkSession(){
   if(response.ok){const result=await response.json();if(result.user?.id!==user.id||result.csrf!==config.csrf)lock()}
  }catch(_){} // Offline changes remain confined to this account's storage.
 }
-window.ALOSAccount=Object.freeze({user,headers,lock,get locked(){return locked}});
+function updateUser(next){
+ if(locked||next?.id!==user.id)throw new Error('Hesap eşleşmedi.');
+ user=Object.freeze({...next});
+ const b=document.getElementById('account-profile-open');if(b){b.textContent=user.name;b.setAttribute('aria-label','Profilim: '+user.name)}
+ window.dispatchEvent(new CustomEvent('account:profile-updated'));
+}
+window.ALOSAccount=Object.freeze({get user(){return user},updateUser,headers,lock,get locked(){return locked}});
 delete window.ALOSAccountConfig;
 if(typeof BroadcastChannel!=='undefined'){
  const channel=new BroadcastChannel('alos-account-session');channel.onmessage=()=>checkSession();
@@ -55,7 +62,7 @@ setInterval(checkSession,60000);
 document.addEventListener('DOMContentLoaded',()=>{
  if(locked)return;
  const actions=document.querySelector('.topbar-actions');if(!actions)return;
- const button=document.createElement('button');button.type='button';button.className='secondary';button.textContent=user.name;button.setAttribute('aria-label','Hesabım: '+user.name);
+ const button=document.createElement('button');button.type='button';button.id='account-profile-open';button.className='secondary';button.textContent=user.name;button.setAttribute('aria-label','Profilim: '+user.name);
  const status=document.createElement('span');status.id='accountSyncStatus';status.className='account-status';status.setAttribute('role','status');
  actions.prepend(button,status);
  const dialog=document.createElement('dialog');dialog.className='account-dialog';dialog.setAttribute('aria-labelledby','account-dialog-title');
@@ -63,7 +70,7 @@ document.addEventListener('DOMContentLoaded',()=>{
  document.body.append(dialog);
  dialog.querySelector('#account-display-name').textContent=user.name;
  dialog.querySelector('#account-display-username').textContent='@'+user.username;
- button.onclick=()=>dialog.showModal();dialog.querySelector('#account-close').onclick=()=>dialog.close();
+ button.onclick=()=>document.getElementById('account-profile')?window.AthleteWorkspace.navigate('account-profile'):dialog.showModal();dialog.querySelector('#account-close').onclick=()=>dialog.close();
  const message=dialog.querySelector('#account-dialog-message');
  async function finishSession(path,body){
   try{

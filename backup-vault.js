@@ -158,7 +158,12 @@ function mergeDB(current,incoming){
  if(inc.trainingPeriodDraft)out.trainingPeriodDraft=inc.trainingPeriodDraft;
  if(Array.isArray(inc.trainingPeriodDrafts))out.trainingPeriodDrafts=mergeArray(out.trainingPeriodDrafts||[],inc.trainingPeriodDrafts,x=>String(x.savedAt));
  ["sportSessions","customSports","multisportPeriods"].forEach(k=>{if(Array.isArray(inc[k]))out[k]=mergeArray(out[k]||[],inc[k],x=>String(x.id))});
- ["athleteProfileHistory","sportSessionHistory"].forEach(k=>{if(Array.isArray(inc[k]))out[k]=mergeArray(out[k]||[],inc[k],x=>JSON.stringify(x))});
+ ["athleteProfileHistory","sportSessionHistory","healthLabHistory"].forEach(k=>{if(Array.isArray(inc[k]))out[k]=mergeArray(out[k]||[],inc[k],x=>JSON.stringify(x))});
+ if(Array.isArray(inc.healthLabRecords)){
+   const oldById=new Map((out.healthLabRecords||[]).map(r=>[r.id,r]));
+   for(const record of inc.healthLabRecords){const old=oldById.get(record.id);if(old&&JSON.stringify(old)!==JSON.stringify(record))out.healthLabHistory=[...(out.healthLabHistory||[]),{id:record.id,at:new Date().toISOString(),action:"backup-merge",before:old,after:record}];}
+   out.healthLabRecords=mergeArray(out.healthLabRecords||[],inc.healthLabRecords,x=>String(x.id));
+ }
  if(inc.athleteProfile){
    if(out.athleteProfile&&JSON.stringify(out.athleteProfile)!==JSON.stringify(inc.athleteProfile))out.athleteProfileHistory=[...(out.athleteProfileHistory||[]),{profile:out.athleteProfile,replacedAt:new Date().toISOString(),reason:"backup-merge"}];
    out.athleteProfile=inc.athleteProfile;

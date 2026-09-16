@@ -1,4 +1,4 @@
-/* Five destinations, a shared read model, and explicit manual period adoption. */
+/* Six destinations, a shared read model, and explicit manual period adoption. */
 (()=>{
 'use strict';
 if(!window.ALOSAccount)return;
@@ -7,11 +7,12 @@ const q=id=>document.getElementById(id),db=()=>window.ALOSRuntime.getDb();
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmt=n=>Number(n).toLocaleString('tr-TR',{maximumFractionDigits:1});
 const groups=[
- {id:'today',name:'Bugün',pages:[['workspace-today','Özet'],['today','Günlük durum']]},
- {id:'plan',name:'Plan',pages:[['workspace-plan','Dönemlerim'],['week','Takvim ve vardiya']]},
- {id:'training',name:'Antrenman',pages:[['workspace-training','Seanslarım'],['training','Hareket ve set kaydı']]},
+ {id:'today',name:'Bugün',pages:[['workspace-today','Özet']]},
+ {id:'training',name:'Antrenman',pages:[['workspace-training','Seanslarım'],['workspace-plan','Dönemlerim'],['week','Takvim ve vardiya'],['training','Hareket ve set kaydı'],['coach','Program incelemesi']]},
  {id:'nutrition',name:'Beslenme',pages:[['nutrition','Günlük beslenme']]},
- {id:'growth',name:'Gelişim',pages:[['workspace-analysis','Ortak analiz'],['character','Profilim'],['reports','Vücut ve raporlar'],['analytics','Grafikler'],['detailed','Ayrıntılar'],['records','Kayıt yönetimi'],['coach','Hareket motoru incelemesi'],['settings','Ayarlar ve yedek']]}
+ {id:'health',name:'Sağlık',pages:[['health-overview','Genel bakış'],['health-sleep','Uyku'],['health-labs','Kan tahlilleri'],['today','Günlük durum'],['reports','Vücut ve toparlanma']]},
+ {id:'growth',name:'Gelişim',pages:[['workspace-analysis','Ortak analiz'],['analytics','Grafikler'],['detailed','Ölçümler'],['records','Kayıt yönetimi']]},
+ {id:'profile',name:'Profilim',pages:[['account-profile','Hesabım'],['character','Spor profilim'],['settings','Tercihler ve veriler']]}
 ];
 let selected='workspace-today',last=null,ready=false;
 function navigate(page){
@@ -19,10 +20,11 @@ function navigate(page){
  selected=page;
  document.querySelectorAll('.page').forEach(el=>el.classList.toggle('active',el.id===page));
  document.querySelectorAll('[data-workspace-group]').forEach(el=>el.setAttribute('aria-current',el.dataset.workspaceGroup===group.id?'page':'false'));
- q('workspace-subnav').innerHTML=group.pages.filter(([id])=>group.id!=='growth'||['workspace-analysis','analytics','detailed','character','reports',page].includes(id)).map(([id,name])=>`<button type="button" data-destination="${id}" ${id===page?'aria-current="page"':''}>${name}</button>`).join('');
+ q('workspace-subnav').innerHTML=group.pages.map(([id,name])=>`<button type="button" data-destination="${id}" ${id===page?'aria-current="page"':''}>${name}</button>`).join('');
  q('workspace-subnav').querySelectorAll('button').forEach(b=>b.onclick=()=>navigate(b.dataset.destination));
  q('pageTitle').textContent=group.name+' · '+group.pages.find(p=>p[0]===page)[1];
  if(page==='workspace-plan')renderPlans();
+ window.dispatchEvent(new CustomEvent('workspace:navigate',{detail:{page}}));
  window.scrollTo({top:0,behavior:'instant'});
 }
 function action(name){

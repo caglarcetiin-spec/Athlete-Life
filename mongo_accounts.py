@@ -94,6 +94,18 @@ class MongoAccounts:
     def logout(self, token):
         self.sessions.delete_one({'_id': token_hash(token)})
 
+    def update_profile(self, user, name, email, version):
+        name, email = Accounts.validate_profile(name, email, version)
+        query = {'_id': user['id'], 'profile_version': version}
+        if version == 0:
+            query = {'_id': user['id'], '$or': [{'profile_version': 0}, {'profile_version': {'$exists': False}}]}
+        row = self.users.find_one_and_update(query,
+            {'$set': {'name': name, 'email': email}, '$inc': {'profile_version': 1}},
+            return_document=ReturnDocument.AFTER)
+        if not row:
+            raise AccountError('Profil başka bir ekranda değişti. Sayfayı yenileyip tekrar dene.', 409)
+        return self.public(row)
+
     def change_password(self, user, current, new):
         if not 15 <= len(new) <= 128:
             raise AccountError('Yeni şifren 15–128 karakter olmalı.')
