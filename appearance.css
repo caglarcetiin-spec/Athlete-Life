@@ -58,9 +58,10 @@ html[data-theme] :is(.design-system,.account-welcome){
 [data-theme] .theme-options button[aria-pressed=true]{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
 [data-theme] .sports-dialog>header{flex-wrap:wrap;align-items:center}
 [data-theme] .sports-dialog>header>div{flex:1;min-width:180px}
-[data-theme] .design-system :is(button,.card,.sidebar,.topbar,input,select,textarea,.sports-week label,.sports-check){transition:background-color .2s ease,color .2s ease,border-color .2s ease,box-shadow .2s ease}
+[data-theme] .design-system :is(button,.card,.sidebar,.topbar,input,select,textarea,.sports-week label,.sports-check){transition:border-color .2s ease,box-shadow .2s ease}
 [data-theme] .design-system button:hover:not(:disabled):not(.primary):not(.sports-primary){box-shadow:inset 0 0 0 1px var(--control-border)}
 [data-theme] :is(.sports-dialog,.account-dialog)[open]{animation:glass-enter .22s ease-out}
+[data-theme] .design-system .page.active{animation:glass-enter .22s ease-out}
 @keyframes glass-enter{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 ::view-transition-old(root),::view-transition-new(root){animation-duration:.2s;animation-timing-function:ease-out}
 @supports not (backdrop-filter:blur(1px)){[data-theme] .design-system :is(.sidebar,.topbar,#workspace-subnav,.analysis-menu){background:var(--panel)}}
