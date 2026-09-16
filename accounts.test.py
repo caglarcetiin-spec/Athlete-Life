@@ -146,7 +146,7 @@ class HTTPTests(unittest.TestCase):
         response = connection.getresponse()
         body, metadata = response.read(), dict(response.getheaders())
         status = response.status;connection.close()
-        return status, json.loads(body) if 'application/json' in metadata.get('Content-Type', '') else body.decode(), metadata
+        return status, json.loads(body) if 'application/json' in metadata.get('Content-Type', '') else body if 'application/pdf' in metadata.get('Content-Type', '') else body.decode(), metadata
 
     def test_theme_assets_and_cross_session_preference(self):
         for path in ('/appearance.css', '/appearance.js'):
@@ -175,6 +175,33 @@ class HTTPTests(unittest.TestCase):
         other_token = self.accounts.start_session(other)
         self.assertIsNone(self.request('GET', '/api/state', token=other_token,
                                       user=self.accounts.session(other_token))[1]['data'])
+
+    def test_health_report_is_private_read_only_and_revision_bound(self):
+        person = self.accounts.signup('report_owner', PASSWORD, 'PDF Deneme')
+        token = self.accounts.start_session(person); user = self.accounts.session(token)
+        state = {'healthLabRecords':[{'id':'lab','date':'2026-09-10','lab':'Synthetic Lab','rows':[{'marker':'tsh','value':0.001,'unit':'mIU/L','low':0.4,'high':4}]}], 'daily':{'2026-09-10':{'sleepTime':'23:00','wakeTime':'07:30','nightAwake':30,'sleepQuality':4}}}
+        self.states.commit_state(person['id'],state,'report-fixture',0)
+        request = {'from':'2026-09-01','to':'2026-09-16','baseRevision':1,'data':{'name':'SPOOFED'}}
+        for path in ['/api/health/report/preview','/api/health/report/pdf']:
+            self.assertEqual(self.request('POST',path,request)[0],401)
+            self.assertEqual(self.request('POST',path,request,token,user,**{'X-ALOS-CSRF':'bad'})[0],403)
+            self.assertEqual(self.request('POST',path,{**request,'baseRevision':0},token,user)[0],409)
+        status, result, _ = self.request('POST','/api/health/report/preview',request,token,user)
+        self.assertEqual(status,200); self.assertEqual(result['report']['name'],'PDF Deneme')
+        self.assertEqual(result['report']['sleep']['average'],480)
+        self.assertEqual(result['report']['rows'][0]['resultText'],'0,001')
+        self.assertNotIn('allRows',result['report'])
+        status, pdf, headers = self.request('POST','/api/health/report/pdf',request,token,user)
+        self.assertEqual(status,200); self.assertTrue(pdf.startswith(b'%PDF-'))
+        self.assertEqual(headers['Cache-Control'],'no-store')
+        self.assertIn('attachment;',headers['Content-Disposition'])
+        self.assertEqual(self.states.read_state(person['id'])['revision'],1)
+        second = self.accounts.signup('report_other',PASSWORD,'Other')
+        other = self.accounts.start_session(second)
+        self.assertEqual(self.request('POST','/api/health/report/pdf',request,other,user)[0],403)
+        second_user = self.accounts.session(other)
+        status, result, _ = self.request('POST','/api/health/report/preview',{**request,'baseRevision':0},other,second_user)
+        self.assertEqual(status,200); self.assertEqual(result['report']['reportCount'],0)
 
     def test_profile_and_wellness_contracts(self):
         person = self.accounts.signup('wellness_contract', PASSWORD, 'Wellness')

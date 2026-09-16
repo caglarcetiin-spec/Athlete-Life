@@ -57,3 +57,6 @@ html[data-theme] .premium-workspace #premium-topbar{background:transparent;box-s
 @media(max-width:760px){.design-system.premium-workspace .sidebar .workspace-nav button{font-size:10.5px;white-space:nowrap;overflow-wrap:normal;letter-spacing:-.35px}.premium-workspace .topbar-actions{width:auto}.premium-workspace .topbar-actions .account-status{flex-basis:100%}.premium-workspace .topbar{gap:14px}}
 @media(max-width:370px){.design-system.premium-workspace .sidebar .workspace-nav button{font-size:9px}}
 @media(max-width:370px){.premium-workspace .sidebar .workspace-nav{grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}.design-system.premium-workspace .sidebar .workspace-nav button{font-size:12px;flex-direction:row;justify-content:center;gap:7px;padding:10px 5px}}
+
+.premium-workspace .report-checkbox{display:flex!important;align-items:center;gap:12px}.report-checkbox input{flex-shrink:0;width:20px!important;height:20px;margin:0!important}.report-checkbox span{font-size:14px}.premium-workspace #health-report-preview[hidden]{display:none!important}#health-report-message{font-size:14px;min-height:22px;margin-bottom:0}#health-report-preview td{min-width:115px}#health-report-preview th{min-width:130px}
+#health-report-form .wellness-form-row{align-items:end}

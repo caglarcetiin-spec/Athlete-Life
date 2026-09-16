@@ -10,7 +10,7 @@ const groups=[
  {id:'today',name:'Bugün',pages:[['workspace-today','Özet']]},
  {id:'training',name:'Antrenman',pages:[['workspace-training','Seanslarım'],['workspace-plan','Dönemlerim'],['week','Takvim ve vardiya'],['training','Hareket ve set kaydı'],['coach','Program incelemesi']]},
  {id:'nutrition',name:'Beslenme',pages:[['nutrition','Günlük beslenme']]},
- {id:'health',name:'Sağlık',pages:[['health-overview','Genel bakış'],['health-sleep','Uyku'],['health-labs','Kan tahlilleri'],['today','Günlük durum'],['reports','Vücut ve toparlanma']]},
+ {id:'health',name:'Sağlık',pages:[['health-overview','Genel bakış'],['health-sleep','Uyku'],['health-labs','Kan tahlilleri'],['health-report','Sağlık raporu'],['today','Günlük durum'],['reports','Vücut ve toparlanma']]},
  {id:'growth',name:'Gelişim',pages:[['workspace-analysis','Ortak analiz'],['analytics','Grafikler'],['detailed','Ölçümler'],['records','Kayıt yönetimi']]},
  {id:'profile',name:'Profilim',pages:[['account-profile','Hesabım'],['character','Spor profilim'],['settings','Tercihler ve veriler']]}
 ];
