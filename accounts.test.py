@@ -148,6 +148,34 @@ class HTTPTests(unittest.TestCase):
         status = response.status;connection.close()
         return status, json.loads(body) if 'application/json' in metadata.get('Content-Type', '') else body.decode(), metadata
 
+    def test_theme_assets_and_cross_session_preference(self):
+        for path in ('/appearance.css', '/appearance.js'):
+            self.assertEqual(self.request('GET', path)[0], 200)
+        person = self.accounts.signup('theme_contract', PASSWORD, 'Theme Test')
+        token = self.accounts.start_session(person); user = self.accounts.session(token)
+        status, source, _ = self.request('GET', '/index.html', token=token)
+        self.assertEqual(status, 200)
+        self.assertIn('href="appearance.css"', source)
+        self.assertLess(source.index('src="account-context.js"'), source.index('src="appearance.js"'))
+        records = {'settings': {'theme': 'dark', 'targetSleep': 8},
+                   'sportSessions': [{'id': 'existing-session', 'durationMin': 45}]}
+        payload = {'data': records, 'baseRevision': 0, 'reason': 'theme-test'}
+        self.assertEqual(self.request('POST', '/api/state', payload, token, user)[0], 200)
+        second = self.accounts.start_session(person); second_user = self.accounts.session(second)
+        remote = self.request('GET', '/api/state', token=second, user=second_user)[1]
+        self.assertEqual(remote['data']['settings']['theme'], 'dark')
+        remote['data']['settings']['theme'] = 'light'
+        self.assertEqual(self.request('POST', '/api/state', {
+            'data': remote['data'], 'baseRevision': remote['revision'], 'reason': 'theme-test'
+        }, second, second_user)[0], 200)
+        saved = self.request('GET', '/api/state', token=token, user=user)[1]['data']
+        self.assertEqual(saved['settings'], {'theme': 'light', 'targetSleep': 8})
+        self.assertEqual(saved['sportSessions'], records['sportSessions'])
+        other = self.accounts.signup('theme_other', PASSWORD, 'Other')
+        other_token = self.accounts.start_session(other)
+        self.assertIsNone(self.request('GET', '/api/state', token=other_token,
+                                      user=self.accounts.session(other_token))[1]['data'])
+
     def test_photo_and_recovery_routes(self):
         png = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+nmwAAAABJRU5ErkJggg=='
         user = self.accounts.signup('http_extensions', PASSWORD, 'Extension')

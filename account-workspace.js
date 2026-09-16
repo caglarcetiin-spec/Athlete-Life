@@ -19,7 +19,7 @@ function navigate(page){
  selected=page;
  document.querySelectorAll('.page').forEach(el=>el.classList.toggle('active',el.id===page));
  document.querySelectorAll('[data-workspace-group]').forEach(el=>el.setAttribute('aria-current',el.dataset.workspaceGroup===group.id?'page':'false'));
- q('workspace-subnav').innerHTML=group.pages.filter(([id])=>group.id!=='growth'||['workspace-analysis','character','reports',page].includes(id)).map(([id,name])=>`<button type="button" data-destination="${id}" ${id===page?'aria-current="page"':''}>${name}</button>`).join('');
+ q('workspace-subnav').innerHTML=group.pages.filter(([id])=>group.id!=='growth'||['workspace-analysis','analytics','detailed','character','reports',page].includes(id)).map(([id,name])=>`<button type="button" data-destination="${id}" ${id===page?'aria-current="page"':''}>${name}</button>`).join('');
  q('workspace-subnav').querySelectorAll('button').forEach(b=>b.onclick=()=>navigate(b.dataset.destination));
  q('pageTitle').textContent=group.name+' · '+group.pages.find(p=>p[0]===page)[1];
  if(page==='workspace-plan')renderPlans();

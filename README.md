@@ -19,6 +19,14 @@ ve fotoğraflar varsayılan olarak yerel veri klasöründe tutulur;
 `ACCOUNT_STORAGE_BACKEND=mongodb` ile MongoDB'de kalıcı olarak saklanır.
 Render kurulumu ve mevcut hesapları taşıma: [Render kılavuzu](deployment/RENDER.md).
 
+Görünüm: üst çubuktaki Açık/Koyu düğmesiyle veya Araçlar → Hedefler, yedek ve
+ayarlar → Görünüm bölümünden tema seçilir. Tercih `settings.theme` alanında
+hesabın mevcut MongoDB snapshot'ıyla eşitlenir; mevcut kayıtlar için veri
+dönüşümü gerekmez. Giriş ekranının seçimi yalnız o tarayıcıya aittir.
+Cam yüzeyler gezinmede kullanılır; içerik ve form kartları okunaklı opak
+yüzeylerdir. Azaltılmış hareket tercihi geçiş animasyonlarını kapatır.
+Mevcut grafikler ve ayrıntılı analizler Gelişim menüsünden doğrudan açılır.
+
 ## Önceki sürümlerin notları
 
 Aşağıdaki sürüm ve başlatma açıklamaları tarihsel kayıttır. Güncel açılış için

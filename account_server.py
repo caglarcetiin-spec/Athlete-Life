@@ -17,7 +17,7 @@ from account_states import SQLiteAccountStates, MongoAccountStates, Conflict
 ROOT = Path(__file__).resolve().parent
 COOKIE = 'alos_account_session'
 MAX_BODY = 16 * 1024 * 1024
-PUBLIC = {'accounts.html', 'accounts.css', 'accounts-ui.js', 'account-security.js'}
+PUBLIC = {'appearance.css', 'appearance.js', 'accounts.html', 'accounts.css', 'accounts-ui.js', 'account-security.js'}
 LIBRARIES = {'athlete-profile-library.json', 'exercise-library.json', 'science-library.json',
              'nutrition-library-meta.json', 'manifest.json'}
 
@@ -144,7 +144,7 @@ class AccountHandler(SimpleHTTPRequestHandler):
             return self.send_bytes(200, f'window.ALOSAccountConfig={config};'.encode(), 'text/javascript; charset=utf-8')
         if path == 'index.html':
             source = (ROOT / 'index.html').read_text()
-            source = source.replace('</head>', '<link rel="stylesheet" href="accounts.css"><link rel="stylesheet" href="sports-profile.css"><link rel="stylesheet" href="account-workspace.css"><link rel="stylesheet" href="account-design.css"><script src="account-bootstrap.js"></script><script src="account-context.js"></script><script src="account-personal-model.js"></script></head>')
+            source = source.replace('</head>', '<link rel="stylesheet" href="accounts.css"><link rel="stylesheet" href="sports-profile.css"><link rel="stylesheet" href="account-workspace.css"><link rel="stylesheet" href="account-design.css"><link rel="stylesheet" href="appearance.css"><script src="account-bootstrap.js"></script><script src="account-context.js"></script><script src="appearance.js"></script><script src="account-personal-model.js"></script></head>')
             source = source.replace('</body>', '<script src="sport-catalog.js"></script><script src="sport-science-engine.js"></script><script src="workout-program-core.js"></script><script src="sports-profile-core.js"></script><script src="athlete-workspace-core.js"></script><script src="sports-profile-ui.js"></script><script src="account-workspace.js"></script><script src="account-security.js"></script><script src="account-photos.js"></script><script src="sport-science-ui.js"></script><script src="workout-program-ui.js"></script><script src="account-design.js"></script><script src="account-personal-ui.js"></script></body>')
             source = source.replace('src="server-sync.js', 'src="account-sync.js')
             source = source.replace('>Çağlar</button>', '>Profilim</button>')
