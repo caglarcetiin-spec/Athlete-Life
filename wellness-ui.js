@@ -80,7 +80,7 @@ function labEditor(source=null){
  }
  draw();modal.showModal();
 }
-const icons={today:'M3 11 12 3l9 8M5 10v10h5v-6h4v6h5V10',training:'M4 7v10M7 5v14M7 12h10M17 5v14M20 7v10',nutrition:'M6 3v6c0 4 6 4 6 0V3M9 3v18M19 3c-4 4-4 9 0 9V3m0 9v9',health:'M12 20S3 14 3 8c0-5 7-6 9-1 2-5 9-4 9 1 0 6-9 12-9 12Z',growth:'M4 4v16h16M7 15l4-5 4 2 5-7',profile:'M16 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0M4 21v-2a8 8 0 0 1 16 0v2'};
+const icons={status:'M3 12h4l3-7 4 14 3-7h4M3 3v18h18',today:'M3 11 12 3l9 8M5 10v10h5v-6h4v6h5V10',training:'M4 7v10M7 5v14M7 12h10M17 5v14M20 7v10',nutrition:'M6 3v6c0 4 6 4 6 0V3M9 3v18M19 3c-4 4-4 9 0 9V3m0 9v9',health:'M12 20S3 14 3 8c0-5 7-6 9-1 2-5 9-4 9 1 0 6-9 12-9 12Z',growth:'M4 4v16h16M7 15l4-5 4 2 5-7',profile:'M16 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0M4 21v-2a8 8 0 0 1 16 0v2'};
 function init(){
  document.body.classList.add('premium-workspace');document.querySelector('.topbar').id='premium-topbar';const brand=document.querySelector('.brand h1');if(brand)brand.textContent='Athlete Life';const tagline=document.querySelector('.brand p');if(tagline)tagline.textContent='Antrenman. Sağlık. Gelişim.';const main=document.querySelector('main.main');
  for(const id of ['health-overview','health-sleep','health-labs','account-profile']){const section=document.createElement('section');section.className='page';section.id=id;main.append(section)}

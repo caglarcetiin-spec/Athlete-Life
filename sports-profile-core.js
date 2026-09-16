@@ -112,7 +112,7 @@ function context(db,date=dayKey()){
  if(profile&&period)days.forEach((label,i)=>{if(period.weekly?.[i]?.length&&profile.availability[i]===0)notes.push(`${label}: programda hareket var, profilinde süre ayrılmamış.`);});
  if(profile&&!period)notes.push('Aktif bir kişisel dönem yok. Programım bölümünden taslağını oluşturup ana plana alabilirsin.');
  if(profile&&!profile.equipment.length)notes.push('Ekipman belirtilmedi; program seçerken erişebildiğin ekipmanı kontrol et.');
- return {date,profile,availableMinutes:profile?profile.availability[day]:null,
+ return {date,profile,availableMinutes:profile?profile.availability[day]:null,goals:(db.athleteGoals||[]).filter(g=>!g.archivedAt),
   selectedSports:(profile?.sports||[]).map(s=>({...s,definition:C.find(s.sportId,db.customSports||[])})),
   recorded:summary(db,{from:date,to:date}),notes,
   coverage:{sessionSummary:true,measurementModels:!!S,automaticPrescription:false,physiologyIntegration:false}};

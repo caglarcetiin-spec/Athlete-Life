@@ -52,7 +52,7 @@ function validateLink(db,input,id){
  if(input.linkedSessionId&&!linkOptions(db,K.parseDate(input.date),id).some(r=>r.id===input.linkedSessionId))throw new Error('Seans bağlantısı değişti. Aynı tarihteki uygun bir seansı seç.');
  return input.linkedSessionId||null;
 }
-function periodFor(db,date){return (db.multisportPeriods||[]).find(p=>p.startDate<=date&&p.endDate>=date)||null;}
+function periodFor(db,date){return (db.multisportPeriods||[]).find(p=>p.startDate<=date&&p.endDate>=date&&(!p.archivedOn||date<=(p.scheduleEndDate||addDays(p.archivedOn,-1))))||null;}
 function planned(db,date){
  const p=periodFor(db,date);if(!p)return [];
  const day=(new Date(date+'T12:00:00Z').getUTCDay()+6)%7;
@@ -65,7 +65,7 @@ function validatePeriod(db,input,today=K.dayKey()){
  if(!startDate||startDate<today)throw new Error('Dönem başlangıcı bugün veya gelecekte olmalı.');
  if(!Number.isInteger(weeks)||weeks<1||weeks>52)throw new Error('1–52 hafta seç.');
  const endDate=addDays(startDate,weeks*7-1);
- if((db.multisportPeriods||[]).some(p=>p.startDate<=endDate&&p.endDate>=startDate))throw new Error('Bu tarih aralığında bir dönem zaten var. Sonraki dönemi onun bitişinden sonra başlat.');
+ if((db.multisportPeriods||[]).some(p=>p.startDate<=endDate&&(p.archivedOn&&p.archivedOn<=p.endDate?(p.scheduleEndDate||addDays(p.archivedOn,-1)):p.endDate)>=startDate))throw new Error('Bu tarih aralığında bir dönem zaten var. Sonraki dönemi onun bitişinden sonra başlat.');
  if(!Array.isArray(input.blocks)||!input.blocks.length||input.blocks.length>70)throw new Error('Haftaya 1–70 çalışma ekle.');
  const ids=new Set();
  const blocks=input.blocks.map(b=>{
@@ -81,7 +81,7 @@ function validatePeriod(db,input,today=K.dayKey()){
   return {id,day:+b.day,sportId:sport.id,sportName:sport.name,durationMin,methodId:b.methodId||null,targetRir,restSec,prescription:text('prescription'),progression:text('progression'),steps};
  });
  const goal=String(input.goal||'').trim();if(goal.length>1000)throw new Error('Hedef en fazla 1000 karakter olabilir.');
- return {name:input.name.trim(),goal,startDate,endDate,weeks,blocks};
+ return {name:input.name.trim(),goal,startDate,endDate,weeks,blocks,restDays:[0,1,2,3,4,5,6].filter(day=>!blocks.some(b=>b.day===day)),...(input.planner?{planner:clone(input.planner)}:{}),goalIds:(input.goalIds||[]).filter(id=>(db.athleteGoals||[]).some(g=>g.id===id))};
 }
 function reviewPeriod(db,input,today=K.dayKey()){
  const p=validatePeriod(db,input,today),notes=[],budgets=db.athleteProfile?.availability;
@@ -100,7 +100,7 @@ function reviewPeriod(db,input,today=K.dayKey()){
 function activate(db,input,today=K.dayKey(),expected=JSON.stringify(db.multisportPeriods||[])){
  if(JSON.stringify(db.multisportPeriods||[])!==expected)throw new Error('Dönemler değişti. Güncel planı yeniden incele.');
  const p=validatePeriod(db,input,today);
- return {multisportPeriods:[...(db.multisportPeriods||[]),{...p,id:uid(),createdAt:new Date().toISOString(),activation:'manual',modelVersion:1}]};
+ const id=uid();return {multisportPeriods:[...(db.multisportPeriods||[]),{...p,id,createdAt:new Date().toISOString(),activation:'manual',modelVersion:1}],settings:{...db.settings,pinnedPeriodId:id}};
 }
 function validatePlanLink(db,input){
  if(!input.planBlockId&&!input.periodId)return {periodId:null,planBlockId:null};
@@ -145,7 +145,7 @@ function snapshot(db,date=K.dayKey()){
  if(!period)finding('period','Kendi dönemini oluştur','Branşlarını ve çalışma tariflerini seç. İncelemeden ve ana plana almadan programın değişmez.','multisportPeriods','plan');
  if(period&&date>=addDays(period.endDate,-7))finding('review','Dönem sonu değerlendirmesi',`${period.name} ${period.endDate} tarihinde bitiyor. Sonuçlarını inceleyip sonraki dönemi kendin oluşturabilirsin.`,'period:'+period.id,'plan');
  if(recent.rated===recent.sessions&&previous.rated===previous.sessions&&recent.sessions&&previous.sessions)finding('load','İki haftanın kayıtlı yükü',`Son 7 gün ${Math.round(recent.loadAU)} AU; önceki 7 gün ${Math.round(previous.loadAU)} AU. Bu fark tek başına gelişim veya sakatlık riski göstermez.`,'duration×RPE','analysis');
- return {version:2,generatedAt:new Date().toISOString(),date,today,recent,previous,context,period,plan,findings,progress:progress(db,date),science:root.SportScience?.analyze(db,date)||null,
+ return {version:2,generatedAt:new Date().toISOString(),date,today,recent,previous,context,period,plan,findings,goals:(db.athleteGoals||[]).filter(g=>!g.archivedAt).map(g=>root.TrainingPlanner?.goalStatus(db,g,date)||g),progress:progress(db,date),science:root.SportScience?.analyze(db,date)||null,
   coverage:{sessionLoad:'self-reported-duration-times-RPE',muscleRecovery:'movement-model-only',sportPrescription:'manual',quality:'completeness-not-confidence'},
   notice:'AU, süre × hissedilen zorluk hesabıdır. Kas hasarı, iyileşme yüzdesi, kalori veya sakatlık olasılığı ölçümü değildir.'};
 }

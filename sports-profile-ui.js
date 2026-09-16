@@ -48,7 +48,7 @@ function openProfile(addSport=null){
    body+='<h3>Bir haftada kendine ne kadar zaman ayırabilirsin?</h3><p class="sports-muted">Dinlenmek veya başka işlere ayırmak istediğin günleri 0 bırak. Bu süreler vardiya kaydını değiştirmez.</p><div class="sports-week">'+K.days.map((day,i)=>`<label>${day}<span><input data-day="${i}" aria-label="${day} için dakika" type="number" min="0" max="480" step="5" value="${esc(draft.availability[i])}"> dk</span></label>`).join('')+'</div><h3>Erişebildiğin ekipman ve alanlar</h3><div class="sports-check-grid">'+selectedChecks(C.equipment,draft.equipment,'equipment')+'</div>';
   }else{
    const total=draft.availability.reduce((a,b)=>a+b,0);
-   body+=`<h3>Profilin sana ait.</h3><div class="sports-review"><p><strong>Branşlar</strong>${draft.sports.map(s=>`${esc(C.find(s.sportId,custom)?.name)} · ${esc(C.experience[s.experience])}`).join('<br>')}</p><p><strong>Hedefler</strong>${draft.goals.map(id=>esc(C.goals[id])).join(' · ')}</p><p><strong>Haftalık zaman</strong>${draft.availability.filter(Boolean).length} gün · ${decimal(total)} dakika</p><p><strong>Ekipman</strong>${draft.equipment.map(id=>esc(C.equipment[id])).join(' · ')||'Henüz belirtilmedi'}</p></div><p class="sports-muted">Profilin kaydedilir. Programını Plan → Dönemlerim bölümünde kendin oluşturup ana plana alırsın.</p>`;
+   body+=`<h3>Profilin sana ait.</h3><div class="sports-review"><p><strong>Branşlar</strong>${draft.sports.map(s=>`${esc(C.find(s.sportId,custom)?.name)} · ${esc(C.experience[s.experience])}`).join('<br>')}</p><p><strong>Hedefler</strong>${draft.goals.map(id=>esc(C.goals[id])).join(' · ')}</p><p><strong>Haftalık zaman</strong>${draft.availability.filter(Boolean).length} gün · ${decimal(total)} dakika</p><p><strong>Ekipman</strong>${draft.equipment.map(id=>esc(C.equipment[id])).join(' · ')||'Henüz belirtilmedi'}</p></div><p class="sports-muted">Profilin kaydedilir. Programını Antrenman → Dönemlerim bölümünde yönlendirmeyle veya manuel oluşturabilirsin.</p><label class="sports-check"><input type="checkbox" id="profile-add-goal">Kaydettikten sonra ölçülebilir hedefimi de tanımlamak istiyorum</label>`;
   }
   body+=`<footer class="sports-actions"><button id="setup-back" class="sports-quiet" type="button">${step?'Geri':'Daha sonra'}</button><button id="setup-next" class="sports-primary" type="button">${step===3?'Profili kaydet':'Devam et'}</button></footer>`;
   content.innerHTML=body;
@@ -62,7 +62,7 @@ function openProfile(addSport=null){
    if(db()!==owner||JSON.stringify(db().athleteProfile)!==expected||JSON.stringify(db().customSports)!==expectedCustom)return setMessage('Profil başka bir işlemde değişti. Kapatıp güncel profili yeniden aç.');
    try{
     saving=true;q('setup-next').disabled=true;
-    const result=await persist(K.applyProfile(db(),draft,custom));modal.close();
+    const addGoal=q('profile-add-goal')?.checked;const result=await persist(K.applyProfile(db(),draft,custom));modal.close();if(addGoal)window.TrainingPlannerUI?.openGoal();
     window.goToPage?.('character');q('sports-profile-status').textContent=result;
    }catch(error){setMessage(error.message)}finally{saving=false;if(q('setup-next'))q('setup-next').disabled=false}
   };

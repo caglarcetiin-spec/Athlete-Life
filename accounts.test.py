@@ -199,7 +199,7 @@ class HTTPTests(unittest.TestCase):
         other=self.accounts.signup('guide_other',PASSWORD,'Other')
         other_token=self.accounts.start_session(other);other_session=self.accounts.session(other_token)
         self.assertIsNone(self.request('GET','/api/state',token=other_token,user=other_session)[1]['data'])
-        for asset in ['/entry-fields-core.js','/account-entry-ui.js','/account-entry.css','/personal-health-core.js','/personal-health-ui.js','/account-guidance-core.js','/account-guidance-ui.js','/account-guidance.css']:
+        for asset in ['/training-planner-core.js','/training-planner-ui.js','/training-planner.css','/entry-fields-core.js','/account-entry-ui.js','/account-entry.css','/personal-health-core.js','/personal-health-ui.js','/account-guidance-core.js','/account-guidance-ui.js','/account-guidance.css']:
             self.assertEqual(self.request('GET',asset,token=token,user=user)[0],200)
         source=self.request('GET','/index.html',token=token,user=user)[1]
         self.assertLess(source.index('src="personal-health-core.js"'),source.index('src="app.js'))
