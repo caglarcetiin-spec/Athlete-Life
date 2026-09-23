@@ -93,3 +93,52 @@ def test_partial_cutover_blocks_login_and_readiness_until_resumed(app):
     migrate_account(app.state.database, bundle)
     assert app.state.database.ready()
     login(app, "legacy-user", "synthetic-legacy-password")
+
+
+def test_preview_and_legacy_merge_resumes_without_duplicates(app, client, monkeypatch):
+    from uuid import UUID, uuid5
+
+    from alos import cutover
+    from conftest import cmd
+    from test_core import write
+    write(client, cmd("hydration.save", local_date="2026-09-23", ml=350))
+    bundle = source()
+    bundle["preview"] = full_export(app.state.database, app.state.athletes[0])
+    bundle["preview_journal"] = {"format": "alos-local-journal", "pending": [{"name": ""}]}
+    real_execute = cutover.execute
+    calls = []
+
+    def interrupted(*args):
+        calls.append(1)
+        if len(calls) == 2:
+            raise RuntimeError("synthetic interruption after preview commit")
+        return real_execute(*args)
+
+    monkeypatch.setattr(cutover, "execute", interrupted)
+    with pytest.raises(RuntimeError, match="synthetic interruption"):
+        migrate_account(app.state.database, bundle)
+    assert not app.state.database.ready()
+    monkeypatch.setattr(cutover, "execute", real_execute)
+    result = migrate_account(app.state.database, bundle)
+    aid = UUID(result["athlete_id"])
+    archive = full_export(app.state.database, aid)
+    original = bundle["preview"]["records"]["hydration"][0]
+    restored_id = str(uuid5(aid, "restore:" + original["id"]))
+    assert next(row for row in archive["records"]["hydration"] if row["id"] == restored_id) == {**original, "id": restored_id}
+    assert len(archive["records"]["hydration"]) == 2
+    assert sorted(row["ml"] for row in archive["records"]["hydration"]) == [350, 500]
+    assert len(archive["records"]["media"]) == 1
+    assert any(row["raw"].get("preview_device_journal") == bundle["preview_journal"] for row in archive["records"]["import"])
+    assert migrate_account(app.state.database, bundle) == result
+    assert full_export(app.state.database, aid)["counts"] == archive["counts"]
+    assert app.state.database.ready()
+
+
+def test_corrupt_preview_fails_before_destination_creation(app):
+    bundle = source()
+    bundle["preview"] = full_export(app.state.database, app.state.athletes[0])
+    bundle["preview"]["checksum"] = "invalid"
+    from alos.errors import DomainError
+    with pytest.raises(DomainError):
+        migrate_account(app.state.database, bundle)
+    assert app.state.database.collection("cutovers").count_documents({}) == 0

@@ -11,7 +11,7 @@ from uuid import UUID, uuid5
 from bson import json_util
 from sqlalchemy import select
 
-from .backups import full_export, parse_bytes, stage
+from .backups import full_export, parse_bytes, stage, validate_export
 from .contracts import Command
 from .credentials import supported
 from .models import Athlete, RecoveryCode, User
@@ -38,7 +38,11 @@ def package_from(bundle):
             if hashlib.sha256(item["payload"].encode()).hexdigest() != item["hash"]:
                 raise ValueError("Source photo checksum mismatch")
             photos.append(parse_bytes(item["payload"].encode()))
-    return {"format": "legacy-mongo-cutover", "data": data, "photos": photos}
+    package = {"format": "legacy-mongo-cutover", "data": data, "photos": photos}
+    if "preview_journal" in bundle:
+        # Unacknowledged commands remain archival; never invent missing fields or replay them.
+        package["preview_device_journal"] = bundle["preview_journal"]
+    return package
 
 
 @retry_transaction
@@ -80,8 +84,19 @@ def prepare(database, bundle):
 def migrate_account(database, bundle):
     # Validate source before any account is created.
     package = package_from(bundle)
+    preview = bundle.get("preview")
+    if preview is not None:
+        validate_export(preview)
     aid, digest, status = prepare(database, bundle)
     if status != "complete":
+        # Restore the newer canonical preview first, while the destination is empty.
+        # The legacy adapter then archives old plans if a newer active plan exists.
+        if preview is not None:
+            staged = stage(database, aid, json.dumps(preview, ensure_ascii=False).encode())
+            execute(database, aid, Command(
+                operation_id=uuid5(aid, "preview:" + digest), entity_id=UUID(staged["id"]),
+                expected_version=1, schema_version=1, command_type="import.apply", payload={},
+            ))
         imported = stage(database, aid, json.dumps(package, ensure_ascii=False).encode())
         execute(database, aid, Command(
             operation_id=uuid5(aid, "cutover:" + digest), entity_id=UUID(imported["id"]),
@@ -91,8 +106,14 @@ def migrate_account(database, bundle):
         if not any(row.get("raw") == package for row in archive["records"]["import"]):
             raise ValueError("Source archive verification failed")
         expected = sum(len(photo.get("photos", {})) for photo in package["photos"])
+        expected += len(preview["records"].get("media", [])) if preview is not None else 0
         if len(archive["records"]["media"]) != expected:
             raise ValueError("Photo migration incomplete; source archive retained, cutover stopped")
+        if preview is not None:
+            for kind, rows in preview["records"].items():
+                actual = {row["id"] for row in archive["records"][kind]}
+                if any(str(uuid5(aid, "restore:" + row["id"])) not in actual for row in rows):
+                    raise ValueError("Preview record verification failed")
         database.collection("cutovers").update_one(
             {"_id": str(bundle["user"]["_id"]), "source_digest": digest},
             {"$set": {"status": "complete", "verified_at": datetime.now(UTC),

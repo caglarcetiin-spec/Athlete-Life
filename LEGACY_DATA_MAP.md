@@ -97,3 +97,7 @@ Mevcut `v10` hesap/state koleksiyonları yerinde kalır. Yeni backend, `apps/api
 Eski MongoDB hesabından bu koleksiyonlara otomatik aktarım yoktur. Mevcut importer/restore alan eşlemesi korunur; hesap şifre özeti ve medya geçişi ayrıca doğrulanmadan canlı cutover yapılamaz. SQLAlchemy burada yalnız model/sorgu tanımıdır; Mongo backend SQL çalıştırmaz, SQLite'a çift yazmaz.
 
 Kontrollü aktarım (`alos.cutover`): `account_users` → `users`/`athletes`, scrypt özeti değiştirilmeden; kurtarma kodu özetleri → `recovery_codes`; son doğrulanmış `account_state_revisions.payload` → importer ve kayıpsız ham arşiv; silinmemiş `account_photos.payload` → ham arşiv + normalize özel medya. Eski oturum tokenları taşınmaz. Eski koleksiyonlar/revizyonlar silinmez. `alos_v2_cutovers` yalnız kaynak fingerprint, hesap kimliği ve tamamlanma durumunu tutar; yarım geçişte giriş/readiness engellenir. Kaynak değişmişse veya hedef kullanıcı adı çakışıyorsa üzerine yazılmaz.
+
+### Controlled preview consolidation
+
+The explicit cutover snapshot can include a local V2 `preview` export matched by casefolded username (exactly one existing v10 account required). Restore into the empty deterministic destination precedes legacy import; a newer active program stays active and older plans are archived. Canonical IDs are remapped by the existing restore protocol. `preview_journal` is retained verbatim as `preview_device_journal` in the immutable legacy import package; pending commands are not replayed. Both source writers must be stopped first. All old source collections remain unchanged.

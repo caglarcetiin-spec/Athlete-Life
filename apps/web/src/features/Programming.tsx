@@ -700,7 +700,15 @@ export function Programming({
           </p>
           <div className="actions">
             <button
-              onClick={() =>
+              onClick={() => {
+                if (!draft.name.trim() || !draft.goal.trim()) {
+                  setError("Dönem adını ve hedefini yaz; taslağın cihazında korunuyor.");
+                  return;
+                }
+                if (draft.days.some((day) => day.exercises.some((exercise) => !exercise.name.trim()))) {
+                  setError("Her hareketin adını yaz veya boş hareketi kaldır; ardından taslağı kaydet.");
+                  return;
+                }
                 void store
                   .enqueue("program.create", null, {
                     ...draft,
@@ -731,8 +739,8 @@ export function Programming({
                     setDraft(null);
                     return store.saveDraft("program", null);
                   })
-                  .catch((e) => setError(e.message))
-              }
+                  .catch((e) => setError(e.message));
+              }}
             >
               Taslağı kaydet
             </button>

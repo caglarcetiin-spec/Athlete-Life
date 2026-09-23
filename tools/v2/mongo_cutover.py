@@ -12,12 +12,48 @@ from pathlib import Path
 
 root = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(root / "apps/api"))
+from alos.backups import full_export
 from alos.cutover import fingerprint, migrate_account, package_from
+from alos.db import Database
+from alos.models import Athlete, User
 from alos.mongo_db import MongoDatabase
 from bson import BSON
 from dotenv import dotenv_values
 from pymongo import MongoClient
 from pymongo.read_concern import ReadConcern
+from sqlalchemy import select
+from sqlalchemy.engine import make_url
+
+
+def attach_preview(bundles, url, journal_path=None):
+    parsed = make_url(url)
+    if parsed.host not in {"localhost", "127.0.0.1"} or parsed.drivername != "postgresql+psycopg":
+        raise ValueError("Preview must be the explicitly selected local database")
+    database = Database(url)
+    journal = json.loads(journal_path.read_text()) if journal_path else None
+    if journal is not None and journal.get("format") != "alos-local-journal":
+        raise ValueError("Expected explicit device journal")
+    attached = False
+    try:
+        with database.snapshot() as db:
+            identities = [(user.username.casefold(), db.scalar(select(Athlete).where(Athlete.user_id == user.id)).id)
+                          for user in db.scalars(select(User))]
+        for username, aid in identities:
+            matches = [bundle for bundle in bundles if bundle["user"]["username"].casefold() == username]
+            if len(matches) != 1:
+                raise ValueError("Preview identity needs explicit reconciliation")
+            matches[0]["preview"] = full_export(database, aid)
+            if journal is not None and journal.get("athlete_id") == str(aid):
+                matches[0]["preview_journal"] = journal
+                attached = True
+        if journal is not None and not attached:
+            raise ValueError("Device journal owner does not match preview")
+    finally:
+        database.engine.dispose()
+
+
+def source_fingerprint(bundle):
+    return fingerprint({key: value for key, value in bundle.items() if key not in {"preview", "preview_journal"}})
 
 
 def capture(source):
@@ -42,6 +78,8 @@ def main():
     parser.add_argument("action", choices=("inspect", "snapshot", "apply"))
     parser.add_argument("--directory", type=Path)
     parser.add_argument("--source-frozen", action="store_true")
+    parser.add_argument("--preview-database", help="Explicit local preview URL, snapshot only; stop its writer first")
+    parser.add_argument("--preview-journal", type=Path, help="Explicit exported device journal; archive only")
     args = parser.parse_args()
     config = {**dotenv_values(root / ".env"), **os.environ}
     uri = config.get("MONGODB_URI")
@@ -61,6 +99,10 @@ def main():
             raise ValueError("Explicit private snapshot directory is required")
         directory = args.directory.resolve()
         if args.action == "snapshot":
+            if args.preview_database:
+                if not args.source_frozen:
+                    raise ValueError("Both source writers must be stopped before snapshotting preview")
+                attach_preview(bundles, args.preview_database, args.preview_journal)
             directory.mkdir(mode=0o700, parents=True, exist_ok=False)
             manifest = []
             for index, bundle in enumerate(bundles):
@@ -84,14 +126,14 @@ def main():
             if fingerprint(bundle) != item["sha256"]:
                 raise ValueError("Private snapshot integrity failure")
             saved.append(bundle)
-        if sorted(map(fingerprint, bundles)) != sorted(map(fingerprint, saved)):
+        if sorted(map(source_fingerprint, bundles)) != sorted(map(source_fingerprint, saved)):
             raise ValueError("Live source changed since snapshot; take a fresh frozen snapshot")
         database = MongoDatabase(uri, name)
         try:
             database.migrate()
             for bundle in saved:
                 migrate_account(database, bundle)
-            if sorted(map(fingerprint, capture(client[name]))) != sorted(map(fingerprint, saved)):
+            if sorted(map(source_fingerprint, capture(client[name]))) != sorted(map(source_fingerprint, saved)):
                 raise ValueError("Source changed during apply; do not switch traffic")
         finally:
             database.client.close()

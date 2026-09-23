@@ -1,0 +1,54 @@
+....F....                                                                [100%]
+=================================== FAILURES ===================================
+___________ test_preview_and_legacy_merge_resumes_without_duplicates ___________
+
+app = <fastapi.applications.FastAPI object at 0x10c85f830>
+client = <starlette.testclient.TestClient object at 0x10c7fa540>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10c86a9f0>
+
+    def test_preview_and_legacy_merge_resumes_without_duplicates(app, client, monkeypatch):
+        from uuid import UUID, uuid5
+        import alos.cutover as cutover
+        from conftest import cmd
+        from test_core import write
+        write(client, cmd("hydration.save", local_date="2026-09-23", ml=350))
+        bundle = source()
+        bundle["preview"] = full_export(app.state.database, app.state.athletes[0])
+        real_execute = cutover.execute
+        calls = []
+    
+        def interrupted(*args):
+            calls.append(1)
+            if len(calls) == 2:
+                raise RuntimeError("synthetic interruption after preview commit")
+            return real_execute(*args)
+    
+        monkeypatch.setattr(cutover, "execute", interrupted)
+        with pytest.raises(RuntimeError, match="synthetic interruption"):
+            migrate_account(app.state.database, bundle)
+        assert not app.state.database.ready()
+        monkeypatch.setattr(cutover, "execute", real_execute)
+        result = migrate_account(app.state.database, bundle)
+        aid = UUID(result["athlete_id"])
+        archive = full_export(app.state.database, aid)
+        original = bundle["preview"]["records"]["hydration"][0]
+>       assert archive["records"]["hydration"] == [{**original, "id": str(uuid5(aid, "restore:" + original["id"]))}]
+E       AssertionError: assert [{'ml': 350.0...': None, ...}] == [{'ml': 350.0...': None, ...}]
+E         
+E         Left contains one more item: {'ml': 500.0, 'note': 'Eski su kaydı; ', 'local_date': '2026-09-20', 'occurred_at': None, ...}
+E         Use -v to get more diff
+
+tests/mongodb/test_cutover.py:124: AssertionError
+=============================== warnings summary ===============================
+.venv-v2/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+.venv-v2/lib/python3.12/site-packages/starlette/testclient.py:53
+  /Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/mongodb/test_cutover.py::test_preview_and_legacy_merge_resumes_without_duplicates
+1 failed, 8 passed, 2 warnings in 18.61s

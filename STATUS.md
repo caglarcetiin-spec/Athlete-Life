@@ -12,7 +12,7 @@ Render tanımı mevcut Python/free servise ve MongoDB'ye uyarlandı; PostgreSQL 
 
 `cb9c391` hesabı/şifre özeti aktarımı ve mevcut `start_render.py` üzerinden bakım/v2 seçimi eklendi. `release/v2` yalnız derlenmiş herkese açık UI içerir. Seçili Mongo hesap/domain regression: 65 PASS; gerçek giriş komutu smoke: 3 PASS. Önceki Mongo kaynak 24ca526 için GitHub CI core/container/mongodb SUCCESS (35891299000). Yeni kaynak CI ayrıca beklenir.
 
-Gerçek kaynakta salt okunur 3 hesap/3 snapshot/0 fotoğraf kaydı doğrulandı; 0600 özel kurtarma kopyaları Git dışında alındı. Canlı yazım/yayın yapılmadı. Önizleme hesabıyla canlı hesap eşleştirmesi otomatik inceleme tarafından “gerçek veri testi” kapsamında reddedildi; gerçek aktarım için kullanıcıya açık soru iletildi. Onay gelmeden bu karşılaştırma/aktarım başka yoldan yapılmaz. Ücretli kaynak oluşturulmadı.
+Gerçek kaynakta salt okunur 3 hesap/3 snapshot/0 fotoğraf kaydı doğrulandı; 0600 özel kurtarma kopyaları Git dışında alındı. Canlı yazım/yayın yapılmadı. Önizleme hesabıyla canlı hesap eşleştirmesi otomatik inceleme tarafından “gerçek veri testi” kapsamında reddedildi; gerçek aktarım için kullanıcıya açık soru iletildi. Kullanıcı daha sonra gerçek veri geçişini açıkça onayladı. Eşleşen tek önizleme hesabındaki 11 kayıt ve cihazda bekleyen eksik taslak korunarak aktarım hazırlanıyor. Ücretli kaynak oluşturulmadı.
 
 Kullanıcının tüm aşamaları ara onay beklemeden tamamlama talimatıyla çalışmaya devam ediliyor.
 
