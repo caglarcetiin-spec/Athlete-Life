@@ -6,26 +6,30 @@ services:
     runtime: python
     region: frankfurt
     plan: free
-    branch: codex/alos-2-stage-0
-    buildCommand: pip install -r apps/api/requirements.lock && npm ci --prefix apps/web && npm --prefix apps/web run build
-    startCommand: python -m alos.cli schema-check && python -m alos.cli serve
-    autoDeployTrigger: off
+    branch: main
+    buildCommand: pip install -r requirements.txt
+    startCommand: python3 start_render.py
+    autoDeployTrigger: commit
     healthCheckPath: /health/ready
     envVars:
       - key: PYTHON_VERSION
         value: 3.12.14
       - key: NODE_VERSION
         value: 24.19.0
-      - key: PYTHONPATH
-        value: apps/api
+      - key: ALOS_EDITION
+        value: v2
       - key: ALOS_V2_ENABLED
         value: "1"
       - key: ALOS_V2_ENVIRONMENT
         value: production
-      - key: ALOS_V2_DATABASE_URL
+      - key: MONGODB_URI
         sync: false
-      - key: ALOS_V2_MONGO_DATABASE
-        sync: false
+      - key: MONGODB_DATABASE
+        value: athlete_life
+      - key: STORAGE_BACKEND
+        value: mongodb
+      - key: ACCOUNT_STORAGE_BACKEND
+        value: mongodb
       - key: ALOS_V2_PUBLIC_ORIGIN
         value: https://athlete-life.onrender.com
       - key: ALOS_V2_REGISTRATION_ENABLED

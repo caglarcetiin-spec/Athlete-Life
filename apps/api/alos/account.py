@@ -9,6 +9,7 @@ from sqlalchemy import delete, select
 
 from .auth import passwords, rate_limit, token_hash
 from .contracts import StrictModel
+from .credentials import verify_password
 from .db import Base, utcnow
 from .errors import DomainError
 from .models import Athlete, AuthSession, RecoveryCode, SecurityAudit, User
@@ -48,7 +49,7 @@ class Recover(StrictModel):
 def verify(user, password):
     if user is None:
         raise DomainError("login_required", "Oturum artık geçerli değil.", 401)
-    if not passwords.verify(password, user.password_hash):
+    if not verify_password(password, user.password_hash):
         raise DomainError("password", "Mevcut şifreni kontrol et.", 403)
 
 

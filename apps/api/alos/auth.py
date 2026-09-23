@@ -4,16 +4,15 @@ from datetime import timedelta
 from hashlib import sha256
 from secrets import compare_digest, token_urlsafe
 
-from pwdlib import PasswordHash
 from sqlalchemy import delete, select
 from sqlalchemy.dialects.postgresql import insert
 
+from .credentials import passwords, verify_password
 from .db import utcnow
 from .errors import DomainError
 from .models import Athlete, AuthSession, LoginAttempt, User
 from .mongo_db import retry_transaction
 
-passwords = PasswordHash.recommended()
 _dummy_hash = passwords.hash(token_urlsafe(24))
 
 
@@ -59,11 +58,15 @@ def login(database, settings, username, password, old_token=None):
     with database.sessions.begin() as db:
         user = db.scalar(select(User).where(User.username == username.strip().casefold()))
         try:
-            valid = passwords.verify(password, user.password_hash if user else _dummy_hash)
+            valid = verify_password(password, user.password_hash if user else _dummy_hash)
         except (ValueError, TypeError):
             valid = False
         if not valid or not user:
             raise DomainError("invalid_credentials", "Kullanıcı adı veya şifre yanlış.", 401)
+        if getattr(database, "backend", None) == "mongodb" and database.collection("cutovers").find_one(
+            {"user_id": str(user.id), "status": {"$ne": "complete"}}, session=db.session,
+        ):
+            raise DomainError("migration_pending", "Hesap aktarımı tamamlanıyor. Kısa süre sonra yeniden dene.", 503)
         if old_token:
             db.execute(delete(AuthSession).where(AuthSession.token_hash == token_hash(old_token)))
         token, csrf = token_urlsafe(32), token_urlsafe(32)

@@ -145,7 +145,10 @@ class MongoDatabase:
         if not hello.get("setName") and hello.get("msg") != "isdbgrid":
             return False
         row = self.collection("schema").find_one({"_id": "revision"})
-        return bool(row and row.get("value") == REVISION)
+        return bool(
+            row and row.get("value") == REVISION
+            and self.collection("cutovers").find_one({"status": {"$ne": "complete"}}) is None
+        )
 
     def migrate(self):
         hello = self.client.admin.command("hello")

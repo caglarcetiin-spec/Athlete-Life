@@ -72,3 +72,11 @@ Yerel sentetik `tools/v2/disaster_rehearsal.py` gerçek pg_dump/restore ve tüm 
 Mevcut hesaplar/medya için üretim göçü **uygulanmadı**. Sentetik kullanıcı şifreleri test ortamına aittir; production seed yoktur. Kayıt başlangıçta kapalıdır. Yeni hesap/kayıt açılışı ve varsa eski hesabın kontrollü aktarımı production cutover planında açıkça ele alınmalıdır.
 
 Resmi çalışma ortamı doğrulaması: [Render native tools](https://render.com/docs/native-runtimes) Python runtime içinde Node/npm bulunduğunu belgeliyor. [Free plan](https://render.com/docs/free) uyku, geçici disk ve aylık kullanım sınırlarını açıklar; ücretsiz plan sınırsız kaynak garantisi değildir.
+
+## Mevcut Render komutlarıyla kontrollü yayın
+
+`pip install -r requirements.txt` ve `python3 start_render.py` korunur. Derlenen herkese açık arayüz `release/v2` içinde sürümlenir; CI kaynaklardan yeniden üretip aynı dosyaları verdiğini doğrular. Bu dizinde hesap/sağlık verisi veya medya yoktur. `ALOS_EDITION` varsayılanı `v10`; `maintenance` hiçbir DB açmadan hesap isteklerine 503 verir; `v2` mevcut Mongo/HTTPS ayarlarını V2'ye aktarır ve şema/geçiş tamamlanmamışsa başlamaz. Başlangıçta hesap göçü yapılmaz.
+
+Geçiş sırası: test edilmiş kaynak GitHub'a gönderilir; `maintenance` yayını ile eski yazıcı durdurulur; kaynakların 0600 özel snapshot'ı alınır; `tools/v2/mongo_cutover.py apply --directory <private-directory> --source-frozen` açık operatör işlemi yapılır. Kaynak fingerprint değişirse durur; var olan V2 kullanıcı adını ezmez. Kaynak koleksiyonlarına yazmaz. Ardından `ALOS_EDITION=v2` ile yayın açılır. V2'ye geçmeden rollback `ALOS_EDITION=v10`; V2 kayıt almaya başladıktan sonra otomatik rollback yoktur.
+
+Eski scrypt şifre özetleri mevcut parametreleriyle doğrulanır; kullanıcının şifresi bilinmez/değiştirilmez. Yeni veya değiştirilmiş şifreler Argon2 kullanır. Yarım kalmış geçişte hesap girişi ve readiness engellenir. Kurtarma kodu özetleri taşınır, oturum tokenları taşınmaz.

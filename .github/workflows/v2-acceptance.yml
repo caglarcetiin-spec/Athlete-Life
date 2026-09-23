@@ -2,7 +2,7 @@ name: V2 acceptance
 on:
   push:
     branches: ["codex/alos-2-stage-0"]
-    paths: ["apps/**", "tests/v2/**", "tests/mongodb/**", "tools/v2/**", "infra/v2/**", ".github/workflows/v2-acceptance.yml"]
+    paths: ["apps/**", "release/v2/**", "start_render.py", "requirements.txt", "tests/v2/**", "tests/mongodb/**", "tools/v2/**", "infra/v2/**", ".github/workflows/v2-acceptance.yml"]
   workflow_dispatch:
 permissions:
   contents: read
@@ -54,6 +54,10 @@ jobs:
           .venv-v2/bin/python tools/v2/run_evidence.py --stage 8 ci-client npm --prefix apps/web test
           .venv-v2/bin/python tools/v2/run_evidence.py --stage 8 ci-lint-client npm --prefix apps/web run lint
           .venv-v2/bin/python tools/v2/run_evidence.py --stage 8 ci-build npm --prefix apps/web run build
+      - name: Verify shipped frontend
+        run: |
+          .venv-v2/bin/python tools/v2/package_frontend.py
+          git diff --exit-code -- release/v2
       - name: Install browser
         run: |
           cd apps/web
@@ -138,6 +142,10 @@ jobs:
           .venv-v2/bin/python tools/v2/run_evidence.py --stage 8 ci-client npm --prefix apps/web test
           .venv-v2/bin/python tools/v2/run_evidence.py --stage 8 ci-lint-client npm --prefix apps/web run lint
           .venv-v2/bin/python tools/v2/run_evidence.py --stage 8 ci-build npm --prefix apps/web run build
+      - name: Verify shipped frontend
+        run: |
+          .venv-v2/bin/python tools/v2/package_frontend.py
+          git diff --exit-code -- release/v2
       - name: Install browser
         run: |
           cd apps/web

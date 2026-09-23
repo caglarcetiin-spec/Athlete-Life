@@ -1,0 +1,23 @@
+{
+  "source_commit": "24ca5264b66f3eaae743cf1326df592120ee5328",
+  "run_id": 35891299000,
+  "url": "https://github.com/caglarcetiin-spec/Athlete-Life/actions/runs/35891299000",
+  "result": "success",
+  "jobs": [
+    {
+      "id": 107284139642,
+      "name": "core",
+      "result": "success"
+    },
+    {
+      "id": 107284140103,
+      "name": "container",
+      "result": "success"
+    },
+    {
+      "id": 107284140116,
+      "name": "mongodb",
+      "result": "success"
+    }
+  ]
+}
