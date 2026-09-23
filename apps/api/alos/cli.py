@@ -18,6 +18,20 @@ def main():
     settings = Settings()
     if not settings.enabled:
         parser.error("ALOS_V2_ENABLED must be explicitly enabled")
+    if args.action in {"migrate", "schema-check"} and settings.database_url.startswith(
+        ("mongodb://", "mongodb+srv://")
+    ):
+        from .db import open_database
+
+        database = open_database(settings)
+        try:
+            if args.action == "migrate":
+                database.migrate()
+            elif not database.ready():
+                raise RuntimeError("MongoDB schema/index migration required")
+        finally:
+            database.dispose()
+        return
     if args.action in {"migrate", "schema-check"}:
         config = Config(str(Path(__file__).resolve().parents[1] / "alembic.ini"))
         if args.action == "migrate":

@@ -14,6 +14,7 @@ class Settings(BaseSettings):
 
     body_model_path: Path | None = None
     body_model_owner_id: UUID | None = None
+    mongo_database: str | None = None
     enabled: bool = False
     worker_enabled: bool = True
     environment: Literal["development", "test", "production"] = "development"
@@ -27,13 +28,17 @@ class Settings(BaseSettings):
 
     @field_validator("database_url")
     @classmethod
-    def postgres_only(cls, value: str) -> str:
-        if not value.startswith(("postgresql://", "postgresql+psycopg://")):
-            raise ValueError("PostgreSQL bağlantısı gerekli; otomatik başka veritabanına geçilmez.")
+    def supported_database(cls, value: str) -> str:
+        if not value.startswith(("postgresql://", "postgresql+psycopg://", "mongodb://", "mongodb+srv://")):
+            raise ValueError(
+                "MongoDB veya PostgreSQL bağlantısı gerekli; otomatik başka veritabanına geçilmez."
+            )
         return value.replace("postgresql://", "postgresql+psycopg://", 1)
 
     @model_validator(mode="after")
     def validate_deployment(self):
+        if self.database_url.startswith(("mongodb://", "mongodb+srv://")) and not self.mongo_database:
+            raise ValueError("MongoDB veritabanı adı açıkça yapılandırılmalı.")
         if bool(self.body_model_path) != bool(self.body_model_owner_id):
             raise ValueError("3B kütüphane dosyası ve sahip kimliği birlikte yapılandırılmalı.")
         origin = urlsplit(self.public_origin)

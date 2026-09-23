@@ -88,3 +88,7 @@ Bu tarihsel ilk dilim planından sonra yürütme kapsamı aşağıdaki kullanıc
 ## Güncel yürütme kararı
 
 Son kullanıcı talimatıyla tüm aşamalar tek devam eden iş olarak yürütülüyor. Aşama 1'in dar kabul kapısı geçildi (`docs/evidence/stage-1/RESULT.md`). Aşama 2→3→4→5→6→7→8→9 sırası ve veri/güvenlik kapıları korunur; devam için yeniden kullanıcı onayı istenmez. Üretim geçişi yalnız veri/özellik/restore kapıları kapandığında yapılabilir.
+
+## 23 Eylül altyapı kararı
+
+Kullanıcı MongoDB'yi korumayı ve önceki ücretsiz Render servisini kullanmayı seçti (ADR-0005). PostgreSQL'e canlı geçiş planı iptal. V2 domain modeli ve kabul kriterleri aynı; MongoDB repository/transaction/index/parçalı içerik uyarlaması, gerçek sentetik replica set kabulü ve mevcut servise kontrollü tek-yazıcılı geçiş sırasıyla uygulanır. Gerçek hesap/medya otomatik göç etmez. Ücretli kaynak açılmaz.

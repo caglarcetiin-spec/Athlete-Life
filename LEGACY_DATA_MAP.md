@@ -89,3 +89,9 @@ Gerçek kaynak/yedek sayıları, kişisel restore, Atlas PITR/RPO/RTO bu aşamad
 - `lab_observations.comparator`: =, <, >, ≤, ≥ korunur. Eşitsizlik sonucu kesin sayı gibi normal/anormal sınıflanmaz.
 - `ProgramExercise.target_range` ve `prescription_set_slots.target_range`: unit/minimum/maximum; gerçekleşmiş sete aralık veya tahmini tekrar kopyalanmaz.
 - `alos-v2-transfer-text.canonical_text`: sunucunun özgün JSON metni, güvenli tam sayı sınırı dışındaki bilinmeyen değerleri tarayıcı yuvarlamasından korur. `pending_journal` ve `local_drafts` gerçekleşmiş kayıt değildir. RFC8785-SHA256 ve eski ALOS-JSON-SHA256 tanınır; bilinmeyen algoritma reddedilir.
+
+## MongoDB V2 depolama sınırı — 23 Eylül 2026
+
+Mevcut `v10` hesap/state koleksiyonları yerinde kalır. Yeni backend, `apps/api/alos/models.py` içindeki her tabloyu `alos_v2_<table>` koleksiyonuna eşler. UUID alanları metin, timezone içeren tarihler UTC ISO mikro-saniye biçiminde, JSON alanları kayıpsız JSON metni olarak tutulur. `alos_v2_schema` revision, `alos_v2_locks` transaction yazım kilidi ve `alos_v2_blobs` büyük özel içerik parçalarını tutar. Bunlar yeni sağlık ölçümü alanları değildir. Parçalar kaydın kendisiyle aynı transaction içinde yazılır/silinir; uzunluğu ve SHA-256 doğrulanır.
+
+Eski MongoDB hesabından bu koleksiyonlara otomatik aktarım yoktur. Mevcut importer/restore alan eşlemesi korunur; hesap şifre özeti ve medya geçişi ayrıca doğrulanmadan canlı cutover yapılamaz. SQLAlchemy burada yalnız model/sorgu tanımıdır; Mongo backend SQL çalıştırmaz, SQLite'a çift yazmaz.

@@ -337,11 +337,7 @@ def export_row(row):
 
 
 def full_export(database, athlete_id):
-    with (
-        database.engine.connect().execution_options(isolation_level="REPEATABLE READ") as conn,
-        database.sessions(bind=conn) as db,
-        db.begin(),
-    ):
+    with database.snapshot() as db:
         athlete = db.get(Athlete, athlete_id)
         records = {
             kind: [

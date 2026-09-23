@@ -1,0 +1,140 @@
+....E
+==================================== ERRORS ====================================
+_____ ERROR at setup of test_csrf_sessions_bruteforce_closed_registration ______
+
+app_factory = <function app_factory.<locals>.factory at 0x10e99b1a0>
+
+    @pytest.fixture
+    def app(app_factory):
+>       return app_factory()
+               ^^^^^^^^^^^^^
+
+tests/mongodb/conftest.py:53: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/mongodb/conftest.py:34: in factory
+    app.state.database.migrate()
+apps/api/alos/mongo_db.py:162: in migrate
+    coll.create_index(
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/collection.py:2369: in create_index
+    return (self._create_indexes([index], session, **cmd_options))[0]
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/_csot.py:126: in csot_wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/collection.py:2251: in _create_indexes
+    return self.database.client._retryable_write(False, inner, session, _Op.CREATE_INDEXES)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:2099: in _retryable_write
+    return self._retry_with_session(retryable, func, s, bulk, operation, operation_id)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:1969: in _retry_with_session
+    return self._retry_internal(
+.venv-v2/lib/python3.12/site-packages/pymongo/_csot.py:126: in csot_wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:2022: in _retry_internal
+    ).run()
+      ^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:2890: in run
+    res = self._read() if self._is_read else self._write()
+                                             ^^^^^^^^^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:3103: in _write
+    return self._func(self._session, conn, self._retryable)  # type: ignore
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/collection.py:2241: in inner
+    self._command(
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/collection.py:600: in _command
+    return conn.command(
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/helpers.py:51: in inner
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/pool.py:396: in command
+    return run_command(
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/command_runner.py:440: in run_command
+    docs, _, _ = _run_command(
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/command_runner.py:214: in _run_command
+    helpers_shared._check_command_response(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+response = {'ok': 0.0, 'errmsg': 'Index build failed: e0bc14fd-841b-45f9-b03c-86384c6318e7: Collection alos_test_1a307a6a058f4fa2...841b-45f9-b03c-86384c6318e7 :: caused by :: 24: Too many open files', 'code': 264, 'codeName': 'TooManyFilesOpen', ...}
+max_wire_version = 25, allowable_errors = None, parse_write_concern_error = True
+pool_opts = None
+
+    def _check_command_response(
+        response: _DocumentOut,
+        max_wire_version: Optional[int],
+        allowable_errors: Optional[Container[Union[int, str]]] = None,
+        parse_write_concern_error: bool = False,
+        pool_opts: Optional[PoolOptions] = None,
+    ) -> None:
+        """Check the response to a command for errors."""
+        if "ok" not in response:
+            # Server didn't recognize our message as a command.
+            raise OperationFailure(
+                response.get("$err"),  # type: ignore[arg-type]
+                response.get("code"),
+                response,
+                max_wire_version,
+            )
+    
+        if parse_write_concern_error and "writeConcernError" in response:
+            _error = response["writeConcernError"]
+            _labels = response.get("errorLabels")
+            if _labels:
+                _error.update({"errorLabels": _labels})
+            _raise_write_concern_error(_error)
+    
+        if response["ok"]:
+            return
+    
+        details = response
+        errmsg = details["errmsg"]
+        code = details.get("code")
+    
+        # For allowable errors, only check for error messages when the code is not
+        # included.
+        if allowable_errors:
+            if code is not None:
+                if code in allowable_errors:
+                    return
+            elif errmsg in allowable_errors:
+                return
+    
+        # Server is "not primary" or "recovering"
+        if code is not None:
+            if code in _NOT_PRIMARY_CODES:
+                raise NotPrimaryError(errmsg, response)
+        elif HelloCompat.LEGACY_ERROR in errmsg or "node is recovering" in errmsg:
+            raise NotPrimaryError(errmsg, response)
+    
+        # Other errors
+        # findAndModify with upsert can raise duplicate key error
+        if code in (11000, 11001, 12582):
+            raise DuplicateKeyError(errmsg, code, response, max_wire_version)
+        elif code == 50:
+            # Append timeout details to MaxTimeMSExpired responses.
+            if pool_opts:
+                timeout_details = _get_timeout_details(pool_opts)
+                errmsg += format_timeout_details(timeout_details)
+            raise ExecutionTimeout(errmsg, code, response, max_wire_version)
+        elif code == 43:
+            raise CursorNotFound(errmsg, code, response, max_wire_version)
+    
+>       raise OperationFailure(errmsg, code, response, max_wire_version)
+E       pymongo.errors.OperationFailure: Index build failed: e0bc14fd-841b-45f9-b03c-86384c6318e7: Collection alos_test_1a307a6a058f4fa295fbf67dedb91616.alos_v2_recipes ( d333e96c-58cc-432b-b758-51d7cbade7f8 ) :: caused by :: index build on empty collection failed: e0bc14fd-841b-45f9-b03c-86384c6318e7 :: caused by :: 24: Too many open files, full error: {'ok': 0.0, 'errmsg': 'Index build failed: e0bc14fd-841b-45f9-b03c-86384c6318e7: Collection alos_test_1a307a6a058f4fa295fbf67dedb91616.alos_v2_recipes ( d333e96c-58cc-432b-b758-51d7cbade7f8 ) :: caused by :: index build on empty collection failed: e0bc14fd-841b-45f9-b03c-86384c6318e7 :: caused by :: 24: Too many open files', 'code': 264, 'codeName': 'TooManyFilesOpen', '$clusterTime': {'clusterTime': Timestamp(1790131669, 36), 'signature': {'hash': b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00', 'keyId': 0}}, 'operationTime': Timestamp(1790131669, 35)}
+
+.venv-v2/lib/python3.12/site-packages/pymongo/helpers_shared.py:327: OperationFailure
+=============================== warnings summary ===============================
+.venv-v2/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+.venv-v2/lib/python3.12/site-packages/starlette/testclient.py:53
+  /Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+ERROR tests/mongodb/test_core_parity.py::test_csrf_sessions_bruteforce_closed_registration
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+4 passed, 2 warnings, 1 error in 13.06s

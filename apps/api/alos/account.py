@@ -12,6 +12,7 @@ from .contracts import StrictModel
 from .db import Base, utcnow
 from .errors import DomainError
 from .models import Athlete, AuthSession, RecoveryCode, SecurityAudit, User
+from .mongo_db import retry_transaction
 
 
 class AccountPatch(StrictModel):
@@ -65,6 +66,7 @@ def locked_account(db, identity):
     return user, session
 
 
+@retry_transaction
 def edit(database, identity, data):
     with database.sessions.begin() as db:
         user, _ = locked_account(db, identity)
@@ -79,6 +81,7 @@ def edit(database, identity, data):
     return {"updated": True, "email_verified": False}
 
 
+@retry_transaction
 def change_password(database, identity, data):
     rate_limit(database, "reauth:" + identity["id"], 10)
     with database.sessions.begin() as db:
@@ -97,6 +100,7 @@ def change_password(database, identity, data):
     return {"changed": True, "other_sessions_revoked": True}
 
 
+@retry_transaction
 def recovery_codes(database, identity, data):
     rate_limit(database, "reauth:" + identity["id"], 10)
     codes = [token_urlsafe(18) for _ in range(8)]
@@ -109,6 +113,7 @@ def recovery_codes(database, identity, data):
     return {"codes": codes, "notice": "Yalnız bir kez gösterilir. Yeni kodlar önceki kodları iptal etti."}
 
 
+@retry_transaction
 def recover(database, data):
     rate_limit(database, "recover:" + data.username.casefold(), 5)
     with database.sessions.begin() as db:
@@ -127,6 +132,7 @@ def recover(database, data):
     return {"recovered": True, "login_required": True}
 
 
+@retry_transaction
 def erase(database, identity, data):
     rate_limit(database, "reauth:" + identity["id"], 10)
     with database.sessions.begin() as db:

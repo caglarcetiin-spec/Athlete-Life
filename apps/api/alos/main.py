@@ -8,13 +8,14 @@ from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import FileResponse, JSONResponse, Response
 from pydantic import ValidationError
-from sqlalchemy import delete, text
+from pymongo.errors import PyMongoError
+from sqlalchemy import delete
 from sqlalchemy.exc import SQLAlchemyError
 
 from . import account, auth, service
 from .config import Settings
 from .contracts import Command, CommandResult, Login, Signup
-from .db import Database
+from .db import open_database
 from .errors import DomainError
 from .models import AuthSession
 
@@ -23,7 +24,7 @@ def create_app(settings: Settings | None = None):
     settings = settings or Settings()
     if not settings.enabled:
         raise RuntimeError("ALOS_V2_ENABLED required; legacy deployment is unchanged.")
-    database = Database(settings.database_url)
+    database = open_database(settings)
     schema_head = ScriptDirectory(str(Path(__file__).resolve().parents[1] / "migrations")).get_current_head()
 
     @asynccontextmanager
@@ -94,6 +95,18 @@ def create_app(settings: Settings | None = None):
             response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
         return response
 
+    @app.exception_handler(PyMongoError)
+    async def mongo_error(request, exc):
+        return JSONResponse(
+            {
+                "error": {
+                    "code": "storage_retry",
+                    "message": "Veritabanına ulaşılamadı; kayıt onaylanmadı. Yeniden dene.",
+                }
+            },
+            503,
+        )
+
     @app.exception_handler(DomainError)
     async def domain_error(request, exc):
         return JSONResponse(exc.body(), exc.status)
@@ -139,12 +152,10 @@ def create_app(settings: Settings | None = None):
         if worker_task is not None and worker_task.done():
             return JSONResponse({"status": "worker_unavailable"}, 503)
         try:
-            with database.engine.connect() as conn:
-                revision = conn.execute(text("SELECT version_num FROM alembic_version")).scalar_one()
-                if revision != schema_head:
-                    return JSONResponse({"status": "migration_required"}, 503)
+            if not database.ready(schema_head):
+                return JSONResponse({"status": "migration_required"}, 503)
             return {"status": "ready"}
-        except SQLAlchemyError:
+        except (SQLAlchemyError, PyMongoError):
             return JSONResponse({"status": "unavailable"}, 503)
 
     @app.post("/api/v2/auth/login")

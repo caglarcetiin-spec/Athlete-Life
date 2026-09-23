@@ -33,6 +33,7 @@ from .models import (
     WorkoutSession,
     WorkspaceArchive,
 )
+from .mongo_db import retry_transaction
 
 MODELS = {
     "shift": Shift,
@@ -207,6 +208,7 @@ def register_lifestyle():
     MODELS.update({kind: model for kind, (model, _) in REGISTRY.items()})
 
 
+@retry_transaction
 def execute(database, athlete_id: UUID, command: Command):
     register_lifestyle()
     digest = digest_of(command.model_dump(mode="json"))
@@ -299,11 +301,7 @@ def execute(database, athlete_id: UUID, command: Command):
 
 def bootstrap(database, athlete_id):
     register_lifestyle()
-    with (
-        database.engine.connect().execution_options(isolation_level="REPEATABLE READ") as conn,
-        database.sessions(bind=conn) as db,
-        db.begin(),
-    ):
+    with database.snapshot() as db:
         athlete = db.get(Athlete, athlete_id)
         result = {
             "api_version": 2,
@@ -325,11 +323,7 @@ def bootstrap(database, athlete_id):
 
 
 def pull(database, athlete_id, cursor):
-    with (
-        database.engine.connect().execution_options(isolation_level="REPEATABLE READ") as conn,
-        database.sessions(bind=conn) as db,
-        db.begin(),
-    ):
+    with database.snapshot() as db:
         athlete = db.get(Athlete, athlete_id)
         if cursor > athlete.sequence:
             raise DomainError(

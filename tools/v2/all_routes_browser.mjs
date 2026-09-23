@@ -5,7 +5,7 @@ import AxeBuilder from '../../apps/web/node_modules/@axe-core/playwright/dist/in
 const root=process.cwd(),python=root+'/.venv-v2/bin/python',base='http://127.0.0.1:10005',name='alos_test_routes_'+Date.now();let server,browser;const errors=[],results=[];
 const routes=['today','week','workout','program','nutrition','health','capability','status','reports','science','goals','system','backups','tools','profile','guide','events'];
 try{
- execFileSync(python,['tools/v2/test_database.py','create',name],{cwd:root});server=spawn(python,['-m','uvicorn','alos.main:create_app','--factory','--host','127.0.0.1','--port','10005','--no-access-log'],{cwd:root,env:{...process.env,PYTHONPATH:root+'/apps/api',ALOS_V2_ENABLED:'1',ALOS_V2_ENVIRONMENT:'test',ALOS_V2_PUBLIC_ORIGIN:base,ALOS_V2_DATABASE_URL:'postgresql://localhost:15432/'+name},stdio:'ignore'});
+ execFileSync(python,['tools/v2/test_database.py','create',name],{cwd:root});server=spawn(python,['-m','uvicorn','alos.main:create_app','--factory','--host','127.0.0.1','--port','10005','--no-access-log'],{cwd:root,env:{...process.env,PYTHONPATH:root+'/apps/api',ALOS_V2_ENABLED:'1',ALOS_V2_ENVIRONMENT:'test',ALOS_V2_PUBLIC_ORIGIN:base,ALOS_V2_DATABASE_URL:process.env.ALOS_TEST_BACKEND==='mongodb'?'mongodb://127.0.0.1:27028/?replicaSet=alos-test':'postgresql://localhost:15432/'+name,ALOS_V2_MONGO_DATABASE:name},stdio:'ignore'});
  for(let i=0;i<80;i++){try{if((await fetch(base+'/health/ready')).ok)break}catch{}await new Promise(r=>setTimeout(r,100))}
  browser=await chromium.launch({executablePath:process.env.ALOS_BROWSER_EXECUTABLE || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',headless:true});
  for(const viewport of [{width:390,height:844},{width:1440,height:1000}]){

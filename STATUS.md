@@ -1,5 +1,13 @@
 # Güncel durum — 23 Eylül 2026
 
+## Güncel bütçe kısıtı — 23 Eylül 2026
+
+Kullanıcı ücretli barındırmayı reddetti. Yeni ücretli Render/DB/disk/worker oluşturulmayacak; önceki aylık 20 USD bütçe sorusu artık geçerli değil. Mevcut `Athlete-Life` Render servisi API üzerinden doğrulandı: `plan=free`, Python runtime, `main` dalı, eski uygulama. Canlı ayarları ve verileri değiştirilmedi.
+
+Kullanıcı mevcut MongoDB’yi korumayı seçti. ADR-0005 uyarınca V2 MongoDB backend'i eklendi: transaction/ACK, sürüm ve cursor, büyük yedek parçaları ve indexler. 10 çekirdek test, 52 domain/query kontrolü, 3 crash/schema/NULL testi ve beş tarayıcı akışı ayrı çalıştırmalarda geçti; nihai birleşik Mongo suite sonucu `docs/evidence/stage-9/mongo-suite.json` içinde izlenir. Ortak değişikliklerden sonra PostgreSQL regression 61 PASS. Yerel Mac Mongo sunucusu dosya sınırı nedeniyle iki çalıştırma hata verdi; başarısız kanıtlar saklandı, test sunucusunun idle file-handle ayarı düzeltildi. Dosya yönetimi düzeltmesinden sonra nihai birleşik suite **65 PASS**, 227,70 saniye; iki dependency deprecation uyarısı var.
+
+Render tanımı mevcut Python/free servise ve MongoDB'ye uyarlandı; PostgreSQL kaynağı oluşturma bölümü kaldırıldı. Canlı Render/Atlas değişmedi, gerçek hesap veya medya göçü yapılmadı. Mongo CI job'ı eklendi fakat henüz GitHub'da çalıştırılmadı. Kontrollü hesap/medya aktarımı ve rollback provası yayın ön koşulu. İnceleme: `docs/evidence/stage-9/MONGODB_REVIEW.md`.
+
 Kullanıcının tüm aşamaları ara onay beklemeden tamamlama talimatıyla çalışmaya devam ediliyor.
 
 | Aşama | Gerçek durum |
@@ -11,7 +19,7 @@ Kullanıcının tüm aşamaları ara onay beklemeden tamamlama talimatıyla çal
 | 8 | DEVAM EDİYOR: Render Blueprint resmi şemayla doğrulandı; native server smoke, gerçek yerel PG dump/restore ve 1000 kayıt/4 okuyucu performansı ölçüldü. Docker ve Linux CI (911e889, run 35806086944) geçti. Render staging/kalıcı hosting ve cutover bekliyor. |
 | 9 | Yerel/CI kanıt incelemesi yapıldı; sonuç docs/evidence/stage-9/REVIEW.md. Önizleme çalışıyor; tam üretim geçişi NO-GO. Dış bağımsız reviewer kullanılmış sayılmaz. |
 
-Canlı v10/Render/MongoDB değişmedi. Gerçek hesap, sağlık verisi veya medya göçü yapılmadı. V2 halen ayrı, varsayılan kapalı. **Üretim geçişi NO-GO**: tüm kabul kapıları kapanmadı. Yeni hesap kurtarma ve dönem arşiv şemaları yalnız sentetik PostgreSQL testlerinde doğrulandı; yayınlanmadı.
+Canlı v10/Render/MongoDB değişmedi. Gerçek hesap, sağlık verisi veya medya göçü yapılmadı. V2 halen ayrı, varsayılan kapalı. **Üretim geçişi NO-GO**: tüm kabul kapıları kapanmadı. Yeni hesap kurtarma ve dönem arşiv şemaları sentetik backend testlerinde doğrulanıyor; yayınlanmadı.
 
 Aşağıdaki eski tarihli bölümler çalışma geçmişidir; yukarıdaki tablo güncel durumu belirtir.
 

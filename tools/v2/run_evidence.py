@@ -21,7 +21,7 @@ root = Path(__file__).resolve().parents[2]
 evidence = root / ("docs/evidence/stage-" + args.stage)
 evidence.mkdir(parents=True, exist_ok=True)
 manifest = {}
-for area in ("apps/api", "apps/web/src", "infra/v2", "tests/v2", "tools/v2"):
+for area in ("apps/api", "apps/web/src", "infra/v2", "tests/v2", "tests/mongodb", "tools/v2"):
     for current, dirs, files in os.walk(root / area):
         dirs[:] = sorted(
             d
@@ -47,6 +47,9 @@ for area in ("apps/api", "apps/web/src", "infra/v2", "tests/v2", "tools/v2"):
                 ".css",
                 ".json",
                 ".toml",
+                ".yaml",
+                ".yml",
+                ".lock",
             }:
                 manifest[str(path.relative_to(root))] = hashlib.sha256(
                     path.read_bytes()
@@ -78,6 +81,11 @@ metadata = {
     ).strip(),
     "working_tree_sources": manifest,
     "platform": platform.platform(),
+    "test_environment": {
+        key: os.environ[key]
+        for key in ("PYTHON_DOTENV_DISABLED", "STORAGE_BACKEND", "ACCOUNT_STORAGE_BACKEND", "ALOS_TEST_BACKEND")
+        if key in os.environ
+    },
     "started_at": started.isoformat(),
     "finished_at": finished.isoformat(),
     "elapsed_seconds": (finished - started).total_seconds(),

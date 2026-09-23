@@ -5,14 +5,30 @@ import logging
 from datetime import timedelta
 from uuid import uuid4
 
+from pymongo.errors import PyMongoError
 from sqlalchemy import or_, select
 from sqlalchemy.exc import SQLAlchemyError
 
 from .db import utcnow
+from .errors import DomainError
 from .models import Outbox
+from .mongo_db import retry_transaction
 
 
+@retry_transaction
 def claim(database):
+    if getattr(database, "backend", None) == "mongodb":
+        # Avoid a write fence every second when a free-tier queue is empty.
+        with database.snapshot() as snapshot:
+            if (
+                snapshot.scalar(
+                    select(Outbox)
+                    .where(Outbox.processed_at.is_(None), Outbox.available_at <= utcnow())
+                    .limit(1)
+                )
+                is None
+            ):
+                return None
     with database.sessions.begin() as db:
         now = utcnow()
         row = db.scalar(
@@ -33,6 +49,7 @@ def claim(database):
         return row.id, row.lease_token
 
 
+@retry_transaction
 def process(database, job):
     job_id, token = job
     with database.sessions.begin() as db:
@@ -57,7 +74,9 @@ async def run(database):
                 await asyncio.sleep(1)
         except asyncio.CancelledError:
             raise
-        except SQLAlchemyError as exc:
+        except (SQLAlchemyError, PyMongoError, DomainError) as exc:
+            if isinstance(exc, DomainError) and exc.code != "storage_retry":
+                raise
             # Driver messages may contain connection details; log only the error class.
             logging.getLogger(__name__).warning("Outbox retry deferred: %s", type(exc).__name__)
             await asyncio.sleep(15)

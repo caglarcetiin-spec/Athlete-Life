@@ -4,7 +4,7 @@ import {spawn,execFileSync} from 'node:child_process';
 import {mkdirSync,writeFileSync} from 'node:fs';
 const root=process.cwd(),python=root+'/.venv-v2/bin/python',port=10005,base='http://127.0.0.1:'+port;
 const dbName='alos_test_browser_'+Date.now();
-const env={...process.env,PYTHONPATH:root+'/apps/api',ALOS_V2_ENABLED:'1',ALOS_V2_ENVIRONMENT:'test',ALOS_V2_DATABASE_URL:'postgresql://localhost:15432/'+dbName,ALOS_V2_PUBLIC_ORIGIN:base};
+const env={...process.env,PYTHONPATH:root+'/apps/api',ALOS_V2_ENABLED:'1',ALOS_V2_ENVIRONMENT:'test',ALOS_V2_DATABASE_URL:process.env.ALOS_TEST_BACKEND==='mongodb'?'mongodb://127.0.0.1:27028/?replicaSet=alos-test':'postgresql://localhost:15432/'+dbName,ALOS_V2_MONGO_DATABASE:dbName,ALOS_V2_PUBLIC_ORIGIN:base};
 const evidence=root+'/docs/evidence/stage-1';mkdirSync(evidence,{recursive:true});
 let server,browser;const errors=[];const results=[];
 function start(){server=spawn(python,['-m','uvicorn','alos.main:create_app','--factory','--host','127.0.0.1','--port',String(port),'--no-access-log'],{cwd:root,env,stdio:['ignore','pipe','pipe']});server.stderr.on('data',()=>{});}

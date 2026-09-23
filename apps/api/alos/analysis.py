@@ -58,11 +58,7 @@ def snapshot_in(db, athlete, knowledge_at=None):
 
 
 def calculate(database, athlete_id, data, with_snapshot=False):
-    with (
-        database.engine.connect().execution_options(isolation_level="REPEATABLE READ") as conn,
-        database.sessions(bind=conn) as db,
-        db.begin(),
-    ):
+    with database.snapshot() as db:
         athlete = db.get(Athlete, athlete_id)
         snapshot = snapshot_in(db, athlete, data.as_of if data.knowledge == "as_known" else None)
         result = compute(snapshot, data.as_of, data.model_version, data.window_days, data.knowledge)

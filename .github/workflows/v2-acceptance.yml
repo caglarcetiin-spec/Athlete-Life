@@ -2,7 +2,7 @@ name: V2 acceptance
 on:
   push:
     branches: ["codex/alos-2-stage-0"]
-    paths: ["apps/**", "tests/v2/**", "tools/v2/**", "infra/v2/**", ".github/workflows/v2-acceptance.yml"]
+    paths: ["apps/**", "tests/v2/**", "tests/mongodb/**", "tools/v2/**", "infra/v2/**", ".github/workflows/v2-acceptance.yml"]
   workflow_dispatch:
 permissions:
   contents: read
@@ -93,3 +93,71 @@ jobs:
         run: |
           docker compose -f infra/v2/compose.yaml logs --no-color
           docker compose -f infra/v2/compose.yaml down -v
+  mongodb:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    env:
+      PYTHON_DOTENV_DISABLED: "1"
+      STORAGE_BACKEND: sqlite
+      ACCOUNT_STORAGE_BACKEND: sqlite
+      ALOS_TEST_BACKEND: mongodb
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: apps/web/package-lock.json
+      - name: Install locked dependencies
+        run: |
+          python -m venv .venv-v2
+          .venv-v2/bin/pip install -r apps/api/requirements.lock
+          .venv-v2/bin/pip install --no-deps -e apps/api
+          npm ci --prefix apps/web
+      - name: Isolated MongoDB replica set
+        run: |
+          docker run -d --name alos-mongo --network host --ulimit nofile=65536:65536 mongo:8.0.17 --replSet alos-test --port 27028 --bind_ip 127.0.0.1
+          for i in $(seq 1 60); do
+            if docker exec alos-mongo mongosh --port 27028 --quiet --eval 'db.adminCommand({ping:1})'; then break; fi
+            sleep 1
+          done
+          docker exec alos-mongo mongosh --port 27028 --quiet --eval 'rs.initiate({_id:"alos-test",members:[{_id:0,host:"127.0.0.1:27028"}]})'
+          for i in $(seq 1 60); do
+            if docker exec alos-mongo mongosh --port 27028 --quiet --eval 'if (!db.hello().isWritablePrimary) quit(1)'; then break; fi
+            sleep 1
+          done
+      - name: Python checks
+        run: |
+          .venv-v2/bin/python tools/v2/run_evidence.py --stage 8 ci-mongo-lint .venv-v2/bin/ruff check apps/api tests/mongodb tools/v2
+          .venv-v2/bin/python tools/v2/run_evidence.py --stage 8 ci-mongo-api .venv-v2/bin/python -m pytest tests/mongodb -q
+      - name: Client checks and build
+        run: |
+          .venv-v2/bin/python tools/v2/run_evidence.py --stage 8 ci-client npm --prefix apps/web test
+          .venv-v2/bin/python tools/v2/run_evidence.py --stage 8 ci-lint-client npm --prefix apps/web run lint
+          .venv-v2/bin/python tools/v2/run_evidence.py --stage 8 ci-build npm --prefix apps/web run build
+      - name: Install browser
+        run: |
+          cd apps/web
+          npx playwright install --with-deps chromium
+          echo "ALOS_BROWSER_EXECUTABLE=$(node --input-type=module -e 'import {chromium} from "@playwright/test"; console.log(chromium.executablePath())')" >> "$GITHUB_ENV"
+      - name: Browser golden journeys
+        run: .venv-v2/bin/python tools/v2/browser_regression.py node
+      - name: Preserve evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: v2-mongodb-evidence
+          path: |
+            docs/evidence/stage-6/*.log
+            docs/evidence/stage-6/*.json
+            docs/evidence/stage-8/*.log
+            docs/evidence/stage-8/*.json
+          retention-days: 14
+      - name: Mongo logs and cleanup
+        if: always()
+        run: |
+          docker logs --tail 100 alos-mongo
+          docker rm -f alos-mongo

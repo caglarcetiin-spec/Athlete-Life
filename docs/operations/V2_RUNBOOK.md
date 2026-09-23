@@ -1,12 +1,18 @@
 # Athlete Life V2 — çalıştırma, yayın ve geri dönüş
 
+## Bütçe sınırı (23 Eylül 2026)
+
+Kullanıcı mevcut **MongoDB + ücretsiz Render** altyapısını korumayı seçti (ADR-0005). Yeni PostgreSQL/ücretli kaynak oluşturulmaz. `infra/v2/render.yaml` mevcut Python/free servisin hedef ayarlarını belgeler; ikinci servis oluşturmak için uygulanmaz. Canlı ayarlar henüz değiştirilmedi.
+
 ## Ayrı ürün sınırı
 
-V2 PostgreSQL kullanır. Eski v10/MongoDB uygulaması `start_render.py` ile ayrı kalır. İki uygulama aynı ana kayda yazmaz. Bu belgede verilen komutlar gerçek hesapları otomatik taşımıyor. V2 hazırlık dalı `codex/alos-2-stage-0`; ana dalda eski uygulamanın otomatik yayını sürüyor.
+V2 MongoDB backend'i `ALOS_V2_DATABASE_URL` ve açık `ALOS_V2_MONGO_DATABASE` ile seçilir. V2 yalnız `alos_v2_*` koleksiyonlarına yazar; v10 koleksiyonlarını otomatik taşımaz veya değiştirmez. PostgreSQL backend'i eski kabul testleri için desteklenir, hedef yayın gereksinimi değildir. Yerel diske veya başka DB'ye otomatik fallback yoktur.
+
+Mongo için transaction destekleyen replica set/Atlas gerekir. `python -m alos.cli migrate` açık operatör adımıdır; koleksiyon/indexleri oluşturur. Web başlangıcı sadece `schema-check` yapar. Hesap/medya geçişi ve rollback doğrulanmadan eski uygulamanın yerine geçirilmez. Mevcut Render Python runtime'ı ve ücretsiz plan korunur; ücretli pre-deploy/disk/worker kullanılmaz.
 
 ## Yerel kaynakla çalıştırma
 
-Python 3.12+, Node 24 ve PostgreSQL 18 gerekir. Bağımlılıklar `apps/api/requirements.lock` ve `apps/web/package-lock.json` ile sabitlenir. API `.env` dosyasını kendiliğinden okumaz. `infra/v2/.env.example` değişkenleri kabuğa/servis yapılandırmasına açıkça verilmelidir.
+Python 3.12+, Node 24 ve MongoDB replica set gerekir (PostgreSQL 18 yalnız alternatif test backend’i). Bağımlılıklar `apps/api/requirements.lock` ve `apps/web/package-lock.json` ile sabitlenir. API `.env` dosyasını kendiliğinden okumaz. `infra/v2/.env.example` değişkenleri kabuğa/servis yapılandırmasına açıkça verilmelidir.
 
 ```sh
 python -m venv .venv-v2
@@ -31,11 +37,9 @@ docker compose -f infra/v2/compose.yaml up --build -d
 
 ## Render
 
-`infra/v2/render.yaml` ayrı **staging** taslağıdır; eski servisi güncellemez. Resmi JSON şemasıyla doğrulandı. Uygulanması gerçek container/Render smoke testinin yerini tutmaz. Ücretsiz web planında ayrı pre-deploy adımı yoktur; staging migration'ı açık operatör adımıdır. Migration sırasında advisory transaction lock kullanılır. Her web worker schema değiştirmez.
+Hedef ayarlar `infra/v2/render.yaml` içindedir. Mevcut servisin build/start komutları kontrollü geçişte değiştirilir. Mongo bağlantısı ve DB adı Render gizli ortam ayarından alınır; repository'ye yazılmaz. Ücretsiz servisin uyku/yeniden başlama davranışı devam eder; kalıcı veri MongoDB'de kalır. PostgreSQL staging Blueprint'i kaldırılmıştır.
 
-Kalıcı üretim için ayrı, onaylanmış PostgreSQL kaynağı ve işletim planı gerekir. Free Postgres 30 gün sonunda sona erer; yönetilen PITR içermez. Ücretli web servisinde `preDeployCommand: python -m alos.cli migrate`, `dockerCommand: python -m alos.cli serve` kullanılır. Ücretsiz staging taslağı sessizce ücretli kaynağa çevrilmez.
-
-Resmi kaynaklar (23 Eylül 2026): [Free plan](https://render.com/docs/free), [Deploy/pre-deploy](https://render.com/docs/deploys), [PostgreSQL backup/PITR](https://render.com/docs/postgresql-backups), [Blueprint](https://render.com/docs/blueprint-spec).
+Rollback: eski commit ve `python3 start_render.py` komutuna dönmek v10 koleksiyonlarını kullanır. Yeni V2'de yazılmış verileri eski uygulama okuyamaz; bu nedenle V2 yazıları başladıktan sonra kayıtları dışa aktarmadan körlemesine rollback yapılmaz. Otomatik çift yazım yoktur.
 
 ## Health ve kuyruk
 
@@ -66,3 +70,5 @@ Yerel sentetik `tools/v2/disaster_rehearsal.py` gerçek pg_dump/restore ve tüm 
 Önceki V2 image/source commit + ek alanları tutan genişletilmiş şema tercih edilir. Alan silen downgrade, yeni veriyi eski sürüme sığdırma yöntemi değildir. Gerekirse onaylı cutover ile restore edilmiş ayrı DB'ye dönülür. Yeni V2 kayıtlarını eski v10 MongoDB'ye otomatik geri yazan adapter yoktur.
 
 Mevcut hesaplar/medya için üretim göçü **uygulanmadı**. Sentetik kullanıcı şifreleri test ortamına aittir; production seed yoktur. Kayıt başlangıçta kapalıdır. Yeni hesap/kayıt açılışı ve varsa eski hesabın kontrollü aktarımı production cutover planında açıkça ele alınmalıdır.
+
+Resmi çalışma ortamı doğrulaması: [Render native tools](https://render.com/docs/native-runtimes) Python runtime içinde Node/npm bulunduğunu belgeliyor. [Free plan](https://render.com/docs/free) uyku, geçici disk ve aylık kullanım sınırlarını açıklar; ücretsiz plan sınırsız kaynak garantisi değildir.

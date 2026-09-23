@@ -11,6 +11,7 @@ from sqlalchemy.dialects.postgresql import insert
 from .db import utcnow
 from .errors import DomainError
 from .models import Athlete, AuthSession, LoginAttempt, User
+from .mongo_db import retry_transaction
 
 passwords = PasswordHash.recommended()
 _dummy_hash = passwords.hash(token_urlsafe(24))
@@ -33,6 +34,7 @@ def create_user(db, username, name, password):
     return user, athlete
 
 
+@retry_transaction
 def rate_limit(database, key, limit=10):
     """Committed separately, so a rejected login cannot roll back its rate counter."""
     now = utcnow()
@@ -52,6 +54,7 @@ def rate_limit(database, key, limit=10):
         raise DomainError("rate_limited", "Çok fazla deneme. 15 dakika sonra tekrar dene.", 429)
 
 
+@retry_transaction
 def login(database, settings, username, password, old_token=None):
     with database.sessions.begin() as db:
         user = db.scalar(select(User).where(User.username == username.strip().casefold()))

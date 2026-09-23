@@ -1,0 +1,256 @@
+..........................................................EE
+==================================== ERRORS ====================================
+_ ERROR at setup of test_range_prescription_requires_an_actual_value_and_keeps_range _
+
+app_factory = <function app_factory.<locals>.factory at 0x10dc5ce00>
+
+    @pytest.fixture
+    def app(app_factory):
+>       return app_factory()
+               ^^^^^^^^^^^^^
+
+tests/mongodb/conftest.py:53: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/mongodb/conftest.py:35: in factory
+    app.state.database.migrate()
+apps/api/alos/mongo_db.py:157: in migrate
+    self.raw.create_collection(name)
+.venv-v2/lib/python3.12/site-packages/pymongo/_csot.py:126: in csot_wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/database.py:632: in create_collection
+    coll._create(kwargs, s)
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/collection.py:680: in _create
+    self._create_helper(self._name, options, collation, session)
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/collection.py:655: in _create_helper
+    self.database.client._retryable_write(False, inner, session, _Op.CREATE)
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:2099: in _retryable_write
+    return self._retry_with_session(retryable, func, s, bulk, operation, operation_id)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:1969: in _retry_with_session
+    return self._retry_internal(
+.venv-v2/lib/python3.12/site-packages/pymongo/_csot.py:126: in csot_wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:2022: in _retry_internal
+    ).run()
+      ^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:2890: in run
+    res = self._read() if self._is_read else self._write()
+                                             ^^^^^^^^^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:3103: in _write
+    return self._func(self._session, conn, self._retryable)  # type: ignore
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/collection.py:646: in inner
+    self._command(
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/collection.py:600: in _command
+    return conn.command(
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/helpers.py:51: in inner
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/pool.py:396: in command
+    return run_command(
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/command_runner.py:440: in run_command
+    docs, _, _ = _run_command(
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/command_runner.py:214: in _run_command
+    helpers_shared._check_command_response(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+response = {'ok': 0.0, 'errmsg': '24: Too many open files', 'code': 264, 'codeName': 'TooManyFilesOpen', ...}
+max_wire_version = 25, allowable_errors = None, parse_write_concern_error = True
+pool_opts = None
+
+    def _check_command_response(
+        response: _DocumentOut,
+        max_wire_version: Optional[int],
+        allowable_errors: Optional[Container[Union[int, str]]] = None,
+        parse_write_concern_error: bool = False,
+        pool_opts: Optional[PoolOptions] = None,
+    ) -> None:
+        """Check the response to a command for errors."""
+        if "ok" not in response:
+            # Server didn't recognize our message as a command.
+            raise OperationFailure(
+                response.get("$err"),  # type: ignore[arg-type]
+                response.get("code"),
+                response,
+                max_wire_version,
+            )
+    
+        if parse_write_concern_error and "writeConcernError" in response:
+            _error = response["writeConcernError"]
+            _labels = response.get("errorLabels")
+            if _labels:
+                _error.update({"errorLabels": _labels})
+            _raise_write_concern_error(_error)
+    
+        if response["ok"]:
+            return
+    
+        details = response
+        errmsg = details["errmsg"]
+        code = details.get("code")
+    
+        # For allowable errors, only check for error messages when the code is not
+        # included.
+        if allowable_errors:
+            if code is not None:
+                if code in allowable_errors:
+                    return
+            elif errmsg in allowable_errors:
+                return
+    
+        # Server is "not primary" or "recovering"
+        if code is not None:
+            if code in _NOT_PRIMARY_CODES:
+                raise NotPrimaryError(errmsg, response)
+        elif HelloCompat.LEGACY_ERROR in errmsg or "node is recovering" in errmsg:
+            raise NotPrimaryError(errmsg, response)
+    
+        # Other errors
+        # findAndModify with upsert can raise duplicate key error
+        if code in (11000, 11001, 12582):
+            raise DuplicateKeyError(errmsg, code, response, max_wire_version)
+        elif code == 50:
+            # Append timeout details to MaxTimeMSExpired responses.
+            if pool_opts:
+                timeout_details = _get_timeout_details(pool_opts)
+                errmsg += format_timeout_details(timeout_details)
+            raise ExecutionTimeout(errmsg, code, response, max_wire_version)
+        elif code == 43:
+            raise CursorNotFound(errmsg, code, response, max_wire_version)
+    
+>       raise OperationFailure(errmsg, code, response, max_wire_version)
+E       pymongo.errors.OperationFailure: 24: Too many open files, full error: {'ok': 0.0, 'errmsg': '24: Too many open files', 'code': 264, 'codeName': 'TooManyFilesOpen', '$clusterTime': {'clusterTime': Timestamp(1790145254, 35), 'signature': {'hash': b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00', 'keyId': 0}}, 'operationTime': Timestamp(1790145254, 34)}
+
+.venv-v2/lib/python3.12/site-packages/pymongo/helpers_shared.py:327: OperationFailure
+_ ERROR at teardown of test_range_prescription_requires_an_actual_value_and_keeps_range _
+
+    @pytest.fixture
+    def app_factory():
+        applications = []
+    
+        def factory():
+            name = "alos_test_" + uuid4().hex
+            app = create_app(
+                Settings(
+                    database_url="mongodb://127.0.0.1:27028/?replicaSet=alos-test",
+                    mongo_database=name,
+                    enabled=True,
+                    environment="test",
+                    public_origin="http://testserver",
+                )
+            )
+            applications.append((app, name))  # Clean up even if migration/seed fails.
+            app.state.database.migrate()
+            with app.state.database.sessions.begin() as db:
+                _, a = create_user(db, "deniz", "Deniz Test", "test-password-123")
+                _, b = create_user(db, "arda", "Arda Test", "test-password-456")
+            app.state.athletes = [a.id, b.id]
+            return app
+    
+        yield factory
+        admin = MongoClient("mongodb://127.0.0.1:27028/?replicaSet=alos-test")
+        for app, name in applications:
+            app.state.database.client.close()
+            assert name.startswith("alos_test_")
+>           admin.drop_database(name)
+
+tests/mongodb/conftest.py:47: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv-v2/lib/python3.12/site-packages/pymongo/_csot.py:126: in csot_wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:2462: in drop_database
+    self[name].command(
+.venv-v2/lib/python3.12/site-packages/pymongo/_csot.py:126: in csot_wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/database.py:946: in command
+    return self._client._retryable_read(
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:2061: in _retryable_read
+    return self._retry_internal(
+.venv-v2/lib/python3.12/site-packages/pymongo/_csot.py:126: in csot_wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:2022: in _retry_internal
+    ).run()
+      ^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:2890: in run
+    res = self._read() if self._is_read else self._write()
+          ^^^^^^^^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:3118: in _read
+    self._server = self._get_server()
+                   ^^^^^^^^^^^^^^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:3063: in _get_server
+    return self._client._select_server(
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:1862: in _select_server
+    server = topology.select_server(
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/topology.py:357: in select_server
+    server = self._select_server(
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/topology.py:331: in _select_server
+    servers = self.select_servers(
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/topology.py:249: in select_servers
+    server_descriptions = self._select_servers_loop(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Topology <TopologyDescription id: 6ab372e7c10c636b3acbca12, topology_type: ReplicaSetNoPrimary, servers: [<ServerDesc...028: [Errno 61] Connection refused (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>]>>
+selector = Primary(), timeout = 30, operation = 'dropDatabase'
+operation_id = None, address = None, deprioritized_servers = None
+
+    def _select_servers_loop(
+        self,
+        selector: Callable[[Selection], Selection],
+        timeout: float,
+        operation: str,
+        operation_id: Optional[int],
+        address: Optional[_Address],
+        deprioritized_servers: Optional[list[Server]] = None,
+    ) -> list[ServerDescription]:
+        """select_servers() guts. Hold the lock when calling this."""
+        now = time.monotonic()
+        end_time = now + timeout
+        logged_waiting = False
+        # Server selection does not have APM events, gate only on logging
+        ss: Optional[_ServerSelectionTelemetry] = None
+        if _is_debug_enabled(_SERVER_SELECTION_LOGGER):
+            ss = _ServerSelectionTelemetry(
+                self._topology_id, selector, operation, operation_id, self.description
+            )
+            ss.started()
+    
+        server_descriptions = self._description.apply_selector(
+            selector,
+            address,
+            custom_selector=self._settings.server_selector,
+            deprioritized_servers=[server.description for server in deprioritized_servers]
+            if deprioritized_servers
+            else None,
+        )
+    
+        while not server_descriptions:
+            # No suitable servers.
+            if timeout == 0 or now > end_time:
+                if ss is not None:
+                    ss.failed(self._error_message(selector), self.description)
+>               raise ServerSelectionTimeoutError(
+                    f"{self._error_message(selector)}, Timeout: {timeout}s, Topology Description: {self.description!r}"
+                )
+E               pymongo.errors.ServerSelectionTimeoutError: 127.0.0.1:27028: [Errno 61] Connection refused (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms), Timeout: 30s, Topology Description: <TopologyDescription id: 6ab372e7c10c636b3acbca12, topology_type: ReplicaSetNoPrimary, servers: [<ServerDescription ('127.0.0.1', 27028) server_type: Unknown, rtt: None, error=AutoReconnect('127.0.0.1:27028: [Errno 61] Connection refused (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>]>
+
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/topology.py:297: ServerSelectionTimeoutError
+=============================== warnings summary ===============================
+.venv-v2/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+.venv-v2/lib/python3.12/site-packages/starlette/testclient.py:53
+  /Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+ERROR tests/mongodb/test_domain_parity.py::test_range_prescription_requires_an_actual_value_and_keeps_range
+ERROR tests/mongodb/test_domain_parity.py::test_range_prescription_requires_an_actual_value_and_keeps_range
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 2 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+58 passed, 2 warnings, 2 errors in 181.08s (0:03:01)
