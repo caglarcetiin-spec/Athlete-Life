@@ -1,0 +1,1 @@
+PASS: manual plan → observed sets → shared movement projection, no inferred actuals/double counting, edit/date correction and explicit progression.

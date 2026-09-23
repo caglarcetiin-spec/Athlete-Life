@@ -1,0 +1,1 @@
+PASS: per-account local storage, undo, photos, backups, durable history, clear isolation and session lock.

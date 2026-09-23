@@ -1,0 +1,36 @@
+# Staging only: Free Postgres expires after 30 days and has no managed PITR.
+# Do not cut over real accounts to this trial database.
+services:
+  - type: web
+    name: athlete-life-v2-staging
+    runtime: docker
+    region: frankfurt
+    plan: free
+    branch: codex/alos-2-stage-0
+    dockerfilePath: ./infra/v2/Dockerfile
+    dockerContext: .
+    autoDeployTrigger: off
+    healthCheckPath: /health/ready
+    # Migration is a separate explicit operator step on the free plan.
+    dockerCommand: python -m alos.cli serve
+    envVars:
+      - key: ALOS_V2_ENABLED
+        value: "1"
+      - key: ALOS_V2_ENVIRONMENT
+        value: production
+      - key: ALOS_V2_DATABASE_URL
+        fromDatabase:
+          name: athlete-life-v2-staging-db
+          property: connectionString
+      - key: ALOS_V2_PUBLIC_ORIGIN
+        sync: false
+      - key: ALOS_V2_REGISTRATION_ENABLED
+        value: "0"
+databases:
+  - name: athlete-life-v2-staging-db
+    plan: free
+    region: frankfurt
+    databaseName: athlete_life_v2_staging
+    user: athlete_life_v2
+    postgresMajorVersion: "18"
+    ipAllowList: []

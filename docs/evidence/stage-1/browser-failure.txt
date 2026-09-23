@@ -1,0 +1,68 @@
+Error: expect(received).toEqual(expected) // deep equality
+
+- Expected  -  1
++ Received  + 58
+
+- Array []
++ Array [
++   Object {
++     "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
++     "help": "Elements must meet minimum color contrast ratio thresholds",
++     "helpUrl": "https://dequeuniversity.com/rules/axe/4.13/color-contrast?application=playwright",
++     "id": "color-contrast",
++     "impact": "serious",
++     "nodes": Array [
++       Object {
++         "all": Array [],
++         "any": Array [
++           Object {
++             "data": Object {
++               "bgColor": "#dfe7d8",
++               "contrastRatio": 4.02,
++               "expectedContrastRatio": "4.5:1",
++               "fgColor": "#64716b",
++               "fontSize": "10.5pt (14px)",
++               "fontWeight": "normal",
++               "messageKey": null,
++             },
++             "id": "color-contrast",
++             "impact": "serious",
++             "message": "Element has insufficient color contrast of 4.02 (foreground color: #64716b, background color: #dfe7d8, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
++             "relatedNodes": Array [
++               Object {
++                 "html": "<section class=\"hero-card\">",
++                 "target": Array [
++                   ".hero-card",
++                 ],
++               },
++             ],
++           },
++         ],
++         "failureSummary": "Fix any of the following:
++   Element has insufficient color contrast of 4.02 (foreground color: #64716b, background color: #dfe7d8, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1",
++         "html": "<p>Çalışma ve dinlenme zamanlarını belirle. Planını hayatının etrafında oluştur.</p>",
++         "impact": "serious",
++         "none": Array [],
++         "target": Array [
++           ".hero-card > p",
++         ],
++       },
++     ],
++     "tags": Array [
++       "cat.color",
++       "wcag2aa",
++       "wcag143",
++       "TTv5",
++       "TT13.c",
++       "EN-301-549",
++       "EN-9.1.4.3",
++       "ACT",
++       "RGAAv4",
++       "RGAA-3.2.1",
++     ],
++   },
++ ]
+    at captureRawStack (/Users/caglarcetin/Documents/GitHub/Athlete-Life/apps/web/node_modules/playwright-core/lib/coreBundle.js:8588:17)
+    at callMatcherAsStep (/Users/caglarcetin/Documents/GitHub/Athlete-Life/apps/web/node_modules/playwright/lib/matchers/expect.js:13310:57)
+    at Object.toEqual (/Users/caglarcetin/Documents/GitHub/Athlete-Life/apps/web/node_modules/playwright/lib/matchers/expect.js:13302:23)
+    at /Users/caglarcetin/Documents/GitHub/Athlete-Life/tools/v2/browser_gate.mjs:30:503

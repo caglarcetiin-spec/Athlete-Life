@@ -1,0 +1,1 @@
+v7.12 substitution intelligence tests: PASS { ringRowToRingDip: 18, ringRowToElevatedRow: 89 }

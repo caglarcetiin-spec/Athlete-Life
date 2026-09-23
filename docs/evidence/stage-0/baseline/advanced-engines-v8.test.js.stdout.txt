@@ -1,0 +1,1 @@
+v8 advanced engines tests: PASS {"trend":"rising","tissue":["wrist","elbow","anteriorShoulder","bicepsTendon","shoulder","grip"],"nutrition":2800,"coach":"pull"}

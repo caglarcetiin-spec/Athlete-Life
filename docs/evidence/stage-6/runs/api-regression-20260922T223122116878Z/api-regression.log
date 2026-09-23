@@ -1,0 +1,41 @@
+.............F.........................................                  [100%]
+=================================== FAILURES ===================================
+_____ test_uploaded_model_is_private_deduplicated_exported_and_restorable ______
+
+app = <fastapi.applications.FastAPI object at 0x10deb9df0>
+client = <starlette.testclient.TestClient object at 0x10e063560>
+
+    def test_uploaded_model_is_private_deduplicated_exported_and_restorable(app, client):
+        import base64
+        from conftest import cmd
+        from test_core import write
+    
+        raw = synthetic_glb()
+        operation = cmd("media.save", name="Synthetic model.glb", mime="model/gltf-binary", content=base64.b64encode(raw).decode())
+        saved = write(client, operation)
+        assert write(client, operation) == saved
+        model_id = saved["entity"]["id"]
+        assert client.get("/api/v2/body-model").json()["status"] == "uploaded"
+        response = client.get("/api/v2/body-model/content")
+        assert response.content == raw and "no-store" in response.headers["cache-control"]
+        other = login(app, "arda", "test-password-456")
+        assert other.get("/api/v2/body-model/content").status_code == 404
+        assert other.get("/api/v2/media/" + model_id).status_code == 404
+>       profile = client.get("/api/v2/bootstrap").json()["profiles"][0]
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       IndexError: list index out of range
+
+tests/v2/test_body_model.py:78: IndexError
+=============================== warnings summary ===============================
+.venv-v2/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+.venv-v2/lib/python3.12/site-packages/starlette/testclient.py:53
+  /Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/v2/test_body_model.py::test_uploaded_model_is_private_deduplicated_exported_and_restorable
+1 failed, 54 passed, 2 warnings in 21.58s

@@ -1,0 +1,4 @@
+10000 portu kullanılıyor. Eski Athlete Life OS sunucusunu kapatıp tekrar başlat.
+Athlete Life OS v10.1.0 Dynamic: http://0.0.0.0:10000
+Kalıcı veritabanı: sqlite
+Durdurmak için Ctrl+C

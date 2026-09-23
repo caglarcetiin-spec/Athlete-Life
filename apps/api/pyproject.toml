@@ -1,0 +1,29 @@
+[project]
+name = "athlete-life-api"
+version = "2.0.0.dev1"
+requires-python = ">=3.12"
+dependencies = [
+  "fastapi==0.141.1", "uvicorn==0.53.0", "sqlalchemy==2.0.54",
+  "alembic==1.20.0", "psycopg[binary]==3.3.5", "pwdlib[argon2]==0.3.1",
+  "pydantic-settings==2.15.0", "reportlab==5.0.1", "pillow==12.3.0", "rfc8785==0.1.4",
+]
+
+[project.optional-dependencies]
+test = ["httpx==0.28.1", "pytest==9.1.1", "hypothesis==6.168.0", "ruff==0.16.8"]
+
+[tool.ruff]
+line-length = 110
+target-version = "py312"
+
+[tool.pytest.ini_options]
+testpaths = ["../../tests"]
+
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["alos*"]
+
+[tool.setuptools.package-data]
+alos = ["catalogs/*.json", "fonts/*.ttf", "fonts/LICENSE_LIBERATION"]

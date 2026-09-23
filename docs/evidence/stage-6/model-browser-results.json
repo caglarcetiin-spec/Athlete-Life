@@ -1,0 +1,12 @@
+{
+  "result": "PASS",
+  "browser": "153.0.8010.53",
+  "fixture": "Synthetic triangle only; no real GLB read",
+  "checks": [
+    "Owner library file loads in WebGL",
+    "Camera controls and reload",
+    "Broken file retains navigation and record access",
+    "UI upload persists in PostgreSQL and opens after reload"
+  ],
+  "errors": []
+}

@@ -1,0 +1,1 @@
+v7.14 universal physiology tests: PASS {"modes":["static_isometric","loaded_dynamic","explosive_skill","bodyweight_dynamic","sprint","continuous_aerobic","mobility_recovery"],"rolling":{"mechanical":100,"neural":92,"metabolic":71}}

@@ -1,0 +1,48 @@
+{
+  "fixture": "synthetic VM",
+  "cases": [
+    {
+      "http_status": 500,
+      "cache_retained": true,
+      "bootstrap_posts": 0,
+      "account_locked": false
+    },
+    {
+      "http_status": 503,
+      "cache_retained": true,
+      "bootstrap_posts": 0,
+      "account_locked": false
+    },
+    {
+      "http_status": 401,
+      "cache_retained": true,
+      "bootstrap_posts": 0,
+      "account_locked": true
+    },
+    {
+      "response": {
+        "ok": true,
+        "data": null,
+        "revision": 0
+      },
+      "cache_replaced_with_profile": true,
+      "label": "Hesabına kaydedildi"
+    },
+    {
+      "response": {},
+      "cache_replaced_with_profile": true,
+      "label": "Hesabına kaydedildi"
+    },
+    {
+      "name": "lost ACK then retry",
+      "pending_retained": true,
+      "blocked_as_conflict": true,
+      "prior_result_replayed": false
+    },
+    {
+      "name": "outbox quota",
+      "push_throws": true,
+      "durable_outbox_written": false
+    }
+  ]
+}

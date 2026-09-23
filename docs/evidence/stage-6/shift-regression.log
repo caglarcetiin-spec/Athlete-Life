@@ -1,0 +1,6 @@
+P-01/P-02 second independent context: PASS
+P-01/P-02 SIGKILL server, empty browser storage, new login: PASS
+P-09 offline IDB queue, tab closes, reconnect one effect: PASS e60d9e4f-1d9d-48a7-8e09-a2cdd6ee98ab
+P-05 lost ACK retried without duplicate version: PASS
+mobile 390×844 overflow + axe WCAG: PASS
+second account empty and isolated: PASS

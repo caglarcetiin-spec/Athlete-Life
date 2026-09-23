@@ -1,0 +1,67 @@
+[
+  {
+    "probe": "storage",
+    "command": [
+      "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-modern/bin/python",
+      "-B",
+      "tools/stage0/storage_probe.py"
+    ],
+    "exit_code": 0,
+    "source_commit": "e92b4b736e9f4aa8bcd64103ec59b1aa6abf5297",
+    "environment": "synthetic / local SQLite and mongomock or Node VM / no .env",
+    "stdout": "storage.stdout.json",
+    "stderr": "storage.stderr.txt",
+    "ran_at": "2026-09-16T20:11:04.653147+00:00"
+  },
+  {
+    "probe": "client",
+    "command": [
+      "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "tools/stage0/client_probe.js"
+    ],
+    "exit_code": 0,
+    "source_commit": "e92b4b736e9f4aa8bcd64103ec59b1aa6abf5297",
+    "environment": "synthetic / local SQLite and mongomock or Node VM / no .env",
+    "stdout": "client.stdout.json",
+    "stderr": "client.stderr.txt",
+    "ran_at": "2026-09-16T20:11:05.249289+00:00"
+  },
+  {
+    "probe": "inventory",
+    "command": [
+      "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-modern/bin/python",
+      "-B",
+      "tools/stage0/inventory.py"
+    ],
+    "exit_code": 0,
+    "source_commit": "e92b4b736e9f4aa8bcd64103ec59b1aa6abf5297",
+    "environment": "synthetic / local SQLite and mongomock or Node VM / no .env",
+    "stdout": "inventory.stdout.json",
+    "stderr": "inventory.stderr.txt",
+    "ran_at": "2026-09-16T20:11:06.471785+00:00"
+  },
+  {
+    "probe": "browser",
+    "command": [
+      "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+      "tools/stage0/browser_probe.js"
+    ],
+    "environment": {
+      "NODE_PATH": "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules",
+      "browser": "153.0.8010.47",
+      "timezone": "Europe/Istanbul",
+      "fixture": "synthetic account; local SQLite; personal GLB blocked",
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      }
+    },
+    "exit_code": 0,
+    "source_commit": "e92b4b736e9f4aa8bcd64103ec59b1aa6abf5297",
+    "started_at": "2026-09-16T20:05:02.696Z",
+    "finished_at": "2026-09-16T20:05:16.819Z",
+    "stdout": "browser.stdout.txt",
+    "stderr": "browser.stderr.txt",
+    "observations": "../browser/observations.json"
+  }
+]

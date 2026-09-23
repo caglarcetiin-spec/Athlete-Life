@@ -1,0 +1,41 @@
+{
+  "fixture": "synthetic",
+  "legacy": {
+    "silent_overwrite_reproduced": true,
+    "revisions": [
+      1,
+      2,
+      3
+    ],
+    "set_b_in_live_state": false,
+    "set_b_in_old_revision": true
+  },
+  "account_sqlite": {
+    "stale_write_rejected": true,
+    "latest_set_ids": [
+      "set-a",
+      "set-b"
+    ],
+    "other_client_shift_merged": false,
+    "other_owner_isolated": true,
+    "lost_ack_retry_returns_prior_result": false,
+    "lost_ack_retry_conflicts": true,
+    "committed_revision": 2
+  },
+  "account_mongodb_mock": {
+    "stale_write_rejected": true,
+    "latest_set_ids": [
+      "set-a",
+      "set-b"
+    ],
+    "other_client_shift_merged": false,
+    "other_owner_isolated": true,
+    "lost_ack_retry_returns_prior_result": false,
+    "lost_ack_retry_conflicts": true,
+    "committed_revision": 2
+  },
+  "limitations": [
+    "MongoDB adapter exercised with mongomock; Atlas durability/concurrency NOT RUN",
+    "No process-kill or browser e2e in this probe; see separate evidence"
+  ]
+}

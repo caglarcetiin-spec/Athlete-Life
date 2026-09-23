@@ -1,0 +1,176 @@
+{
+  "result": "PASS",
+  "database": "PostgreSQL local synthetic only",
+  "tables": {
+    "analysis_runs": {
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "athlete_profiles": {
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "athletes": {
+      "count": 2,
+      "sha256": "a0c7e6e7bb8db3ef529acd7b30bbe962e76044c78e3e35c3919b599a52cafe92"
+    },
+    "audit_records": {
+      "count": 26,
+      "sha256": "f6e696eefb66e4c113b3daa74d5775b5ee33571ea67fa439887d40e8800d9d48"
+    },
+    "auth_sessions": {
+      "count": 1,
+      "sha256": "0890391ee96e512439578290d2de510afed51305729928397fd9a9bdce5b89ca"
+    },
+    "body_measurements": {
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "capability_measurements": {
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "change_log": {
+      "count": 26,
+      "sha256": "f85b3ceb5fbd5d1a251a20887e3f715ed6ff7c9c8dc0bb3fd1d1799ebf380a36"
+    },
+    "cycle_entries": {
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "daily_checkins": {
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "food_items": {
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "goal_measurements": {
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "goals": {
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "health_episodes": {
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "hydration_entries": {
+      "count": 25,
+      "sha256": "8922650137e4f2fe3077059f8a17f27da5a09d77161bfa1c571b63fb87574854"
+    },
+    "idempotency_keys": {
+      "count": 26,
+      "sha256": "3f4be73f360ffbf5693bb95c13cca385a0d34912c5386932340ed60edf1f415c"
+    },
+    "lab_observations": {
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "legacy_extensions": {
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "life_events": {
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "login_attempts": {
+      "count": 2,
+      "sha256": "3c6f728e7f997716eee8d8557d26e9037018bef8e0361abd837abbeae44a529f"
+    },
+    "meal_entries": {
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "media_objects": {
+      "count": 1,
+      "sha256": "3cc59f1f0461b30aba97363194817c7627d99f69ed322adc94d6b62faf2780d7"
+    },
+    "migration_runs": {
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "nutrition_day_status": {
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "optimization_runs": {
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "pain_entries": {
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "performed_sets": {
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "prescription_set_slots": {
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "program_exercises": {
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "program_versions": {
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "recipes": {
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "recovery_codes": {
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "security_audit": {
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "session_prescriptions": {
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "shifts": {
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "sleep_entries": {
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "transactional_outbox": {
+      "count": 26,
+      "sha256": "2b4ebff1d040819b6bce1d98aa226a037f49fd7804a37a9f4c36b18413ac7262"
+    },
+    "users": {
+      "count": 2,
+      "sha256": "16d20a4e623c2d3d51002795565ed985160527de2df7d9737a44e761c999493e"
+    },
+    "weekly_slots": {
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "workout_sessions": {
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "workspace_archives": {
+      "count": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "backup_seconds": 0.6300488340202719,
+  "restore_and_verify_seconds": 0.454672332998598,
+  "backup_bytes": 189800,
+  "lost_acknowledged_fixture_records": 0,
+  "rpo_scope": "No writes after dump began; zero fixture record loss. Continuous backup/PITR RPO not measured.",
+  "rto_scope": "Local dump restore plus table hash validation, excluding cloud provisioning and traffic cutover."
+}

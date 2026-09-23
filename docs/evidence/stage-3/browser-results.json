@@ -1,0 +1,10 @@
+{
+  "result": "PASS",
+  "journey": "Manual program UI → approve → prescription → ready view → 2 manual sets → offline third → tab closes → reconnect → exactly 3 → timer reload/reset keeps sets",
+  "browser": "153.0.8010.53",
+  "viewport": [
+    390,
+    844
+  ],
+  "errors": []
+}

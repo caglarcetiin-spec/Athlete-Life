@@ -1,0 +1,18 @@
+{
+  "result": "PASS",
+  "browser": "153.0.8010.53",
+  "viewport": [
+    390,
+    844
+  ],
+  "checks": [
+    "Date history and skip link",
+    "Professional mode announcement",
+    "Account email update",
+    "Interrupted form draft recovery",
+    "Profile axe and mobile layout",
+    "Offline shell with no authenticated API cache",
+    "Pending journal blocks SW update; ACK and update preserve both records"
+  ],
+  "errors": []
+}
