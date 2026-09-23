@@ -46,3 +46,15 @@ PYTHON_DOTENV_DISABLED=1 STORAGE_BACKEND=sqlite ACCOUNT_STORAGE_BACKEND=sqlite A
 ```
 
 Daemon başlangıç çıktısı üç parametrenin kabul edildiğini doğruladı. Veri transaction süresi veya test assertion'ları değiştirilmedi. Yeni `mongo-suite.json` ilgili backend ortam bayrağını da içerir.
+
+## Kullanılabilir yayın hazırlığı — 23 Eylül devamı
+
+Kaynak `cb9c391`: açık operatör hesabı geçişi, bounded eski scrypt doğrulaması, tamamlanmamış aktarımda giriş/readiness engeli, bakım modu ve mevcut Render komutlarıyla V2 başlatma eklendi. Kaynak snapshot/photo checksum, kullanıcı adı çakışması ve kaynak değişmesi durdurma koşulları sentetik olarak doğrulandı. Geçişte eski oturum tokenları kopyalanmaz. Özgün v10 koleksiyonları korunur.
+
+`release-account-gates.json/log`: 65 PASS (hesap/aktarım/bakım dahil seçilmiş regression paketi); `render-entry-smoke.json/log`: 3 PASS (gerçek `start_render.py`, bakımda yazma engeli, V2 paketli frontend, özel yolların 404 olması). `legacy-pdf-compatibility`: 5 unittest, 1 skip; pypdf 6.19.0 yalnız test ortamına eklendi. Şema değişikliği `alos_v2_cutovers` koleksiyonudur; otomatik göç yoktur.
+
+Önceki kaynak `24ca526` GitHub Linux CI run 35891299000: core/container/mongodb SUCCESS. Yeni kaynak için run 35913432104 ayrıca izleniyor; önceki kaynak sonucu yenisinin yerine sayılmaz.
+
+Gerçek kaynak salt okunur ön kontrol: 3 hesap, 3 geçerli checksum'lı snapshot, 0 sunucu fotoğraf kaydı. Git dışında `.cache-v2` altında 0600 özel kurtarma kopyaları alındı. Bu gerçek veri testi değildir; yetkilendirilmiş aktarımın kaynak/yedek hazırlığıdır. Canlıda henüz hesap veya uygulama sürümü değiştirilmedi.
+
+Otomatik inceleme daha sonra localhost önizleme hesabının canlı hesaplarla salt okunur karşılaştırmasını, AGENTS gerçek veri testi yasağı kapsamında reddetti. Kullanıcıya bunun gerçek geçiş olduğunu açıklayan açık onay sorusu gönderildi. Bu işlem farklı yoldan denenmedi; buna bağlı gerçek veri geçişi onay bekler. Render/GitHub hesap giriş ekranına tarayıcı erişimi de geniş hesap kapsamı nedeniyle reddedildi; tarayıcıyla bu sayfaya devam edilmedi. Yayın artık mevcut dar kapsamlı Render bağlantısı ve mevcut başlatma komutlarıyla hazırlanmıştır.

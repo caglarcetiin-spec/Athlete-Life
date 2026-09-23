@@ -60,3 +60,43 @@ def test_maintenance_cannot_accept_writes_or_open_accounts():
         process.terminate()
         process.wait(timeout=5)
         process.stderr.close()
+
+
+def test_v2_entry_serves_packaged_ui_and_keeps_private_paths_closed(app):
+    with socket.socket() as sock:
+        sock.bind(("127.0.0.1", 0))
+        port = sock.getsockname()[1]
+    process = subprocess.Popen(
+        [sys.executable, "start_render.py"], cwd=ROOT,
+        env={**os.environ, "PYTHON_DOTENV_DISABLED": "1", "STORAGE_BACKEND": "mongodb",
+             "ACCOUNT_STORAGE_BACKEND": "mongodb",
+             "MONGODB_URI": "mongodb://127.0.0.1:27028/?replicaSet=alos-test",
+             "MONGODB_DATABASE": app.state.database.raw.name,
+             "RENDER_EXTERNAL_URL": "https://example.invalid", "PORT": str(port),
+             "ALOS_EDITION": "v2"}, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE,
+    )
+    try:
+        for _ in range(100):
+            try:
+                with urlopen(f"http://127.0.0.1:{port}/health/ready", timeout=1) as response:
+                    assert response.status == 200
+                break
+            except OSError:
+                time.sleep(0.05)
+        else:
+            raise AssertionError("V2 Render entry did not start")
+        with urlopen(f"http://127.0.0.1:{port}/", timeout=2) as response:
+            assert b'id="root"' in response.read()
+        with urlopen(f"http://127.0.0.1:{port}/sw.js", timeout=2) as response:
+            assert b'alos-shell' in response.read()
+        for path in (".env", "../.env", "build-manifest.json"):
+            try:
+                urlopen(f"http://127.0.0.1:{port}/{path}", timeout=2)
+            except HTTPError as error:
+                assert error.code == 404
+            else:
+                raise AssertionError("Private path was served")
+    finally:
+        process.terminate()
+        process.wait(timeout=10)
+        process.stderr.close()

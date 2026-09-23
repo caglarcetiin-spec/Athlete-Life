@@ -8,6 +8,12 @@ Kullanıcı mevcut MongoDB’yi korumayı seçti. ADR-0005 uyarınca V2 MongoDB 
 
 Render tanımı mevcut Python/free servise ve MongoDB'ye uyarlandı; PostgreSQL kaynağı oluşturma bölümü kaldırıldı. Canlı Render/Atlas değişmedi, gerçek hesap veya medya göçü yapılmadı. Mongo CI job'ı eklendi fakat henüz GitHub'da çalıştırılmadı. Kontrollü hesap/medya aktarımı ve rollback provası yayın ön koşulu. İnceleme: `docs/evidence/stage-9/MONGODB_REVIEW.md`.
 
+## Yayın hazırlığı devamı
+
+`cb9c391` hesabı/şifre özeti aktarımı ve mevcut `start_render.py` üzerinden bakım/v2 seçimi eklendi. `release/v2` yalnız derlenmiş herkese açık UI içerir. Seçili Mongo hesap/domain regression: 65 PASS; gerçek giriş komutu smoke: 3 PASS. Önceki Mongo kaynak 24ca526 için GitHub CI core/container/mongodb SUCCESS (35891299000). Yeni kaynak CI ayrıca beklenir.
+
+Gerçek kaynakta salt okunur 3 hesap/3 snapshot/0 fotoğraf kaydı doğrulandı; 0600 özel kurtarma kopyaları Git dışında alındı. Canlı yazım/yayın yapılmadı. Önizleme hesabıyla canlı hesap eşleştirmesi otomatik inceleme tarafından “gerçek veri testi” kapsamında reddedildi; gerçek aktarım için kullanıcıya açık soru iletildi. Onay gelmeden bu karşılaştırma/aktarım başka yoldan yapılmaz. Ücretli kaynak oluşturulmadı.
+
 Kullanıcının tüm aşamaları ara onay beklemeden tamamlama talimatıyla çalışmaya devam ediliyor.
 
 | Aşama | Gerçek durum |
