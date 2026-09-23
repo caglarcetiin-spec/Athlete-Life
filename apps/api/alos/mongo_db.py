@@ -16,7 +16,7 @@ from uuid import UUID, uuid4
 
 from bson import BSON
 from pymongo import ASCENDING, MongoClient
-from pymongo.errors import DuplicateKeyError, PyMongoError
+from pymongo.errors import BulkWriteError, DuplicateKeyError, PyMongoError
 from pymongo.read_concern import ReadConcern
 from pymongo.write_concern import WriteConcern
 from sqlalchemy import CheckConstraint, UniqueConstraint, inspect
@@ -363,6 +363,8 @@ class MongoSession:
         if not self.write:
             return
         try:
+            inserts = {}
+            references = set()
             for key, row in list(self.rows.items()):
                 if key in self.deleted:
                     continue
@@ -390,12 +392,18 @@ class MongoSession:
                     match = {
                         el.column.name: value(v) for el, v in zip(constraint.elements, vals, strict=True)
                     }
-                    if not self.database.collection(target).find_one(match, session=self.session):
+                    reference = (target.name, json.dumps(match, sort_keys=True))
+                    known = any(
+                        row_key[0] == target.name and row_key not in self.deleted
+                        and all(value(getattr(known_row, name)) == expected for name, expected in match.items())
+                        for row_key, known_row in self.rows.items()
+                    )
+                    if not known and reference not in references and not self.database.collection(target).find_one(match, session=self.session):
                         raise IntegrityError(None, None, ValueError("Record reference"))
+                    references.add(reference)
                 coll = self.database.collection(table)
-                old = coll.find_one({"_id": key[1]}, {"_large": 1}, session=self.session)
-                if self.original[key] is None and old:
-                    raise IntegrityError(None, None, ValueError("Record identity already exists"))
+                creating = self.original[key] is None
+                old = None if creating else coll.find_one({"_id": key[1]}, {"_large": 1}, session=self.session)
                 if old and old.get("_large"):
                     self.database.collection("blobs").delete_many(
                         {"record": old["_large"]}, session=self.session
@@ -415,8 +423,15 @@ class MongoSession:
                     doc.update(
                         _large=blob_id, _size=len(encoded), _sha256=hashlib.sha256(encoded).hexdigest()
                     )
-                coll.replace_one({"_id": key[1]}, doc, upsert=True, session=self.session)
+                if creating:
+                    inserts.setdefault(table.name, []).append(doc)
+                else:
+                    coll.replace_one({"_id": key[1]}, doc, upsert=True, session=self.session)
                 self.original[key] = copy.deepcopy(data)
+            # New identities use insert semantics, never upsert: duplicates still abort
+            # the entire transaction. Batching avoids one network round trip per row.
+            for table, documents in inserts.items():
+                self.database.collection(table).insert_many(documents, ordered=True, session=self.session)
             for table, identity in list(self.deleted):
                 coll = self.database.collection(table)
                 old = coll.find_one({"_id": identity}, session=self.session)
@@ -440,3 +455,7 @@ class MongoSession:
                 coll.delete_one({"_id": identity}, session=self.session)
         except DuplicateKeyError:
             raise IntegrityError(None, None, ValueError("Unique record constraint")) from None
+        except BulkWriteError as error:
+            if any(item.get("code") == 11000 for item in error.details.get("writeErrors", [])):
+                raise IntegrityError(None, None, ValueError("Unique record constraint")) from None
+            raise
