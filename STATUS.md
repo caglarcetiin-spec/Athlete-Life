@@ -1,3 +1,17 @@
+# Canlı durum — 24 Eylül 2026
+
+V2 mevcut ücretsiz Render servisinde **yayında**: https://athlete-life.onrender.com/ . MongoDB korundu; yeni ücretli kaynak açılmadı. Kullanıcının açık gerçek veri geçişi onayıyla üç hesap ve kaynak snapshotları, eşleşen önizlemenin 11 canonical kaydı ve cihazda bekleyen eksik taslağın arşivi taşındı. Eski koleksiyonlar değişmedi; özel kurtarma dosyaları Git dışında durur. Önizleme HTTP yazıcısı durduruldu; üretimde tek yazar vardır.
+
+Yayın commit'i `acc15b6`, deploy `dep-daq4713ncjis73ajlu10`: live. `/health/ready` 200 ready, `/` 200, kayıt yapılandırması açık ve 8 karakter; oturumsuz hesap API'si 401, `.env` 404. Mevcut internet hesabının şifresi korunur; yeniden giriş gerekir. Gerçek hesapla test kaydı oluşturulmadı.
+
+CI 35914984103: core/container/mongodb SUCCESS. Uzak aktarımda büyük hesabın storage_retry ile güvenli durması üzerine toplu insert iyileştirildi: 74 sentetik Mongo testi + gecikmeli 350 kayıt testi PASS. Aynı özel snapshotla gerçek aktarım tamamlandı ve kaynak fingerprintleri değişmedi. Son performans düzeltmesinin CI 35924396158 core/container/mongodb kontrolleri de SUCCESS; PR #2 ana dala birleştirildi (`bfdd772`). Render otomatik yayını aynı ücretsiz serviste gerçekleştirir. Kanıt: `docs/evidence/stage-9/LIVE_CUTOVER.json`.
+
+Şema: yalnız `alos_v2_*` ve cutover işaretleri. Geri dönüşte yeni V2 yazıları önce korunmalı; eski sürüme körlemesine dönülmez. Klinik doğrulama, fiziksel iPhone/VoiceOver ve yıllar süren yük testi yapılmış sayılmaz. Ücretsiz Render uyku/ilk açılış gecikmesi devam eder. Optional AI/cihaz bağlantıları kapalıdır.
+
+Aşağıdaki bölümler kronolojik çalışma geçmişidir; NO-GO/henüz taşınmadı ifadeleri yukarıdaki canlı sonuçtan önceki durumu anlatır.
+
+---
+
 # Güncel durum — 23 Eylül 2026
 
 ## Güncel bütçe kısıtı — 23 Eylül 2026

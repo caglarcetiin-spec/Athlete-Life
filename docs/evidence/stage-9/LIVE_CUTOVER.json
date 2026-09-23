@@ -1,0 +1,33 @@
+{
+  "source_commit": "224d2e5de8b785982e69ddefaaf4542747a49a5c",
+  "main_commit": "acc15b667cb893ff253b03fb63a423d76986c3b9",
+  "live_deploy": "dep-daq4713ncjis73ajlu10",
+  "url": "https://athlete-life.onrender.com/",
+  "plan": "free",
+  "backend": "MongoDB",
+  "account_cutovers": 3,
+  "source_snapshots": 3,
+  "source_photo_records": 0,
+  "preview_accounts_merged": 1,
+  "preview_canonical_records": 11,
+  "pending_device_journal": "archived without replay; private download preserved",
+  "source_unchanged": true,
+  "old_collections_retained": true,
+  "public_checks": {
+    "ready": 200,
+    "live": 200,
+    "root": 200,
+    "auth_config": 200,
+    "unauthenticated_me": 401,
+    "private_env": 404
+  },
+  "production_test_writes": false,
+  "limits": [
+    "No physical iPhone or VoiceOver check",
+    "No clinical validation",
+    "Free Render idle cold starts remain"
+  ],
+  "batch_ci_run": 35924396158,
+  "batch_ci": "core/container/mongodb SUCCESS",
+  "batch_main_commit": "bfdd772e3e4ab4dfac5bcafe53e2f3fbf1483834"
+}

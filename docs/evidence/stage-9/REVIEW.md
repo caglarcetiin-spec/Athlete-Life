@@ -1,3 +1,11 @@
+# Canlı yayın ek sonucu — 24 Eylül 2026
+
+V2 mevcut ücretsiz Render + MongoDB üzerinde yayımlandı. Açık kullanıcı onayıyla gerçek veri geçişi yapıldı; kaynak koleksiyonları korundu. Canlı sağlık/API koruma kontrolleri `LIVE_CUTOVER.json` içinde. Önceki NO-GO koşulları bu ürün seçimi ve kontrollü geçiş sonucuyla güncellendi; aşağıdaki belge eski inceleme kaydıdır.
+
+Uzak aktarımda güvenli duruş görülünce toplu Mongo insert düzeltmesi uygulandı ve bütün hesaplar tamamlandı. 74 sentetik backend testi ve gecikmeli 350 kayıt kontrolü PASS. Son performans yaması PR #2 Linux CI core/container/mongodb SUCCESS sonrası ana dala birleştirildi (`bfdd772`). Ücretsiz altyapıda PITR garantisi verilmez; özel kurtarma dosyaları ve eski kaynak koleksiyonlar korunur. Fiziksel iPhone/VoiceOver, uzun süreli kapasite ve klinik doğrulama yapılmış sayılmaz.
+
+---
+
 # Yayın incelemesi — 23 Eylül 2026
 
 **Karar: üretim geçişi NO-GO; ayrı yerel önizleme kullanılabilir.** Bu inceleme aynı uygulayıcı tarafından kaynak ve gerçek kanıtların yeniden okunmasıdır; bağımsız bir insan/agent incelemesi değildir.
