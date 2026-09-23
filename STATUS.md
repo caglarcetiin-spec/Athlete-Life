@@ -6,10 +6,10 @@ Kullanıcının tüm aşamaları ara onay beklemeden tamamlama talimatıyla çal
 |---|---|
 | 0–4 | Kapsamı belirtilen kabul kapıları geçti; aşama raporları docs/evidence altında. |
 | 5 | Deterministik model, kaynak takibi, rapor/PDF testleri geçti; klinik doğrulama yapılmadı. |
-| 6 | Ana UX/PWA yolları ve 29 eski route karşılığı uygulandı. 61 backend/8 client, 68 route/tema/viewport, büyük yedek ve GLB kontrolleri geçti. Fiziksel iPhone/VoiceOver NOT RUN; nihai alt özellik incelemesi sürüyor. |
+| 6 | Ana UX/PWA yolları ve 29 eski route karşılığı uygulandı. 61 backend/8 client, 68 route/tema/viewport, büyük yedek ve GLB kontrolleri geçti. Fiziksel iPhone/VoiceOver NOT RUN; alt işlev eşlemesi stage-9/FEATURE_REVIEW.md içinde incelendi. |
 | 7 | Optional AI ve cihaz bağlantıları kapalı/yapılandırılmamış. Çekirdek LLM olmadan çalışır; harici AI testi yapılmış sayılmaz. |
-| 8 | DEVAM EDİYOR: Render Blueprint resmi şemayla doğrulandı; native server smoke, gerçek yerel PG dump/restore ve 1000 kayıt/4 okuyucu performansı ölçüldü. Docker/CI ve Render staging bekliyor. |
-| 9 | Nihai bağımsız release incelemesi bekliyor. |
+| 8 | DEVAM EDİYOR: Render Blueprint resmi şemayla doğrulandı; native server smoke, gerçek yerel PG dump/restore ve 1000 kayıt/4 okuyucu performansı ölçüldü. Docker ve Linux CI (911e889, run 35806086944) geçti. Render staging/kalıcı hosting ve cutover bekliyor. |
+| 9 | Yerel/CI kanıt incelemesi yapıldı; sonuç docs/evidence/stage-9/REVIEW.md. Önizleme çalışıyor; tam üretim geçişi NO-GO. Dış bağımsız reviewer kullanılmış sayılmaz. |
 
 Canlı v10/Render/MongoDB değişmedi. Gerçek hesap, sağlık verisi veya medya göçü yapılmadı. V2 halen ayrı, varsayılan kapalı. **Üretim geçişi NO-GO**: tüm kabul kapıları kapanmadı. Yeni hesap kurtarma ve dönem arşiv şemaları yalnız sentetik PostgreSQL testlerinde doğrulandı; yayınlanmadı.
 

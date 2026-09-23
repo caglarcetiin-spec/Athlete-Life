@@ -1,0 +1,83 @@
+{
+  "result": "PASS",
+  "browser": "153.0.8010.53",
+  "routeTransitions": 204,
+  "elapsedMs": 32019,
+  "samples": [
+    {
+      "cycle": 1,
+      "elapsedMs": 5724,
+      "requests": 13,
+      "heapBytes": 4414112
+    },
+    {
+      "cycle": 2,
+      "elapsedMs": 8100,
+      "requests": 21,
+      "heapBytes": 4612020
+    },
+    {
+      "cycle": 3,
+      "elapsedMs": 10453,
+      "requests": 29,
+      "heapBytes": 4720440
+    },
+    {
+      "cycle": 4,
+      "elapsedMs": 12836,
+      "requests": 37,
+      "heapBytes": 4813540
+    },
+    {
+      "cycle": 5,
+      "elapsedMs": 15207,
+      "requests": 44,
+      "heapBytes": 4938556
+    },
+    {
+      "cycle": 6,
+      "elapsedMs": 17579,
+      "requests": 52,
+      "heapBytes": 4974096
+    },
+    {
+      "cycle": 7,
+      "elapsedMs": 19945,
+      "requests": 60,
+      "heapBytes": 5002128
+    },
+    {
+      "cycle": 8,
+      "elapsedMs": 22327,
+      "requests": 68,
+      "heapBytes": 5042044
+    },
+    {
+      "cycle": 9,
+      "elapsedMs": 24715,
+      "requests": 76,
+      "heapBytes": 5165996
+    },
+    {
+      "cycle": 10,
+      "elapsedMs": 27104,
+      "requests": 83,
+      "heapBytes": 5194828
+    },
+    {
+      "cycle": 11,
+      "elapsedMs": 29474,
+      "requests": 91,
+      "heapBytes": 5220412
+    },
+    {
+      "cycle": 12,
+      "elapsedMs": 31864,
+      "requests": 99,
+      "heapBytes": 5234588
+    }
+  ],
+  "pageErrors": [],
+  "canonicalCursorAfterReload": 0,
+  "limits": "204 repeated SPA transitions with empty synthetic domain records. GC heap measurements reported without claiming a lifetime memory-leak proof or real-device equivalence."
+}

@@ -8,7 +8,7 @@ Kanıt türleri: statik kaynak, unit/VM, gerçek HTTP, gerçek Chrome route. Mev
 
 Tablonun son sütunu güncellenmiştir; diğer sütunlar aşama 0'daki eski ürün kanıtıdır. V2 kanıtları `docs/evidence/stage-6/*-regression.json` (komut, kaynak hashleri, ortam, exit), önceki aşama RESULT raporları ve `tests/v2/` içindedir. Route birleştirmesi, alt işlevin otomatik tamamlandığı anlamına gelmez. **U-06 tam PASS değildir.**
 
-Açık parite işleri: eski tüm alt panel/alanların birebir incelemesi ve büyük yedek aktarımı. Kişisel kalibrasyon ve bilimsel kesinlik gerektiren eski iddialar doğrulanmış gibi açılmadı; bilinçli ürün kararı ve gerekçesi release incelemesinde görünür olmalı. Gerçek iPhone/VoiceOver/WebKit/Firefox ve uzun süreli performans henüz test edilmedi.
+Kaynak/ana akış alt işlev eşlemesi `docs/evidence/stage-9/FEATURE_REVIEW.md` içinde tamamlandı; bütün form kombinasyonları ve kişisel legacy göçü doğrulanmış sayılmaz. 32 MB üzeri sentetik yedek roundtrip geçti; tarayıcı aktarım üst sınırı 64 MB. Kişisel kalibrasyon ve bilimsel kesinlik gerektiren eski iddialar doğrulanmış gibi açılmadı; bilinçli ürün kararı ve gerekçesi release incelemesinde görünür olmalı. Gerçek iPhone/VoiceOver/WebKit/Firefox ve uzun süreli performans henüz test edilmedi.
 
 ## Tüm sayfalar
 

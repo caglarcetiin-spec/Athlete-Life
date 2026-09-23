@@ -1,10 +1,10 @@
 {
   "command": [
     "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
-    "tools/v2/reports_browser.mjs"
+    "tools/v2/all_routes_browser.mjs"
   ],
   "cwd": "/Users/caglarcetin/Documents/GitHub/Athlete-Life",
-  "base_commit": "d5e02cd172ba80cf36186acb4133d8d359c68d93",
+  "base_commit": "34723c25941835e9ff67aef66d982e2d45b567e2",
   "branch": "codex/alos-2-stage-0",
   "working_tree_sources": {
     "apps/api/pyproject.toml": "35c8629ebd2e7b49a6e7f8389a07c83c80bd971e9f4feb382823619df9bcfd53",
@@ -116,9 +116,9 @@
     "tools/v2/workout_browser.mjs": "89c655700ef90ffb8d3ca08b22a5711e7f13549ff5dae76e3eef85a1f3097f80"
   },
   "platform": "macOS-26.6.2-arm64-arm-64bit",
-  "started_at": "2026-09-23T01:22:49.662104+00:00",
-  "finished_at": "2026-09-23T01:22:53.433918+00:00",
-  "elapsed_seconds": 3.771814,
+  "started_at": "2026-09-23T01:25:27.774642+00:00",
+  "finished_at": "2026-09-23T01:25:50.761170+00:00",
+  "elapsed_seconds": 22.986528,
   "exit_code": 0,
   "data_scope": "Only isolated synthetic fixtures; no production source or environment values collected."
 }

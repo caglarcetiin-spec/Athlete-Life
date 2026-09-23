@@ -1,10 +1,10 @@
 {
   "command": [
     "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
-    "tools/v2/reports_browser.mjs"
+    "tools/v2/session_soak_browser.mjs"
   ],
   "cwd": "/Users/caglarcetin/Documents/GitHub/Athlete-Life",
-  "base_commit": "d5e02cd172ba80cf36186acb4133d8d359c68d93",
+  "base_commit": "34723c25941835e9ff67aef66d982e2d45b567e2",
   "branch": "codex/alos-2-stage-0",
   "working_tree_sources": {
     "apps/api/pyproject.toml": "35c8629ebd2e7b49a6e7f8389a07c83c80bd971e9f4feb382823619df9bcfd53",
@@ -109,6 +109,7 @@
     "tools/v2/run_evidence.py": "5a6d386ee4e6eae61459fa0de849343f95164ae04110d51cead56aac95978706",
     "tools/v2/schema_check.py": "76518334306cdcb5d03e3f77ba25a3aa8870a6b4c3ae1155020dda6673637e87",
     "tools/v2/server_smoke.py": "d6d4974534f69bfc0e8ed268c4092017a8afc0fad3637a6ed6d7daaa90941a1a",
+    "tools/v2/session_soak_browser.mjs": "af09148af09571fc1a49b28465e0beab81a38fbaf3f69fe64a6927e602527fea",
     "tools/v2/source_safety.py": "9d49698fb73eee8b24a56eedf3b3ae199e6bef1f5db46c821bc3072586c8cd86",
     "tools/v2/synthetic_model_setup.py": "779a6404c77ac230de64e8e5f4ed6e3c0eb4ada4a0fbe4edf9257e0bdcfeec37",
     "tools/v2/test_database.py": "722ba1abdb31d32fdaf2050657743b8782394ebcd9d15758b1e088ff0eae2946",
@@ -116,9 +117,9 @@
     "tools/v2/workout_browser.mjs": "89c655700ef90ffb8d3ca08b22a5711e7f13549ff5dae76e3eef85a1f3097f80"
   },
   "platform": "macOS-26.6.2-arm64-arm-64bit",
-  "started_at": "2026-09-23T01:22:49.662104+00:00",
-  "finished_at": "2026-09-23T01:22:53.433918+00:00",
-  "elapsed_seconds": 3.771814,
+  "started_at": "2026-09-23T01:30:44.836632+00:00",
+  "finished_at": "2026-09-23T01:31:18.667362+00:00",
+  "elapsed_seconds": 33.83073,
   "exit_code": 0,
   "data_scope": "Only isolated synthetic fixtures; no production source or environment values collected."
 }
