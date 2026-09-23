@@ -1,0 +1,15 @@
+{
+  "result": "PASS",
+  "browser": "153.0.8010.53",
+  "viewport": [
+    390,
+    844
+  ],
+  "checks": [
+    "Real set → muscle exposure → immutable decision",
+    "Set delete → fresh report removes load; saved decision stays",
+    "Synthetic integrity leaves live owner cursor unchanged",
+    "Mobile layout and axe"
+  ],
+  "errors": []
+}

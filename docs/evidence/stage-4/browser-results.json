@@ -1,0 +1,18 @@
+{
+  "result": "PASS",
+  "browser": "153.0.8010.53",
+  "viewport": [
+    390,
+    844
+  ],
+  "journey": "Food library → comma decimal → meal consumption snapshot → water → checkin → overnight sleep → capability → reload → second device",
+  "counts": {
+    "foods": 1,
+    "meals": 1,
+    "hydrations": 1,
+    "checkins": 1,
+    "sleeps": 1,
+    "capabilitys": 2
+  },
+  "errors": []
+}

@@ -1,0 +1,7 @@
+.<repo>/.venv-modern/lib/python3.12/site-packages/mongomock/helpers.py:73: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  return datetime.utcnow()
+....
+----------------------------------------------------------------------
+Ran 5 tests in 5.486s
+
+OK

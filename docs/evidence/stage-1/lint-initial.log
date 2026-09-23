@@ -1,0 +1,62 @@
+SIM117 Use a single `with` statement with multiple contexts instead of nested `with` statements
+   --> apps/api/alos/service.py:167:5
+    |
+166 |   def bootstrap(database, athlete_id):
+167 | /     with database.engine.connect().execution_options(isolation_level="REPEATABLE READ") as conn:
+168 | |         with database.sessions(bind=conn) as db, db.begin():
+    | |____________________________________________________________^
+169 |               athlete = db.get(Athlete, athlete_id)
+170 |               result = {"api_version": 2, "schema_version": 1, "athlete_id": str(athlete_id),
+    |
+help: Combine `with` statements
+
+SIM117 Use a single `with` statement with multiple contexts instead of nested `with` statements
+   --> apps/api/alos/service.py:181:5
+    |
+180 |   def pull(database, athlete_id, cursor):
+181 | /     with database.engine.connect().execution_options(isolation_level="REPEATABLE READ") as conn:
+182 | |         with database.sessions(bind=conn) as db, db.begin():
+    | |____________________________________________________________^
+183 |               athlete = db.get(Athlete, athlete_id)
+184 |               if cursor > athlete.sequence:
+    |
+help: Combine `with` statements
+
+RUF059 Unpacked variable `a` is never used
+  --> tests/v2/conftest.py:33:9
+   |
+31 |                               public_origin='http://testserver'))
+32 |     with app.state.database.sessions.begin() as db:
+33 |         a, athlete_a = create_user(db, 'deniz', 'Deniz Test', 'test-password-123')
+   |         ^
+34 |         b, athlete_b = create_user(db, 'arda', 'Arda Test', 'test-password-456')
+35 |     app.state.athletes = [athlete_a.id, athlete_b.id]
+   |
+help: Prefix it with an underscore or any other dummy variable pattern
+
+RUF059 Unpacked variable `b` is never used
+  --> tests/v2/conftest.py:34:9
+   |
+32 |     with app.state.database.sessions.begin() as db:
+33 |         a, athlete_a = create_user(db, 'deniz', 'Deniz Test', 'test-password-123')
+34 |         b, athlete_b = create_user(db, 'arda', 'Arda Test', 'test-password-456')
+   |         ^
+35 |     app.state.athletes = [athlete_a.id, athlete_b.id]
+36 |     yield app
+   |
+help: Prefix it with an underscore or any other dummy variable pattern
+
+F841 Local variable `new` is assigned to but never used
+  --> tests/v2/test_core.py:32:5
+   |
+30 |     b = login(app)
+31 |     assert b.get('/api/v2/bootstrap').json()['shifts'][0] == result['entity']
+32 |     new = write(b, cmd(entity_id=command['entity_id'], version=1, end_local='23:00'))
+   |     ^^^
+33 |     stale = client.post('/api/v2/commands',json=cmd(entity_id=command['entity_id'],version=1,end_local='21:00'))
+34 |     assert stale.status_code == 409 and stale.json()['error']['details']['current']['version'] == 2
+   |
+help: Remove assignment to unused variable `new`
+
+Found 23 errors (18 fixed, 5 remaining).
+No fixes available (3 hidden fixes can be enabled with the `--unsafe-fixes` option).

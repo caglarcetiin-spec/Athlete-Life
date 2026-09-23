@@ -1,0 +1,358 @@
+I001 [*] Import block is un-sorted or un-formatted
+  --> apps/api/alos/body_model.py:3:1
+   |
+ 1 |   """Read-only, explicitly owner-scoped library asset. Never discover personal files."""
+ 2 |
+ 3 | / import struct
+ 4 | | import json
+ 5 | | import base64
+ 6 | |
+ 7 | | from sqlalchemy import select
+ 8 | |
+ 9 | | from .models import MediaObject
+10 | |
+11 | | from .errors import DomainError
+   | |_______________________________^
+help: Organize imports
+   |
+2  |
+3  + import base64
+4  + import json
+5  | import struct
+   - import json
+   - import base64
+6  |
+7  | from sqlalchemy import select
+   -
+   - from .models import MediaObject
+8  |
+9  | from .errors import DomainError
+10 + from .models import MediaObject
+11 |
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+   --> apps/api/alos/main.py:229:9
+    |
+227 |       @app.get("/api/v2/body-model/content")
+228 |       def body_model_content(request: Request):
+229 | /         from .body_model import resolve_model, stored_model
+230 | |         from fastapi.responses import Response
+    | |______________________________________________^
+231 |
+232 |           athlete_id = UUID(who(request)["athlete_id"])
+    |
+help: Organize imports
+    |
+228 |     def body_model_content(request: Request):
+    -         from .body_model import resolve_model, stored_model
+229 |         from fastapi.responses import Response
+230 |
+231 +         from .body_model import resolve_model, stored_model
+232 +
+233 |         athlete_id = UUID(who(request)["athlete_id"])
+    |
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> apps/api/migrations/env.py:1:1
+  |
+1 | / from alembic import context
+2 | | from sqlalchemy import engine_from_config, pool
+3 | | from alos.config import Settings
+4 | | from alos.db import Base
+5 | | from alos import models  # noqa: F401
+  | |_______________________^
+6 |
+7 |   config = context.config
+  |
+help: Organize imports
+  |
+2 | from sqlalchemy import engine_from_config, pool
+3 +
+4 + from alos import models  # noqa: F401
+5 | from alos.config import Settings
+6 | from alos.db import Base
+  - from alos import models  # noqa: F401
+7 |
+  |
+
+SIM117 [*] Use a single `with` statement with multiple contexts instead of nested `with` statements
+  --> apps/api/migrations/env.py:18:9
+   |
+16 |           connectable = engine_from_config(config.get_section(config.config_ini_section),
+17 |                                            prefix='sqlalchemy.', poolclass=pool.NullPool)
+18 | /         with connectable.connect() as connection:
+19 | |             with connection.begin():
+   | |____________________________________^
+20 |                   connection.exec_driver_sql('SELECT pg_advisory_xact_lock(2026091602)')
+21 |                   context.configure(connection=connection, target_metadata=Base.metadata)
+   |
+help: Combine `with` statements
+   |
+17 |                                          prefix='sqlalchemy.', poolclass=pool.NullPool)
+   -         with connectable.connect() as connection:
+   -             with connection.begin():
+   -                 connection.exec_driver_sql('SELECT pg_advisory_xact_lock(2026091602)')
+   -                 context.configure(connection=connection, target_metadata=Base.metadata)
+   -                 with context.begin_transaction():
+   -                     context.run_migrations()
+18 +         with connectable.connect() as connection, connection.begin():
+19 +             connection.exec_driver_sql('SELECT pg_advisory_xact_lock(2026091602)')
+20 +             context.configure(connection=connection, target_metadata=Base.metadata)
+21 +             with context.begin_transaction():
+22 +                 context.run_migrations()
+23 | run()
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> apps/api/migrations/versions/09797f7a6fd2_preserve_unknown_legacy_meal_mass.py:2:1
+  |
+1 |   """preserve unknown legacy meal mass"""
+2 | / from alembic import op
+3 | | import sqlalchemy as sa
+  | |_______________________^
+4 |
+5 |   revision = '09797f7a6fd2'
+  |
+help: Organize imports
+  |
+1 | """preserve unknown legacy meal mass"""
+2 + import sqlalchemy as sa
+3 | from alembic import op
+  - import sqlalchemy as sa
+4 |
+  |
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> apps/api/migrations/versions/3d7726dd00de_account_recovery_and_security_audit.py:2:1
+  |
+1 |   """account recovery and security audit"""
+2 | / from alembic import op
+3 | | import sqlalchemy as sa
+  | |_______________________^
+4 |
+5 |   revision = '3d7726dd00de'
+  |
+help: Organize imports
+  |
+1 | """account recovery and security audit"""
+2 + import sqlalchemy as sa
+3 | from alembic import op
+  - import sqlalchemy as sa
+4 |
+  |
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> apps/api/migrations/versions/6079f0a95359_reliable_core.py:2:1
+  |
+1 |   """reliable_core"""
+2 | / from alembic import op
+3 | | import sqlalchemy as sa
+4 | | from sqlalchemy.dialects import postgresql
+  | |__________________________________________^
+5 |   revision = '6079f0a95359'
+6 |   down_revision = None
+  |
+help: Organize imports
+  |
+1 | """reliable_core"""
+2 + import sqlalchemy as sa
+3 | from alembic import op
+  - import sqlalchemy as sa
+4 | from sqlalchemy.dialects import postgresql
+5 +
+6 | revision = '6079f0a95359'
+  |
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> apps/api/migrations/versions/a346366076dc_backups_and_legacy_archive.py:2:1
+  |
+1 |   """backups_and_legacy_archive"""
+2 | / from alembic import op
+3 | | import sqlalchemy as sa
+4 | | from sqlalchemy.dialects import postgresql
+  | |__________________________________________^
+5 |   revision = 'a346366076dc'
+6 |   down_revision = '6079f0a95359'
+  |
+help: Organize imports
+  |
+1 | """backups_and_legacy_archive"""
+2 + import sqlalchemy as sa
+3 | from alembic import op
+  - import sqlalchemy as sa
+4 | from sqlalchemy.dialects import postgresql
+5 +
+6 | revision = 'a346366076dc'
+  |
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> apps/api/migrations/versions/a879dac5341e_lab_result_comparators.py:2:1
+  |
+1 |   """Preserve laboratory censored results instead of treating limits as exact values."""
+2 | / from alembic import op
+3 | | import sqlalchemy as sa
+  | |_______________________^
+4 |   revision='a879dac5341e'
+5 |   down_revision='f137c8e642a1'
+  |
+help: Organize imports
+  |
+1 | """Preserve laboratory censored results instead of treating limits as exact values."""
+2 + import sqlalchemy as sa
+3 | from alembic import op
+  - import sqlalchemy as sa
+4 +
+5 | revision='a879dac5341e'
+  |
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> apps/api/migrations/versions/aa6bbe429c70_canonical_workout_execution.py:2:1
+  |
+1 |   """canonical_workout_execution"""
+2 | / from alembic import op
+3 | | import sqlalchemy as sa
+4 | | from sqlalchemy.dialects import postgresql
+  | |__________________________________________^
+5 |   revision = 'aa6bbe429c70'
+6 |   down_revision = 'a346366076dc'
+  |
+help: Organize imports
+  |
+1 | """canonical_workout_execution"""
+2 + import sqlalchemy as sa
+3 | from alembic import op
+  - import sqlalchemy as sa
+4 | from sqlalchemy.dialects import postgresql
+5 +
+6 | revision = 'aa6bbe429c70'
+  |
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> apps/api/migrations/versions/b384a0f98b62_prescription_target_ranges.py:2:1
+  |
+1 |   """Planned ranges stay separate from actual set values."""
+2 | / from alembic import op
+3 | | import sqlalchemy as sa
+4 | | from sqlalchemy.dialects import postgresql
+  | |__________________________________________^
+5 |   revision='b384a0f98b62'
+6 |   down_revision='a879dac5341e'
+  |
+help: Organize imports
+  |
+1 | """Planned ranges stay separate from actual set values."""
+2 + import sqlalchemy as sa
+3 | from alembic import op
+  - import sqlalchemy as sa
+4 | from sqlalchemy.dialects import postgresql
+5 +
+6 | revision='b384a0f98b62'
+  |
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> apps/api/migrations/versions/b525cbc4e8af_nutrition_daily_capability_health.py:2:1
+  |
+1 |   """nutrition_daily_capability_health"""
+2 | / from alembic import op
+3 | | import sqlalchemy as sa
+4 | | from sqlalchemy.dialects import postgresql
+  | |__________________________________________^
+5 |   revision = 'b525cbc4e8af'
+6 |   down_revision = 'aa6bbe429c70'
+  |
+help: Organize imports
+  |
+1 | """nutrition_daily_capability_health"""
+2 + import sqlalchemy as sa
+3 | from alembic import op
+  - import sqlalchemy as sa
+4 | from sqlalchemy.dialects import postgresql
+5 +
+6 | revision = 'b525cbc4e8af'
+  |
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> apps/api/migrations/versions/d9403fbd67bd_workspace_era_archives.py:2:1
+  |
+1 |   """workspace era archives"""
+2 | / from alembic import op
+3 | | import sqlalchemy as sa
+4 | | from sqlalchemy.dialects import postgresql
+  | |__________________________________________^
+5 |   revision = 'd9403fbd67bd'
+6 |   down_revision = '3d7726dd00de'
+  |
+help: Organize imports
+  |
+1 | """workspace era archives"""
+2 + import sqlalchemy as sa
+3 | from alembic import op
+  - import sqlalchemy as sa
+4 | from sqlalchemy.dialects import postgresql
+5 +
+6 | revision = 'd9403fbd67bd'
+  |
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> apps/api/migrations/versions/db070d02c399_versioned_decision_snapshots.py:2:1
+  |
+1 |   """versioned decision snapshots"""
+2 | / from alembic import op
+3 | | import sqlalchemy as sa
+4 | | from sqlalchemy.dialects import postgresql
+  | |__________________________________________^
+5 |   revision = 'db070d02c399'
+6 |   down_revision = '09797f7a6fd2'
+  |
+help: Organize imports
+  |
+1 | """versioned decision snapshots"""
+2 + import sqlalchemy as sa
+3 | from alembic import op
+  - import sqlalchemy as sa
+4 | from sqlalchemy.dialects import postgresql
+5 +
+6 | revision = 'db070d02c399'
+  |
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> apps/api/migrations/versions/f137c8e642a1_program_week_ranges.py:2:1
+  |
+1 |   """Explicit weekly ranges for program phases; existing programs repeat throughout."""
+2 | / from alembic import op
+3 | | import sqlalchemy as sa
+  | |_______________________^
+4 |   revision = 'f137c8e642a1'
+5 |   down_revision = 'd9403fbd67bd'
+  |
+help: Organize imports
+  |
+1 | """Explicit weekly ranges for program phases; existing programs repeat throughout."""
+2 + import sqlalchemy as sa
+3 | from alembic import op
+  - import sqlalchemy as sa
+4 +
+5 | revision = 'f137c8e642a1'
+  |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> tests/v2/test_body_model.py:63:5
+   |
+62 |   def test_uploaded_model_is_private_deduplicated_exported_and_restorable(app, client):
+63 | /     import base64
+64 | |     from conftest import cmd
+65 | |     from test_core import write
+   | |_______________________________^
+66 |
+67 |       raw = synthetic_glb()
+   |
+help: Organize imports
+   |
+63 |     import base64
+64 +
+65 |     from conftest import cmd
+   |
+
+Found 16 errors.
+[*] 16 fixable with the `--fix` option.

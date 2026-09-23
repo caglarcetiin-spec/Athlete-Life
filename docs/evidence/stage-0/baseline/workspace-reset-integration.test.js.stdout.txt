@@ -1,0 +1,2 @@
+v9 actual-script integration PASS: DB bridge, today/catch-up isolation, full prescription contract, immutable reads, first set lock, live safety gate, non-destructive restart, physiology, event corrections/deletion, calibration, ordered pipeline.
+PASS full engine reset: no ghost events, no old periods or sample plan, no coordinator errors, archive preserved

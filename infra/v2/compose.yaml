@@ -1,0 +1,46 @@
+# Local development only. Values below are disposable local credentials.
+services:
+  db:
+    image: postgres:18-bookworm
+    environment:
+      POSTGRES_USER: alos
+      POSTGRES_PASSWORD: local-development-only
+      POSTGRES_DB: alos_v2
+    volumes:
+      - alos-v2-db:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U alos -d alos_v2"]
+      interval: 2s
+      timeout: 5s
+      retries: 30
+  migrate:
+    build:
+      context: ../..
+      dockerfile: infra/v2/Dockerfile
+    environment: &app-env
+      ALOS_V2_ENABLED: "1"
+      ALOS_V2_DATABASE_URL: postgresql://alos:local-development-only@db:5432/alos_v2
+      ALOS_V2_ENVIRONMENT: development
+      ALOS_V2_PUBLIC_ORIGIN: http://localhost:10005
+      ALOS_V2_REGISTRATION_ENABLED: "1"
+    command: ["python", "-m", "alos.cli", "migrate"]
+    depends_on:
+      db:
+        condition: service_healthy
+  web:
+    build:
+      context: ../..
+      dockerfile: infra/v2/Dockerfile
+    environment: *app-env
+    ports:
+      - "127.0.0.1:10005:10000"
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:10000/health/ready',timeout=5)"]
+      interval: 10s
+      timeout: 6s
+      retries: 6
+volumes:
+  alos-v2-db:

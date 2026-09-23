@@ -1,0 +1,16 @@
+**
+!apps/
+!apps/api/
+!apps/api/**
+!apps/web/
+!apps/web/**
+apps/web/node_modules
+apps/web/dist
+**/__pycache__
+**/*.pyc
+**/.pytest_cache
+**/.ruff_cache
+**/*.egg-info
+**/.env*
+**/test-results
+**/playwright-report

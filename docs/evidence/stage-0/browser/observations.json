@@ -1,0 +1,285 @@
+{
+  "source_commit": "e92b4b736e9f4aa8bcd64103ec59b1aa6abf5297",
+  "started_at": "2026-09-16T20:05:02.696Z",
+  "fixture": "synthetic account; local SQLite; personal GLB blocked",
+  "screens": [
+    {
+      "route": "today",
+      "visible": true,
+      "title": "Sağlık · Günlük durum",
+      "overflow": false,
+      "file": "today.png"
+    },
+    {
+      "route": "week",
+      "visible": true,
+      "title": "Antrenman · Takvim ve vardiya",
+      "overflow": false,
+      "file": "week.png"
+    },
+    {
+      "route": "training",
+      "visible": true,
+      "title": "Antrenman · Hareket ve set kaydı",
+      "overflow": false,
+      "file": "training.png"
+    },
+    {
+      "route": "nutrition",
+      "visible": true,
+      "title": "Beslenme · Günlük beslenme",
+      "overflow": false,
+      "file": "nutrition.png"
+    },
+    {
+      "route": "analytics",
+      "visible": true,
+      "title": "Gelişim · Grafikler",
+      "overflow": false,
+      "file": "analytics.png"
+    },
+    {
+      "route": "detailed",
+      "visible": true,
+      "title": "Gelişim · Ölçümler",
+      "overflow": false,
+      "file": "detailed.png"
+    },
+    {
+      "route": "coach",
+      "visible": true,
+      "title": "Antrenman · Program incelemesi",
+      "overflow": false,
+      "file": "coach.png"
+    },
+    {
+      "route": "character",
+      "visible": true,
+      "title": "Profilim · Spor profilim",
+      "overflow": false,
+      "file": "character.png"
+    },
+    {
+      "route": "reports",
+      "visible": true,
+      "title": "Sağlık · Vücut ve toparlanma",
+      "overflow": false,
+      "file": "reports.png"
+    },
+    {
+      "route": "records",
+      "visible": true,
+      "title": "Gelişim · Kayıt yönetimi",
+      "overflow": false,
+      "file": "records.png"
+    },
+    {
+      "route": "settings",
+      "visible": true,
+      "title": "Profilim · Tercihler ve veriler",
+      "overflow": false,
+      "file": "settings.png"
+    },
+    {
+      "route": "workspace-today",
+      "visible": true,
+      "title": "Bugün · Özet",
+      "overflow": false,
+      "file": "workspace-today.png"
+    },
+    {
+      "route": "workspace-plan",
+      "visible": true,
+      "title": "Antrenman · Dönemlerim",
+      "overflow": false,
+      "file": "workspace-plan.png"
+    },
+    {
+      "route": "workspace-training",
+      "visible": true,
+      "title": "Antrenman · Seanslarım",
+      "overflow": false,
+      "file": "workspace-training.png"
+    },
+    {
+      "route": "workspace-analysis",
+      "visible": true,
+      "title": "Gelişim · Ortak analiz",
+      "overflow": false,
+      "file": "workspace-analysis.png"
+    },
+    {
+      "route": "health-overview",
+      "visible": true,
+      "title": "Sağlık · Genel bakış",
+      "overflow": false,
+      "file": "health-overview.png"
+    },
+    {
+      "route": "health-sleep",
+      "visible": true,
+      "title": "Sağlık · Uyku",
+      "overflow": false,
+      "file": "health-sleep.png"
+    },
+    {
+      "route": "health-labs",
+      "visible": true,
+      "title": "Sağlık · Kan tahlilleri",
+      "overflow": false,
+      "file": "health-labs.png"
+    },
+    {
+      "route": "account-profile",
+      "visible": true,
+      "title": "Profilim · Hesabım",
+      "overflow": false,
+      "file": "account-profile.png"
+    },
+    {
+      "route": "health-report",
+      "visible": true,
+      "title": "Sağlık · Sağlık raporu",
+      "overflow": false,
+      "file": "health-report.png"
+    },
+    {
+      "route": "health-profile",
+      "visible": true,
+      "title": "Sağlık · Sağlık profilim",
+      "overflow": false,
+      "file": "health-profile.png"
+    },
+    {
+      "route": "health-recovery",
+      "visible": true,
+      "title": "Sağlık · Toparlanma geçmişi",
+      "overflow": false,
+      "file": "health-recovery.png"
+    },
+    {
+      "route": "health-cycle",
+      "visible": true,
+      "title": "Sağlık · Regl günlüğü",
+      "overflow": false,
+      "file": "health-cycle.png"
+    },
+    {
+      "route": "simple-home",
+      "visible": true,
+      "title": "Bugün",
+      "overflow": false,
+      "file": "simple-home.png"
+    },
+    {
+      "route": "simple-activity",
+      "visible": true,
+      "title": "Antrenman · Hareket günlüğü",
+      "overflow": false,
+      "file": "simple-activity.png"
+    },
+    {
+      "route": "simple-health",
+      "visible": true,
+      "title": "Sağlık · Sağlığım",
+      "overflow": false,
+      "file": "simple-health.png"
+    },
+    {
+      "route": "simple-progress",
+      "visible": true,
+      "title": "Gelişim · Gelişimim",
+      "overflow": false,
+      "file": "simple-progress.png"
+    },
+    {
+      "route": "guide",
+      "visible": true,
+      "title": "Profilim · Görünüm ve rehber",
+      "overflow": false,
+      "file": "guide.png"
+    },
+    {
+      "route": "goal-status",
+      "visible": true,
+      "title": "Durumum · Hedefler ve eğilimler",
+      "overflow": false,
+      "file": "goal-status.png"
+    }
+  ],
+  "errors": [],
+  "observations": {
+    "week_offline": {
+      "toast": "✓ Vardiya planı kaydedildi",
+      "status": {
+        "lastAckRev": 2,
+        "pending": true,
+        "saving": false,
+        "blocked": false
+      },
+      "selectedWeek": "2026-09-16"
+    },
+    "week_ack": {
+      "before_revision": 2,
+      "after_revision": 4,
+      "week": "2026-09-14",
+      "structured_rows": 7
+    },
+    "second_context": {
+      "schedule_equal": true,
+      "optimization_equal": true
+    },
+    "mobile": {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "overflow": false
+    },
+    "midnight": {
+      "before": "2026-09-10",
+      "after": "2026-09-17",
+      "history_context_preserved": false
+    },
+    "integrity": {
+      "total": 113,
+      "failed": 1,
+      "failures": [
+        {
+          "name": "DB Hammer Curl başlangıç yükü",
+          "category": "Load Prescription"
+        }
+      ],
+      "save_attempts": [
+        {
+          "reason": "app-save",
+          "trainingDays": 1
+        },
+        {
+          "reason": "architecture-snapshot",
+          "trainingDays": 1
+        },
+        {
+          "reason": "app-save",
+          "trainingDays": 2
+        },
+        {
+          "reason": "architecture-snapshot",
+          "trainingDays": 2
+        }
+      ],
+      "raw_state_identical": true
+    },
+    "restart_fresh_context": {
+      "schedule_equal": true,
+      "optimization_equal": true
+    }
+  },
+  "browser": "153.0.8010.47",
+  "timezone": "Europe/Istanbul",
+  "viewport": {
+    "width": 1280,
+    "height": 900
+  },
+  "finished_at": "2026-09-16T20:05:16.819Z"
+}

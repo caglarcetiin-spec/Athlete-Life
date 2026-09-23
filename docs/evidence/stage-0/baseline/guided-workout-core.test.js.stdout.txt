@@ -1,0 +1,2 @@
+v7.11 partial autoregulation core tests: PASS
+v7.12 guided substitution completion test: PASS

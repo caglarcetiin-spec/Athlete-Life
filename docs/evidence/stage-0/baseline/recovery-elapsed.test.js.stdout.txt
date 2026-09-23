@@ -1,0 +1,2 @@
+v9 actual-script integration PASS: DB bridge, today/catch-up isolation, full prescription contract, immutable reads, first set lock, live safety gate, non-destructive restart, physiology, event corrections/deletion, calibration, ordered pipeline.
+PASS: elapsed time improves recovery, import-time correction, future records excluded, recovery default

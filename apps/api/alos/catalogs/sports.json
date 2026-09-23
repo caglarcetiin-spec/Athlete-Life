@@ -1,0 +1,1864 @@
+{
+  "sports": [
+    {
+      "id": "strength",
+      "name": "Kuvvet antrenmanı",
+      "family": "strength",
+      "schema": "general",
+      "aliases": "strength resistance ağırlık",
+      "support": "record-summary"
+    },
+    {
+      "id": "calisthenics",
+      "name": "Kalistenik",
+      "family": "strength",
+      "schema": "general",
+      "aliases": "calisthenics street workout vücut ağırlığı",
+      "support": "record-summary"
+    },
+    {
+      "id": "bodybuilding",
+      "name": "Vücut geliştirme",
+      "family": "strength",
+      "schema": "general",
+      "aliases": "bodybuilding hipertrofi",
+      "support": "record-summary"
+    },
+    {
+      "id": "powerlifting",
+      "name": "Powerlifting",
+      "family": "strength",
+      "schema": "general",
+      "aliases": "üçlü kuvvet",
+      "support": "record-summary"
+    },
+    {
+      "id": "weightlifting",
+      "name": "Halter",
+      "family": "strength",
+      "schema": "general",
+      "aliases": "weightlifting",
+      "support": "record-summary"
+    },
+    {
+      "id": "strongman",
+      "name": "Strongman",
+      "family": "strength",
+      "schema": "general",
+      "aliases": "strongwoman",
+      "support": "record-summary"
+    },
+    {
+      "id": "functional-fitness",
+      "name": "Fonksiyonel fitness",
+      "family": "strength",
+      "schema": "general",
+      "aliases": "crossfit cross training",
+      "support": "record-summary"
+    },
+    {
+      "id": "kettlebell",
+      "name": "Kettlebell sporu",
+      "family": "strength",
+      "schema": "general",
+      "aliases": "girya",
+      "support": "record-summary"
+    },
+    {
+      "id": "arm-wrestling",
+      "name": "Bilek güreşi",
+      "family": "strength",
+      "schema": "rounds",
+      "aliases": "arm wrestling",
+      "support": "record-summary"
+    },
+    {
+      "id": "running",
+      "name": "Koşu",
+      "family": "endurance",
+      "schema": "distance",
+      "aliases": "running jog yol koşusu",
+      "support": "record-summary"
+    },
+    {
+      "id": "trail-running",
+      "name": "Patika koşusu",
+      "family": "endurance",
+      "schema": "distance",
+      "aliases": "trail ultra",
+      "support": "record-summary"
+    },
+    {
+      "id": "track-running",
+      "name": "Pist koşusu",
+      "family": "endurance",
+      "schema": "distance",
+      "aliases": "atletizm sprint orta uzun mesafe",
+      "support": "record-summary"
+    },
+    {
+      "id": "race-walking",
+      "name": "Sportif yürüyüş",
+      "family": "endurance",
+      "schema": "distance",
+      "aliases": "race walking",
+      "support": "record-summary"
+    },
+    {
+      "id": "walking",
+      "name": "Yürüyüş",
+      "family": "endurance",
+      "schema": "distance",
+      "aliases": "walk",
+      "support": "record-summary"
+    },
+    {
+      "id": "road-cycling",
+      "name": "Yol bisikleti",
+      "family": "endurance",
+      "schema": "distance",
+      "aliases": "cycling bisiklet",
+      "support": "record-summary"
+    },
+    {
+      "id": "track-cycling",
+      "name": "Pist bisikleti",
+      "family": "endurance",
+      "schema": "distance",
+      "aliases": "velodrom",
+      "support": "record-summary"
+    },
+    {
+      "id": "mountain-bike",
+      "name": "Dağ bisikleti",
+      "family": "endurance",
+      "schema": "distance",
+      "aliases": "mtb",
+      "support": "record-summary"
+    },
+    {
+      "id": "indoor-cycling",
+      "name": "Salon bisikleti",
+      "family": "endurance",
+      "schema": "distance",
+      "aliases": "spinning",
+      "support": "record-summary"
+    },
+    {
+      "id": "rowing",
+      "name": "Kürek",
+      "family": "endurance",
+      "schema": "distance",
+      "aliases": "rowing",
+      "support": "record-summary"
+    },
+    {
+      "id": "indoor-rowing",
+      "name": "Kürek ergometresi",
+      "family": "endurance",
+      "schema": "distance",
+      "aliases": "ergometer indoor rowing",
+      "support": "record-summary"
+    },
+    {
+      "id": "triathlon",
+      "name": "Triatlon",
+      "family": "endurance",
+      "schema": "general",
+      "aliases": "triathlon",
+      "support": "record-summary"
+    },
+    {
+      "id": "duathlon",
+      "name": "Duatlon",
+      "family": "endurance",
+      "schema": "general",
+      "aliases": "duathlon",
+      "support": "record-summary"
+    },
+    {
+      "id": "aquathlon",
+      "name": "Akuatlon",
+      "family": "endurance",
+      "schema": "general",
+      "aliases": "aquathlon",
+      "support": "record-summary"
+    },
+    {
+      "id": "modern-pentathlon",
+      "name": "Modern pentatlon",
+      "family": "endurance",
+      "schema": "general",
+      "aliases": "pentathlon",
+      "support": "record-summary"
+    },
+    {
+      "id": "athletics-jumps",
+      "name": "Atletizm atlamaları",
+      "family": "endurance",
+      "schema": "attempts",
+      "aliases": "uzun yüksek üç adım sırıkla atlama",
+      "support": "record-summary"
+    },
+    {
+      "id": "athletics-throws",
+      "name": "Atletizm atışları",
+      "family": "endurance",
+      "schema": "attempts",
+      "aliases": "cirit gülle disk çekiç",
+      "support": "record-summary"
+    },
+    {
+      "id": "combined-athletics",
+      "name": "Çoklu atletizm",
+      "family": "endurance",
+      "schema": "general",
+      "aliases": "dekatlon heptatlon",
+      "support": "record-summary"
+    },
+    {
+      "id": "swimming",
+      "name": "Havuz yüzmesi",
+      "family": "water",
+      "schema": "swimming",
+      "aliases": "swim swimming serbest sırtüstü kurbağalama kelebek yüzme",
+      "support": "record-summary"
+    },
+    {
+      "id": "open-water",
+      "name": "Açık su yüzmesi",
+      "family": "water",
+      "schema": "swimming",
+      "aliases": "open water deniz yüzme",
+      "support": "record-summary"
+    },
+    {
+      "id": "artistic-swimming",
+      "name": "Artistik yüzme",
+      "family": "water",
+      "schema": "general",
+      "aliases": "senkronize yüzme",
+      "support": "record-summary"
+    },
+    {
+      "id": "diving",
+      "name": "Atlama",
+      "family": "water",
+      "schema": "attempts",
+      "aliases": "diving tramplen kule",
+      "support": "record-summary"
+    },
+    {
+      "id": "water-polo",
+      "name": "Su topu",
+      "family": "water",
+      "schema": "matches",
+      "aliases": "water polo",
+      "support": "record-summary"
+    },
+    {
+      "id": "canoe-sprint",
+      "name": "Kano sprint",
+      "family": "water",
+      "schema": "distance",
+      "aliases": "canoe kayak durgunsu",
+      "support": "record-summary"
+    },
+    {
+      "id": "canoe-slalom",
+      "name": "Kano slalom",
+      "family": "water",
+      "schema": "attempts",
+      "aliases": "whitewater",
+      "support": "record-summary"
+    },
+    {
+      "id": "sea-kayak",
+      "name": "Deniz kayağı",
+      "family": "water",
+      "schema": "distance",
+      "aliases": "sea kayak",
+      "support": "record-summary"
+    },
+    {
+      "id": "rafting",
+      "name": "Rafting",
+      "family": "water",
+      "schema": "general",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "sailing",
+      "name": "Yelken",
+      "family": "water",
+      "schema": "general",
+      "aliases": "sailing",
+      "support": "record-summary"
+    },
+    {
+      "id": "windsurfing",
+      "name": "Rüzgâr sörfü",
+      "family": "water",
+      "schema": "general",
+      "aliases": "windsurf",
+      "support": "record-summary"
+    },
+    {
+      "id": "kitesurfing",
+      "name": "Uçurtma sörfü",
+      "family": "water",
+      "schema": "general",
+      "aliases": "kiteboard",
+      "support": "record-summary"
+    },
+    {
+      "id": "surfing",
+      "name": "Dalga sörfü",
+      "family": "water",
+      "schema": "attempts",
+      "aliases": "surf",
+      "support": "record-summary"
+    },
+    {
+      "id": "sup",
+      "name": "Ayakta kürek",
+      "family": "water",
+      "schema": "distance",
+      "aliases": "stand up paddle sup",
+      "support": "record-summary"
+    },
+    {
+      "id": "water-ski",
+      "name": "Su kayağı",
+      "family": "water",
+      "schema": "attempts",
+      "aliases": "water ski",
+      "support": "record-summary"
+    },
+    {
+      "id": "wakeboard",
+      "name": "Wakeboard",
+      "family": "water",
+      "schema": "attempts",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "scuba",
+      "name": "Tüplü dalış",
+      "family": "water",
+      "schema": "general",
+      "aliases": "scuba",
+      "support": "record-summary"
+    },
+    {
+      "id": "freediving",
+      "name": "Serbest dalış",
+      "family": "water",
+      "schema": "general",
+      "aliases": "freediving",
+      "support": "record-summary"
+    },
+    {
+      "id": "finswimming",
+      "name": "Paletli yüzme",
+      "family": "water",
+      "schema": "swimming",
+      "aliases": "finswimming",
+      "support": "record-summary"
+    },
+    {
+      "id": "lifesaving",
+      "name": "Cankurtarma sporu",
+      "family": "water",
+      "schema": "general",
+      "aliases": "lifesaving",
+      "support": "record-summary"
+    },
+    {
+      "id": "football",
+      "name": "Futbol",
+      "family": "team",
+      "schema": "matches",
+      "aliases": "soccer football",
+      "support": "record-summary"
+    },
+    {
+      "id": "futsal",
+      "name": "Futsal",
+      "family": "team",
+      "schema": "matches",
+      "aliases": "salon futbolu",
+      "support": "record-summary"
+    },
+    {
+      "id": "beach-soccer",
+      "name": "Plaj futbolu",
+      "family": "team",
+      "schema": "matches",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "basketball",
+      "name": "Basketbol",
+      "family": "team",
+      "schema": "matches",
+      "aliases": "basketball",
+      "support": "record-summary"
+    },
+    {
+      "id": "basketball-3x3",
+      "name": "3x3 basketbol",
+      "family": "team",
+      "schema": "matches",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "volleyball",
+      "name": "Voleybol",
+      "family": "team",
+      "schema": "matches",
+      "aliases": "volleyball",
+      "support": "record-summary"
+    },
+    {
+      "id": "beach-volleyball",
+      "name": "Plaj voleybolu",
+      "family": "team",
+      "schema": "matches",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "handball",
+      "name": "Hentbol",
+      "family": "team",
+      "schema": "matches",
+      "aliases": "handball",
+      "support": "record-summary"
+    },
+    {
+      "id": "beach-handball",
+      "name": "Plaj hentbolu",
+      "family": "team",
+      "schema": "matches",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "rugby-union",
+      "name": "Ragbi union",
+      "family": "team",
+      "schema": "matches",
+      "aliases": "rugby",
+      "support": "record-summary"
+    },
+    {
+      "id": "rugby-sevens",
+      "name": "Yedili ragbi",
+      "family": "team",
+      "schema": "matches",
+      "aliases": "sevens",
+      "support": "record-summary"
+    },
+    {
+      "id": "rugby-league",
+      "name": "Ragbi league",
+      "family": "team",
+      "schema": "matches",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "american-football",
+      "name": "Amerikan futbolu",
+      "family": "team",
+      "schema": "matches",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "flag-football",
+      "name": "Bayrak futbolu",
+      "family": "team",
+      "schema": "matches",
+      "aliases": "flag football",
+      "support": "record-summary"
+    },
+    {
+      "id": "baseball",
+      "name": "Beyzbol",
+      "family": "team",
+      "schema": "matches",
+      "aliases": "baseball",
+      "support": "record-summary"
+    },
+    {
+      "id": "softball",
+      "name": "Softbol",
+      "family": "team",
+      "schema": "matches",
+      "aliases": "softball",
+      "support": "record-summary"
+    },
+    {
+      "id": "cricket",
+      "name": "Kriket",
+      "family": "team",
+      "schema": "matches",
+      "aliases": "cricket",
+      "support": "record-summary"
+    },
+    {
+      "id": "field-hockey",
+      "name": "Çim hokeyi",
+      "family": "team",
+      "schema": "matches",
+      "aliases": "hockey",
+      "support": "record-summary"
+    },
+    {
+      "id": "floorball",
+      "name": "Floorball",
+      "family": "team",
+      "schema": "matches",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "lacrosse",
+      "name": "Lakros",
+      "family": "team",
+      "schema": "matches",
+      "aliases": "lacrosse",
+      "support": "record-summary"
+    },
+    {
+      "id": "ultimate",
+      "name": "Ultimate frizbi",
+      "family": "team",
+      "schema": "matches",
+      "aliases": "flying disc",
+      "support": "record-summary"
+    },
+    {
+      "id": "netball",
+      "name": "Netbol",
+      "family": "team",
+      "schema": "matches",
+      "aliases": "netball",
+      "support": "record-summary"
+    },
+    {
+      "id": "korfball",
+      "name": "Korfbol",
+      "family": "team",
+      "schema": "matches",
+      "aliases": "korfball",
+      "support": "record-summary"
+    },
+    {
+      "id": "kabaddi",
+      "name": "Kabaddi",
+      "family": "team",
+      "schema": "matches",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "australian-football",
+      "name": "Avustralya futbolu",
+      "family": "team",
+      "schema": "matches",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "gaelic-football",
+      "name": "Gaelik futbol",
+      "family": "team",
+      "schema": "matches",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "hurling",
+      "name": "Hurling",
+      "family": "team",
+      "schema": "matches",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "tennis",
+      "name": "Tenis",
+      "family": "racket",
+      "schema": "matches",
+      "aliases": "tennis",
+      "support": "record-summary"
+    },
+    {
+      "id": "table-tennis",
+      "name": "Masa tenisi",
+      "family": "racket",
+      "schema": "matches",
+      "aliases": "ping pong",
+      "support": "record-summary"
+    },
+    {
+      "id": "badminton",
+      "name": "Badminton",
+      "family": "racket",
+      "schema": "matches",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "squash",
+      "name": "Squash",
+      "family": "racket",
+      "schema": "matches",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "padel",
+      "name": "Padel",
+      "family": "racket",
+      "schema": "matches",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "pickleball",
+      "name": "Pickleball",
+      "family": "racket",
+      "schema": "matches",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "racquetball",
+      "name": "Raketbol",
+      "family": "racket",
+      "schema": "matches",
+      "aliases": "racquetball",
+      "support": "record-summary"
+    },
+    {
+      "id": "beach-tennis",
+      "name": "Plaj tenisi",
+      "family": "racket",
+      "schema": "matches",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "boxing",
+      "name": "Boks",
+      "family": "combat",
+      "schema": "rounds",
+      "aliases": "boxing",
+      "support": "record-summary"
+    },
+    {
+      "id": "kickboxing",
+      "name": "Kickboks",
+      "family": "combat",
+      "schema": "rounds",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "muay-thai",
+      "name": "Muay Thai",
+      "family": "combat",
+      "schema": "rounds",
+      "aliases": "tay boksu",
+      "support": "record-summary"
+    },
+    {
+      "id": "mma",
+      "name": "Karma dövüş sanatları",
+      "family": "combat",
+      "schema": "rounds",
+      "aliases": "mma",
+      "support": "record-summary"
+    },
+    {
+      "id": "judo",
+      "name": "Judo",
+      "family": "combat",
+      "schema": "rounds",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "karate",
+      "name": "Karate",
+      "family": "combat",
+      "schema": "rounds",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "taekwondo",
+      "name": "Tekvando",
+      "family": "combat",
+      "schema": "rounds",
+      "aliases": "taekwondo",
+      "support": "record-summary"
+    },
+    {
+      "id": "wrestling",
+      "name": "Güreş",
+      "family": "combat",
+      "schema": "rounds",
+      "aliases": "serbest grekoromen wrestling",
+      "support": "record-summary"
+    },
+    {
+      "id": "bjj",
+      "name": "Brezilya jiu-jitsu",
+      "family": "combat",
+      "schema": "rounds",
+      "aliases": "bjj brazilian",
+      "support": "record-summary"
+    },
+    {
+      "id": "ju-jitsu",
+      "name": "Ju-jitsu",
+      "family": "combat",
+      "schema": "rounds",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "sambo",
+      "name": "Sambo",
+      "family": "combat",
+      "schema": "rounds",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "wushu",
+      "name": "Wushu",
+      "family": "combat",
+      "schema": "rounds",
+      "aliases": "kung fu",
+      "support": "record-summary"
+    },
+    {
+      "id": "kendo",
+      "name": "Kendo",
+      "family": "combat",
+      "schema": "rounds",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "aikido",
+      "name": "Aikido",
+      "family": "combat",
+      "schema": "general",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "fencing",
+      "name": "Eskrim",
+      "family": "combat",
+      "schema": "rounds",
+      "aliases": "fencing epe flöre kılıç",
+      "support": "record-summary"
+    },
+    {
+      "id": "sumo",
+      "name": "Sumo",
+      "family": "combat",
+      "schema": "rounds",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "capoeira",
+      "name": "Capoeira",
+      "family": "combat",
+      "schema": "general",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "artistic-gymnastics",
+      "name": "Artistik jimnastik",
+      "family": "gymnastics",
+      "schema": "attempts",
+      "aliases": "gymnastics",
+      "support": "record-summary"
+    },
+    {
+      "id": "rhythmic-gymnastics",
+      "name": "Ritmik jimnastik",
+      "family": "gymnastics",
+      "schema": "general",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "trampoline",
+      "name": "Trampolin jimnastik",
+      "family": "gymnastics",
+      "schema": "attempts",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "acrobatics",
+      "name": "Akrobatik jimnastik",
+      "family": "gymnastics",
+      "schema": "attempts",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "aerobic-gymnastics",
+      "name": "Aerobik jimnastik",
+      "family": "gymnastics",
+      "schema": "general",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "parkour",
+      "name": "Parkur",
+      "family": "gymnastics",
+      "schema": "attempts",
+      "aliases": "parkour freerunning",
+      "support": "record-summary"
+    },
+    {
+      "id": "dance",
+      "name": "Dans sporu",
+      "family": "gymnastics",
+      "schema": "general",
+      "aliases": "dance ballroom latin",
+      "support": "record-summary"
+    },
+    {
+      "id": "breaking",
+      "name": "Breaking",
+      "family": "gymnastics",
+      "schema": "rounds",
+      "aliases": "breakdance",
+      "support": "record-summary"
+    },
+    {
+      "id": "yoga",
+      "name": "Yoga",
+      "family": "gymnastics",
+      "schema": "general",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "pilates",
+      "name": "Pilates",
+      "family": "gymnastics",
+      "schema": "general",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "mobility",
+      "name": "Mobilite çalışması",
+      "family": "gymnastics",
+      "schema": "general",
+      "aliases": "esneklik stretching",
+      "support": "record-summary"
+    },
+    {
+      "id": "cheerleading",
+      "name": "Cheerleading",
+      "family": "gymnastics",
+      "schema": "general",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "rope-skipping",
+      "name": "İp atlama",
+      "family": "gymnastics",
+      "schema": "general",
+      "aliases": "jump rope",
+      "support": "record-summary"
+    },
+    {
+      "id": "sport-climbing",
+      "name": "Sportif tırmanış",
+      "family": "outdoor",
+      "schema": "attempts",
+      "aliases": "lead speed climbing",
+      "support": "record-summary"
+    },
+    {
+      "id": "bouldering",
+      "name": "Bouldering",
+      "family": "outdoor",
+      "schema": "attempts",
+      "aliases": "kaya tırmanış",
+      "support": "record-summary"
+    },
+    {
+      "id": "mountaineering",
+      "name": "Dağcılık",
+      "family": "outdoor",
+      "schema": "distance",
+      "aliases": "alpinism",
+      "support": "record-summary"
+    },
+    {
+      "id": "hiking",
+      "name": "Doğa yürüyüşü",
+      "family": "outdoor",
+      "schema": "distance",
+      "aliases": "trekking hiking",
+      "support": "record-summary"
+    },
+    {
+      "id": "orienteering",
+      "name": "Oryantiring",
+      "family": "outdoor",
+      "schema": "distance",
+      "aliases": "orienteering",
+      "support": "record-summary"
+    },
+    {
+      "id": "adventure-racing",
+      "name": "Macera yarışı",
+      "family": "outdoor",
+      "schema": "general",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "ice-climbing",
+      "name": "Buz tırmanışı",
+      "family": "outdoor",
+      "schema": "attempts",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "caving",
+      "name": "Mağaracılık",
+      "family": "outdoor",
+      "schema": "general",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "alpine-skiing",
+      "name": "Alp disiplini kayak",
+      "family": "winter",
+      "schema": "general",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "cross-country-ski",
+      "name": "Kayaklı koşu",
+      "family": "winter",
+      "schema": "distance",
+      "aliases": "cross country ski",
+      "support": "record-summary"
+    },
+    {
+      "id": "biathlon",
+      "name": "Biatlon",
+      "family": "winter",
+      "schema": "general",
+      "aliases": "biathlon",
+      "support": "record-summary"
+    },
+    {
+      "id": "ski-jumping",
+      "name": "Kayakla atlama",
+      "family": "winter",
+      "schema": "attempts",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "nordic-combined",
+      "name": "Kuzey kombine",
+      "family": "winter",
+      "schema": "general",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "freestyle-ski",
+      "name": "Serbest stil kayak",
+      "family": "winter",
+      "schema": "attempts",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "ski-mountaineering",
+      "name": "Dağ kayağı",
+      "family": "winter",
+      "schema": "distance",
+      "aliases": "skimo",
+      "support": "record-summary"
+    },
+    {
+      "id": "snowboard",
+      "name": "Snowboard",
+      "family": "winter",
+      "schema": "general",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "figure-skating",
+      "name": "Artistik buz pateni",
+      "family": "winter",
+      "schema": "general",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "speed-skating",
+      "name": "Sürat pateni",
+      "family": "winter",
+      "schema": "distance",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "short-track",
+      "name": "Kısa kulvar sürat pateni",
+      "family": "winter",
+      "schema": "distance",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "ice-hockey",
+      "name": "Buz hokeyi",
+      "family": "winter",
+      "schema": "matches",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "curling",
+      "name": "Curling",
+      "family": "winter",
+      "schema": "matches",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "bobsleigh",
+      "name": "Bobsled",
+      "family": "winter",
+      "schema": "attempts",
+      "aliases": "bobsleigh",
+      "support": "record-summary"
+    },
+    {
+      "id": "luge",
+      "name": "Kızak",
+      "family": "winter",
+      "schema": "attempts",
+      "aliases": "luge",
+      "support": "record-summary"
+    },
+    {
+      "id": "skeleton",
+      "name": "Skeleton",
+      "family": "winter",
+      "schema": "attempts",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "archery",
+      "name": "Okçuluk",
+      "family": "precision",
+      "schema": "precision",
+      "aliases": "archery",
+      "support": "record-summary"
+    },
+    {
+      "id": "shooting",
+      "name": "Atıcılık",
+      "family": "precision",
+      "schema": "precision",
+      "aliases": "shooting",
+      "support": "record-summary"
+    },
+    {
+      "id": "golf",
+      "name": "Golf",
+      "family": "precision",
+      "schema": "general",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "disc-golf",
+      "name": "Disk golf",
+      "family": "precision",
+      "schema": "general",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "darts",
+      "name": "Dart",
+      "family": "precision",
+      "schema": "precision",
+      "aliases": "darts",
+      "support": "record-summary"
+    },
+    {
+      "id": "billiards",
+      "name": "Bilardo",
+      "family": "precision",
+      "schema": "general",
+      "aliases": "snooker pool karambol",
+      "support": "record-summary"
+    },
+    {
+      "id": "bowling",
+      "name": "Bowling",
+      "family": "precision",
+      "schema": "general",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "petanque",
+      "name": "Petank",
+      "family": "precision",
+      "schema": "precision",
+      "aliases": "petanque",
+      "support": "record-summary"
+    },
+    {
+      "id": "bocce",
+      "name": "Bocce",
+      "family": "precision",
+      "schema": "precision",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "lawn-bowls",
+      "name": "Çim topu",
+      "family": "precision",
+      "schema": "general",
+      "aliases": "lawn bowls",
+      "support": "record-summary"
+    },
+    {
+      "id": "skateboarding",
+      "name": "Kaykay",
+      "family": "wheels",
+      "schema": "attempts",
+      "aliases": "skateboard",
+      "support": "record-summary"
+    },
+    {
+      "id": "roller-skating",
+      "name": "Paten",
+      "family": "wheels",
+      "schema": "distance",
+      "aliases": "inline skating",
+      "support": "record-summary"
+    },
+    {
+      "id": "roller-derby",
+      "name": "Roller derby",
+      "family": "wheels",
+      "schema": "matches",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "bmx-racing",
+      "name": "BMX yarışı",
+      "family": "wheels",
+      "schema": "attempts",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "bmx-freestyle",
+      "name": "BMX serbest stil",
+      "family": "wheels",
+      "schema": "attempts",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "motocross",
+      "name": "Motokros",
+      "family": "wheels",
+      "schema": "general",
+      "aliases": "motocross",
+      "support": "record-summary"
+    },
+    {
+      "id": "motor-racing",
+      "name": "Motor sporları",
+      "family": "wheels",
+      "schema": "general",
+      "aliases": "karting otomobil motorsport",
+      "support": "record-summary"
+    },
+    {
+      "id": "dressage",
+      "name": "At terbiyesi",
+      "family": "equestrian",
+      "schema": "general",
+      "aliases": "dressage",
+      "support": "record-summary"
+    },
+    {
+      "id": "show-jumping",
+      "name": "Binicilik engel atlama",
+      "family": "equestrian",
+      "schema": "attempts",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "eventing",
+      "name": "Üç günlük yarışma",
+      "family": "equestrian",
+      "schema": "general",
+      "aliases": "eventing",
+      "support": "record-summary"
+    },
+    {
+      "id": "equestrian-endurance",
+      "name": "Atlı dayanıklılık",
+      "family": "equestrian",
+      "schema": "distance",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "vaulting",
+      "name": "Atlı jimnastik",
+      "family": "equestrian",
+      "schema": "general",
+      "aliases": "vaulting",
+      "support": "record-summary"
+    },
+    {
+      "id": "polo",
+      "name": "Polo",
+      "family": "equestrian",
+      "schema": "matches",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "para-athletics",
+      "name": "Para atletizm",
+      "family": "adaptive",
+      "schema": "general",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "para-swimming",
+      "name": "Para yüzme",
+      "family": "adaptive",
+      "schema": "swimming",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "para-cycling",
+      "name": "Para bisiklet",
+      "family": "adaptive",
+      "schema": "distance",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "para-rowing",
+      "name": "Para kürek",
+      "family": "adaptive",
+      "schema": "distance",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "para-canoe",
+      "name": "Para kano",
+      "family": "adaptive",
+      "schema": "distance",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "para-triathlon",
+      "name": "Para triatlon",
+      "family": "adaptive",
+      "schema": "general",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "para-powerlifting",
+      "name": "Para halter",
+      "family": "adaptive",
+      "schema": "general",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "para-climbing",
+      "name": "Para tırmanış",
+      "family": "adaptive",
+      "schema": "attempts",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "wheelchair-basketball",
+      "name": "Tekerlekli sandalye basketbolu",
+      "family": "adaptive",
+      "schema": "matches",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "wheelchair-rugby",
+      "name": "Tekerlekli sandalye ragbisi",
+      "family": "adaptive",
+      "schema": "matches",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "wheelchair-tennis",
+      "name": "Tekerlekli sandalye tenisi",
+      "family": "adaptive",
+      "schema": "matches",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "wheelchair-fencing",
+      "name": "Tekerlekli sandalye eskrimi",
+      "family": "adaptive",
+      "schema": "rounds",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "para-badminton",
+      "name": "Para badminton",
+      "family": "adaptive",
+      "schema": "matches",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "para-table-tennis",
+      "name": "Para masa tenisi",
+      "family": "adaptive",
+      "schema": "matches",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "para-judo",
+      "name": "Para judo",
+      "family": "adaptive",
+      "schema": "rounds",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "para-taekwondo",
+      "name": "Para tekvando",
+      "family": "adaptive",
+      "schema": "rounds",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "para-archery",
+      "name": "Para okçuluk",
+      "family": "adaptive",
+      "schema": "precision",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "para-shooting",
+      "name": "Para atıcılık",
+      "family": "adaptive",
+      "schema": "precision",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "para-equestrian",
+      "name": "Para binicilik",
+      "family": "adaptive",
+      "schema": "general",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "blind-football",
+      "name": "Görme engelli futbolu",
+      "family": "adaptive",
+      "schema": "matches",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "sitting-volleyball",
+      "name": "Oturarak voleybol",
+      "family": "adaptive",
+      "schema": "matches",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "goalball",
+      "name": "Goalball",
+      "family": "adaptive",
+      "schema": "matches",
+      "aliases": "golbol",
+      "support": "record-summary"
+    },
+    {
+      "id": "boccia",
+      "name": "Boccia",
+      "family": "adaptive",
+      "schema": "general",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "para-alpine",
+      "name": "Para alp disiplini",
+      "family": "adaptive",
+      "schema": "general",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "para-biathlon",
+      "name": "Para biatlon",
+      "family": "adaptive",
+      "schema": "general",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "para-cross-country",
+      "name": "Para kayaklı koşu",
+      "family": "adaptive",
+      "schema": "distance",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "para-ice-hockey",
+      "name": "Para buz hokeyi",
+      "family": "adaptive",
+      "schema": "matches",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "para-snowboard",
+      "name": "Para snowboard",
+      "family": "adaptive",
+      "schema": "general",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "wheelchair-curling",
+      "name": "Tekerlekli sandalye curling",
+      "family": "adaptive",
+      "schema": "matches",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "chess",
+      "name": "Satranç",
+      "family": "mind",
+      "schema": "matches",
+      "aliases": "chess",
+      "support": "record-summary"
+    },
+    {
+      "id": "go",
+      "name": "Go",
+      "family": "mind",
+      "schema": "matches",
+      "aliases": "baduk",
+      "support": "record-summary"
+    },
+    {
+      "id": "bridge",
+      "name": "Briç",
+      "family": "mind",
+      "schema": "matches",
+      "aliases": "bridge",
+      "support": "record-summary"
+    },
+    {
+      "id": "esports",
+      "name": "Elektronik sporlar",
+      "family": "mind",
+      "schema": "matches",
+      "aliases": "esport e-spor",
+      "support": "record-summary"
+    },
+    {
+      "id": "oil-wrestling",
+      "name": "Yağlı güreş",
+      "family": "traditional",
+      "schema": "rounds",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "mas-wrestling",
+      "name": "Mas güreşi",
+      "family": "traditional",
+      "schema": "rounds",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "sepak-takraw",
+      "name": "Sepak takraw",
+      "family": "traditional",
+      "schema": "matches",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "tug-of-war",
+      "name": "Halat çekme",
+      "family": "traditional",
+      "schema": "rounds",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "boules-sports",
+      "name": "Boules sporları",
+      "family": "traditional",
+      "schema": "general",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "underwater-hockey",
+      "name": "Sualtı hokeyi",
+      "family": "traditional",
+      "schema": "matches",
+      "aliases": "",
+      "support": "record-summary"
+    },
+    {
+      "id": "underwater-rugby",
+      "name": "Sualtı ragbisi",
+      "family": "traditional",
+      "schema": "matches",
+      "aliases": "",
+      "support": "record-summary"
+    }
+  ],
+  "families": {
+    "strength": "Kuvvet ve fitness",
+    "endurance": "Dayanıklılık ve atletizm",
+    "water": "Su sporları",
+    "team": "Takım sporları",
+    "racket": "Raket sporları",
+    "combat": "Dövüş sporları",
+    "gymnastics": "Jimnastik ve hareket",
+    "outdoor": "Doğa ve tırmanış",
+    "winter": "Kış ve buz",
+    "precision": "Hedef ve hassasiyet",
+    "wheels": "Tekerlekli sporlar",
+    "equestrian": "Binicilik",
+    "adaptive": "Para ve uyarlanmış sporlar",
+    "mind": "Zihin ve elektronik sporlar",
+    "traditional": "Geleneksel ve diğer"
+  },
+  "schemas": {
+    "general": {
+      "name": "Genel seans",
+      "fields": []
+    },
+    "distance": {
+      "name": "Mesafe ve süre",
+      "fields": [
+        [
+          "distanceKm",
+          "Mesafe",
+          "km",
+          0.001,
+          10000
+        ],
+        [
+          "movingMinutes",
+          "Hareket süresi",
+          "dk",
+          0.01,
+          1440
+        ],
+        [
+          "elevationM",
+          "Yükselti kazanımı",
+          "m",
+          0,
+          20000
+        ]
+      ]
+    },
+    "swimming": {
+      "name": "Yüzme mesafesi",
+      "fields": [
+        [
+          "distanceM",
+          "Mesafe",
+          "m",
+          1,
+          1000000
+        ],
+        [
+          "movingMinutes",
+          "Aktif yüzme süresi",
+          "dk",
+          0.01,
+          1440
+        ],
+        [
+          "poolLengthM",
+          "Havuz uzunluğu (isteğe bağlı)",
+          "m",
+          1,
+          1000
+        ]
+      ]
+    },
+    "attempts": {
+      "name": "Deneme ve tamamlama",
+      "fields": [
+        [
+          "attempts",
+          "Deneme sayısı",
+          "adet",
+          1,
+          10000,
+          true
+        ],
+        [
+          "completed",
+          "Tamamlanan deneme",
+          "adet",
+          0,
+          10000,
+          true
+        ]
+      ]
+    },
+    "precision": {
+      "name": "Deneme ve isabet",
+      "fields": [
+        [
+          "attempts",
+          "Deneme sayısı",
+          "adet",
+          1,
+          10000,
+          true
+        ],
+        [
+          "hits",
+          "İsabet",
+          "adet",
+          0,
+          10000,
+          true
+        ]
+      ]
+    },
+    "rounds": {
+      "name": "Raunt kaydı",
+      "fields": [
+        [
+          "rounds",
+          "Çalışılan raunt",
+          "adet",
+          1,
+          1000,
+          true
+        ]
+      ]
+    },
+    "matches": {
+      "name": "Maç / oyun kaydı",
+      "fields": [
+        [
+          "matches",
+          "Maç / oyun sayısı",
+          "adet",
+          1,
+          1000,
+          true
+        ]
+      ]
+    }
+  },
+  "methods": [
+    {
+      "id": "continuous",
+      "name": "Kesintisiz çalışma",
+      "description": "Belirli bir süre veya mesafe boyunca kesintisiz çalışma. Süre, mesafe ve hissedilen zorlukla izlenir."
+    },
+    {
+      "id": "interval",
+      "name": "Aralıklı çalışma",
+      "description": "Çalışma bölümleri ile dinlenme bölümlerini sırayla uygular. Dönem planında çalışma ve dinlenme adımları, seans kaydında gerçekleşen turlar tutulur."
+    },
+    {
+      "id": "fartlek",
+      "name": "Fartlek",
+      "description": "Seans içinde tempo değişimlerine yer verir. Hız değişimlerini ve parkur koşullarını not et."
+    },
+    {
+      "id": "technique",
+      "name": "Teknik çalışma",
+      "description": "Branşa özgü bir hareketin uygulanışına odaklanır. Tekrarın yanında teknik gözlemini kaydet."
+    },
+    {
+      "id": "strength-sets",
+      "name": "Kuvvet setleri",
+      "description": "Hareket, dış yük, set, tekrar, RIR ve dinlenme ile tanımlanır. Set hedeflerini dönem adımlarına ekleyebilir, gerçekleşenleri bağlı seansta kaydedebilirsin."
+    },
+    {
+      "id": "hypertrophy",
+      "name": "Hipertrofi odaklı çalışma",
+      "description": "Kas gelişimi hedefli direnç çalışması. Ayrıntılı hareket ve set kayıtları mevcut Antrenman ekranında tutulur."
+    },
+    {
+      "id": "circuit",
+      "name": "İstasyon çalışması",
+      "description": "Birden fazla hareket veya istasyon sırayla uygulanır. İstasyonları ve tur düzenini seans notuna ekle."
+    },
+    {
+      "id": "isometric",
+      "name": "İzometrik çalışma",
+      "description": "Belirli bir pozisyonda kuvvet üretimini sürdürür. Pozisyon ve tutuş süresi kayıt bağlamıdır."
+    },
+    {
+      "id": "eccentric",
+      "name": "Eksantrik odak",
+      "description": "Direnç hareketinin uzama evresini vurgular. Hareket, yük ve uygulama temposunu not et."
+    },
+    {
+      "id": "plyometric",
+      "name": "Pliometrik çalışma",
+      "description": "Sıçrama, sekme veya benzeri hızlı kuvvet uygulamalarını içerir. Temas sayısı ve hareket kalitesi kayıt bağlamıdır."
+    },
+    {
+      "id": "speed",
+      "name": "Sürat çalışması",
+      "description": "Kısa süreli hız uygulamalarına odaklanır. Mesafe, süre ve dinlenmeyi ayrı not etmek karşılaştırmayı anlamlı kılar."
+    },
+    {
+      "id": "agility",
+      "name": "Çeviklik çalışması",
+      "description": "Yön değiştirme ve uyaranlara yanıt çalışmalarını içerir. Parkur ve kullanılan uyaranı kaydet."
+    },
+    {
+      "id": "tactics",
+      "name": "Taktik çalışma",
+      "description": "Karar verme, takım düzeni ve oyun senaryolarına odaklanır. Sayısal sonuçlara ek olarak senaryoyu not et."
+    },
+    {
+      "id": "practice-match",
+      "name": "Antrenman maçı",
+      "description": "Oyun veya yarışma bağlamında uygulama. Rakip, format ve koşullar karşılaştırmanın parçasıdır."
+    },
+    {
+      "id": "mobility",
+      "name": "Mobilite",
+      "description": "Hareket açıklığı ve hareket kontrolüne odaklanır. Çalışılan bölgeyi ve gözlemini kaydet."
+    },
+    {
+      "id": "balance",
+      "name": "Denge ve koordinasyon",
+      "description": "Pozisyon kontrolü ve hareketler arası uyumu çalışır. Destek, yüzey ve kullanılan görevi not et."
+    },
+    {
+      "id": "skill-progression",
+      "name": "Beceri basamakları",
+      "description": "Bir beceriyi daha küçük varyasyonlarla izler. Varyasyonu değiştirdiğinde karşılaştırma bağlamı da değişir."
+    },
+    {
+      "id": "easy-session",
+      "name": "Hafif seans",
+      "description": "Kullanıcının hafif olarak sınıfladığı seans. Bu etiket gerçek toparlanma veya biyolojik iyileşme ölçümü değildir."
+    }
+  ],
+  "goals": {
+    "consistency": "Düzenli hareket",
+    "strength": "Kuvvet",
+    "endurance": "Dayanıklılık",
+    "skill": "Teknik / beceri",
+    "hypertrophy": "Kas gelişimi",
+    "competition": "Yarışma / müsabaka",
+    "hybrid": "Çok yönlü performans",
+    "enjoyment": "Keyif ve sosyal katılım"
+  },
+  "equipment": {
+    "bodyweight": "Vücut ağırlığı",
+    "dumbbells": "Dambıl",
+    "barbell": "Bar ve ağırlıklar",
+    "pullup": "Barfiks demiri",
+    "rings": "Halka",
+    "bands": "Direnç bandı",
+    "gym": "Spor salonu",
+    "pool": "Havuz",
+    "bike": "Bisiklet",
+    "racket": "Raket",
+    "court": "Saha / kort",
+    "track": "Pist / parkur",
+    "mat": "Minder",
+    "adaptive": "Uyarlanmış ekipman",
+    "other": "Diğer branş ekipmanı"
+  },
+  "experience": {
+    "new": "Yeni başlıyorum",
+    "returning": "Ara verdim, dönüyorum",
+    "regular": "Düzenli yapıyorum",
+    "competitive": "Yarışma / müsabaka deneyimim var"
+  }
+}

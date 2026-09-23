@@ -1,0 +1,14 @@
+✔ strict dates, comma decimals, blank is not zero and absent intervals stay unknown (1.907792ms)
+✔ inclusive bounds, single limits and censored values do not imply normal health (0.254917ms)
+✔ edit, archive and restore retain history; stale updates fail without mutating db (2.430834ms)
+✔ trend separates units, laboratory, method, fasting and reference intervals (8.531542ms)
+✔ sleep overnight and daytime accounting, missing data and preserved health fields (0.352708ms)
+✔ small laboratory values retain clinically relevant decimal precision (6.165792ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 23.429584

@@ -1,0 +1,16 @@
+{
+  "result": "PASS",
+  "browser": "153.0.8010.53",
+  "independentPostgresDatabases": true,
+  "rtoMs": 5142,
+  "rpo": "0 canonical records at export; pending retained separately",
+  "paths": [
+    "shift",
+    "legacy workout/runner",
+    "meal",
+    "water",
+    "capability",
+    "private photo"
+  ],
+  "limits": "Legacy records currently open through archive; domain adapters follow in stages 3/4."
+}

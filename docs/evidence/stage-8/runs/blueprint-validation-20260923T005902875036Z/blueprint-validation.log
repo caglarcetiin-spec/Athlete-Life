@@ -1,0 +1,13 @@
+/Users/caglarcetin/Documents/GitHub/Athlete-Life/apps/web/node_modules/ajv/lib/ajv.js:93
+    if (!v) throw new Error('no schema with key or ref "' + schemaKeyRef + '"');
+                  ^
+
+Error: no schema with key or ref "https://json-schema.org/draft/2020-12/schema"
+    at Ajv.validate (/Users/caglarcetin/Documents/GitHub/Athlete-Life/apps/web/node_modules/ajv/lib/ajv.js:93:19)
+    at Ajv.validateSchema (/Users/caglarcetin/Documents/GitHub/Athlete-Life/apps/web/node_modules/ajv/lib/ajv.js:174:20)
+    at Ajv._addSchema (/Users/caglarcetin/Documents/GitHub/Athlete-Life/apps/web/node_modules/ajv/lib/ajv.js:307:10)
+    at Ajv.compile (/Users/caglarcetin/Documents/GitHub/Athlete-Life/apps/web/node_modules/ajv/lib/ajv.js:113:24)
+    at file:///Users/caglarcetin/Documents/GitHub/Athlete-Life/tools/v2/validate_blueprint.mjs:7:20
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+
+Node.js v24.19.0

@@ -1,0 +1,1 @@
+v7.17 nutrition UI runtime bridge tests: PASS {"rows":2,"saves":2,"renders":2,"names":["Köfte","Köfte"]}

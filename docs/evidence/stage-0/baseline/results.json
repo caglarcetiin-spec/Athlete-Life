@@ -1,0 +1,1077 @@
+{
+  "source_commit": "e92b4b736e9f4aa8bcd64103ec59b1aa6abf5297",
+  "branch": "codex/alos-2-stage-0",
+  "started_at": "2026-09-16T19:53:05.615413+00:00",
+  "python": "3.12.14 (main, Aug 25 2026, 13:50:33) [Clang 22.1.3 ]",
+  "platform": "macOS-26.6.2-arm64-arm-64bit",
+  "node": "v24.19.0",
+  "fixture": "synthetic; private backup tests excluded; live MongoDB not contacted",
+  "results": [
+    {
+      "test": "account-context.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "account-context.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 0.109,
+      "stdout": "account-context.test.js.stdout.txt",
+      "stderr": "account-context.test.js.stderr.txt"
+    },
+    {
+      "test": "account-extensions.test.py",
+      "command": [
+        "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-modern/bin/python",
+        "-B",
+        "account-extensions.test.py"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 2.7,
+      "stdout": "account-extensions.test.py.stdout.txt",
+      "stderr": "account-extensions.test.py.stderr.txt"
+    },
+    {
+      "test": "account-personal-model.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "account-personal-model.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 0.045,
+      "stdout": "account-personal-model.test.js.stdout.txt",
+      "stderr": "account-personal-model.test.js.stderr.txt"
+    },
+    {
+      "test": "account-revision-browser.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "account-revision-browser.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 1,
+      "status": "FAIL",
+      "seconds": 36.702,
+      "stdout": "account-revision-browser.test.js.stdout.txt",
+      "stderr": "account-revision-browser.test.js.stderr.txt"
+    },
+    {
+      "test": "account-sync.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "account-sync.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 0.131,
+      "stdout": "account-sync.test.js.stdout.txt",
+      "stderr": "account-sync.test.js.stderr.txt"
+    },
+    {
+      "test": "account-workspace-browser.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "account-workspace-browser.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 1,
+      "status": "FAIL",
+      "seconds": 34.01,
+      "stdout": "account-workspace-browser.test.js.stdout.txt",
+      "stderr": "account-workspace-browser.test.js.stderr.txt"
+    },
+    {
+      "test": "accounts-browser.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "accounts-browser.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 1,
+      "status": "FAIL",
+      "seconds": 34.075,
+      "stdout": "accounts-browser.test.js.stdout.txt",
+      "stderr": "accounts-browser.test.js.stderr.txt"
+    },
+    {
+      "test": "accounts.test.py",
+      "command": [
+        "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-modern/bin/python",
+        "-B",
+        "accounts.test.py"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 8.69,
+      "stdout": "accounts.test.py.stdout.txt",
+      "stderr": "accounts.test.py.stderr.txt"
+    },
+    {
+      "test": "activity-report.test.py",
+      "command": [
+        "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-modern/bin/python",
+        "-B",
+        "activity-report.test.py"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 4.408,
+      "stdout": "activity-report.test.py.stdout.txt",
+      "stderr": "activity-report.test.py.stderr.txt"
+    },
+    {
+      "test": "advanced-engines-v8.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "advanced-engines-v8.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 0.08,
+      "stdout": "advanced-engines-v8.test.js.stdout.txt",
+      "stderr": "advanced-engines-v8.test.js.stderr.txt"
+    },
+    {
+      "test": "athlete-workspace-core.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "athlete-workspace-core.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 0.054,
+      "stdout": "athlete-workspace-core.test.js.stdout.txt",
+      "stderr": "athlete-workspace-core.test.js.stderr.txt"
+    },
+    {
+      "test": "backup-rehearsal.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "backup-rehearsal.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "status": "NOT RUN",
+      "exit_code": null,
+      "reason": "NOT RUN: reads a personal .local-backups file; synthetic-only audit."
+    },
+    {
+      "test": "calendar-period-integration.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "calendar-period-integration.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 1.706,
+      "stdout": "calendar-period-integration.test.js.stdout.txt",
+      "stderr": "calendar-period-integration.test.js.stderr.txt"
+    },
+    {
+      "test": "canonical-session-engine.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "canonical-session-engine.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 0.038,
+      "stdout": "canonical-session-engine.test.js.stdout.txt",
+      "stderr": "canonical-session-engine.test.js.stderr.txt"
+    },
+    {
+      "test": "canonical-training-wiring.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "canonical-training-wiring.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 0.142,
+      "stdout": "canonical-training-wiring.test.js.stdout.txt",
+      "stderr": "canonical-training-wiring.test.js.stderr.txt"
+    },
+    {
+      "test": "capability-catalog-v922.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "capability-catalog-v922.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 0.04,
+      "stdout": "capability-catalog-v922.test.js.stdout.txt",
+      "stderr": "capability-catalog-v922.test.js.stderr.txt"
+    },
+    {
+      "test": "capability-domains-v923.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "capability-domains-v923.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 0.038,
+      "stdout": "capability-domains-v923.test.js.stdout.txt",
+      "stderr": "capability-domains-v923.test.js.stderr.txt"
+    },
+    {
+      "test": "catalog-universal-physiology.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "catalog-universal-physiology.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 0.039,
+      "stdout": "catalog-universal-physiology.test.js.stdout.txt",
+      "stderr": "catalog-universal-physiology.test.js.stderr.txt"
+    },
+    {
+      "test": "cloud-http.test.py",
+      "command": [
+        "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-modern/bin/python",
+        "-B",
+        "cloud-http.test.py"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 5.917,
+      "stdout": "cloud-http.test.py.stdout.txt",
+      "stderr": "cloud-http.test.py.stderr.txt"
+    },
+    {
+      "test": "core-architecture-v8.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "core-architecture-v8.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 0.047,
+      "stdout": "core-architecture-v8.test.js.stdout.txt",
+      "stderr": "core-architecture-v8.test.js.stderr.txt"
+    },
+    {
+      "test": "durable-persistence-v930.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "durable-persistence-v930.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 0.036,
+      "stdout": "durable-persistence-v930.test.js.stdout.txt",
+      "stderr": "durable-persistence-v930.test.js.stderr.txt"
+    },
+    {
+      "test": "dynamic-server.test.py",
+      "command": [
+        "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-modern/bin/python",
+        "-B",
+        "dynamic-server.test.py"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 0.283,
+      "stdout": "dynamic-server.test.py.stdout.txt",
+      "stderr": "dynamic-server.test.py.stderr.txt"
+    },
+    {
+      "test": "entry-fields.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "entry-fields.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 0.046,
+      "stdout": "entry-fields.test.js.stdout.txt",
+      "stderr": "entry-fields.test.js.stderr.txt"
+    },
+    {
+      "test": "global-backup-v925.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "global-backup-v925.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 0.035,
+      "stdout": "global-backup-v925.test.js.stdout.txt",
+      "stderr": "global-backup-v925.test.js.stderr.txt"
+    },
+    {
+      "test": "golden-journey-v8.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "golden-journey-v8.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 0.033,
+      "stdout": "golden-journey-v8.test.js.stdout.txt",
+      "stderr": "golden-journey-v8.test.js.stderr.txt"
+    },
+    {
+      "test": "guided-workout-core.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "guided-workout-core.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 0.035,
+      "stdout": "guided-workout-core.test.js.stdout.txt",
+      "stderr": "guided-workout-core.test.js.stderr.txt"
+    },
+    {
+      "test": "guided-workout-timing.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "guided-workout-timing.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 0.034,
+      "stdout": "guided-workout-timing.test.js.stdout.txt",
+      "stderr": "guided-workout-timing.test.js.stderr.txt"
+    },
+    {
+      "test": "health-core.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "health-core.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 0.067,
+      "stdout": "health-core.test.js.stdout.txt",
+      "stderr": "health-core.test.js.stderr.txt"
+    },
+    {
+      "test": "health-history-integration.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "health-history-integration.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 1.473,
+      "stdout": "health-history-integration.test.js.stdout.txt",
+      "stderr": "health-history-integration.test.js.stderr.txt"
+    },
+    {
+      "test": "health-report.test.py",
+      "command": [
+        "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-modern/bin/python",
+        "-B",
+        "health-report.test.py"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 0.356,
+      "stdout": "health-report.test.py.stdout.txt",
+      "stderr": "health-report.test.py.stderr.txt"
+    },
+    {
+      "test": "health-state-engine.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "health-state-engine.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 0.034,
+      "stdout": "health-state-engine.test.js.stdout.txt",
+      "stderr": "health-state-engine.test.js.stderr.txt"
+    },
+    {
+      "test": "historical-training.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "historical-training.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 0.037,
+      "stdout": "historical-training.test.js.stdout.txt",
+      "stderr": "historical-training.test.js.stderr.txt"
+    },
+    {
+      "test": "hydration-advice-wiring.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "hydration-advice-wiring.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 0.033,
+      "stdout": "hydration-advice-wiring.test.js.stdout.txt",
+      "stderr": "hydration-advice-wiring.test.js.stderr.txt"
+    },
+    {
+      "test": "hydration-intelligence-engine.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "hydration-intelligence-engine.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 0.034,
+      "stdout": "hydration-intelligence-engine.test.js.stdout.txt",
+      "stderr": "hydration-intelligence-engine.test.js.stderr.txt"
+    },
+    {
+      "test": "hydration-rolling-dilution.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "hydration-rolling-dilution.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 0.033,
+      "stdout": "hydration-rolling-dilution.test.js.stdout.txt",
+      "stderr": "hydration-rolling-dilution.test.js.stderr.txt"
+    },
+    {
+      "test": "integration-v9.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "integration-v9.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 0.592,
+      "stdout": "integration-v9.test.js.stdout.txt",
+      "stderr": "integration-v9.test.js.stderr.txt"
+    },
+    {
+      "test": "launch.test.py",
+      "command": [
+        "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-modern/bin/python",
+        "-B",
+        "launch.test.py"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 0.065,
+      "stdout": "launch.test.py.stdout.txt",
+      "stderr": "launch.test.py.stderr.txt"
+    },
+    {
+      "test": "leblebi-library.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "leblebi-library.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 0.034,
+      "stdout": "leblebi-library.test.js.stdout.txt",
+      "stderr": "leblebi-library.test.js.stderr.txt"
+    },
+    {
+      "test": "load-prescription-engine.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "load-prescription-engine.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 0.034,
+      "stdout": "load-prescription-engine.test.js.stdout.txt",
+      "stderr": "load-prescription-engine.test.js.stderr.txt"
+    },
+    {
+      "test": "mongo-accounts.test.py",
+      "command": [
+        "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-modern/bin/python",
+        "-B",
+        "mongo-accounts.test.py"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 5.598,
+      "stdout": "mongo-accounts.test.py.stdout.txt",
+      "stderr": "mongo-accounts.test.py.stderr.txt"
+    },
+    {
+      "test": "nutrition-impact-water-sync.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "nutrition-impact-water-sync.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 0.041,
+      "stdout": "nutrition-impact-water-sync.test.js.stdout.txt",
+      "stderr": "nutrition-impact-water-sync.test.js.stderr.txt"
+    },
+    {
+      "test": "nutrition-ledger-engine.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "nutrition-ledger-engine.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 0.033,
+      "stdout": "nutrition-ledger-engine.test.js.stdout.txt",
+      "stderr": "nutrition-ledger-engine.test.js.stderr.txt"
+    },
+    {
+      "test": "nutrition-ui-runtime.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "nutrition-ui-runtime.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 0.033,
+      "stdout": "nutrition-ui-runtime.test.js.stdout.txt",
+      "stderr": "nutrition-ui-runtime.test.js.stderr.txt"
+    },
+    {
+      "test": "pain-intelligence-core.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "pain-intelligence-core.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 0.032,
+      "stdout": "pain-intelligence-core.test.js.stdout.txt",
+      "stderr": "pain-intelligence-core.test.js.stderr.txt"
+    },
+    {
+      "test": "periodic-trend-engine.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "periodic-trend-engine.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 0.041,
+      "stdout": "periodic-trend-engine.test.js.stdout.txt",
+      "stderr": "periodic-trend-engine.test.js.stderr.txt"
+    },
+    {
+      "test": "persistence-continuity-v926.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "persistence-continuity-v926.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 0.034,
+      "stdout": "persistence-continuity-v926.test.js.stdout.txt",
+      "stderr": "persistence-continuity-v926.test.js.stderr.txt"
+    },
+    {
+      "test": "personal-health-backup.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "personal-health-backup.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 0.591,
+      "stdout": "personal-health-backup.test.js.stdout.txt",
+      "stderr": "personal-health-backup.test.js.stderr.txt"
+    },
+    {
+      "test": "personal-health-core.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "personal-health-core.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 0.052,
+      "stdout": "personal-health-core.test.js.stdout.txt",
+      "stderr": "personal-health-core.test.js.stderr.txt"
+    },
+    {
+      "test": "physiological-impact-engine.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "physiological-impact-engine.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 0.035,
+      "stdout": "physiological-impact-engine.test.js.stdout.txt",
+      "stderr": "physiological-impact-engine.test.js.stderr.txt"
+    },
+    {
+      "test": "private-delivery.test.py",
+      "command": [
+        "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-modern/bin/python",
+        "-B",
+        "private-delivery.test.py"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 2.43,
+      "stdout": "private-delivery.test.py.stdout.txt",
+      "stderr": "private-delivery.test.py.stderr.txt"
+    },
+    {
+      "test": "private-package-browser.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "private-package-browser.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "status": "NOT RUN",
+      "exit_code": null,
+      "reason": "NOT RUN: expects a private first-profile backup and bundled runtime."
+    },
+    {
+      "test": "profile-authority.test.py",
+      "command": [
+        "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-modern/bin/python",
+        "-B",
+        "profile-authority.test.py"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 2.658,
+      "stdout": "profile-authority.test.py.stdout.txt",
+      "stderr": "profile-authority.test.py.stderr.txt"
+    },
+    {
+      "test": "record-edit-safety.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "record-edit-safety.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 1.24,
+      "stdout": "record-edit-safety.test.js.stdout.txt",
+      "stderr": "record-edit-safety.test.js.stderr.txt"
+    },
+    {
+      "test": "recovery-clock-v928.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "recovery-clock-v928.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 0.035,
+      "stdout": "recovery-clock-v928.test.js.stdout.txt",
+      "stderr": "recovery-clock-v928.test.js.stderr.txt"
+    },
+    {
+      "test": "recovery-elapsed.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "recovery-elapsed.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 0.599,
+      "stdout": "recovery-elapsed.test.js.stdout.txt",
+      "stderr": "recovery-elapsed.test.js.stderr.txt"
+    },
+    {
+      "test": "render-start.test.py",
+      "command": [
+        "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-modern/bin/python",
+        "-B",
+        "render-start.test.py"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 0.069,
+      "stdout": "render-start.test.py.stdout.txt",
+      "stderr": "render-start.test.py.stderr.txt"
+    },
+    {
+      "test": "server-sync.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "server-sync.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 0.033,
+      "stdout": "server-sync.test.js.stdout.txt",
+      "stderr": "server-sync.test.js.stderr.txt"
+    },
+    {
+      "test": "shift-persistence-v924.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "shift-persistence-v924.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 0.034,
+      "stdout": "shift-persistence-v924.test.js.stdout.txt",
+      "stderr": "shift-persistence-v924.test.js.stderr.txt"
+    },
+    {
+      "test": "sport-science.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "sport-science.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 0.053,
+      "stdout": "sport-science.test.js.stdout.txt",
+      "stderr": "sport-science.test.js.stderr.txt"
+    },
+    {
+      "test": "sports-profile-browser.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "sports-profile-browser.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 1,
+      "status": "FAIL",
+      "seconds": 33.832,
+      "stdout": "sports-profile-browser.test.js.stdout.txt",
+      "stderr": "sports-profile-browser.test.js.stderr.txt"
+    },
+    {
+      "test": "sports-profile.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "sports-profile.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 0.767,
+      "stdout": "sports-profile.test.js.stdout.txt",
+      "stderr": "sports-profile.test.js.stderr.txt"
+    },
+    {
+      "test": "start-local.test.py",
+      "command": [
+        "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-modern/bin/python",
+        "-B",
+        "start-local.test.py"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 0.07,
+      "stdout": "start-local.test.py.stdout.txt",
+      "stderr": "start-local.test.py.stderr.txt"
+    },
+    {
+      "test": "storage.test.py",
+      "command": [
+        "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-modern/bin/python",
+        "-B",
+        "storage.test.py"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 0.713,
+      "stdout": "storage.test.py.stdout.txt",
+      "stderr": "storage.test.py.stderr.txt"
+    },
+    {
+      "test": "substitution-intelligence-core.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "substitution-intelligence-core.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 0.035,
+      "stdout": "substitution-intelligence-core.test.js.stdout.txt",
+      "stderr": "substitution-intelligence-core.test.js.stderr.txt"
+    },
+    {
+      "test": "training-planner.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "training-planner.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 0.075,
+      "stdout": "training-planner.test.js.stdout.txt",
+      "stderr": "training-planner.test.js.stderr.txt"
+    },
+    {
+      "test": "v9_1_sync_science.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "v9_1_sync_science.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 0.035,
+      "stdout": "v9_1_sync_science.test.js.stdout.txt",
+      "stderr": "v9_1_sync_science.test.js.stderr.txt"
+    },
+    {
+      "test": "v9_2_program_engine.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "v9_2_program_engine.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 0.035,
+      "stdout": "v9_2_program_engine.test.js.stdout.txt",
+      "stderr": "v9_2_program_engine.test.js.stderr.txt"
+    },
+    {
+      "test": "water-ledger-engine.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "water-ledger-engine.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 0.034,
+      "stdout": "water-ledger-engine.test.js.stdout.txt",
+      "stderr": "water-ledger-engine.test.js.stderr.txt"
+    },
+    {
+      "test": "water-ui-wiring.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "water-ui-wiring.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 0.034,
+      "stdout": "water-ui-wiring.test.js.stdout.txt",
+      "stderr": "water-ui-wiring.test.js.stderr.txt"
+    },
+    {
+      "test": "weekly-optimization-persistence-v928.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "weekly-optimization-persistence-v928.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 0.034,
+      "stdout": "weekly-optimization-persistence-v928.test.js.stdout.txt",
+      "stderr": "weekly-optimization-persistence-v928.test.js.stderr.txt"
+    },
+    {
+      "test": "weekly-persistence-v927.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "weekly-persistence-v927.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 0.033,
+      "stdout": "weekly-persistence-v927.test.js.stdout.txt",
+      "stderr": "weekly-persistence-v927.test.js.stderr.txt"
+    },
+    {
+      "test": "wellness-integration.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "wellness-integration.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 0.949,
+      "stdout": "wellness-integration.test.js.stdout.txt",
+      "stderr": "wellness-integration.test.js.stderr.txt"
+    },
+    {
+      "test": "workout-program.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "workout-program.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 0.049,
+      "stdout": "workout-program.test.js.stdout.txt",
+      "stderr": "workout-program.test.js.stderr.txt"
+    },
+    {
+      "test": "workspace-lifecycle.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "workspace-lifecycle.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 0.041,
+      "stdout": "workspace-lifecycle.test.js.stdout.txt",
+      "stderr": "workspace-lifecycle.test.js.stderr.txt"
+    },
+    {
+      "test": "workspace-reset-integration.test.js",
+      "command": [
+        "/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/bin/node",
+        "workspace-reset-integration.test.js"
+      ],
+      "cwd": "<repo>",
+      "fixture": "synthetic",
+      "exit_code": 0,
+      "status": "PASS",
+      "seconds": 0.769,
+      "stdout": "workspace-reset-integration.test.js.stdout.txt",
+      "stderr": "workspace-reset-integration.test.js.stderr.txt"
+    }
+  ],
+  "finished_at": "2026-09-16T19:56:09.236899+00:00",
+  "counts": {
+    "PASS": 69,
+    "FAIL": 4,
+    "BLOCKED": 0,
+    "NOT RUN": 2
+  }
+}

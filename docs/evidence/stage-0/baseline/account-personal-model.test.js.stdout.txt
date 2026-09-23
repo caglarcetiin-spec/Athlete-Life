@@ -1,0 +1,1 @@
+PASS: no inherited personal targets, observed weight, consistent macros, missing-load baseline and pain priority.

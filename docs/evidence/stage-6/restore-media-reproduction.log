@@ -1,0 +1,41 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+______ test_restore_rejects_active_content_media_even_with_valid_checksum ______
+
+client = <starlette.testclient.TestClient object at 0x10e527da0>
+app = <fastapi.applications.FastAPI object at 0x10dda3aa0>
+
+    def test_restore_rejects_active_content_media_even_with_valid_checksum(client, app):
+        image = Image.new("RGB", (3, 3), "blue")
+        buffer = io.BytesIO()
+        image.save(buffer, format="PNG")
+        write(client, cmd("media.save", name="safe", content=base64.b64encode(buffer.getvalue()).decode()))
+        package = client.get("/api/v2/backups/export").json()
+        row = package["records"]["media"][0]
+        malicious = b'<html><form action="https://example.invalid">fake sign-in</form></html>'
+        row["mime"] = "text/html"
+        row["content"] = base64.b64encode(malicious).decode()
+        row["sha256"] = hashlib.sha256(malicious).hexdigest()
+        package["checksum"] = export_checksum({k: v for k, v in package.items() if k != "checksum"})
+        other = login(app, "arda", "test-password-456")
+        staged = other.post("/api/v2/imports/stage", json=package).json()
+        response = other.post("/api/v2/commands", json=cmd("import.apply", staged["id"], staged["version"]))
+>       assert response.status_code == 422, response.text
+E       AssertionError: {"operation_id":"39fbe591-7294-45ae-849b-2b9d2a06cc1e","cursor":1,"entity":{"source_digest":"922b26b4327eb3df4b12e2e4de25313dfae6f8a831dfaa01ebe9923e95ef985e","format":"v2","status":"applied","summary":{"counts":{"lab":0,"set":0,"food":0,"goal":0,"meal":0,"pain":0,"slot":0,"cycle":0,"event":0,"media":1,"shift":0,"sleep":0,"import":0,"legacy":0,"recipe":0,"archive":0,"checkin":0,"episode":0,"profile":0,"program":0,"session":0,"analysis":0,"hydration":0,"capability":0,"measurement":0,"program_day":0,"optimization":0,"prescription":0,"nutrition_day":0,"goal_measurement":0,"program_exercise":0},"warnings":["Geri yükleme yalnız boş bir profile uygulanır. Mevcut kayıtlar ezilmez."],"pending_count":0,"unknown_fields":[],"canonical_restore":true},"id":"89024dfa-6a53-4b7a-8440-1f87f64b6cc0","version":2,"created_at":"2026-09-22T22:37:55.002183+00:00","updated_at":"2026-09-22T22:37:55.018434+00:00","deleted_at":null,"source":"manual"},"changes":[{"kind":"media","entity":{"name":"safe","mime":"text/html","sha256":"dfd637edda5103b87be997b78812781e052d1eba7f3cbe057af5ee49e6a4e56e","captured_date":null,"details":{},"id":"c0e3595a-ed5e-5f32-ab17-c5067c1595ef","version":1,"created_at":"2026-09-22T22:37:54.920157+00:00","updated_at":"2026-09-22T22:37:54.919812+00:00","deleted_at":null,"source":"manual"}},{"kind":"import","entity":{"source_digest":"922b26b4327eb3df4b12e2e4de25313dfae6f8a831dfaa01ebe9923e95ef985e","format":"v2","status":"applied","summary":{"counts":{"lab":0,"set":0,"food":0,"goal":0,"meal":0,"pain":0,"slot":0,"cycle":0,"event":0,"media":1,"shift":0,"sleep":0,"import":0,"legacy":0,"recipe":0,"archive":0,"checkin":0,"episode":0,"profile":0,"program":0,"session":0,"analysis":0,"hydration":0,"capability":0,"measurement":0,"program_day":0,"optimization":0,"prescription":0,"nutrition_day":0,"goal_measurement":0,"program_exercise":0},"warnings":["Geri yükleme yalnız boş bir profile uygulanır. Mevcut kayıtlar ezilmez."],"pending_count":0,"unknown_fields":[],"canonical_restore":true},"id":"89024dfa-6a53-4b7a-8440-1f87f64b6cc0","version":2,"created_at":"2026-09-22T22:37:55.002183+00:00","updated_at":"2026-09-22T22:37:55.018434+00:00","deleted_at":null,"source":"manual"}}],"committed_at":"2026-09-22T22:37:55.018869+00:00"}
+E       assert 200 == 422
+E        +  where 200 = <Response [200 OK]>.status_code
+
+tests/v2/test_backups.py:526: AssertionError
+=============================== warnings summary ===============================
+.venv-v2/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+.venv-v2/lib/python3.12/site-packages/starlette/testclient.py:53
+  /Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/v2/test_backups.py::test_restore_rejects_active_content_media_even_with_valid_checksum
+1 failed, 2 warnings in 0.74s

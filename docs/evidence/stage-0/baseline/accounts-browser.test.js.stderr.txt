@@ -1,0 +1,9 @@
+locator.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('#sports-setup #setup-back')[22m
+
+    at signup (<repo>/accounts-browser.test.js:32:51)
+    at async main (<repo>/accounts-browser.test.js:35:2) {
+  log: [ "  - waiting for locator('#sports-setup #setup-back')" ],
+  name: 'TimeoutError'
+}

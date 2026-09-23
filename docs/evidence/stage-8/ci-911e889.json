@@ -1,0 +1,115 @@
+{
+  "source_commit": "911e889cf006bcd52701074415690badc2da37d2",
+  "run_url": "https://github.com/caglarcetiin-spec/Athlete-Life/actions/runs/35806086944",
+  "jobs": [
+    {
+      "id": 107007151774,
+      "name": "core",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Initialize containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install locked dependencies",
+          "conclusion": "success"
+        },
+        {
+          "name": "Python checks",
+          "conclusion": "success"
+        },
+        {
+          "name": "Client checks and build",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install browser",
+          "conclusion": "success"
+        },
+        {
+          "name": "Browser golden journeys",
+          "conclusion": "success"
+        },
+        {
+          "name": "Preserve evidence",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803",
+          "conclusion": "success"
+        },
+        {
+          "name": "Stop containers",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "id": 107007151910,
+      "name": "container",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803",
+          "conclusion": "success"
+        },
+        {
+          "name": "Build and start isolated stack",
+          "conclusion": "success"
+        },
+        {
+          "name": "Container readiness and private path",
+          "conclusion": "success"
+        },
+        {
+          "name": "Logs and cleanup",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    }
+  ],
+  "data_scope": "isolated synthetic GitHub runner PostgreSQL; no live MongoDB or personal backup"
+}

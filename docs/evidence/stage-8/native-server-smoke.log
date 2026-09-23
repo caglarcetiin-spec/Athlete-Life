@@ -1,0 +1,13 @@
+No new upgrade operations detected.
+{
+  "result": "PASS",
+  "checks": [
+    "missing DB fails closed",
+    "explicit migrate and schema-check",
+    "0.0.0.0:PORT readiness",
+    "built frontend served",
+    "private path denied",
+    "SIGTERM graceful shutdown"
+  ],
+  "container": "NOT RUN: no Docker runtime installed"
+}

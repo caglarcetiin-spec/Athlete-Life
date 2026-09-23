@@ -1,0 +1,14 @@
+Durable journal mirror failed Error: IndexedDB unavailable
+    at evalmachine.<anonymous>:22:82
+    at new Promise (<anonymous>)
+    at openDB (evalmachine.<anonymous>:22:26)
+    at putIDB (evalmachine.<anonymous>:23:42)
+    at evalmachine.<anonymous>:24:51
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+Durable journal mirror failed Error: IndexedDB unavailable
+    at evalmachine.<anonymous>:22:82
+    at new Promise (<anonymous>)
+    at openDB (evalmachine.<anonymous>:22:26)
+    at putIDB (evalmachine.<anonymous>:23:42)
+    at evalmachine.<anonymous>:24:51
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)

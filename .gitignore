@@ -24,3 +24,16 @@ __pycache__/
 # Locally generated health-report QA and document output.
 /tmp/pdfs/
 /output/pdf/
+
+# V2 local dependency/build/test data; never publish runtime credentials or DBs.
+.venv-v2/
+.runtime-v2/
+.cache-v2/
+node_modules/
+apps/web/dist/
+.pytest_cache/
+.ruff_cache/
+test-results/
+playwright-report/
+*.egg-info/
+*.tsbuildinfo

@@ -1,0 +1,38 @@
+# Reference for the EXISTING Python/free service; do not create a second service.
+# Apply settings only after Mongo acceptance and controlled account cutover.
+services:
+  - type: web
+    name: Athlete-Life
+    runtime: python
+    region: frankfurt
+    plan: free
+    branch: main
+    buildCommand: pip install -r requirements.txt
+    startCommand: python3 start_render.py
+    autoDeployTrigger: commit
+    healthCheckPath: /health/ready
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.14
+      - key: NODE_VERSION
+        value: 24.19.0
+      - key: ALOS_EDITION
+        value: v2
+      - key: ALOS_V2_ENABLED
+        value: "1"
+      - key: ALOS_V2_ENVIRONMENT
+        value: production
+      - key: MONGODB_URI
+        sync: false
+      - key: MONGODB_DATABASE
+        value: athlete_life
+      - key: STORAGE_BACKEND
+        value: mongodb
+      - key: ACCOUNT_STORAGE_BACKEND
+        value: mongodb
+      - key: ALOS_V2_PUBLIC_ORIGIN
+        value: https://athlete-life.onrender.com
+      - key: ALOS_V2_REGISTRATION_ENABLED
+        value: "0"
+# No database, disk, Redis, worker or paid resource is provisioned here.
+# Explicit migrate creates only alos_v2_* collections, never copies v10 accounts.

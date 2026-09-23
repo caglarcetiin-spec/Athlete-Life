@@ -1,0 +1,31 @@
+/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+  from starlette.testclient import TestClient as TestClient  # noqa
+{
+  "result": "MEASURED",
+  "platform": "macOS-26.6.2-arm64-arm-64bit",
+  "processor": "arm64",
+  "dataset": {
+    "canonical_hydration_rows": 1000,
+    "command_audit_and_change_rows": "one per successful write"
+  },
+  "read_concurrency": 4,
+  "writes": {
+    "samples": 1000,
+    "p50_ms": 4.704604492872022,
+    "p95_ms": 5.439999978989363,
+    "max_ms": 52.29708401020616
+  },
+  "bootstrap": {
+    "samples": 80,
+    "p50_ms": 132.64525000704452,
+    "p95_ms": 166.17408298770897,
+    "max_ms": 171.97641701204702
+  },
+  "bootstrap_bytes": 314701,
+  "max_rss_native_units": 182697984,
+  "limitations": [
+    "ASGI TestClient transport plus real PostgreSQL; not remote network or Render",
+    "Single domain reference dataset; not years of media, every table, or full-session memory-leak proof",
+    "Measurements are not production SLA promises"
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "documentation_links": "PASS",
+  "original_prompts_byte_identical": true,
+  "python_parse": "PASS",
+  "existing_runtime_unchanged": true,
+  "acceptance_rows": 92,
+  "baseline_counts": {
+    "PASS": 69,
+    "FAIL": 4,
+    "BLOCKED": 0,
+    "NOT RUN": 2
+  },
+  "secret_pattern_scan": "PASS (limited pattern scan, not a security certification)",
+  "git_diff_check": 0
+}

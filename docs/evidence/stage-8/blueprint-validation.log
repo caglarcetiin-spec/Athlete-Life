@@ -1,0 +1,3 @@
+unknown format "uri" ignored in schema at path "#/properties/maintenanceMode/properties/uri"
+unknown format "uri" ignored in schema at path "#/properties/maintenanceMode/properties/uri"
+Render public JSON Schema validation: PASS

@@ -1,0 +1,2292 @@
+{
+  "Full Planche": {
+    "name": "Full Planche",
+    "type": "STATIC",
+    "equipment": [
+      "Parallettes",
+      "Floor"
+    ],
+    "metric": "seconds",
+    "contraction": "Isometric straight-arm push",
+    "pattern": "Straight-arm horizontal push",
+    "muscles": {
+      "frontDelts": 1,
+      "chest": 0.7,
+      "triceps": 0.65,
+      "abs": 0.7,
+      "scapular": 0.6,
+      "biceps": 0.25
+    },
+    "qualities": {
+      "strength": 9,
+      "hypertrophy": 6,
+      "power": 2,
+      "skill": 10,
+      "stability": 9,
+      "core": 8,
+      "endurance": 5
+    },
+    "evidence": "Isometric literature + movement biomechanics",
+    "evidenceConfidence": "medium",
+    "note": "High straight-arm shoulder-flexion strength and scapular control demand.",
+    "staticHoldBandSec": [
+      4,
+      12
+    ]
+  },
+  "Front Lever": {
+    "name": "Front Lever",
+    "type": "STATIC",
+    "equipment": [
+      "Pull-Up Bar"
+    ],
+    "metric": "seconds",
+    "contraction": "Isometric straight-arm pull",
+    "pattern": "Straight-arm horizontal pull",
+    "muscles": {
+      "lats": 1,
+      "abs": 0.8,
+      "upperBack": 0.7,
+      "biceps": 0.4,
+      "forearms": 0.35,
+      "scapular": 0.7
+    },
+    "qualities": {
+      "strength": 9,
+      "hypertrophy": 6,
+      "power": 2,
+      "skill": 10,
+      "stability": 9,
+      "core": 9,
+      "endurance": 5
+    },
+    "evidence": "Isometric literature + movement biomechanics",
+    "evidenceConfidence": "medium",
+    "note": "High shoulder-extension torque, trunk anti-extension and scapular-control demand.",
+    "staticHoldBandSec": [
+      5,
+      15
+    ],
+    "variantGroup": "front_lever",
+    "variantEquipment": "Pull-Up Bar",
+    "displayName": "Front Lever"
+  },
+  "Back Lever": {
+    "name": "Back Lever",
+    "type": "STATIC",
+    "equipment": [
+      "Pull-Up Bar"
+    ],
+    "metric": "seconds",
+    "contraction": "Isometric straight-arm hold",
+    "pattern": "Straight-arm shoulder extension",
+    "muscles": {
+      "frontDelts": 0.65,
+      "chest": 0.55,
+      "biceps": 0.55,
+      "lats": 0.55,
+      "abs": 0.5,
+      "scapular": 0.65
+    },
+    "qualities": {
+      "strength": 8,
+      "hypertrophy": 5,
+      "power": 2,
+      "skill": 8,
+      "stability": 9,
+      "core": 7,
+      "endurance": 5
+    },
+    "evidence": "Isometric/rings literature + biomechanics",
+    "evidenceConfidence": "medium",
+    "note": "Straight-arm hold with high shoulder, elbow and scapular stabilization demand.",
+    "staticHoldBandSec": [
+      5,
+      15
+    ],
+    "variantGroup": "back_lever",
+    "variantEquipment": "Pull-Up Bar",
+    "displayName": "Back Lever"
+  },
+  "Muscle-Up": {
+    "name": "Muscle-Up",
+    "type": "DYNAMIC",
+    "equipment": [
+      "Pull-Up Bar"
+    ],
+    "metric": "reps",
+    "contraction": "Explosive dynamic + transition",
+    "pattern": "Explosive vertical pull → transition → push",
+    "muscles": {
+      "lats": 1,
+      "biceps": 0.75,
+      "upperBack": 0.65,
+      "chest": 0.55,
+      "triceps": 0.55,
+      "forearms": 0.55,
+      "frontDelts": 0.35,
+      "scapular": 0.45
+    },
+    "qualities": {
+      "strength": 8,
+      "hypertrophy": 6,
+      "power": 9,
+      "skill": 9,
+      "stability": 6,
+      "core": 6,
+      "endurance": 5
+    },
+    "evidence": "Biomechanics + ring/bar muscle-up EMG context",
+    "evidenceConfidence": "medium",
+    "note": "Explosive skill: power, pulling velocity and transition coordination matter more than hypertrophy alone.",
+    "staticHoldBandSec": null,
+    "variantGroup": "muscle_up",
+    "variantEquipment": "Pull-Up Bar",
+    "displayName": "Muscle-Up"
+  },
+  "Weighted Pull-Up": {
+    "name": "Weighted Pull-Up",
+    "type": "WEIGHTED",
+    "equipment": [
+      "Pull-Up Bar",
+      "Weight Belt"
+    ],
+    "metric": "reps",
+    "contraction": "Dynamic loaded",
+    "pattern": "Vertical pull",
+    "muscles": {
+      "lats": 1,
+      "biceps": 0.78,
+      "upperBack": 0.68,
+      "forearms": 0.52,
+      "rearDelts": 0.3,
+      "scapular": 0.45
+    },
+    "qualities": {
+      "strength": 10,
+      "hypertrophy": 9,
+      "power": 7,
+      "skill": 5,
+      "stability": 5,
+      "core": 4,
+      "endurance": 4
+    },
+    "evidence": "Resistance-training evidence + biomechanics",
+    "evidenceConfidence": "high",
+    "note": "Ek yük + tekrar ile kaydedilir. Örn. +35 kg, 5 tekrar.",
+    "staticHoldBandSec": null
+  },
+  "Weighted Ring Dip": {
+    "name": "Weighted Ring Dip",
+    "type": "WEIGHTED",
+    "equipment": [
+      "Rings",
+      "Weight Belt"
+    ],
+    "metric": "reps",
+    "contraction": "Dynamic loaded / unstable",
+    "pattern": "Vertical push",
+    "muscles": {
+      "chest": 1,
+      "triceps": 0.92,
+      "frontDelts": 0.72,
+      "scapular": 0.55,
+      "lats": 0.22,
+      "biceps": 0.18,
+      "forearms": 0.2
+    },
+    "qualities": {
+      "strength": 9,
+      "hypertrophy": 9,
+      "power": 6,
+      "skill": 7,
+      "stability": 9,
+      "core": 5,
+      "endurance": 4
+    },
+    "evidence": "Ring-dip EMG + biomechanics",
+    "evidenceConfidence": "high",
+    "note": "Loaded pressing plus high ring-control demand; ring dips show high upper-limb muscle activation.",
+    "staticHoldBandSec": null
+  },
+  "Ring Push-Up": {
+    "name": "Ring Push-Up",
+    "type": "DYNAMIC",
+    "equipment": [
+      "Rings"
+    ],
+    "metric": "reps",
+    "contraction": "Dynamic / unstable",
+    "pattern": "Horizontal push",
+    "muscles": {
+      "chest": 1,
+      "triceps": 0.72,
+      "frontDelts": 0.58,
+      "scapular": 0.6,
+      "abs": 0.45,
+      "obliques": 0.25
+    },
+    "qualities": {
+      "strength": 6,
+      "hypertrophy": 9,
+      "power": 4,
+      "skill": 5,
+      "stability": 9,
+      "core": 7,
+      "endurance": 7
+    },
+    "evidence": "Suspension/ring push-up EMG + biomechanics",
+    "evidenceConfidence": "medium-high",
+    "note": "Instability increases stabilization demands; chest remains a major prime mover.",
+    "staticHoldBandSec": null
+  },
+  "Ring Support Hold": {
+    "name": "Ring Support Hold",
+    "type": "STATIC",
+    "equipment": [
+      "Rings"
+    ],
+    "metric": "seconds",
+    "contraction": "Isometric support",
+    "pattern": "Vertical straight-arm support",
+    "muscles": {
+      "triceps": 0.7,
+      "frontDelts": 0.48,
+      "chest": 0.38,
+      "scapular": 0.85,
+      "forearms": 0.35,
+      "abs": 0.35
+    },
+    "qualities": {
+      "strength": 7,
+      "hypertrophy": 4,
+      "power": 2,
+      "skill": 7,
+      "stability": 10,
+      "core": 6,
+      "endurance": 6
+    },
+    "evidence": "Ring static-strength literature + biomechanics",
+    "evidenceConfidence": "medium",
+    "note": "",
+    "staticHoldBandSec": [
+      5,
+      20
+    ]
+  },
+  "Ring Turned-Out Support": {
+    "name": "Ring Turned-Out Support",
+    "type": "STATIC",
+    "equipment": [
+      "Rings"
+    ],
+    "metric": "seconds",
+    "contraction": "Isometric support / external rotation",
+    "pattern": "RTO straight-arm support",
+    "muscles": {
+      "scapular": 1,
+      "frontDelts": 0.6,
+      "chest": 0.55,
+      "biceps": 0.5,
+      "triceps": 0.55,
+      "forearms": 0.4,
+      "abs": 0.4
+    },
+    "qualities": {
+      "strength": 8,
+      "hypertrophy": 5,
+      "power": 2,
+      "skill": 9,
+      "stability": 10,
+      "core": 7,
+      "endurance": 5
+    },
+    "evidence": "Ring static-strength literature + biomechanics",
+    "evidenceConfidence": "medium",
+    "note": "",
+    "staticHoldBandSec": [
+      5,
+      15
+    ]
+  },
+  "Ring Dip": {
+    "name": "Ring Dip",
+    "type": "DYNAMIC",
+    "equipment": [
+      "Rings"
+    ],
+    "metric": "reps",
+    "contraction": "Dynamic / unstable",
+    "pattern": "Vertical push",
+    "muscles": {
+      "chest": 1,
+      "triceps": 0.88,
+      "frontDelts": 0.68,
+      "scapular": 0.58,
+      "lats": 0.2,
+      "biceps": 0.2,
+      "forearms": 0.18
+    },
+    "qualities": {
+      "strength": 7,
+      "hypertrophy": 9,
+      "power": 4,
+      "skill": 6,
+      "stability": 9,
+      "core": 5,
+      "endurance": 6
+    },
+    "evidence": "Direct ring-dip EMG",
+    "evidenceConfidence": "high",
+    "note": "Ring dip showed similar or higher activation than stable dip for several upper-limb muscles.",
+    "staticHoldBandSec": null
+  },
+  "Ring Muscle-Up": {
+    "name": "Ring Muscle-Up",
+    "type": "DYNAMIC",
+    "equipment": [
+      "Rings"
+    ],
+    "metric": "reps",
+    "contraction": "Explosive dynamic + transition / unstable",
+    "pattern": "Vertical pull → transition → dip",
+    "muscles": {
+      "lats": 1,
+      "biceps": 0.88,
+      "forearms": 0.72,
+      "upperBack": 0.65,
+      "chest": 0.62,
+      "triceps": 0.68,
+      "traps": 0.35,
+      "scapular": 0.55
+    },
+    "qualities": {
+      "strength": 8,
+      "hypertrophy": 7,
+      "power": 9,
+      "skill": 10,
+      "stability": 9,
+      "core": 6,
+      "endurance": 5
+    },
+    "evidence": "Direct ring-vs-bar muscle-up EMG",
+    "evidenceConfidence": "high",
+    "note": "Ring muscle-up increases recruitment of several upper-limb muscles versus bar muscle-up.",
+    "staticHoldBandSec": null,
+    "variantGroup": "muscle_up",
+    "variantEquipment": "Rings",
+    "displayName": "Muscle-Up"
+  },
+  "Ring Pull-Up": {
+    "name": "Ring Pull-Up",
+    "type": "DYNAMIC",
+    "equipment": [
+      "Rings"
+    ],
+    "metric": "reps",
+    "contraction": "Dynamic / unstable",
+    "pattern": "Vertical pull",
+    "muscles": {
+      "lats": 1,
+      "biceps": 0.78,
+      "upperBack": 0.65,
+      "forearms": 0.5,
+      "scapular": 0.58
+    },
+    "qualities": {
+      "strength": 7,
+      "hypertrophy": 8,
+      "power": 4,
+      "skill": 5,
+      "stability": 8,
+      "core": 4,
+      "endurance": 7
+    },
+    "evidence": "Biomechanical inference",
+    "evidenceConfidence": "medium",
+    "note": "",
+    "staticHoldBandSec": null,
+    "variantGroup": "pull_up",
+    "variantEquipment": "Rings",
+    "displayName": "Pull-Up"
+  },
+  "Ring Chin-Up": {
+    "name": "Ring Chin-Up",
+    "type": "DYNAMIC",
+    "equipment": [
+      "Rings"
+    ],
+    "metric": "reps",
+    "contraction": "Dynamic / unstable",
+    "pattern": "Vertical pull / supinated",
+    "muscles": {
+      "lats": 0.92,
+      "biceps": 1,
+      "upperBack": 0.55,
+      "forearms": 0.55,
+      "scapular": 0.52
+    },
+    "qualities": {
+      "strength": 7,
+      "hypertrophy": 8,
+      "power": 4,
+      "skill": 5,
+      "stability": 8,
+      "core": 4,
+      "endurance": 7
+    },
+    "evidence": "Biomechanical inference",
+    "evidenceConfidence": "medium",
+    "note": "",
+    "staticHoldBandSec": null,
+    "variantGroup": "chin_up",
+    "variantEquipment": "Rings",
+    "displayName": "Chin-Up"
+  },
+  "Ring Archer Pull-Up": {
+    "name": "Ring Archer Pull-Up",
+    "type": "DYNAMIC",
+    "equipment": [
+      "Rings"
+    ],
+    "metric": "reps",
+    "contraction": "Dynamic / unilateral-biased",
+    "pattern": "Vertical pull",
+    "muscles": {
+      "lats": 1,
+      "biceps": 0.9,
+      "upperBack": 0.7,
+      "forearms": 0.6,
+      "scapular": 0.65,
+      "obliques": 0.25
+    },
+    "qualities": {
+      "strength": 9,
+      "hypertrophy": 8,
+      "power": 5,
+      "skill": 8,
+      "stability": 9,
+      "core": 6,
+      "endurance": 5
+    },
+    "evidence": "Biomechanical inference",
+    "evidenceConfidence": "medium",
+    "note": "",
+    "staticHoldBandSec": null
+  },
+  "Ring Row": {
+    "name": "Ring Row",
+    "type": "DYNAMIC",
+    "equipment": [
+      "Rings"
+    ],
+    "metric": "reps",
+    "contraction": "Dynamic / unstable",
+    "pattern": "Horizontal pull",
+    "muscles": {
+      "upperBack": 1,
+      "lats": 0.8,
+      "biceps": 0.7,
+      "rearDelts": 0.62,
+      "scapular": 0.75,
+      "forearms": 0.3
+    },
+    "qualities": {
+      "strength": 6,
+      "hypertrophy": 9,
+      "power": 3,
+      "skill": 4,
+      "stability": 8,
+      "core": 5,
+      "endurance": 8
+    },
+    "evidence": "Biomechanical inference",
+    "evidenceConfidence": "medium-high",
+    "note": "",
+    "staticHoldBandSec": null
+  },
+  "Feet-Elevated Ring Row": {
+    "name": "Feet-Elevated Ring Row",
+    "type": "DYNAMIC",
+    "equipment": [
+      "Rings"
+    ],
+    "metric": "reps",
+    "contraction": "Dynamic / unstable",
+    "pattern": "Horizontal pull",
+    "muscles": {
+      "upperBack": 1,
+      "lats": 0.9,
+      "biceps": 0.72,
+      "rearDelts": 0.68,
+      "scapular": 0.78,
+      "abs": 0.28,
+      "forearms": 0.32
+    },
+    "qualities": {
+      "strength": 7,
+      "hypertrophy": 9,
+      "power": 3,
+      "skill": 5,
+      "stability": 8,
+      "core": 6,
+      "endurance": 7
+    },
+    "evidence": "Biomechanical inference",
+    "evidenceConfidence": "medium",
+    "note": "",
+    "staticHoldBandSec": null
+  },
+  "Ring Face Pull": {
+    "name": "Ring Face Pull",
+    "type": "DYNAMIC",
+    "equipment": [
+      "Rings"
+    ],
+    "metric": "reps",
+    "contraction": "Dynamic / unstable",
+    "pattern": "Horizontal pull + external rotation",
+    "muscles": {
+      "rearDelts": 1,
+      "upperBack": 0.9,
+      "traps": 0.55,
+      "scapular": 0.9,
+      "biceps": 0.28
+    },
+    "qualities": {
+      "strength": 5,
+      "hypertrophy": 9,
+      "power": 2,
+      "skill": 4,
+      "stability": 8,
+      "core": 4,
+      "endurance": 8
+    },
+    "evidence": "Biomechanical inference",
+    "evidenceConfidence": "medium",
+    "note": "",
+    "staticHoldBandSec": null
+  },
+  "Ring Rear-Delt Row": {
+    "name": "Ring Rear-Delt Row",
+    "type": "DYNAMIC",
+    "equipment": [
+      "Rings"
+    ],
+    "metric": "reps",
+    "contraction": "Dynamic / unstable",
+    "pattern": "High horizontal pull",
+    "muscles": {
+      "rearDelts": 1,
+      "upperBack": 0.9,
+      "traps": 0.45,
+      "scapular": 0.78,
+      "biceps": 0.3
+    },
+    "qualities": {
+      "strength": 5,
+      "hypertrophy": 9,
+      "power": 2,
+      "skill": 4,
+      "stability": 8,
+      "core": 4,
+      "endurance": 8
+    },
+    "evidence": "Biomechanical inference",
+    "evidenceConfidence": "medium",
+    "note": "",
+    "staticHoldBandSec": null
+  },
+  "Ring Archer Push-Up": {
+    "name": "Ring Archer Push-Up",
+    "type": "DYNAMIC",
+    "equipment": [
+      "Rings"
+    ],
+    "metric": "reps",
+    "contraction": "Dynamic / unilateral-biased",
+    "pattern": "Horizontal push",
+    "muscles": {
+      "chest": 1,
+      "triceps": 0.72,
+      "frontDelts": 0.65,
+      "scapular": 0.65,
+      "abs": 0.48,
+      "obliques": 0.35
+    },
+    "qualities": {
+      "strength": 8,
+      "hypertrophy": 9,
+      "power": 4,
+      "skill": 7,
+      "stability": 9,
+      "core": 8,
+      "endurance": 6
+    },
+    "evidence": "Biomechanical inference",
+    "evidenceConfidence": "medium",
+    "note": "",
+    "staticHoldBandSec": null
+  },
+  "Ring RTO Push-Up": {
+    "name": "Ring RTO Push-Up",
+    "type": "DYNAMIC",
+    "equipment": [
+      "Rings"
+    ],
+    "metric": "reps",
+    "contraction": "Dynamic / unstable + turnout",
+    "pattern": "Horizontal push",
+    "muscles": {
+      "chest": 1,
+      "triceps": 0.72,
+      "frontDelts": 0.62,
+      "biceps": 0.28,
+      "scapular": 0.72,
+      "abs": 0.45
+    },
+    "qualities": {
+      "strength": 7,
+      "hypertrophy": 9,
+      "power": 4,
+      "skill": 7,
+      "stability": 10,
+      "core": 7,
+      "endurance": 6
+    },
+    "evidence": "Biomechanical inference",
+    "evidenceConfidence": "medium",
+    "note": "",
+    "staticHoldBandSec": null
+  },
+  "Ring Chest Fly": {
+    "name": "Ring Chest Fly",
+    "type": "DYNAMIC",
+    "equipment": [
+      "Rings"
+    ],
+    "metric": "reps",
+    "contraction": "Dynamic / long lever",
+    "pattern": "Horizontal adduction",
+    "muscles": {
+      "chest": 1,
+      "frontDelts": 0.68,
+      "biceps": 0.32,
+      "scapular": 0.45,
+      "abs": 0.45
+    },
+    "qualities": {
+      "strength": 7,
+      "hypertrophy": 10,
+      "power": 2,
+      "skill": 6,
+      "stability": 8,
+      "core": 7,
+      "endurance": 5
+    },
+    "evidence": "Biomechanical inference",
+    "evidenceConfidence": "medium",
+    "note": "",
+    "staticHoldBandSec": null
+  },
+  "Ring Biceps Curl": {
+    "name": "Ring Biceps Curl",
+    "type": "DYNAMIC",
+    "equipment": [
+      "Rings"
+    ],
+    "metric": "reps",
+    "contraction": "Dynamic / unstable",
+    "pattern": "Elbow flexion",
+    "muscles": {
+      "biceps": 1,
+      "forearms": 0.45,
+      "frontDelts": 0.18,
+      "scapular": 0.25,
+      "abs": 0.25
+    },
+    "qualities": {
+      "strength": 5,
+      "hypertrophy": 9,
+      "power": 2,
+      "skill": 4,
+      "stability": 7,
+      "core": 4,
+      "endurance": 8
+    },
+    "evidence": "Biomechanical inference",
+    "evidenceConfidence": "medium",
+    "note": "",
+    "staticHoldBandSec": null
+  },
+  "Ring Triceps Extension": {
+    "name": "Ring Triceps Extension",
+    "type": "DYNAMIC",
+    "equipment": [
+      "Rings"
+    ],
+    "metric": "reps",
+    "contraction": "Dynamic / unstable",
+    "pattern": "Elbow extension",
+    "muscles": {
+      "triceps": 1,
+      "chest": 0.25,
+      "frontDelts": 0.32,
+      "scapular": 0.25,
+      "abs": 0.32
+    },
+    "qualities": {
+      "strength": 5,
+      "hypertrophy": 9,
+      "power": 2,
+      "skill": 4,
+      "stability": 7,
+      "core": 5,
+      "endurance": 8
+    },
+    "evidence": "Biomechanical inference",
+    "evidenceConfidence": "medium",
+    "note": "",
+    "staticHoldBandSec": null
+  },
+  "Ring Rollout": {
+    "name": "Ring Rollout",
+    "type": "DYNAMIC",
+    "equipment": [
+      "Rings"
+    ],
+    "metric": "reps",
+    "contraction": "Dynamic anti-extension",
+    "pattern": "Shoulder flexion + trunk anti-extension",
+    "muscles": {
+      "abs": 1,
+      "lats": 0.52,
+      "frontDelts": 0.38,
+      "scapular": 0.35,
+      "obliques": 0.35
+    },
+    "qualities": {
+      "strength": 6,
+      "hypertrophy": 7,
+      "power": 2,
+      "skill": 5,
+      "stability": 8,
+      "core": 10,
+      "endurance": 7
+    },
+    "evidence": "Biomechanical inference",
+    "evidenceConfidence": "medium",
+    "note": "",
+    "staticHoldBandSec": null
+  },
+  "Ring Body Saw": {
+    "name": "Ring Body Saw",
+    "type": "DYNAMIC",
+    "equipment": [
+      "Rings"
+    ],
+    "metric": "reps",
+    "contraction": "Dynamic anti-extension",
+    "pattern": "Trunk anti-extension",
+    "muscles": {
+      "abs": 1,
+      "obliques": 0.55,
+      "frontDelts": 0.28,
+      "lats": 0.25,
+      "scapular": 0.25
+    },
+    "qualities": {
+      "strength": 5,
+      "hypertrophy": 7,
+      "power": 2,
+      "skill": 4,
+      "stability": 8,
+      "core": 10,
+      "endurance": 8
+    },
+    "evidence": "Biomechanical inference",
+    "evidenceConfidence": "medium",
+    "note": "",
+    "staticHoldBandSec": null
+  },
+  "Ring L-Sit": {
+    "name": "Ring L-Sit",
+    "type": "STATIC",
+    "equipment": [
+      "Rings"
+    ],
+    "metric": "seconds",
+    "contraction": "Isometric support + hip flexion",
+    "pattern": "Straight-arm support / compression",
+    "muscles": {
+      "abs": 1,
+      "hipFlexors": 0.9,
+      "triceps": 0.42,
+      "scapular": 0.5,
+      "forearms": 0.28
+    },
+    "qualities": {
+      "strength": 7,
+      "hypertrophy": 5,
+      "power": 2,
+      "skill": 8,
+      "stability": 9,
+      "core": 10,
+      "endurance": 6
+    },
+    "evidence": "Isometric literature + biomechanics",
+    "evidenceConfidence": "medium",
+    "note": "",
+    "staticHoldBandSec": [
+      5,
+      20
+    ]
+  },
+  "Ring Tuck Front Lever": {
+    "name": "Ring Tuck Front Lever",
+    "type": "STATIC",
+    "equipment": [
+      "Rings"
+    ],
+    "metric": "seconds",
+    "contraction": "Isometric straight-arm pull",
+    "pattern": "Front lever regression",
+    "muscles": {
+      "lats": 1,
+      "upperBack": 0.62,
+      "abs": 0.65,
+      "biceps": 0.35,
+      "scapular": 0.68,
+      "forearms": 0.3
+    },
+    "qualities": {
+      "strength": 7,
+      "hypertrophy": 5,
+      "power": 2,
+      "skill": 7,
+      "stability": 9,
+      "core": 8,
+      "endurance": 6
+    },
+    "evidence": "Isometric literature + biomechanics",
+    "evidenceConfidence": "medium",
+    "note": "",
+    "staticHoldBandSec": [
+      6,
+      20
+    ],
+    "variantGroup": "tuck_front_lever",
+    "variantEquipment": "Rings",
+    "displayName": "Tuck Front Lever"
+  },
+  "Ring Front Lever": {
+    "name": "Ring Front Lever",
+    "type": "STATIC",
+    "equipment": [
+      "Rings"
+    ],
+    "metric": "seconds",
+    "contraction": "Isometric straight-arm pull / unstable",
+    "pattern": "Straight-arm horizontal pull",
+    "muscles": {
+      "lats": 1,
+      "upperBack": 0.72,
+      "abs": 0.82,
+      "biceps": 0.42,
+      "scapular": 0.78,
+      "forearms": 0.38
+    },
+    "qualities": {
+      "strength": 9,
+      "hypertrophy": 6,
+      "power": 2,
+      "skill": 10,
+      "stability": 10,
+      "core": 9,
+      "endurance": 5
+    },
+    "evidence": "Ring static-strength literature + biomechanics",
+    "evidenceConfidence": "medium",
+    "note": "",
+    "staticHoldBandSec": [
+      5,
+      15
+    ],
+    "variantGroup": "front_lever",
+    "variantEquipment": "Rings",
+    "displayName": "Front Lever"
+  },
+  "Ring Back Lever": {
+    "name": "Ring Back Lever",
+    "type": "STATIC",
+    "equipment": [
+      "Rings"
+    ],
+    "metric": "seconds",
+    "contraction": "Isometric straight-arm hold / unstable",
+    "pattern": "Straight-arm shoulder extension",
+    "muscles": {
+      "frontDelts": 0.65,
+      "chest": 0.58,
+      "biceps": 0.58,
+      "lats": 0.58,
+      "abs": 0.5,
+      "scapular": 0.75,
+      "forearms": 0.25
+    },
+    "qualities": {
+      "strength": 8,
+      "hypertrophy": 5,
+      "power": 2,
+      "skill": 9,
+      "stability": 10,
+      "core": 7,
+      "endurance": 5
+    },
+    "evidence": "Ring static-strength literature + biomechanics",
+    "evidenceConfidence": "medium",
+    "note": "",
+    "staticHoldBandSec": [
+      5,
+      15
+    ],
+    "variantGroup": "back_lever",
+    "variantEquipment": "Rings",
+    "displayName": "Back Lever"
+  },
+  "Ring Handstand": {
+    "name": "Ring Handstand",
+    "type": "STATIC",
+    "equipment": [
+      "Rings"
+    ],
+    "metric": "seconds",
+    "contraction": "Isometric inverted support / unstable",
+    "pattern": "Vertical push / balance",
+    "muscles": {
+      "frontDelts": 0.85,
+      "sideDelts": 0.62,
+      "triceps": 0.62,
+      "traps": 0.58,
+      "scapular": 0.78,
+      "abs": 0.55,
+      "forearms": 0.42
+    },
+    "qualities": {
+      "strength": 8,
+      "hypertrophy": 5,
+      "power": 2,
+      "skill": 10,
+      "stability": 10,
+      "core": 8,
+      "endurance": 5
+    },
+    "evidence": "Ring static-strength literature + biomechanics",
+    "evidenceConfidence": "medium",
+    "note": "",
+    "staticHoldBandSec": [
+      3,
+      15
+    ]
+  },
+  "Skin the Cat": {
+    "name": "Skin the Cat",
+    "type": "DYNAMIC",
+    "equipment": [
+      "Rings"
+    ],
+    "metric": "reps",
+    "contraction": "Dynamic shoulder rotation",
+    "pattern": "Pull + shoulder extension mobility",
+    "muscles": {
+      "lats": 0.72,
+      "biceps": 0.52,
+      "frontDelts": 0.5,
+      "chest": 0.42,
+      "abs": 0.52,
+      "scapular": 0.75,
+      "forearms": 0.3
+    },
+    "qualities": {
+      "strength": 6,
+      "hypertrophy": 4,
+      "power": 2,
+      "skill": 8,
+      "stability": 9,
+      "core": 7,
+      "endurance": 5
+    },
+    "evidence": "Gymnastics biomechanics",
+    "evidenceConfidence": "medium",
+    "note": "Treat shoulder range conservatively; not a pure hypertrophy exercise.",
+    "staticHoldBandSec": null
+  },
+  "German Hang": {
+    "name": "German Hang",
+    "type": "STATIC",
+    "equipment": [
+      "Rings"
+    ],
+    "metric": "seconds",
+    "contraction": "Passive-active shoulder extension hold",
+    "pattern": "Shoulder extension mobility / support",
+    "muscles": {
+      "frontDelts": 0.3,
+      "chest": 0.28,
+      "biceps": 0.28,
+      "lats": 0.25,
+      "scapular": 0.35
+    },
+    "qualities": {
+      "strength": 3,
+      "hypertrophy": 2,
+      "power": 1,
+      "skill": 6,
+      "stability": 7,
+      "core": 3,
+      "endurance": 4
+    },
+    "evidence": "Gymnastics biomechanics",
+    "evidenceConfidence": "low-medium",
+    "note": "Mobility/position tolerance emphasis; not counted as a high hypertrophy stimulus.",
+    "staticHoldBandSec": [
+      5,
+      20
+    ]
+  },
+  "Ring Hamstring Curl": {
+    "name": "Ring Hamstring Curl",
+    "type": "DYNAMIC",
+    "equipment": [
+      "Rings"
+    ],
+    "metric": "reps",
+    "contraction": "Dynamic / unstable",
+    "pattern": "Knee flexion + hip extension",
+    "muscles": {
+      "hamstrings": 1,
+      "glutes": 0.42,
+      "calves": 0.18,
+      "abs": 0.28
+    },
+    "qualities": {
+      "strength": 6,
+      "hypertrophy": 9,
+      "power": 3,
+      "skill": 4,
+      "stability": 7,
+      "core": 5,
+      "endurance": 8
+    },
+    "evidence": "Biomechanical inference",
+    "evidenceConfidence": "medium",
+    "note": "",
+    "staticHoldBandSec": null
+  },
+  "Ring Pike Compression": {
+    "name": "Ring Pike Compression",
+    "type": "DYNAMIC",
+    "equipment": [
+      "Rings"
+    ],
+    "metric": "reps",
+    "contraction": "Dynamic support/compression",
+    "pattern": "Hip flexion + trunk compression",
+    "muscles": {
+      "hipFlexors": 1,
+      "abs": 0.88,
+      "triceps": 0.32,
+      "scapular": 0.35
+    },
+    "qualities": {
+      "strength": 5,
+      "hypertrophy": 7,
+      "power": 2,
+      "skill": 6,
+      "stability": 8,
+      "core": 10,
+      "endurance": 8
+    },
+    "evidence": "Biomechanical inference",
+    "evidenceConfidence": "medium",
+    "note": "",
+    "staticHoldBandSec": null
+  },
+  "Handstand": {
+    "name": "Handstand",
+    "type": "STATIC",
+    "equipment": [
+      "Floor",
+      "Parallettes"
+    ],
+    "metric": "seconds",
+    "contraction": "Isometric inverted support",
+    "pattern": "Vertical support",
+    "muscles": {
+      "frontDelts": 0.72,
+      "sideDelts": 0.55,
+      "triceps": 0.48,
+      "traps": 0.48,
+      "scapular": 0.58,
+      "abs": 0.42
+    },
+    "qualities": {
+      "strength": 6,
+      "hypertrophy": 4,
+      "power": 2,
+      "skill": 9,
+      "stability": 9,
+      "core": 7,
+      "endurance": 6
+    },
+    "evidence": "Isometric literature + biomechanics",
+    "evidenceConfidence": "medium",
+    "note": "",
+    "staticHoldBandSec": [
+      10,
+      40
+    ]
+  },
+  "Tuck Planche": {
+    "name": "Tuck Planche",
+    "type": "STATIC",
+    "equipment": [
+      "Parallettes",
+      "Floor"
+    ],
+    "metric": "seconds",
+    "contraction": "Isometric straight-arm push",
+    "pattern": "Planche regression",
+    "muscles": {
+      "frontDelts": 1,
+      "chest": 0.6,
+      "triceps": 0.6,
+      "abs": 0.62,
+      "scapular": 0.55
+    },
+    "qualities": {
+      "strength": 6,
+      "hypertrophy": 5,
+      "power": 2,
+      "skill": 6,
+      "stability": 8,
+      "core": 7,
+      "endurance": 6
+    },
+    "evidence": "Isometric literature + biomechanics",
+    "evidenceConfidence": "medium",
+    "note": "",
+    "staticHoldBandSec": [
+      8,
+      25
+    ]
+  },
+  "Straddle Planche": {
+    "name": "Straddle Planche",
+    "type": "STATIC",
+    "equipment": [
+      "Parallettes",
+      "Floor"
+    ],
+    "metric": "seconds",
+    "contraction": "Isometric straight-arm push",
+    "pattern": "Planche progression",
+    "muscles": {
+      "frontDelts": 1,
+      "chest": 0.7,
+      "triceps": 0.65,
+      "abs": 0.72,
+      "scapular": 0.62
+    },
+    "qualities": {
+      "strength": 9,
+      "hypertrophy": 6,
+      "power": 2,
+      "skill": 9,
+      "stability": 9,
+      "core": 8,
+      "endurance": 5
+    },
+    "evidence": "Isometric literature + biomechanics",
+    "evidenceConfidence": "medium",
+    "note": "",
+    "staticHoldBandSec": [
+      4,
+      15
+    ]
+  },
+  "Tuck Front Lever": {
+    "name": "Tuck Front Lever",
+    "type": "STATIC",
+    "equipment": [
+      "Pull-Up Bar"
+    ],
+    "metric": "seconds",
+    "contraction": "Isometric straight-arm pull",
+    "pattern": "Front lever regression",
+    "muscles": {
+      "lats": 1,
+      "upperBack": 0.6,
+      "abs": 0.62,
+      "biceps": 0.35,
+      "scapular": 0.62
+    },
+    "qualities": {
+      "strength": 6,
+      "hypertrophy": 5,
+      "power": 2,
+      "skill": 6,
+      "stability": 8,
+      "core": 8,
+      "endurance": 6
+    },
+    "evidence": "Isometric literature + biomechanics",
+    "evidenceConfidence": "medium",
+    "note": "",
+    "staticHoldBandSec": [
+      8,
+      25
+    ],
+    "variantGroup": "tuck_front_lever",
+    "variantEquipment": "Pull-Up Bar",
+    "displayName": "Tuck Front Lever"
+  },
+  "Straddle Front Lever": {
+    "name": "Straddle Front Lever",
+    "type": "STATIC",
+    "equipment": [
+      "Pull-Up Bar"
+    ],
+    "metric": "seconds",
+    "contraction": "Isometric straight-arm pull",
+    "pattern": "Front lever progression",
+    "muscles": {
+      "lats": 1,
+      "upperBack": 0.7,
+      "abs": 0.72,
+      "biceps": 0.4,
+      "scapular": 0.68
+    },
+    "qualities": {
+      "strength": 9,
+      "hypertrophy": 6,
+      "power": 2,
+      "skill": 9,
+      "stability": 9,
+      "core": 9,
+      "endurance": 5
+    },
+    "evidence": "Isometric literature + biomechanics",
+    "evidenceConfidence": "medium",
+    "note": "",
+    "staticHoldBandSec": [
+      4,
+      15
+    ],
+    "variantGroup": "straddle_front_lever",
+    "variantEquipment": "Pull-Up Bar",
+    "displayName": "Straddle Front Lever"
+  },
+  "Human Flag": {
+    "name": "Human Flag",
+    "type": "STATIC",
+    "equipment": [
+      "Vertical Bar"
+    ],
+    "metric": "seconds",
+    "contraction": "Isometric lateral support",
+    "pattern": "Lateral chain",
+    "muscles": {
+      "obliques": 1,
+      "lats": 0.72,
+      "sideDelts": 0.68,
+      "abs": 0.68,
+      "forearms": 0.38,
+      "scapular": 0.55
+    },
+    "qualities": {
+      "strength": 8,
+      "hypertrophy": 5,
+      "power": 2,
+      "skill": 9,
+      "stability": 9,
+      "core": 10,
+      "endurance": 5
+    },
+    "evidence": "Isometric literature + biomechanics",
+    "evidenceConfidence": "medium",
+    "note": "",
+    "staticHoldBandSec": [
+      4,
+      15
+    ]
+  },
+  "Ring Straddle Front Lever": {
+    "name": "Ring Straddle Front Lever",
+    "type": "STATIC",
+    "equipment": [
+      "Rings"
+    ],
+    "metric": "seconds",
+    "contraction": "Isometric straight-arm pull / unstable",
+    "pattern": "Front lever progression",
+    "muscles": {
+      "lats": 1,
+      "upperBack": 0.7,
+      "abs": 0.72,
+      "biceps": 0.4,
+      "scapular": 0.76,
+      "forearms": 0.34
+    },
+    "qualities": {
+      "strength": 9,
+      "hypertrophy": 6,
+      "power": 2,
+      "skill": 9,
+      "stability": 10,
+      "core": 9,
+      "endurance": 5
+    },
+    "evidence": "Ring static-strength literature + biomechanics",
+    "evidenceConfidence": "medium",
+    "note": "",
+    "staticHoldBandSec": [
+      4,
+      15
+    ],
+    "variantGroup": "straddle_front_lever",
+    "variantEquipment": "Rings",
+    "displayName": "Straddle Front Lever"
+  },
+  "Pull-Up": {
+    "name": "Pull-Up",
+    "type": "DYNAMIC",
+    "equipment": [
+      "Pull-Up Bar"
+    ],
+    "metric": "reps",
+    "contraction": "Dynamic",
+    "pattern": "Vertical pull",
+    "muscles": {
+      "lats": 1,
+      "biceps": 0.76,
+      "upperBack": 0.64,
+      "forearms": 0.48,
+      "scapular": 0.48
+    },
+    "qualities": {
+      "strength": 7,
+      "hypertrophy": 8,
+      "power": 4,
+      "skill": 4,
+      "stability": 5,
+      "core": 4,
+      "endurance": 7
+    },
+    "evidence": "Resistance-training literature + biomechanics",
+    "evidenceConfidence": "medium-high",
+    "note": "Canonical bar pull-up movement.",
+    "staticHoldBandSec": null,
+    "variantGroup": "pull_up",
+    "variantEquipment": "Pull-Up Bar",
+    "displayName": "Pull-Up"
+  },
+  "Chin-Up": {
+    "name": "Chin-Up",
+    "type": "DYNAMIC",
+    "equipment": [
+      "Pull-Up Bar"
+    ],
+    "metric": "reps",
+    "contraction": "Dynamic",
+    "pattern": "Vertical pull / supinated",
+    "muscles": {
+      "lats": 0.92,
+      "biceps": 1,
+      "upperBack": 0.54,
+      "forearms": 0.52,
+      "scapular": 0.45
+    },
+    "qualities": {
+      "strength": 7,
+      "hypertrophy": 8,
+      "power": 4,
+      "skill": 4,
+      "stability": 5,
+      "core": 4,
+      "endurance": 7
+    },
+    "evidence": "Resistance-training literature + biomechanics",
+    "evidenceConfidence": "medium",
+    "note": "Canonical bar chin-up movement.",
+    "staticHoldBandSec": null,
+    "variantGroup": "chin_up",
+    "variantEquipment": "Pull-Up Bar",
+    "displayName": "Chin-Up"
+  },
+  "Front Lever Pull / Raise": {
+    "name": "Front Lever Pull / Raise",
+    "type": "DYNAMIC",
+    "equipment": [
+      "Pull-Up Bar"
+    ],
+    "metric": "reps",
+    "contraction": "Dynamic straight-arm / lever pull",
+    "pattern": "Straight-arm horizontal pull through range",
+    "muscles": {
+      "lats": 1,
+      "upperBack": 0.82,
+      "abs": 0.78,
+      "biceps": 0.42,
+      "forearms": 0.34,
+      "scapular": 0.72,
+      "rearDelts": 0.28
+    },
+    "qualities": {
+      "strength": 9,
+      "hypertrophy": 7,
+      "power": 5,
+      "skill": 9,
+      "stability": 8,
+      "core": 9,
+      "endurance": 5
+    },
+    "evidence": "Isometric/dynamic calisthenics literature + biomechanics",
+    "evidenceConfidence": "medium",
+    "note": "Dinamik tekrar hareketidir. Coach reçetesi 3×4–8 ise her set gerçek tekrar sayısı olarak kaydedilir.",
+    "staticHoldBandSec": null,
+    "variantGroup": "front_lever_pull_raise",
+    "variantEquipment": "Pull-Up Bar",
+    "displayName": "Front Lever Pull / Raise"
+  },
+  "Ring Front Lever Pull / Raise": {
+    "name": "Ring Front Lever Pull / Raise",
+    "type": "DYNAMIC",
+    "equipment": [
+      "Rings"
+    ],
+    "metric": "reps",
+    "contraction": "Dynamic straight-arm / lever pull / unstable",
+    "pattern": "Straight-arm horizontal pull through range",
+    "muscles": {
+      "lats": 1,
+      "upperBack": 0.84,
+      "abs": 0.8,
+      "biceps": 0.44,
+      "forearms": 0.42,
+      "scapular": 0.82,
+      "rearDelts": 0.3
+    },
+    "qualities": {
+      "strength": 9,
+      "hypertrophy": 7,
+      "power": 5,
+      "skill": 10,
+      "stability": 10,
+      "core": 9,
+      "endurance": 5
+    },
+    "evidence": "Ring static-strength literature + biomechanics",
+    "evidenceConfidence": "medium",
+    "note": "Halka varyantıdır; tekrar bazlıdır ve stabilizasyon talebi bar varyantından ayrı izlenir.",
+    "staticHoldBandSec": null,
+    "variantGroup": "front_lever_pull_raise",
+    "variantEquipment": "Rings",
+    "displayName": "Front Lever Pull / Raise"
+  },
+  "Planche Push-Up": {
+    "name": "Planche Push-Up",
+    "type": "DYNAMIC",
+    "equipment": [
+      "Parallettes",
+      "Floor"
+    ],
+    "metric": "reps",
+    "contraction": "Dynamic straight-arm biased push",
+    "pattern": "Advanced horizontal push",
+    "muscles": {
+      "frontDelts": 1,
+      "chest": 0.84,
+      "triceps": 0.78,
+      "abs": 0.68,
+      "scapular": 0.58,
+      "biceps": 0.22
+    },
+    "qualities": {
+      "strength": 10,
+      "hypertrophy": 7,
+      "power": 6,
+      "skill": 10,
+      "stability": 9,
+      "core": 8,
+      "endurance": 4
+    },
+    "evidence": "Calisthenics biomechanics + resistance-training principles",
+    "evidenceConfidence": "medium",
+    "note": "Tekrar bazlı dinamik planche press/push-up. Statik lean ayrı hareket olarak kaydedilir.",
+    "staticHoldBandSec": null
+  },
+  "Planche Lean": {
+    "name": "Planche Lean",
+    "type": "STATIC",
+    "equipment": [
+      "Parallettes",
+      "Floor"
+    ],
+    "metric": "seconds",
+    "contraction": "Isometric forward lean",
+    "pattern": "Straight-arm horizontal push preparation",
+    "muscles": {
+      "frontDelts": 1,
+      "chest": 0.62,
+      "triceps": 0.48,
+      "abs": 0.58,
+      "scapular": 0.62,
+      "biceps": 0.2
+    },
+    "qualities": {
+      "strength": 7,
+      "hypertrophy": 5,
+      "power": 1,
+      "skill": 6,
+      "stability": 8,
+      "core": 7,
+      "endurance": 6
+    },
+    "evidence": "Isometric training principles + biomechanics",
+    "evidenceConfidence": "medium",
+    "note": "Statik süre ile kaydedilir; Planche Push-Up tekrarlarından ayrı tutulur.",
+    "staticHoldBandSec": [
+      10,
+      35
+    ]
+  },
+  "Planche Push-Up / Lean": {
+    "name": "Planche Push-Up / Lean",
+    "type": "DYNAMIC",
+    "equipment": [
+      "Parallettes",
+      "Floor"
+    ],
+    "metric": "reps",
+    "contraction": "Legacy mixed movement",
+    "pattern": "Legacy planche push record",
+    "muscles": {
+      "frontDelts": 1,
+      "chest": 0.82,
+      "triceps": 0.75,
+      "abs": 0.6,
+      "scapular": 0.5
+    },
+    "qualities": {
+      "strength": 9,
+      "hypertrophy": 7,
+      "power": 5,
+      "skill": 9,
+      "stability": 8,
+      "core": 8,
+      "endurance": 5
+    },
+    "evidence": "Legacy compatibility",
+    "evidenceConfidence": "low",
+    "note": "Eski kayıt uyumluluğu için tutulur. Yeni girişte Planche Push-Up veya Planche Lean kullan.",
+    "staticHoldBandSec": null,
+    "hiddenFromManual": true,
+    "aliasTo": "Planche Push-Up"
+  },
+  "EZ-Bar Curl": {
+    "name": "EZ-Bar Curl",
+    "type": "WEIGHTED",
+    "equipment": [
+      "EZ Bar"
+    ],
+    "metric": "reps",
+    "contraction": "Dynamic loaded",
+    "pattern": "Elbow flexion",
+    "muscles": {
+      "biceps": 1,
+      "forearms": 0.36
+    },
+    "qualities": {
+      "strength": 5,
+      "hypertrophy": 9,
+      "power": 2,
+      "skill": 2,
+      "stability": 3,
+      "core": 2,
+      "endurance": 7
+    },
+    "evidence": "Biomechanics + resistance-training principles",
+    "evidenceConfidence": "medium",
+    "note": "Tekrar + yük ile kaydedilir.",
+    "staticHoldBandSec": null
+  },
+  "DB Hammer Curl": {
+    "name": "DB Hammer Curl",
+    "type": "WEIGHTED",
+    "equipment": [
+      "Dumbbell"
+    ],
+    "metric": "reps",
+    "contraction": "Dynamic loaded",
+    "pattern": "Neutral-grip elbow flexion",
+    "muscles": {
+      "biceps": 0.8,
+      "forearms": 0.78
+    },
+    "qualities": {
+      "strength": 5,
+      "hypertrophy": 9,
+      "power": 2,
+      "skill": 2,
+      "stability": 3,
+      "core": 2,
+      "endurance": 7
+    },
+    "evidence": "Biomechanics + resistance-training principles",
+    "evidenceConfidence": "medium",
+    "note": "Tekrar + dumbbell yükü ile kaydedilir.",
+    "staticHoldBandSec": null
+  },
+  "OHP": {
+    "name": "OHP",
+    "type": "BARBELL",
+    "equipment": [
+      "EZ Bar",
+      "Dumbbell"
+    ],
+    "metric": "reps",
+    "contraction": "Dynamic loaded",
+    "pattern": "Vertical push",
+    "muscles": {
+      "frontDelts": 1,
+      "sideDelts": 0.76,
+      "triceps": 0.76,
+      "traps": 0.36,
+      "abs": 0.28
+    },
+    "qualities": {
+      "strength": 9,
+      "hypertrophy": 8,
+      "power": 7,
+      "skill": 4,
+      "stability": 6,
+      "core": 5,
+      "endurance": 4
+    },
+    "evidence": "Biomechanics + resistance-training principles",
+    "evidenceConfidence": "medium",
+    "note": "Tekrar + dış yük ile kaydedilir.",
+    "staticHoldBandSec": null
+  },
+  "DB Lateral Raise": {
+    "name": "DB Lateral Raise",
+    "type": "WEIGHTED",
+    "equipment": [
+      "Dumbbell"
+    ],
+    "metric": "reps",
+    "contraction": "Dynamic loaded",
+    "pattern": "Shoulder abduction",
+    "muscles": {
+      "sideDelts": 1,
+      "traps": 0.2
+    },
+    "qualities": {
+      "strength": 3,
+      "hypertrophy": 9,
+      "power": 1,
+      "skill": 2,
+      "stability": 3,
+      "core": 2,
+      "endurance": 8
+    },
+    "evidence": "Biomechanics + resistance-training principles",
+    "evidenceConfidence": "medium",
+    "note": "Tekrar + dumbbell yükü ile kaydedilir.",
+    "staticHoldBandSec": null
+  },
+  "Triceps Extension": {
+    "name": "Triceps Extension",
+    "type": "WEIGHTED",
+    "equipment": [
+      "Dumbbell",
+      "Rings",
+      "EZ Bar"
+    ],
+    "metric": "reps",
+    "contraction": "Dynamic loaded",
+    "pattern": "Elbow extension",
+    "muscles": {
+      "triceps": 1,
+      "frontDelts": 0.16,
+      "abs": 0.12
+    },
+    "qualities": {
+      "strength": 5,
+      "hypertrophy": 9,
+      "power": 2,
+      "skill": 2,
+      "stability": 4,
+      "core": 3,
+      "endurance": 8
+    },
+    "evidence": "Biomechanics + resistance-training principles",
+    "evidenceConfidence": "medium",
+    "note": "",
+    "staticHoldBandSec": null
+  },
+  "Bulgarian Split Squat": {
+    "name": "Bulgarian Split Squat",
+    "type": "WEIGHTED",
+    "equipment": [
+      "Dumbbell",
+      "Backpack"
+    ],
+    "metric": "reps",
+    "contraction": "Dynamic loaded unilateral",
+    "pattern": "Single-leg squat",
+    "muscles": {
+      "quads": 1,
+      "glutes": 0.92,
+      "adductors": 0.45,
+      "hamstrings": 0.36,
+      "abs": 0.25
+    },
+    "qualities": {
+      "strength": 8,
+      "hypertrophy": 10,
+      "power": 5,
+      "skill": 4,
+      "stability": 8,
+      "core": 5,
+      "endurance": 6
+    },
+    "evidence": "Biomechanics + resistance-training principles",
+    "evidenceConfidence": "medium",
+    "note": "",
+    "staticHoldBandSec": null
+  },
+  "RDL": {
+    "name": "RDL",
+    "type": "BARBELL",
+    "equipment": [
+      "EZ Bar",
+      "Dumbbell"
+    ],
+    "metric": "reps",
+    "contraction": "Dynamic loaded",
+    "pattern": "Hip hinge",
+    "muscles": {
+      "hamstrings": 1,
+      "glutes": 0.86,
+      "spinalErectors": 0.56,
+      "forearms": 0.32
+    },
+    "qualities": {
+      "strength": 9,
+      "hypertrophy": 9,
+      "power": 6,
+      "skill": 4,
+      "stability": 6,
+      "core": 5,
+      "endurance": 4
+    },
+    "evidence": "Biomechanics + resistance-training principles",
+    "evidenceConfidence": "medium",
+    "note": "",
+    "staticHoldBandSec": null
+  },
+  "Backpack/Goblet Squat": {
+    "name": "Backpack/Goblet Squat",
+    "type": "WEIGHTED",
+    "equipment": [
+      "Backpack",
+      "Dumbbell"
+    ],
+    "metric": "reps",
+    "contraction": "Dynamic loaded",
+    "pattern": "Squat",
+    "muscles": {
+      "quads": 1,
+      "glutes": 0.78,
+      "adductors": 0.46,
+      "abs": 0.36
+    },
+    "qualities": {
+      "strength": 7,
+      "hypertrophy": 9,
+      "power": 4,
+      "skill": 3,
+      "stability": 6,
+      "core": 5,
+      "endurance": 7
+    },
+    "evidence": "Biomechanics + resistance-training principles",
+    "evidenceConfidence": "medium",
+    "note": "",
+    "staticHoldBandSec": null
+  },
+  "Single-Leg RDL": {
+    "name": "Single-Leg RDL",
+    "type": "WEIGHTED",
+    "equipment": [
+      "Dumbbell",
+      "Backpack"
+    ],
+    "metric": "reps",
+    "contraction": "Dynamic loaded unilateral",
+    "pattern": "Single-leg hip hinge",
+    "muscles": {
+      "hamstrings": 1,
+      "glutes": 0.92,
+      "spinalErectors": 0.36,
+      "obliques": 0.28
+    },
+    "qualities": {
+      "strength": 7,
+      "hypertrophy": 9,
+      "power": 4,
+      "skill": 5,
+      "stability": 9,
+      "core": 6,
+      "endurance": 6
+    },
+    "evidence": "Biomechanics + resistance-training principles",
+    "evidenceConfidence": "medium",
+    "note": "",
+    "staticHoldBandSec": null
+  },
+  "Calf Raise": {
+    "name": "Calf Raise",
+    "type": "WEIGHTED",
+    "equipment": [
+      "Bodyweight",
+      "Dumbbell",
+      "Backpack"
+    ],
+    "metric": "reps",
+    "contraction": "Dynamic",
+    "pattern": "Plantar flexion",
+    "muscles": {
+      "calves": 1
+    },
+    "qualities": {
+      "strength": 5,
+      "hypertrophy": 9,
+      "power": 3,
+      "skill": 2,
+      "stability": 5,
+      "core": 1,
+      "endurance": 8
+    },
+    "evidence": "Biomechanics + resistance-training principles",
+    "evidenceConfidence": "medium",
+    "note": "",
+    "staticHoldBandSec": null
+  },
+  "Dragon Flag": {
+    "name": "Dragon Flag",
+    "type": "DYNAMIC",
+    "equipment": [
+      "Bodyweight"
+    ],
+    "metric": "reps",
+    "contraction": "Dynamic anti-extension",
+    "pattern": "Core anti-extension",
+    "muscles": {
+      "abs": 1,
+      "hipFlexors": 0.55,
+      "lats": 0.3
+    },
+    "qualities": {
+      "strength": 7,
+      "hypertrophy": 6,
+      "power": 2,
+      "skill": 7,
+      "stability": 8,
+      "core": 10,
+      "endurance": 7
+    },
+    "evidence": "Biomechanics + resistance-training principles",
+    "evidenceConfidence": "medium",
+    "note": "",
+    "staticHoldBandSec": null
+  },
+  "Zone 2 Run": {
+    "name": "Zone 2 Run",
+    "type": "RUN",
+    "equipment": [
+      "Outdoor",
+      "Treadmill"
+    ],
+    "metric": "km",
+    "contraction": "Cyclic endurance",
+    "pattern": "Locomotion",
+    "muscles": {
+      "quads": 0.35,
+      "hamstrings": 0.35,
+      "glutes": 0.35,
+      "calves": 0.55,
+      "hipFlexors": 0.25
+    },
+    "qualities": {
+      "strength": 2,
+      "hypertrophy": 1,
+      "power": 2,
+      "skill": 2,
+      "stability": 4,
+      "core": 3,
+      "endurance": 10
+    },
+    "evidence": "Biomechanics + resistance-training principles",
+    "evidenceConfidence": "medium",
+    "note": "Mesafe kilometre olarak kaydedilir; pace/süre ayrı running verisiyle analiz edilir.",
+    "staticHoldBandSec": null
+  },
+  "Mobility": {
+    "name": "Mobility",
+    "type": "MOBILITY",
+    "equipment": [
+      "Bodyweight"
+    ],
+    "metric": "minutes",
+    "contraction": "Mobility / controlled range",
+    "pattern": "Mobility",
+    "muscles": {},
+    "qualities": {
+      "strength": 1,
+      "hypertrophy": 0,
+      "power": 0,
+      "skill": 3,
+      "stability": 4,
+      "core": 2,
+      "endurance": 2
+    },
+    "evidence": "Biomechanics + resistance-training principles",
+    "evidenceConfidence": "medium",
+    "note": "Dakika bazlı recovery/mobility çalışmasıdır.",
+    "staticHoldBandSec": null
+  },
+  "Walk": {
+    "name": "Walk",
+    "type": "RUN",
+    "equipment": [
+      "Outdoor",
+      "Treadmill"
+    ],
+    "metric": "minutes",
+    "contraction": "Low-intensity locomotion",
+    "pattern": "Walking",
+    "muscles": {
+      "calves": 0.15,
+      "quads": 0.1,
+      "glutes": 0.1
+    },
+    "qualities": {
+      "strength": 1,
+      "hypertrophy": 0,
+      "power": 0,
+      "skill": 1,
+      "stability": 3,
+      "core": 2,
+      "endurance": 5
+    },
+    "evidence": "Biomechanics + resistance-training principles",
+    "evidenceConfidence": "medium",
+    "note": "Dakika bazlı düşük yoğunluklu aktivite.",
+    "staticHoldBandSec": null
+  },
+  "Bodyweight Squat": {
+    "name": "Bodyweight Squat",
+    "type": "DYNAMIC",
+    "equipment": [
+      "Bodyweight"
+    ],
+    "metric": "reps",
+    "contraction": "Dynamic bodyweight",
+    "pattern": "Squat",
+    "muscles": {
+      "quads": 1,
+      "glutes": 0.72,
+      "adductors": 0.38,
+      "calves": 0.16,
+      "abs": 0.18
+    },
+    "qualities": {
+      "strength": 4,
+      "hypertrophy": 6,
+      "power": 3,
+      "skill": 2,
+      "stability": 5,
+      "core": 3,
+      "endurance": 8
+    },
+    "evidence": "Biomechanics + resistance-training principles",
+    "evidenceConfidence": "medium",
+    "note": "Plan dışı circuit/conditioning girişlerinde barbell Squat'tan ayrı tutulur.",
+    "staticHoldBandSec": null
+  },
+  "Sprint": {
+    "name": "Sprint",
+    "type": "RUN",
+    "equipment": [
+      "Outdoor",
+      "Treadmill"
+    ],
+    "metric": "seconds",
+    "contraction": "Cyclic high-intensity locomotion",
+    "pattern": "Max / near-max horizontal running",
+    "muscles": {
+      "glutes": 1,
+      "hamstrings": 1,
+      "quads": 0.78,
+      "calves": 0.78,
+      "hipFlexors": 0.58,
+      "abs": 0.22,
+      "spinalErectors": 0.18
+    },
+    "qualities": {
+      "strength": 5,
+      "hypertrophy": 4,
+      "power": 10,
+      "skill": 6,
+      "stability": 6,
+      "core": 4,
+      "endurance": 6
+    },
+    "evidence": "Repeated-sprint / sprint-interval literature + running biomechanics",
+    "evidenceConfidence": "high",
+    "note": "Tur başına sprint süresi saniye ile kaydedilir. Round, rest ve RPE Physiological Impact Engine tarafından enerji sistemi / power / recovery analizine dönüştürülür.",
+    "staticHoldBandSec": null,
+    "doseModel": "sprint_work_seconds",
+    "physiology": {
+      "mode": "sprint",
+      "highSpeed": true,
+      "locomotor": true
+    }
+  },
+  "Hill Sprint": {
+    "name": "Hill Sprint",
+    "type": "RUN",
+    "equipment": [
+      "Outdoor",
+      "Treadmill"
+    ],
+    "metric": "seconds",
+    "contraction": "Cyclic high-intensity locomotion",
+    "pattern": "Uphill sprint / acceleration",
+    "muscles": {
+      "glutes": 1,
+      "hamstrings": 0.88,
+      "quads": 0.86,
+      "calves": 0.86,
+      "hipFlexors": 0.48,
+      "abs": 0.22
+    },
+    "qualities": {
+      "strength": 6,
+      "hypertrophy": 4,
+      "power": 9,
+      "skill": 5,
+      "stability": 6,
+      "core": 4,
+      "endurance": 6
+    },
+    "evidence": "Repeated-sprint / sprint-interval literature + running biomechanics",
+    "evidenceConfidence": "medium-high",
+    "note": "Yokuş sprinti saniye bazlıdır; yüksek power ve lower-body yükü oluşturur.",
+    "staticHoldBandSec": null,
+    "doseModel": "sprint_work_seconds",
+    "physiology": {
+      "mode": "sprint",
+      "highSpeed": true,
+      "locomotor": true
+    }
+  },
+  "Intervals": {
+    "name": "Intervals",
+    "type": "RUN",
+    "equipment": [
+      "Outdoor",
+      "Treadmill"
+    ],
+    "metric": "seconds",
+    "contraction": "Cyclic high-intensity locomotion",
+    "pattern": "Repeated running intervals",
+    "muscles": {
+      "quads": 0.62,
+      "hamstrings": 0.62,
+      "glutes": 0.6,
+      "calves": 0.68,
+      "hipFlexors": 0.38
+    },
+    "qualities": {
+      "strength": 3,
+      "hypertrophy": 2,
+      "power": 6,
+      "skill": 3,
+      "stability": 4,
+      "core": 3,
+      "endurance": 9
+    },
+    "evidence": "Repeated-sprint / sprint-interval literature + running biomechanics",
+    "evidenceConfidence": "medium-high",
+    "note": "Tur başına çalışma süresi saniye ile kaydedilir; work:rest oranı metabolik talebi değiştirir.",
+    "staticHoldBandSec": null,
+    "doseModel": "interval_work_seconds",
+    "physiology": {
+      "mode": "interval",
+      "highSpeed": false,
+      "locomotor": true
+    }
+  },
+  "VO2 Intervals": {
+    "name": "VO2 Intervals",
+    "type": "RUN",
+    "equipment": [
+      "Outdoor",
+      "Treadmill"
+    ],
+    "metric": "seconds",
+    "contraction": "Cyclic high-intensity locomotion",
+    "pattern": "High-intensity aerobic intervals",
+    "muscles": {
+      "quads": 0.64,
+      "hamstrings": 0.6,
+      "glutes": 0.58,
+      "calves": 0.68,
+      "hipFlexors": 0.38
+    },
+    "qualities": {
+      "strength": 2,
+      "hypertrophy": 1,
+      "power": 5,
+      "skill": 3,
+      "stability": 4,
+      "core": 3,
+      "endurance": 10
+    },
+    "evidence": "Repeated-sprint / sprint-interval literature + running biomechanics",
+    "evidenceConfidence": "medium-high",
+    "note": "Yüksek yoğunluklu interval çalışma; süre/rest/RPE birlikte değerlendirilir.",
+    "staticHoldBandSec": null,
+    "doseModel": "interval_work_seconds",
+    "physiology": {
+      "mode": "interval",
+      "highSpeed": false,
+      "locomotor": true
+    }
+  },
+  "Tempo Run": {
+    "name": "Tempo Run",
+    "type": "RUN",
+    "equipment": [
+      "Outdoor",
+      "Treadmill"
+    ],
+    "metric": "minutes",
+    "contraction": "Cyclic locomotion",
+    "pattern": "Sustained tempo running",
+    "muscles": {
+      "quads": 0.45,
+      "hamstrings": 0.45,
+      "glutes": 0.42,
+      "calves": 0.6,
+      "hipFlexors": 0.3
+    },
+    "qualities": {
+      "strength": 2,
+      "hypertrophy": 1,
+      "power": 3,
+      "skill": 2,
+      "stability": 4,
+      "core": 3,
+      "endurance": 9
+    },
+    "evidence": "Repeated-sprint / sprint-interval literature + running biomechanics",
+    "evidenceConfidence": "medium",
+    "note": "Dakika bazlı tempo koşusu.",
+    "staticHoldBandSec": null,
+    "doseModel": "duration_minutes",
+    "physiology": {
+      "mode": "interval",
+      "highSpeed": false,
+      "locomotor": true
+    }
+  },
+  "Threshold Run": {
+    "name": "Threshold Run",
+    "type": "RUN",
+    "equipment": [
+      "Outdoor",
+      "Treadmill"
+    ],
+    "metric": "minutes",
+    "contraction": "Cyclic locomotion",
+    "pattern": "Threshold running",
+    "muscles": {
+      "quads": 0.5,
+      "hamstrings": 0.5,
+      "glutes": 0.46,
+      "calves": 0.62,
+      "hipFlexors": 0.32
+    },
+    "qualities": {
+      "strength": 2,
+      "hypertrophy": 1,
+      "power": 3,
+      "skill": 2,
+      "stability": 4,
+      "core": 3,
+      "endurance": 10
+    },
+    "evidence": "Repeated-sprint / sprint-interval literature + running biomechanics",
+    "evidenceConfidence": "medium",
+    "note": "Dakika bazlı eşik koşusu.",
+    "staticHoldBandSec": null,
+    "doseModel": "duration_minutes",
+    "physiology": {
+      "mode": "interval",
+      "highSpeed": false,
+      "locomotor": true
+    }
+  },
+  "Long Run": {
+    "name": "Long Run",
+    "type": "RUN",
+    "equipment": [
+      "Outdoor",
+      "Treadmill"
+    ],
+    "metric": "minutes",
+    "contraction": "Cyclic locomotion",
+    "pattern": "Long-duration running",
+    "muscles": {
+      "quads": 0.35,
+      "hamstrings": 0.35,
+      "glutes": 0.35,
+      "calves": 0.55,
+      "hipFlexors": 0.25
+    },
+    "qualities": {
+      "strength": 1,
+      "hypertrophy": 1,
+      "power": 1,
+      "skill": 2,
+      "stability": 4,
+      "core": 3,
+      "endurance": 10
+    },
+    "evidence": "Repeated-sprint / sprint-interval literature + running biomechanics",
+    "evidenceConfidence": "medium",
+    "note": "Dakika bazlı uzun koşu.",
+    "staticHoldBandSec": null,
+    "doseModel": "duration_minutes",
+    "physiology": {
+      "mode": "interval",
+      "highSpeed": false,
+      "locomotor": true
+    }
+  }
+}
