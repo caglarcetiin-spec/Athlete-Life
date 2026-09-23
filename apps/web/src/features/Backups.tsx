@@ -182,6 +182,7 @@ export function Backups({ store }: { store: SyncStore }) {
           </p>
           <button
             disabled={
+              !store.snapshot ||
               stage.status === "applied" ||
               store.pending.some((p) => p.command.entity_id === stage.id)
             }

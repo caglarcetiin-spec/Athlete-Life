@@ -1,0 +1,18 @@
+2026-09-23T01:16:04.6991108Z ##[group]Run .venv-v2/bin/python tools/v2/browser_regression.py node
+2026-09-23T01:16:04.6991669Z .venv-v2/bin/python tools/v2/browser_regression.py node
+2026-09-23T01:16:04.7028541Z shell: /usr/bin/bash -e {0}
+2026-09-23T01:16:04.7028811Z env:
+2026-09-23T01:16:04.7029019Z   PYTHON_DOTENV_DISABLED: 1
+2026-09-23T01:16:04.7029271Z   STORAGE_BACKEND: sqlite
+2026-09-23T01:16:04.7029531Z   ACCOUNT_STORAGE_BACKEND: sqlite
+2026-09-23T01:16:04.7029864Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.14/x64
+2026-09-23T01:16:04.7030329Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.14/x64/lib/pkgconfig
+2026-09-23T01:16:04.7030776Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.14/x64
+2026-09-23T01:16:04.7031156Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.14/x64
+2026-09-23T01:16:04.7031542Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.14/x64
+2026-09-23T01:16:04.7031932Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.14/x64/lib
+2026-09-23T01:16:04.7032473Z   ALOS_BROWSER_EXECUTABLE: /home/runner/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome
+2026-09-23T01:16:04.7032961Z ##[endgroup]
+2026-09-23T01:16:21.9036555Z shift-regression: exit 0; 17.11s; /home/runner/work/Athlete-Life/Athlete-Life/docs/evidence/stage-6/shift-regression.log
+2026-09-23T01:17:00.6615588Z restore-regression: exit 1; 38.70s; /home/runner/work/Athlete-Life/Athlete-Life/docs/evidence/stage-6/restore-regression.log
+2026-09-23T01:17:00.6752579Z ##[error]Process completed with exit code 1.

@@ -33,3 +33,9 @@ Son tam backend regresyonu: 56 PASS. Client: 8 PASS. Migration/model drift kontr
 ## Son devam: büyük yedek ve restore alanları
 
 Yedek import 64 MB'a ayrıldı; genel komut 16 MB sınırı korundu. >32 MB sentetik roundtrip geçti. V2 restore sonrası arşiv canonical kayıtları ikinci kez içermiyor; source_manifest, record_id_map ve bilinmeyen envelope/yerel kuyruk korunuyor. Legacy ham içerik değişmiyor. Negatif commute_min testi daha önce DB constraint 409 bekliyordu; yeni erken domain kontrolü 422/restore_domain döndürdüğünden beklenen sözleşme değiştirildi. Boş hedef/0 cursor/staged durum assertions korundu. Geçersiz timezone, RIR ve başka seansa bağlı slot ayrıca 422 ile atomik reddediliyor. Son tam regresyon 61 PASS.
+
+## Linux CI first-sync and archive selector correction (23 September)
+
+GitHub run 35805444032 at b35f08f passed Python, client, schema and container jobs but restore browser failed. The preview request finished before first bootstrap; apply was enabled and enqueue rejected with first-sync-required. Apply now stays disabled until canonical snapshot exists. The independent DB browser fixture delays bootstrap by two seconds to cover this race.
+
+Local rerun then reproduced a stale test selector: `details.first()` now selected the photo metadata form added in Stage 6. The assertion targets the summary for the requested archive domain instead; domain content, expansion, photo dimensions and restored shift assertions remain unchanged. Original failed runs are retained.

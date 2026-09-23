@@ -105,7 +105,7 @@
     "tools/v2/performance_probe.py": "ce62d55510145d7eb6c014099591c06ca7f358f8f840c027ab99186f04143f36",
     "tools/v2/report_sample.py": "d44c95cdf359ebf1e9e1375c2779c187854613ba78de52b554a8b8197ed4ca59",
     "tools/v2/reports_browser.mjs": "3b6226b4339e307170bab3929633ec761b384dde8d29779c56392fe271292289",
-    "tools/v2/restore_browser.mjs": "485d9dcd65819e361d84e121f3bc9e192ae06457177ef0a010264ee62863d719",
+    "tools/v2/restore_browser.mjs": "62867994cc3916d429c1db9a704c17278cc17f8428c6162e93cc1290ab94363a",
     "tools/v2/run_evidence.py": "5a6d386ee4e6eae61459fa0de849343f95164ae04110d51cead56aac95978706",
     "tools/v2/schema_check.py": "76518334306cdcb5d03e3f77ba25a3aa8870a6b4c3ae1155020dda6673637e87",
     "tools/v2/server_smoke.py": "d6d4974534f69bfc0e8ed268c4092017a8afc0fad3637a6ed6d7daaa90941a1a",
@@ -116,9 +116,9 @@
     "tools/v2/workout_browser.mjs": "89c655700ef90ffb8d3ca08b22a5711e7f13549ff5dae76e3eef85a1f3097f80"
   },
   "platform": "macOS-26.6.2-arm64-arm-64bit",
-  "started_at": "2026-09-23T01:20:55.630955+00:00",
-  "finished_at": "2026-09-23T01:21:05.084524+00:00",
-  "elapsed_seconds": 9.453569,
-  "exit_code": 0,
+  "started_at": "2026-09-23T01:20:15.009096+00:00",
+  "finished_at": "2026-09-23T01:20:35.184341+00:00",
+  "elapsed_seconds": 20.175245,
+  "exit_code": 1,
   "data_scope": "Only isolated synthetic fixtures; no production source or environment values collected."
 }
