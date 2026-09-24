@@ -98,3 +98,35 @@ Geniş API/fonksiyon bağımlılıkları kaynak dizinindedir. “Motorlar tek me
 ## Geçiş kararı
 
 Bu kod tabanı değerli kayıt/katalog/akış bilgisi sağlar. Yeni çekirdeği mevcut global JSON modelini yeniden adlandırarak kurmak kabul edilmedi. [ADR dizini](../adr/0001-modular-monolith.md) ve [Aşama 1 dosya/test planı](../../PLANS.md) authoritative PostgreSQL komut modeli, küçük vardiya dikey dilimi ve kontrollü taşıma tanımlar. Üretim verisi bu aşamada taşınmadı.
+
+## 2026-09-24: Large GLB uploads
+
+Owner-authenticated `POST /api/v2/body-model/upload` accepts raw GLB up to 96 MiB,
+with CSRF, bounded stream, operation/entity IDs and SHA-256 in the ordinary
+transactional `media.upload` command. The browser sends the File directly and
+shows progress, then success only after server ACK. This binary upload requires
+connectivity; large attachments are not stored in the offline journal.
+`MediaObject.details.bytes` is optional size metadata. Bootstrap/model metadata
+queries do not load binary content. Existing photo limits are unchanged.
+
+Mongo blobs retain the same ordered BSON chunks and integrity fields; the writer
+streams the existing format and batches four chunks. Internal JSON columns use
+ASCII escapes with identical decoded values. No schema/account migration or
+paid Render disk is required. Request spooling is temporary and is closed after
+transfer; MongoDB remains the durable store. Large transfers and import.apply
+share one process-local gate (busy = retryable 429) to limit memory use.
+
+Full backups remain self-contained JSON with the same canonical checksums; HTTP
+export streams base64 and import is bounded at 192 MiB. Text transfer envelopes
+are normalized to the existing parsed transfer format after computing the source
+digest; exact integers, local journals/drafts and unknown fields remain intact.
+
+## 2026-09-24: Movement visual layer
+
+`features/movementLibrary.ts` owns six explicit, versioned-in-source exercise
+illustrations and reference links. `MovementGuide.tsx` supplies one shared library
+and contextual help to Programming and Workouts. No persistent fields, API or
+matching changes to the training/science engines. Known standard variants only;
+unknown exercise names never inherit a guessed diagram. Reduced-motion and
+reduced-transparency preferences control cosmetic CSS. No third-party assets or
+analytics calls are introduced.

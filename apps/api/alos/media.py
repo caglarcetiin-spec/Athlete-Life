@@ -21,6 +21,11 @@ class PhotoInput(StrictModel):
     mime: Literal["image/jpeg", "model/gltf-binary"] = "image/jpeg"
 
 
+class ModelUpload(StrictModel):
+    name: str = Field(min_length=1, max_length=150)
+    sha256: str = Field(pattern=r"^[a-f0-9]{64}$")
+
+
 class MediaDetails(StrictModel):
     captured_date: date | None = None
     view: Literal["front", "back", "side", "other", "unknown"] = "unknown"
@@ -64,9 +69,9 @@ def normalize_photo(encoded):
 def validate_restored_media(mime, content):
     """Restore is an input boundary too. Validate without recompressing historical bytes."""
     if mime == "model/gltf-binary":
-        from .body_model import normalize_glb
+        from .body_model import validate_glb
 
-        normalize_glb(base64.b64encode(content).decode())
+        validate_glb(content)
         return
     if mime != "image/jpeg" or not 0 < len(content) <= 512_000:
         raise DomainError("media_type", "Yedekte desteklenmeyen medya türü veya boyutu var.")
@@ -81,14 +86,14 @@ def validate_restored_media(mime, content):
         raise DomainError("media_content", "Yedekteki fotoğraf içeriği doğrulanamadı.") from None
 
 
-def apply_media(db, athlete, command):
+def apply_media(db, athlete, command, attachment=None):
     row = get_owned(
         db,
         MediaObject,
         athlete.id,
         command.entity_id,
         command.expected_version,
-        create=command.command_type == "media.save",
+        create=command.command_type in {"media.save", "media.upload"},
     )
     before = serial(row) if row else None
     if command.command_type == "media.delete" and row:
@@ -99,6 +104,17 @@ def apply_media(db, athlete, command):
         data = MediaDetails.model_validate(command.payload)
         row.captured_date = data.captured_date
         row.details = {**(row.details or {}), **data.model_dump(exclude={"captured_date"})}
+        row.version += 1
+    elif command.command_type == "media.upload":
+        data = ModelUpload.model_validate(command.payload)
+        if attachment is None or hashlib.sha256(attachment).hexdigest() != data.sha256:
+            raise DomainError("model_checksum", "Dosya bütünlüğü doğrulanamadı.")
+        if row is None:
+            row = MediaObject(id=command.entity_id, athlete_id=athlete.id, version=0)
+            db.add(row)
+        row.name, row.mime, row.content = data.name, "model/gltf-binary", attachment
+        row.sha256 = data.sha256
+        row.details = {"bytes": len(attachment)}
         row.version += 1
     elif command.command_type == "media.save":
         data = PhotoInput.model_validate(command.payload)

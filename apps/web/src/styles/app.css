@@ -1515,3 +1515,51 @@ textarea {
   max-width: 100%;
   touch-action: none;
 }
+
+/* Quiet depth, readable surfaces, and short navigation transitions. */
+.page-enter { animation: page-arrive 240ms cubic-bezier(.22,.7,.25,1) both; }
+@keyframes page-arrive { from { opacity: .3; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.card { background-image: linear-gradient(145deg, color-mix(in srgb, var(--panel) 93%, white), var(--panel)); }
+.header-actions, .bottom-nav { -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); }
+button, .link-button { transition: background-color 160ms ease, border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease; }
+button:active:not(:disabled), .link-button:active { transform: scale(.97); }
+@media (hover: hover) { button:not(:disabled):hover, .link-button:hover { box-shadow: 0 5px 16px #102a2117; } }
+.movement-library { overflow: hidden; position: relative; }
+.movement-library > details > summary { display: flex; align-items: center; gap: 14px; padding: 4px 0; color: var(--ink); }
+.movement-library summary small { display: block; color: var(--muted); font-weight: 400; margin-top: 5px; }
+.movement-library select { margin: 8px 0 16px; }
+.movement-library details[open] > summary { margin-bottom: 22px; }
+.movement-help { margin: 12px 0 20px; padding: 14px 16px; border: 1px solid var(--line); border-radius: 16px; background: var(--panel); }
+.movement-help summary { cursor: pointer; color: var(--ink); font-weight: 550; }
+.movement-help summary svg { vertical-align: middle; margin-right: 8px; }
+.movement-card { min-width: 0; margin-top: 16px; }
+.movement-poses { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.movement-poses figure { margin: 0; padding: 14px; background: var(--tint); border: 1px solid var(--line); border-radius: 20px; }
+.movement-poses svg { width: 100%; max-height: 220px; display: block; color: var(--ink); }
+.pose-floor { fill: none; stroke: var(--line); stroke-width: 2; }
+.movement-poses figcaption { display: flex; align-items: center; gap: 8px; color: var(--ink); font-size: .82rem; line-height: 1.5; }
+.movement-poses figcaption span { flex-shrink: 0; display: grid; place-items: center; width: 25px; height: 25px; border-radius: 50%; background: var(--panel); font-size: .72rem; }
+.movement-notes { display: grid; grid-template-columns: 1fr 170px; align-items: center; gap: 24px; padding-block: 24px 8px; }
+.movement-notes h3 { margin: 8px 0; font-size: 1.25rem; letter-spacing: -.025em; }
+.movement-notes a { color: var(--ink); text-underline-offset: 4px; font-size: .78rem; }
+.movement-notes a svg { vertical-align: middle; }
+.movement-muscles { font-size: .72rem; line-height: 1.6; text-align: center; color: var(--ink); }
+.muscle-map { width: 100%; max-height: 155px; display: block; }
+.anatomy-base { fill: var(--tint); stroke: var(--line); }
+.muscle-active { fill: #bb663e; stroke: var(--ink); stroke-width: .4; }
+[data-theme="dark"] .muscle-active { fill: #f0aa76; }
+.muscle-map text { fill: var(--ink); font-size: 9px; font-family: inherit; }
+@media (max-width: 540px) {
+  .movement-notes { grid-template-columns: 1fr; gap: 10px; }
+  .movement-muscles { display: flex; align-items: center; gap: 14px; text-align: left; }
+  .muscle-map { width: 120px; flex-shrink: 0; }
+  .movement-poses figure { padding: 9px; border-radius: 14px; }
+  .movement-poses figcaption { font-size: .73rem; gap: 5px; align-items: flex-start; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .page-enter { animation: none; }
+  button:active:not(:disabled), .link-button:active { transform: none; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .header-actions, .bottom-nav { backdrop-filter: none; -webkit-backdrop-filter: none; background: var(--panel); }
+}

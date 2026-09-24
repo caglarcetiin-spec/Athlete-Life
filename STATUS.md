@@ -1,3 +1,9 @@
+# GLB güncellemesi — 24 Eylül 2026
+
+96 MiB GLB yükleme ve ilerleme/onay arayüzü hazır. 80/95 MiB sentetik modellerin yükleme, indirme, tam tarayıcı yedeği ve geri yükleme SHA-256 eşleşmeleri geçti. Son 80 MiB testinde tepe sunucu belleği 466 MiB altında; fiziksel telefon veya kullanıcının gerçek modeli test edilmedi. 78 Mongo regresyonu, son komut yolu için 13 test, 3 boyut/serileştirme koruma testi ve 30 PostgreSQL ortak API testi PASS. Mobil boyutta sentetik WebGL/kamera/yükleme/yeniden açma PASS. Yayın dalının Linux CI ve Render doğrulaması henüz bekleniyor.
+
+Şema/hesap göçü yok; MongoDB ve ücretsiz Render korunur. Önceki sürüm aynı BSON kayıtlarını okuyabilir, ancak geri dönüldüğünde küçük yükleme sınırları geri gelir. Ayrıntı: `docs/evidence/stage-9/LARGE_MODEL_REVIEW.md`.
+
 # Canlı durum — 24 Eylül 2026
 
 V2 mevcut ücretsiz Render servisinde **yayında**: https://athlete-life.onrender.com/ . MongoDB korundu; yeni ücretli kaynak açılmadı. Kullanıcının açık gerçek veri geçişi onayıyla üç hesap ve kaynak snapshotları, eşleşen önizlemenin 11 canonical kaydı ve cihazda bekleyen eksik taslağın arşivi taşındı. Eski koleksiyonlar değişmedi; özel kurtarma dosyaları Git dışında durur. Önizleme HTTP yazıcısı durduruldu; üretimde tek yazar vardır.
@@ -116,3 +122,7 @@ Aşama 4 DEVAM EDİYOR: beslenme, su, günlük sağlık, Capability, hedef ve so
 Beslenme/yiyecek/tarif, su, check-in/uyku/ağrı/sağlık kayıtları, Capability, hedef ve sosyal/gerçek aktivite modelleri ortak transaction ve offline protokolüne bağlı. 31 backend testi ve gerçek mobil/ikinci oturum akışı PASS. [Kanıt](docs/evidence/stage-4/RESULT.md).
 
 Aşama 5 DEVAM EDİYOR: açıklanabilir, sürümlü hesaplar; 37 backend regression PASS. Rapor arayüzü ve PDF kontrolleri sürüyor.
+
+## Görsel katman — 24 Eylül 2026
+
+Hareket kütüphanesi (6 temel hareket, iki pozisyon, şematik kas haritası ve kaynak bağlantıları), program/set bağlamında yardım ve azaltılabilir kısa geçişler tamamlandı. Sentetik mobil/açık-koyu/WCAG AA kontrolü, 10 client testi, lint/build PASS. GLB ve görsel katman aynı yayın dalında; nihai CI/yayın sonucu ayrıca kaydedilir.

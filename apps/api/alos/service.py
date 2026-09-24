@@ -1,7 +1,6 @@
 """All domain writes commit data, audit, cursor and durable work as one transaction."""
 
 import hashlib
-import json
 from datetime import date, datetime, timedelta
 from uuid import UUID
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
@@ -69,9 +68,11 @@ def serial(row):
 
 
 def digest_of(value):
-    return hashlib.sha256(
-        json.dumps(value, sort_keys=True, separators=(",", ":"), ensure_ascii=False, allow_nan=False).encode()
-    ).hexdigest()
+    from .large_json import json_bytes
+    digest = hashlib.sha256()
+    for chunk in json_bytes(value, sort_keys=True):
+        digest.update(chunk)
+    return digest.hexdigest()
 
 
 def get_owned(db, model, athlete_id, entity_id, version, create=False):
@@ -209,7 +210,7 @@ def register_lifestyle():
 
 
 @retry_transaction
-def execute(database, athlete_id: UUID, command: Command):
+def execute(database, athlete_id: UUID, command: Command, attachment=None):
     register_lifestyle()
     digest = digest_of(command.model_dump(mode="json"))
     try:
@@ -252,7 +253,11 @@ def execute(database, athlete_id: UUID, command: Command):
                 handler = apply_lifestyle
             if not handler:
                 raise DomainError("unknown_command", "İşlem sürümü desteklenmiyor. Güncelleme gerekli.", 422)
-            row, before, changes = handler(db, athlete, command)
+            row, before, changes = (
+                handler(db, athlete, command, attachment=attachment)
+                if command.command_type == "media.upload"
+                else handler(db, athlete, command)
+            )
             athlete.sequence += 1
             result = {
                 "operation_id": str(command.operation_id),
@@ -315,10 +320,11 @@ def bootstrap(database, athlete_id):
             "server_time": utcnow().isoformat(),
         }
         for kind, model in MODELS.items():
-            result[kind + "s"] = [
-                serial(r)
-                for r in db.scalars(select(model).where(model.athlete_id == athlete_id).order_by(model.id))
-            ]
+            query = select(model).where(model.athlete_id == athlete_id).order_by(model.id)
+            if model is MediaObject:
+                from sqlalchemy.orm import defer
+                query = query.options(defer(MediaObject.content)).execution_options(alos_media_metadata=True)
+            result[kind + "s"] = [serial(r) for r in db.scalars(query)]
         return result
 
 

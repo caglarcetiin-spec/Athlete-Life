@@ -1,0 +1,481 @@
+/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+  from starlette.testclient import TestClient as TestClient  # noqa
+Traceback (most recent call last):
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 144, in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3319, in raw_connection
+    return self.pool.connect()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 448, in connect
+    return _ConnectionFairy._checkout(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 1290, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 712, in checkout
+    rec = pool._do_get()
+          ^^^^^^^^^^^^^^
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 178, in _do_get
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py", line 122, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 176, in _do_get
+    return self._create_connection()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 389, in _create_connection
+    return _ConnectionRecord(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 674, in __init__
+    self.__connect()
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 900, in __connect
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py", line 122, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 896, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/engine/create.py", line 667, in connect
+    return dialect.connect(*cargs_tup, **cparams)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 630, in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/psycopg/connection.py", line 130, in connect
+    raise new_ex.with_traceback(None)
+psycopg.OperationalError: connection failed: connection to server at "::1", port 15432 failed: could not receive data from server: Connection refused
+Multiple connection attempts failed. All failures were:
+- host: 'localhost', port: 15432, hostaddr: '127.0.0.1': connection failed: connection to server at "127.0.0.1", port 15432 failed: FATAL:  database "alos_test_model_1790245181576" does not exist
+- host: 'localhost', port: 15432, hostaddr: '::1': connection failed: connection to server at "::1", port 15432 failed: could not receive data from server: Connection refused
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/tools/v2/synthetic_model_setup.py", line 16, in <module>
+    with engine.connect() as conn:
+         ^^^^^^^^^^^^^^^^
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3295, in connect
+    return self._connection_cls(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 146, in __init__
+    Connection._handle_dbapi_exception_noconnection(
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 2450, in _handle_dbapi_exception_noconnection
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 144, in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3319, in raw_connection
+    return self.pool.connect()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 448, in connect
+    return _ConnectionFairy._checkout(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 1290, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 712, in checkout
+    rec = pool._do_get()
+          ^^^^^^^^^^^^^^
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 178, in _do_get
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py", line 122, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 176, in _do_get
+    return self._create_connection()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 389, in _create_connection
+    return _ConnectionRecord(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 674, in __init__
+    self.__connect()
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 900, in __connect
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py", line 122, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 896, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/engine/create.py", line 667, in connect
+    return dialect.connect(*cargs_tup, **cparams)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 630, in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/psycopg/connection.py", line 130, in connect
+    raise new_ex.with_traceback(None)
+sqlalchemy.exc.OperationalError: (psycopg.OperationalError) connection failed: connection to server at "::1", port 15432 failed: could not receive data from server: Connection refused
+Multiple connection attempts failed. All failures were:
+- host: 'localhost', port: 15432, hostaddr: '127.0.0.1': connection failed: connection to server at "127.0.0.1", port 15432 failed: FATAL:  database "alos_test_model_1790245181576" does not exist
+- host: 'localhost', port: 15432, hostaddr: '::1': connection failed: connection to server at "::1", port 15432 failed: could not receive data from server: Connection refused
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+node:internal/errors:985
+  const err = new Error(message);
+              ^
+
+Error: Command failed: /Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/bin/python tools/v2/synthetic_model_setup.py alos_test_model_1790245181576
+/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+  from starlette.testclient import TestClient as TestClient  # noqa
+Traceback (most recent call last):
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 144, in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3319, in raw_connection
+    return self.pool.connect()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 448, in connect
+    return _ConnectionFairy._checkout(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 1290, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 712, in checkout
+    rec = pool._do_get()
+          ^^^^^^^^^^^^^^
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 178, in _do_get
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py", line 122, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 176, in _do_get
+    return self._create_connection()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 389, in _create_connection
+    return _ConnectionRecord(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 674, in __init__
+    self.__connect()
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 900, in __connect
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py", line 122, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 896, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/engine/create.py", line 667, in connect
+    return dialect.connect(*cargs_tup, **cparams)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 630, in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/psycopg/connection.py", line 130, in connect
+    raise new_ex.with_traceback(None)
+psycopg.OperationalError: connection failed: connection to server at "::1", port 15432 failed: could not receive data from server: Connection refused
+Multiple connection attempts failed. All failures were:
+- host: 'localhost', port: 15432, hostaddr: '127.0.0.1': connection failed: connection to server at "127.0.0.1", port 15432 failed: FATAL:  database "alos_test_model_1790245181576" does not exist
+- host: 'localhost', port: 15432, hostaddr: '::1': connection failed: connection to server at "::1", port 15432 failed: could not receive data from server: Connection refused
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/tools/v2/synthetic_model_setup.py", line 16, in <module>
+    with engine.connect() as conn:
+         ^^^^^^^^^^^^^^^^
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3295, in connect
+    return self._connection_cls(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 146, in __init__
+    Connection._handle_dbapi_exception_noconnection(
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 2450, in _handle_dbapi_exception_noconnection
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 144, in __init__
+    self._dbapi_connection = engine.raw_connection()
+                             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3319, in raw_connection
+    return self.pool.connect()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 448, in connect
+    return _ConnectionFairy._checkout(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 1290, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 712, in checkout
+    rec = pool._do_get()
+          ^^^^^^^^^^^^^^
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 178, in _do_get
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py", line 122, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 176, in _do_get
+    return self._create_connection()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 389, in _create_connection
+    return _ConnectionRecord(self)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 674, in __init__
+    self.__connect()
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 900, in __connect
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py", line 122, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 896, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/engine/create.py", line 667, in connect
+    return dialect.connect(*cargs_tup, **cparams)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 630, in connect
+    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/psycopg/connection.py", line 130, in connect
+    raise new_ex.with_traceback(None)
+sqlalchemy.exc.OperationalError: (psycopg.OperationalError) connection failed: connection to server at "::1", port 15432 failed: could not receive data from server: Connection refused
+Multiple connection attempts failed. All failures were:
+- host: 'localhost', port: 15432, hostaddr: '127.0.0.1': connection failed: connection to server at "127.0.0.1", port 15432 failed: FATAL:  database "alos_test_model_1790245181576" does not exist
+- host: 'localhost', port: 15432, hostaddr: '::1': connection failed: connection to server at "::1", port 15432 failed: could not receive data from server: Connection refused
+(Background on this error at: https://sqlalche.me/e/20/e3q8)
+
+    at genericNodeError (node:internal/errors:985:15)
+    at wrappedFn (node:internal/errors:539:14)
+    at checkExecSyncError (node:child_process:942:11)
+    at execFileSync (node:child_process:978:15)
+    at file:///Users/caglarcetin/Documents/GitHub/Athlete-Life/tools/v2/model_browser.mjs:6:95
+    at ModuleJob.run (node:internal/modules/esm/module_job:439:25)
+    at async node:internal/modules/esm/loader:643:26
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5) {
+  status: 1,
+  signal: null,
+  output: [
+    null,
+    '',
+    '/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.\n' +
+      '  from starlette.testclient import TestClient as TestClient  # noqa\n' +
+      'Traceback (most recent call last):\n' +
+      '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 144, in __init__\n' +
+      '    self._dbapi_connection = engine.raw_connection()\n' +
+      '                             ^^^^^^^^^^^^^^^^^^^^^^^\n' +
+      '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3319, in raw_connection\n' +
+      '    return self.pool.connect()\n' +
+      '           ^^^^^^^^^^^^^^^^^^^\n' +
+      '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 448, in connect\n' +
+      '    return _ConnectionFairy._checkout(self)\n' +
+      '           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n' +
+      '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 1290, in _checkout\n' +
+      '    fairy = _ConnectionRecord.checkout(pool)\n' +
+      '            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n' +
+      '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 712, in checkout\n' +
+      '    rec = pool._do_get()\n' +
+      '          ^^^^^^^^^^^^^^\n' +
+      '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 178, in _do_get\n' +
+      '    with util.safe_reraise():\n' +
+      '         ^^^^^^^^^^^^^^^^^^^\n' +
+      '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py", line 122, in __exit__\n' +
+      '    raise exc_value.with_traceback(exc_tb)\n' +
+      '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 176, in _do_get\n' +
+      '    return self._create_connection()\n' +
+      '           ^^^^^^^^^^^^^^^^^^^^^^^^^\n' +
+      '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 389, in _create_connection\n' +
+      '    return _ConnectionRecord(self)\n' +
+      '           ^^^^^^^^^^^^^^^^^^^^^^^\n' +
+      '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 674, in __init__\n' +
+      '    self.__connect()\n' +
+      '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 900, in __connect\n' +
+      '    with util.safe_reraise():\n' +
+      '         ^^^^^^^^^^^^^^^^^^^\n' +
+      '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py", line 122, in __exit__\n' +
+      '    raise exc_value.with_traceback(exc_tb)\n' +
+      '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 896, in __connect\n' +
+      '    self.dbapi_connection = connection = pool._invoke_creator(self)\n' +
+      '                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^\n' +
+      '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/engine/create.py", line 667, in connect\n' +
+      '    return dialect.connect(*cargs_tup, **cparams)\n' +
+      '           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n' +
+      '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 630, in connect\n' +
+      '    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501\n' +
+      '           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n' +
+      '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/psycopg/connection.py", line 130, in connect\n' +
+      '    raise new_ex.with_traceback(None)\n' +
+      'psycopg.OperationalError: connection failed: connection to server at "::1", port 15432 failed: could not receive data from server: Connection refused\n' +
+      'Multiple connection attempts failed. All failures were:\n' +
+      `- host: 'localhost', port: 15432, hostaddr: '127.0.0.1': connection failed: connection to server at "127.0.0.1", port 15432 failed: FATAL:  database "alos_test_model_1790245181576" does not exist\n` +
+      `- host: 'localhost', port: 15432, hostaddr: '::1': connection failed: connection to server at "::1", port 15432 failed: could not receive data from server: Connection refused\n` +
+      '\n' +
+      'The above exception was the direct cause of the following exception:\n' +
+      '\n' +
+      'Traceback (most recent call last):\n' +
+      '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/tools/v2/synthetic_model_setup.py", line 16, in <module>\n' +
+      '    with engine.connect() as conn:\n' +
+      '         ^^^^^^^^^^^^^^^^\n' +
+      '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3295, in connect\n' +
+      '    return self._connection_cls(self)\n' +
+      '           ^^^^^^^^^^^^^^^^^^^^^^^^^^\n' +
+      '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 146, in __init__\n' +
+      '    Connection._handle_dbapi_exception_noconnection(\n' +
+      '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 2450, in _handle_dbapi_exception_noconnection\n' +
+      '    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e\n' +
+      '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 144, in __init__\n' +
+      '    self._dbapi_connection = engine.raw_connection()\n' +
+      '                             ^^^^^^^^^^^^^^^^^^^^^^^\n' +
+      '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3319, in raw_connection\n' +
+      '    return self.pool.connect()\n' +
+      '           ^^^^^^^^^^^^^^^^^^^\n' +
+      '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 448, in connect\n' +
+      '    return _ConnectionFairy._checkout(self)\n' +
+      '           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n' +
+      '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 1290, in _checkout\n' +
+      '    fairy = _ConnectionRecord.checkout(pool)\n' +
+      '            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n' +
+      '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 712, in checkout\n' +
+      '    rec = pool._do_get()\n' +
+      '          ^^^^^^^^^^^^^^\n' +
+      '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 178, in _do_get\n' +
+      '    with util.safe_reraise():\n' +
+      '         ^^^^^^^^^^^^^^^^^^^\n' +
+      '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py", line 122, in __exit__\n' +
+      '    raise exc_value.with_traceback(exc_tb)\n' +
+      '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 176, in _do_get\n' +
+      '    return self._create_connection()\n' +
+      '           ^^^^^^^^^^^^^^^^^^^^^^^^^\n' +
+      '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 389, in _create_connection\n' +
+      '    return _ConnectionRecord(self)\n' +
+      '           ^^^^^^^^^^^^^^^^^^^^^^^\n' +
+      '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 674, in __init__\n' +
+      '    self.__connect()\n' +
+      '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 900, in __connect\n' +
+      '    with util.safe_reraise():\n' +
+      '         ^^^^^^^^^^^^^^^^^^^\n' +
+      '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py", line 122, in __exit__\n' +
+      '    raise exc_value.with_traceback(exc_tb)\n' +
+      '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 896, in __connect\n' +
+      '    self.dbapi_connection = connection = pool._invoke_creator(self)\n' +
+      '                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^\n' +
+      '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/engine/create.py", line 667, in connect\n' +
+      '    return dialect.connect(*cargs_tup, **cparams)\n' +
+      '           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n' +
+      '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 630, in connect\n' +
+      '    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501\n' +
+      '           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n' +
+      '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/psycopg/connection.py", line 130, in connect\n' +
+      '    raise new_ex.with_traceback(None)\n' +
+      'sqlalchemy.exc.OperationalError: (psycopg.OperationalError) connection failed: connection to server at "::1", port 15432 failed: could not receive data from server: Connection refused\n' +
+      'Multiple connection attempts failed. All failures were:\n' +
+      `- host: 'localhost', port: 15432, hostaddr: '127.0.0.1': connection failed: connection to server at "127.0.0.1", port 15432 failed: FATAL:  database "alos_test_model_1790245181576" does not exist\n` +
+      `- host: 'localhost', port: 15432, hostaddr: '::1': connection failed: connection to server at "::1", port 15432 failed: could not receive data from server: Connection refused\n` +
+      '(Background on this error at: https://sqlalche.me/e/20/e3q8)\n'
+  ],
+  pid: 6158,
+  stdout: '',
+  stderr: '/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.\n' +
+    '  from starlette.testclient import TestClient as TestClient  # noqa\n' +
+    'Traceback (most recent call last):\n' +
+    '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 144, in __init__\n' +
+    '    self._dbapi_connection = engine.raw_connection()\n' +
+    '                             ^^^^^^^^^^^^^^^^^^^^^^^\n' +
+    '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3319, in raw_connection\n' +
+    '    return self.pool.connect()\n' +
+    '           ^^^^^^^^^^^^^^^^^^^\n' +
+    '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 448, in connect\n' +
+    '    return _ConnectionFairy._checkout(self)\n' +
+    '           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n' +
+    '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 1290, in _checkout\n' +
+    '    fairy = _ConnectionRecord.checkout(pool)\n' +
+    '            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n' +
+    '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 712, in checkout\n' +
+    '    rec = pool._do_get()\n' +
+    '          ^^^^^^^^^^^^^^\n' +
+    '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 178, in _do_get\n' +
+    '    with util.safe_reraise():\n' +
+    '         ^^^^^^^^^^^^^^^^^^^\n' +
+    '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py", line 122, in __exit__\n' +
+    '    raise exc_value.with_traceback(exc_tb)\n' +
+    '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 176, in _do_get\n' +
+    '    return self._create_connection()\n' +
+    '           ^^^^^^^^^^^^^^^^^^^^^^^^^\n' +
+    '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 389, in _create_connection\n' +
+    '    return _ConnectionRecord(self)\n' +
+    '           ^^^^^^^^^^^^^^^^^^^^^^^\n' +
+    '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 674, in __init__\n' +
+    '    self.__connect()\n' +
+    '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 900, in __connect\n' +
+    '    with util.safe_reraise():\n' +
+    '         ^^^^^^^^^^^^^^^^^^^\n' +
+    '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py", line 122, in __exit__\n' +
+    '    raise exc_value.with_traceback(exc_tb)\n' +
+    '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 896, in __connect\n' +
+    '    self.dbapi_connection = connection = pool._invoke_creator(self)\n' +
+    '                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^\n' +
+    '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/engine/create.py", line 667, in connect\n' +
+    '    return dialect.connect(*cargs_tup, **cparams)\n' +
+    '           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n' +
+    '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 630, in connect\n' +
+    '    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501\n' +
+    '           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n' +
+    '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/psycopg/connection.py", line 130, in connect\n' +
+    '    raise new_ex.with_traceback(None)\n' +
+    'psycopg.OperationalError: connection failed: connection to server at "::1", port 15432 failed: could not receive data from server: Connection refused\n' +
+    'Multiple connection attempts failed. All failures were:\n' +
+    `- host: 'localhost', port: 15432, hostaddr: '127.0.0.1': connection failed: connection to server at "127.0.0.1", port 15432 failed: FATAL:  database "alos_test_model_1790245181576" does not exist\n` +
+    `- host: 'localhost', port: 15432, hostaddr: '::1': connection failed: connection to server at "::1", port 15432 failed: could not receive data from server: Connection refused\n` +
+    '\n' +
+    'The above exception was the direct cause of the following exception:\n' +
+    '\n' +
+    'Traceback (most recent call last):\n' +
+    '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/tools/v2/synthetic_model_setup.py", line 16, in <module>\n' +
+    '    with engine.connect() as conn:\n' +
+    '         ^^^^^^^^^^^^^^^^\n' +
+    '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3295, in connect\n' +
+    '    return self._connection_cls(self)\n' +
+    '           ^^^^^^^^^^^^^^^^^^^^^^^^^^\n' +
+    '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 146, in __init__\n' +
+    '    Connection._handle_dbapi_exception_noconnection(\n' +
+    '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 2450, in _handle_dbapi_exception_noconnection\n' +
+    '    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e\n' +
+    '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 144, in __init__\n' +
+    '    self._dbapi_connection = engine.raw_connection()\n' +
+    '                             ^^^^^^^^^^^^^^^^^^^^^^^\n' +
+    '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 3319, in raw_connection\n' +
+    '    return self.pool.connect()\n' +
+    '           ^^^^^^^^^^^^^^^^^^^\n' +
+    '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 448, in connect\n' +
+    '    return _ConnectionFairy._checkout(self)\n' +
+    '           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n' +
+    '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 1290, in _checkout\n' +
+    '    fairy = _ConnectionRecord.checkout(pool)\n' +
+    '            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n' +
+    '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 712, in checkout\n' +
+    '    rec = pool._do_get()\n' +
+    '          ^^^^^^^^^^^^^^\n' +
+    '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 178, in _do_get\n' +
+    '    with util.safe_reraise():\n' +
+    '         ^^^^^^^^^^^^^^^^^^^\n' +
+    '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py", line 122, in __exit__\n' +
+    '    raise exc_value.with_traceback(exc_tb)\n' +
+    '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/impl.py", line 176, in _do_get\n' +
+    '    return self._create_connection()\n' +
+    '           ^^^^^^^^^^^^^^^^^^^^^^^^^\n' +
+    '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 389, in _create_connection\n' +
+    '    return _ConnectionRecord(self)\n' +
+    '           ^^^^^^^^^^^^^^^^^^^^^^^\n' +
+    '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 674, in __init__\n' +
+    '    self.__connect()\n' +
+    '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 900, in __connect\n' +
+    '    with util.safe_reraise():\n' +
+    '         ^^^^^^^^^^^^^^^^^^^\n' +
+    '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py", line 122, in __exit__\n' +
+    '    raise exc_value.with_traceback(exc_tb)\n' +
+    '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/pool/base.py", line 896, in __connect\n' +
+    '    self.dbapi_connection = connection = pool._invoke_creator(self)\n' +
+    '                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^\n' +
+    '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/engine/create.py", line 667, in connect\n' +
+    '    return dialect.connect(*cargs_tup, **cparams)\n' +
+    '           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n' +
+    '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 630, in connect\n' +
+    '    return self.loaded_dbapi.connect(*cargs, **cparams)  # type: ignore[no-any-return]  # NOQA: E501\n' +
+    '           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n' +
+    '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/psycopg/connection.py", line 130, in connect\n' +
+    '    raise new_ex.with_traceback(None)\n' +
+    'sqlalchemy.exc.OperationalError: (psycopg.OperationalError) connection failed: connection to server at "::1", port 15432 failed: could not receive data from server: Connection refused\n' +
+    'Multiple connection attempts failed. All failures were:\n' +
+    `- host: 'localhost', port: 15432, hostaddr: '127.0.0.1': connection failed: connection to server at "127.0.0.1", port 15432 failed: FATAL:  database "alos_test_model_1790245181576" does not exist\n` +
+    `- host: 'localhost', port: 15432, hostaddr: '::1': connection failed: connection to server at "::1", port 15432 failed: could not receive data from server: Connection refused\n` +
+    '(Background on this error at: https://sqlalche.me/e/20/e3q8)\n'
+}
+
+Node.js v24.19.0

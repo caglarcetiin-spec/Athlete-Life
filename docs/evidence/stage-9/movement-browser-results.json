@@ -1,0 +1,20 @@
+{
+  "result": "PASS",
+  "viewport": [
+    390,
+    844
+  ],
+  "themes": [
+    "light",
+    "dark"
+  ],
+  "illustrations": 6,
+  "checks": [
+    "No horizontal overflow",
+    "Accessible SVG names",
+    "WCAG AA library check",
+    "Reduced motion",
+    "Workout and programming entry points"
+  ],
+  "errors": []
+}

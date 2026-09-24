@@ -1,3 +1,4 @@
+import { MovementHelp, MovementLibrary } from "./MovementGuide";
 import { useEffect, useState } from "react";
 import {
   Check,
@@ -182,6 +183,7 @@ function SetForm({
             : "Plan dışı ek çalışma"}
       </div>
       <h2>{String(source?.name || "Hareket ekle")}</h2>
+      <MovementHelp name={String(source?.name || formDraft.name || "")} variant={String(source?.variant || formDraft.variant || "standard")} />
       {slot && (
         <p className="target">
           <strong>Hedef:</strong> {describe(slot)}
@@ -725,6 +727,7 @@ export function Workouts({
           </section>
         </>
       )}
+      <MovementLibrary />
       <section className="card">
         <h2>Seans geçmişim</h2>
         {[...sessions]

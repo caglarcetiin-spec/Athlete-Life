@@ -12,6 +12,7 @@ for name, script in [
     ("runner-regression", "workout_browser.mjs"),
     ("lifestyle-regression", "lifestyle_browser.mjs"),
     ("reports-regression", "reports_browser.mjs"),
+    ("movement-regression", "movement_browser.mjs"),
 ]:
     result = subprocess.run(
         [sys.executable, "tools/v2/run_evidence.py", name, node, "tools/v2/" + script],

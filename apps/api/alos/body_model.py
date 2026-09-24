@@ -9,17 +9,26 @@ from sqlalchemy import select
 from .errors import DomainError
 from .models import MediaObject
 
+MAX_MODEL_BYTES = 96 * 1024 * 1024
+
 
 def normalize_glb(encoded):
-    """Accept a bounded, self-contained GLB; never fetch referenced URLs."""
     try:
         raw = base64.b64decode(encoded.split(",", 1)[-1], validate=True)
-        if not 20 <= len(raw) <= 8 * 1024 * 1024:
+    except (ValueError, TypeError, AttributeError):
+        raise DomainError("invalid_model", "GLB dosyası okunamadı.") from None
+    return validate_glb(raw)
+
+
+def validate_glb(raw):
+    """Accept a bounded, self-contained GLB; never fetch referenced URLs."""
+    try:
+        if not 20 <= len(raw) <= MAX_MODEL_BYTES:
             raise ValueError("size")
         magic, version, length, json_length, kind = struct.unpack("<IIIII", raw[:20])
         if (magic, version, length, kind) != (0x46546C67, 2, len(raw), 0x4E4F534A):
             raise ValueError("header")
-        if json_length % 4 or json_length > len(raw) - 20:
+        if json_length % 4 or json_length > min(len(raw) - 20, 4 * 1024 * 1024):
             raise ValueError("chunk")
         document = json.loads(raw[20 : 20 + json_length])
         if document.get("asset", {}).get("version") != "2.0":
@@ -45,13 +54,13 @@ def normalize_glb(encoded):
         return raw
     except (ValueError, TypeError, AttributeError, struct.error, RecursionError):
         raise DomainError(
-            "invalid_model", "En fazla 8 MB, tüm geometrisi ve dokuları içinde bulunan GLB 2.0 dosyası seç."
+            "invalid_model", "En fazla 96 MB, tüm geometrisi ve dokuları içinde bulunan GLB 2.0 dosyası seç."
         ) from None
 
 
-def stored_model(database, athlete_id):
+def stored_model(database, athlete_id, metadata_only=False):
     with database.sessions() as db:
-        row = db.scalar(
+        query = (
             select(MediaObject)
             .where(
                 MediaObject.athlete_id == athlete_id,
@@ -61,7 +70,15 @@ def stored_model(database, athlete_id):
             .order_by(MediaObject.updated_at.desc(), MediaObject.id)
             .limit(1)
         )
-        return {"id": str(row.id), "content": row.content, "name": row.name} if row else None
+        if metadata_only:
+            from sqlalchemy.orm import defer
+            query = query.options(defer(MediaObject.content)).execution_options(alos_media_metadata=True)
+        row = db.scalar(query)
+        if not row:
+            return None
+        if metadata_only:
+            return {"id": str(row.id), "name": row.name, "bytes": (row.details or {}).get("bytes")}
+        return {"id": str(row.id), "content": row.content, "name": row.name}
 
 
 def resolve_model(settings, athlete_id):

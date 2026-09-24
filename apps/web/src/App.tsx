@@ -401,6 +401,7 @@ function Workspace({
             </div>
           )}
           <PageBoundary key={route}>
+            <div className="page-enter">
             {route === "tools" ? (
               <Tools />
             ) : route === "guide" ? (
@@ -646,6 +647,7 @@ function Workspace({
                 </section>
               </>
             )}
+          </div>
           </PageBoundary>
         </main>
         <footer className="bottom-nav" aria-label="Sayfa gezintisi">

@@ -18,7 +18,7 @@ from .errors import DomainError
 from .models import Athlete, Audit, Change, ImportRun, LegacyRecord, MediaObject, Operation
 from .service import MODELS, digest_of, get_owned, serial
 
-MAX_BYTES = 64 * 1024 * 1024
+MAX_BYTES = 192 * 1024 * 1024
 MAX_NODES = 100_000
 KNOWN_FIELDS = {
     "settings",
@@ -108,7 +108,8 @@ def bounded(value):
             raise DomainError("import_number", "Sonlu bir sayı gerekli.")
         elif isinstance(item, str):
             try:
-                item.encode("utf-8")
+                for offset in range(0, len(item), 65536):
+                    item[offset:offset + 65536].encode("utf-8")
             except UnicodeError:
                 raise DomainError("import_text", "Geçersiz Unicode metni.") from None
         elif not isinstance(item, (int, float, bool, type(None))):
@@ -118,12 +119,21 @@ def bounded(value):
 
 def parse_bytes(raw):
     if len(raw) > MAX_BYTES:
-        raise DomainError("import_size", "Yedek 64 MB sınırını aşıyor.", 413)
+        raise DomainError("import_size", "Yedek 192 MB sınırını aşıyor.", 413)
     if raw.startswith((b"PK", b"\x1f\x8b")):
         raise DomainError(
             "compressed_not_supported", "Sıkıştırılmış dosya açılmaz. Uygulamanın JSON veri yedeğini seç."
         )
 
+    try:
+        return parse_text(raw.decode("utf-8-sig"))
+    except UnicodeError:
+        raise DomainError("invalid_backup", "Dosya geçerli UTF-8 değil.") from None
+
+
+def parse_text(raw):
+    if sum(len(raw[i:i + 65536].encode("utf-8")) for i in range(0, len(raw), 65536)) > MAX_BYTES:
+        raise DomainError("import_size", "Yedek 192 MB sınırını aşıyor.", 413)
     def pairs(items):
         output = {}
         for key, value in items:
@@ -134,23 +144,107 @@ def parse_bytes(raw):
 
     try:
         obj = json.loads(
-            raw.decode("utf-8-sig"),
+            raw,
             object_pairs_hook=pairs,
             parse_constant=lambda x: (_ for _ in ()).throw(ValueError("nonfinite")),
         )
         bounded(obj)
-    except (ValueError, UnicodeError, RecursionError):
+    except (ValueError, TypeError, UnicodeError, RecursionError):
         raise DomainError("invalid_backup", "Dosya geçerli, sınırlı bir JSON yedeği değil.") from None
     if not isinstance(obj, dict):
         raise DomainError("invalid_backup", "Yedek kökü bir nesne olmalı.")
     return obj
 
 
+def parse_stream(source):
+    """Bounded UTF-8 JSON ingestion without a whole wide-Unicode document copy."""
+    import codecs
+    from io import TextIOWrapper
+    from tempfile import TemporaryFile
+
+    def pairs(items):
+        result = {}
+        for key, value in items:
+            if key in result:
+                raise ValueError("duplicate key")
+            result[key] = value
+        return result
+
+    total = 0
+    decoder = codecs.getincrementaldecoder('utf-8-sig')()
+    non_ascii = re.compile(r'[^\x00-\x7f]')
+    try:
+        with TemporaryFile() as normalized:
+            while True:
+                chunk = source.read(65536)
+                total += len(chunk)
+                if total == len(chunk) and chunk.startswith((b"PK", b"\x1f\x8b")):
+                    raise DomainError("compressed_not_supported", "Sıkıştırılmış dosya açılmaz. Uygulamanın JSON veri yedeğini seç.")
+                if total > MAX_BYTES:
+                    raise DomainError("import_size", "Yedek 192 MB sınırını aşıyor.", 413)
+                text = decoder.decode(chunk, final=not chunk)
+                text = non_ascii.sub(lambda match: json.dumps(match.group(), ensure_ascii=True)[1:-1], text)
+                normalized.write(text.encode('ascii'))
+                if not chunk:
+                    break
+            normalized.seek(0)
+            with TextIOWrapper(normalized, encoding='ascii') as text:
+                obj = json.load(text, object_pairs_hook=pairs,
+                                parse_constant=lambda _: (_ for _ in ()).throw(ValueError('nonfinite')))
+        bounded(obj)
+        if not isinstance(obj, dict):
+            raise TypeError('root')
+        return obj
+    except (ValueError, TypeError, UnicodeError, RecursionError):
+        raise DomainError("invalid_backup", "Dosya geçerli, sınırlı bir JSON yedeği değil.") from None
+
+
+def rfc_checksum(body):
+    # Keep RFC numeric formatting, but avoid encoding a complete large media string.
+    digest = hashlib.sha256()
+    class Sink:
+        def write(self, data):
+            digest.update(data)
+    sink = Sink()
+    def write(value):
+        from .large_json import Base64Content
+        if isinstance(value, Base64Content):
+            sink.write(b'"')
+            for chunk in value.chunks():
+                sink.write(chunk)
+            sink.write(b'"')
+        elif isinstance(value, str):
+            sink.write(b'"')
+            for offset in range(0, len(value), 65536):
+                sink.write(json.dumps(value[offset:offset + 65536], ensure_ascii=False)[1:-1].encode('utf-8'))
+            sink.write(b'"')
+        elif isinstance(value, dict):
+            sink.write(b'{')
+            for index, key in enumerate(sorted(value, key=lambda key: key.encode('utf-16be'))):
+                if index:
+                    sink.write(b',')
+                write(key)
+                sink.write(b':')
+                write(value[key])
+            sink.write(b'}')
+        elif isinstance(value, (list, tuple)):
+            sink.write(b'[')
+            for index, item in enumerate(value):
+                if index:
+                    sink.write(b',')
+                write(item)
+            sink.write(b']')
+        else:
+            rfc8785.dump(value, sink)
+    write(body)
+    return digest.hexdigest()
+
+
 def export_checksum(body):
     algorithm = body.get("checksum_algorithm", "ALOS-JSON-SHA256")
     if algorithm == "RFC8785-SHA256":
         try:
-            return hashlib.sha256(rfc8785.dumps(body)).hexdigest()
+            return rfc_checksum(body)
         except (ValueError, OverflowError):
             raise DomainError("checksum_number", "Yedek standart sayısal biçimde doğrulanamadı.") from None
     if algorithm == "ALOS-JSON-SHA256":
@@ -186,7 +280,7 @@ def detect(obj):
         raw = obj.get("canonical_text")
         if not isinstance(raw, str):
             raise DomainError("backup_schema", "Özgün sunucu yedek metni gerekli.")
-        canonical = parse_bytes(raw.encode("utf-8"))
+        canonical = parse_text(raw)
         validate_export(canonical)
         if not isinstance(obj.get("pending_journal", []), list):
             raise DomainError("journal", "Bekleyen işlem listesi geçersiz.")
@@ -304,8 +398,18 @@ def preview(obj):
 
 def stage(database, athlete_id, raw):
     obj = parse_bytes(raw)
-    format, summary = preview(obj)
+    return stage_object(database, athlete_id, obj)
+
+
+def stage_object(database, athlete_id, obj):
     digest = digest_of(obj)
+    if obj.get("format") == "alos-v2-transfer-text":
+        # Preserve every value (including arbitrary integers and local journals),
+        # but store the equivalent parsed envelope without a second giant string.
+        _, canonical = detect(obj)
+        obj.pop("canonical_text")
+        obj.update(format="alos-v2-transfer", canonical=canonical)
+    format, summary = preview(obj)
     with database.sessions.begin() as db:
         db.get(Athlete, athlete_id, with_for_update=True)
         existing = db.scalar(
@@ -326,22 +430,23 @@ def export_models():
     return {**MODELS, "legacy": LegacyRecord}
 
 
-def export_row(row):
+def export_row(row, stream_media=False):
     data = serial(row)
     # Raw provenance is deliberately in the owner's backup, never in a bootstrap summary.
     if hasattr(row, "raw"):
         data["raw"] = row.raw
     if isinstance(row, MediaObject):
-        data["content"] = base64.b64encode(row.content).decode()
+        from .large_json import Base64Content
+        data["content"] = Base64Content(row.content) if stream_media else base64.b64encode(row.content).decode()
     return data
 
 
-def full_export(database, athlete_id):
+def full_export(database, athlete_id, stream_media=False):
     with database.snapshot() as db:
         athlete = db.get(Athlete, athlete_id)
         records = {
             kind: [
-                export_row(r)
+                export_row(r, stream_media=stream_media)
                 for r in db.scalars(select(model).where(model.athlete_id == athlete_id).order_by(model.id))
             ]
             for kind, model in export_models().items()
@@ -372,7 +477,7 @@ def full_export(database, athlete_id):
         }
         body["checksum_algorithm"] = "RFC8785-SHA256"
         try:
-            checksum = hashlib.sha256(rfc8785.dumps(body)).hexdigest()
+            checksum = rfc_checksum(body)
         except (ValueError, OverflowError):
             # Exact-text transport preserves legacy integers outside JavaScript's safe range.
             body["checksum_algorithm"] = "ALOS-JSON-SHA256"

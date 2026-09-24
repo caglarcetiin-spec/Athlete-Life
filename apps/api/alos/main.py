@@ -51,8 +51,41 @@ def create_app(settings: Settings | None = None):
     )
     app.state.database, app.state.settings = database, settings
 
+    transfer_lock = asyncio.Lock()
+
     @app.middleware("http")
     async def boundary(request: Request, call_next):
+        large_transfer = request.url.path in {
+            "/api/v2/body-model/upload", "/api/v2/body-model/content",
+            "/api/v2/backups/export", "/api/v2/imports/stage",
+        } or request.url.path.startswith("/api/v2/media/")
+        if not large_transfer:
+            return await bounded_request(request, call_next)
+        if transfer_lock.locked():
+            return JSONResponse({"error": {"code": "transfer_busy", "message": "Başka bir dosya aktarımı sürüyor. Kısa süre sonra yeniden dene."}}, 429,
+                                headers={"Retry-After": "5"})
+        await transfer_lock.acquire()
+        try:
+            response = await bounded_request(request, call_next)
+        except BaseException:
+            transfer_lock.release()
+            raise
+        if not hasattr(response, "body_iterator"):
+            transfer_lock.release()
+            return response
+        iterator = response.body_iterator
+
+        async def release_after_send():
+            try:
+                async for chunk in iterator:
+                    yield chunk
+            finally:
+                transfer_lock.release()
+
+        response.body_iterator = release_after_send()
+        return response
+
+    async def bounded_request(request: Request, call_next):
         if request.method not in ("GET", "HEAD", "OPTIONS"):
             if request.headers.get("origin") != settings.public_origin:
                 return JSONResponse(
@@ -69,17 +102,28 @@ def create_app(settings: Settings | None = None):
                 except DomainError as exc:
                     return JSONResponse(exc.body(), exc.status)
                 limit = MAX_BYTES
+            if request.url.path == "/api/v2/body-model/upload":
+                from .body_model import MAX_MODEL_BYTES
+                try:
+                    auth.identity(request, database, settings, True)
+                except DomainError as exc:
+                    return JSONResponse(exc.body(), exc.status)
+                limit = MAX_MODEL_BYTES
             length = request.headers.get("content-length", "0")
             if not length.isdigit() or int(length) > limit:
                 return JSONResponse({"error": {"code": "size", "message": "Dosya/istek çok büyük."}}, 413)
-            # ASGI receive is bounded too; chunked requests cannot bypass Content-Length.
-            size, chunks = 0, []
-            async for chunk in request.stream():
-                size += len(chunk)
-                if size > limit:
-                    return JSONResponse({"error": {"code": "size", "message": "Dosya/istek çok büyük."}}, 413)
-                chunks.append(chunk)
-            request._body = b"".join(chunks)
+            if request.url.path in {"/api/v2/body-model/upload", "/api/v2/imports/stage"}:
+                request.state.body_limit = limit
+            else:
+                # ASGI receive is bounded too; chunked requests cannot bypass Content-Length.
+                size, chunks = 0, []
+                async for chunk in request.stream():
+                    size += len(chunk)
+                    if size > limit:
+                        return JSONResponse({"error": {"code": "size", "message": "Dosya/istek çok büyük."}}, 413)
+                    chunks.append(chunk)
+                request._body = b"".join(chunks)
+                chunks.clear()
         response = await call_next(request)
         response.headers.update(
             {
@@ -252,13 +296,13 @@ def create_app(settings: Settings | None = None):
         from .body_model import resolve_model, stored_model
 
         identity = who(request)
-        stored = stored_model(database, UUID(identity["athlete_id"]))
+        stored = stored_model(database, UUID(identity["athlete_id"]), metadata_only=True)
         if stored:
             return {
                 "available": True,
                 "status": "uploaded",
                 "id": stored["id"],
-                "bytes": len(stored["content"]),
+                "bytes": stored["bytes"],
                 "url": "/api/v2/body-model/content",
                 "included_in_backup": True,
             }
@@ -276,6 +320,45 @@ def create_app(settings: Settings | None = None):
             "url": "/api/v2/body-model/content",
             "note": "Kütüphane modeli bir ölçüm veya biyolojik iyileşme sonucu değildir.",
         }
+
+    async def transfer_file(request):
+        from tempfile import SpooledTemporaryFile
+        size = 0
+        temporary = SpooledTemporaryFile(max_size=1024 * 1024)  # noqa: SIM115 — caller owns and closes this stream
+        try:
+            async for chunk in request.stream():
+                size += len(chunk)
+                if size > request.state.body_limit:
+                    raise DomainError("size", "Dosya/istek çok büyük.", 413)
+                temporary.write(chunk)
+            temporary.seek(0)
+            return temporary
+        except BaseException:
+            temporary.close()
+            raise
+
+    async def transfer_body(request):
+        temporary = await transfer_file(request)
+        try:
+            return temporary.read()
+        finally:
+            temporary.close()
+
+    @app.post("/api/v2/body-model/upload")
+    async def upload_body_model(request: Request, operation_id: UUID, entity_id: UUID, name: str):
+        import hashlib
+
+        from starlette.concurrency import run_in_threadpool
+
+        from .body_model import validate_glb
+        from .contracts import Command
+
+        identity = who(request, True)
+        content = validate_glb(await transfer_body(request))
+        command = Command(operation_id=operation_id, entity_id=entity_id, expected_version=0,
+                          schema_version=1, command_type="media.upload",
+                          payload={"name": name, "sha256": hashlib.sha256(content).hexdigest()})
+        return await run_in_threadpool(service.execute, database, UUID(identity["athlete_id"]), command, content)
 
     @app.get("/api/v2/body-model/content")
     def body_model_content(request: Request):
@@ -312,8 +395,16 @@ def create_app(settings: Settings | None = None):
         return service.pull(database, UUID(who(request)["athlete_id"]), after)
 
     @app.post("/api/v2/commands", response_model=CommandResult)
-    def command(body: Command, request: Request):
-        return service.execute(database, UUID(who(request, True)["athlete_id"]), body)
+    async def command(body: Command, request: Request):
+        from starlette.concurrency import run_in_threadpool
+        identity = await run_in_threadpool(who, request, True)
+        athlete_id = UUID(identity["athlete_id"])
+        if body.command_type != "import.apply":
+            return await run_in_threadpool(service.execute, database, athlete_id, body)
+        if transfer_lock.locked():
+            raise DomainError("transfer_busy", "Başka bir dosya aktarımı sürüyor. Kısa süre sonra yeniden dene.", 429)
+        async with transfer_lock:
+            return await run_in_threadpool(service.execute, database, athlete_id, body)
 
     @app.get("/api/v2/analysis")
     def analysis(
@@ -460,15 +551,26 @@ def create_app(settings: Settings | None = None):
 
     @app.post("/api/v2/imports/stage")
     async def stage_import(request: Request):
-        from .backups import stage
+        from starlette.concurrency import run_in_threadpool
 
-        return stage(database, UUID(who(request, True)["athlete_id"]), await request.body())
+        from .backups import parse_stream, stage_object
+        identity = UUID(who(request, True)["athlete_id"])
+        temporary = await transfer_file(request)
+        try:
+            package = await run_in_threadpool(parse_stream, temporary)
+        finally:
+            temporary.close()
+        return await run_in_threadpool(stage_object, database, identity, package)
 
     @app.get("/api/v2/backups/export")
     def export_backup(request: Request):
-        from .backups import full_export
+        from fastapi.responses import StreamingResponse
 
-        return full_export(database, UUID(who(request)["athlete_id"]))
+        from .backups import full_export
+        from .large_json import json_bytes
+
+        package = full_export(database, UUID(who(request)["athlete_id"]), stream_media=True)
+        return StreamingResponse(json_bytes(package, ensure_ascii=True), media_type="application/json")
 
     @app.get("/api/v2/legacy")
     def legacy_records(request: Request, domain: str | None = None, offset: int = 0):
