@@ -289,3 +289,30 @@ def test_future_same_day_meal_does_not_leak_and_sleep_overlap_is_not_double():
         result["nutrition"]["entries"] == 0
         and result["nutrition"]["totals"]["kcal"] is None
     )
+
+
+def test_regional_reserve_clock_forecast_sources_and_mutation():
+    source = snap(setrow(rir=2))
+    results = [compute(source, AT + timedelta(hours=h))["muscle_recovery"] for h in (0,24,48)]
+    regions = [r['groups']['lats'] for r in results]
+    assert regions[0]['released_since_last_load'] == {'low':0, 'high':0}
+    assert regions[0]['fatigue']['low'] == regions[0]['fatigue']['high']
+    assert regions[0]['fatigue']['high'] > regions[1]['fatigue']['high'] > regions[2]['fatigue']['high']
+    assert regions[2]['reserve']['low'] > regions[0]['reserve']['low']
+    assert regions[0]['forecast'][1]['fatigue'] == regions[2]['fatigue']
+    assert regions[2]['sources'][0]['id'] == 'a'
+    assert results[0]['calibrated'] is False
+    added = compute(snap(setrow(rir=2), setrow(id='b',rir=2,occurred_at=(AT+timedelta(hours=48)).isoformat())),AT+timedelta(hours=48))['muscle_recovery']
+    assert added['groups']['lats']['fatigue']['high'] > regions[2]['fatigue']['high']
+    assert compute(snap(),AT)['muscle_recovery']['groups'] == {}
+    assert compute(snap(setrow(status='skipped')),AT)['muscle_recovery']['groups'] == {}
+    assert compute(snap(setrow(occurred_at=(AT+timedelta(days=1)).isoformat())),AT)['muscle_recovery']['groups'] == {}
+
+
+def test_regional_reserve_uncertainty_and_no_false_modality_conversion():
+    value=compute(snap(setrow()),AT)['muscle_recovery']['groups']['lats']
+    assert value['missing_effort'] and value['fatigue']['low'] < value['fatigue']['high']
+    dated=compute(snap(setrow(occurred_at=None)),AT)['muscle_recovery']['groups']['lats']
+    assert dated['uncertain_time']
+    assert compute(snap(setrow(modality='isometric',seconds=30)),AT)['muscle_recovery']['groups']=={}
+    assert compute(snap(setrow(name='unmapped',movement_id='unknown')),AT)['muscle_recovery']['groups']=={}

@@ -78,3 +78,7 @@ Kaynak/ana akış alt işlev eşlemesi `docs/evidence/stage-9/FEATURE_REVIEW.md`
 Mevcut 29 route görünür ve desktop overflow ölçümü false. Yalnız bugün mobil 390×844 ölçüldü. Login, haftalık offline, training, dönem, lab ve mobil bugün görüntüleri insan gözüyle incelendi. Ekran okuyucu, kontrast oranları, keyboard focus sırası, koyu/açık her form durumu, gerçek iPhone, WebKit/Firefox **NOT RUN**. Sistem tasarımı ilk aşamada korunacak; tam kullanım kolaylığı kapısı Aşama 6.
 
 Yeni release için her satır V2 API+DB+UI kanıtıyla tekrar ele alınacak; kritik henüz-taşınmadı satırı varken U-06 PASS olamaz.
+
+### V2 3B bölgesel analiz — 24 Eylül 2026
+
+Yüklenen GLB yalnız görüntüleyici değildir: aynı analiz raporundaki kuvvet yükleri 3B yüzeyde renklenir; kas seçimi, kaynak setler, belirsizlik aralıkları, model rezervi ve 24/48 saatlik yük azalması tek paneldedir. Adsız yüzeylerde eski sürümün koordinat yaklaşımı yaklaşık olarak kullanılır; anatomik segmentasyon olduğu iddia edilmez. 2B görünüm aynı hesabın alternatifidir. Büyük GLB yükleme/hesaba bağlı saklama değişmez.

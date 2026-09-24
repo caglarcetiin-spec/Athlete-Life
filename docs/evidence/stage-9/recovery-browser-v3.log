@@ -1,0 +1,175 @@
+/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+  from starlette.testclient import TestClient as TestClient  # noqa
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+ExpectError: expect(locator).toBeVisible() failed
+
+Locator: getByRole('region', { name: 'Seçili kas analizi' }).getByRole('heading', { name: '%29.5', exact: true })
+Expected: visible
+Timeout: 5000ms
+Error: element(s) not found
+
+Call log:
+  - Expect "toBeVisible" getByRole('region', { name: 'Seçili kas analizi' }).getByRole('heading', { name: '%29.5', exact: true }) with timeout 5000ms
+  - waiting for getByRole('region', { name: 'Seçili kas analizi' }).getByRole('heading', { name: '%29.5', exact: true })
+
+    at captureRawStack (/Users/caglarcetin/Documents/GitHub/Athlete-Life/apps/web/node_modules/playwright-core/lib/coreBundle.js:8588:17)
+    at callMatcherAsStep (/Users/caglarcetin/Documents/GitHub/Athlete-Life/apps/web/node_modules/playwright/lib/matchers/expect.js:13310:57)
+    at Object.toBeVisible (/Users/caglarcetin/Documents/GitHub/Athlete-Life/apps/web/node_modules/playwright/lib/matchers/expect.js:13302:23)
+    at /Users/caglarcetin/Documents/GitHub/Athlete-Life/tools/v2/recovery_browser.mjs:36:74 {
+  matcherResult: {
+    message: 'expect(locator).toBeVisible() failed\n' +
+      '\n' +
+      "Locator: getByRole('region', { name: 'Seçili kas analizi' }).getByRole('heading', { name: '%29.5', exact: true })\n" +
+      'Expected: visible\n' +
+      'Timeout: 5000ms\n' +
+      'Error: element(s) not found\n' +
+      '\n' +
+      'Call log:\n' +
+      `  - Expect "toBeVisible" getByRole('region', { name: 'Seçili kas analizi' }).getByRole('heading', { name: '%29.5', exact: true }) with timeout 5000ms\n` +
+      "  - waiting for getByRole('region', { name: 'Seçili kas analizi' }).getByRole('heading', { name: '%29.5', exact: true })\n",
+    pass: false,
+    actual: undefined,
+    name: 'toBeVisible',
+    expected: 'visible',
+    log: [
+      `  - Expect "toBeVisible" getByRole('region', { name: 'Seçili kas analizi' }).getByRole('heading', { name: '%29.5', exact: true }) with timeout 5000ms`,
+      "  - waiting for getByRole('region', { name: 'Seçili kas analizi' }).getByRole('heading', { name: '%29.5', exact: true })"
+    ],
+    timeout: 5000,
+    ariaSnapshot: '- link "İçeriğe geç":\n' +
+      '  - /url: "#content"\n' +
+      '- banner:\n' +
+      '  - button "Menüyü aç"\n' +
+      '  - button "Sunucuya kaydedildi"\n' +
+      '  - button "Sürpriz plan ekle"\n' +
+      '  - button "Açık tema; koyu temaya geç": Açık\n' +
+      '  - button "Tüm verileri yedekle"\n' +
+      '  - link "D":\n' +
+      '    - /url: "#profile"\n' +
+      '- main:\n' +
+      '  - text: Kaydına dayanan içgörüler\n' +
+      '  - heading "Raporlar" [level=1]\n' +
+      '  - paragraph: Yük, alışkanlık ve gelişim. Her hesap kendi kaynaklarıyla birlikte.\n' +
+      '  - button "3B görünümü kapat"\n' +
+      '  - heading "3B kas yükü ve toparlanma" [level=2]\n' +
+      '  - paragraph: Modelde bir bölgeye dokun veya kas listesinden seç. Renkler kayıtlı kuvvet setlerinden hesaplanan yorgunluk endeksini gösterir.\n' +
+      '  - text: Canlı hesap · dakikada bir yenilenir · 24.09.2026 16:11:21\n' +
+      '  - button "Şimdi hesapla"\n' +
+      '  - text: Kas bölgesi\n' +
+      '  - combobox "Kas bölgesi":\n' +
+      '    - option "Göğüs"\n' +
+      '    - option "Ön omuz"\n' +
+      '    - option "Yan omuz"\n' +
+      '    - option "Arka omuz"\n' +
+      '    - option "Arka kol"\n' +
+      '    - option "Ön kol kası"\n' +
+      '    - option "Önkol"\n' +
+      '    - option "Kanat" [selected]\n' +
+      '    - option "Üst sırt"\n' +
+      '    - option "Trapez"\n' +
+      '    - option "Bel / omurga çevresi"\n' +
+      '    - option "Karın"\n' +
+      '    - option "Yan karın"\n' +
+      '    - option "Kalça"\n' +
+      '    - option "Ön bacak"\n' +
+      '    - option "Arka bacak"\n' +
+      '    - option "İç bacak"\n' +
+      '    - option "Baldır"\n' +
+      '    - option "Kalça fleksörleri"\n' +
+      '    - option "Kürek kemiği çevresi"\n' +
+      '  - text: Boyama\n' +
+      '  - combobox "Boyama":\n' +
+      '    - option "Yorgunluk endeksi" [selected]\n' +
+      '    - option "Orijinal model"\n' +
+      '  - paragraph: "Yeşil: düşük kayıtlı yük · sarı: orta · kırmızı: yüksek · gri: yüzde hesabı için veri yok. Sağ ve sol taraf birlikte değerlendirilir."\n' +
+      '  - text: Kalıcı 3B model ekle (GLB, en fazla 96 MB)\n' +
+      '  - button "Kalıcı 3B model ekle (GLB, en fazla 96 MB)"\n' +
+      '  - status: 3B analiz açık · 1/1 parça adıyla eşleşti. Adsız yüzeyler yaklaşık vücut bölgeleriyle boyanır; bu bir anatomik segmentasyon değildir.\n' +
+      '  - img "Kütüphanedeki 3B model; kamera düğmeleri ile döndürülebilir"\n' +
+      '  - region "Seçili kas analizi":\n' +
+      '    - heading "Kanat" [level=3]\n' +
+      '    - text: Tahmini yorgunluk endeksi\n' +
+      '    - heading "%58.5" [level=3]\n' +
+      '    - text: Model rezervi\n' +
+      '    - heading "%41.5" [level=3]\n' +
+      '    - paragraph: "Son kayıtlı yükten beri azalma: 0.0–0.0 yüzde puanı."\n' +
+      '    - paragraph: Yeni antrenman eklenmezse; sabit model varsayımlarıyla. 24 saat sonra yorgunluk %42.6 · 48 saat sonra yorgunluk %29.5\n' +
+      '    - group: Hesaba giren 8 set\n' +
+      '    - paragraph: "strength: 8.00–8.00 ağırlıklı gerçek set kalan kayıtlı yük"\n' +
+      '    - paragraph: Yorgunluk ve rezerv yüzdeleri doğrulanmamış yük modeli endeksidir; doku hasarı, kas büyümesi veya gerçek kuvvet kapasitesi ölçümü değildir. Tutuş, kardiyo ve beceri yükleri kendi birimlerinde izlenir; kuvvet rezervine çevrilmez.\n' +
+      '    - group: Sağlık ve toparlanma bağlamı\n' +
+      '  - group: Model yönünü düzelt\n' +
+      '  - button "Önden"\n' +
+      '  - button "Arkadan"\n' +
+      '  - button "Soldan"\n' +
+      '  - button "Sağdan"\n' +
+      '  - link "Kütüphane dosyasını indir":\n' +
+      '    - /url: /api/v2/body-model/content\n' +
+      '  - paragraph: Buradan yüklenen modeller yalnız bu profile bağlıdır ve tam yedeğe dahildir. Son yüklenen model açılır; önceki dosyalar korunur. Yönetici tarafından ayrı dosya olarak yapılandırılan modelleri indirme seçeneğiyle ayrıca sakla. Model olmadan tüm kayıt ve 2B analizler kullanılabilir.\n' +
+      '  - text: Görüntülenen tarih\n' +
+      '  - textbox "Görüntülenen tarih": 2026-09-24\n' +
+      '  - text: Zaman aralığı\n' +
+      '  - combobox "Zaman aralığı":\n' +
+      '    - option "Günlük"\n' +
+      '    - option "Haftalık"\n' +
+      '    - option "4 hafta" [selected]\n' +
+      '    - option "12 hafta"\n' +
+      '  - text: Hesap görünümü\n' +
+      '  - combobox "Hesap görünümü":\n' +
+      '    - option "Güncel kayıtlarla yeniden hesap" [selected]\n' +
+      '    - option "O tarihte bilinen kayıtlarla"\n' +
+      '  - button "Raporu yenile"\n' +
+      '  - text: Son hesap · 24.09.2026 16:11:21\n' +
+      '  - heading "Biraz daha bilgiye ihtiyacımız var." [level=2]\n' +
+      '  - paragraph: Kayıtlar bir güvenli antrenman garantisi değildir.\n' +
+      '  - paragraph: "Eksik: Bugünün enerji/yorgunluk öz-bildirimi · Son iki günde biten uyku kaydı · Tamamlanmış beslenme günlüğü · Su kaydı"\n' +
+      '  - link "Günlük durumumu gir":\n' +
+      '    - /url: "#health"\n' +
+      '  - link "Hedeflerimi düzenle":\n' +
+      '    - /url: "#goals"\n' +
+      '  - heading "İlk hedefini belirle." [level=2]\n' +
+      '  - paragraph: Ölçülebilir bir hedef eklediğinde gelişimin burada görünür.\n' +
+      '  - link "Hedef ekle":\n' +
+      '    - /url: "#goals"\n' +
+      '  - heading "Gerçekleşen çalışmalar" [level=2]\n' +
+      '  - text: Grafikte göster\n' +
+      '  - combobox "Grafikte göster":\n' +
+      '    - option "Gerçek kuvvet setleri" [selected]\n' +
+      '    - option "Sabit tutuş süresi"\n' +
+      '    - option "Kardiyo çalışma süresi"\n' +
+      '    - option "Kardiyo mesafesi"\n' +
+      '  - paragraph: Bu aralıkta karşılaştırılabilir kayıt yok.\n' +
+      '  - paragraph: Yalnız kayıt bulunan günler gösterilir. Eksik gün, yapılmamış antrenman sayılmaz.\n' +
+      '  - group: Dayanak seansları aç\n' +
+      '  - group: 2B alternatif harita ve yük tablosu\n' +
+      '  - heading "Beslenme ve uyku eğilimleri" [level=2]\n' +
+      '  - paragraph: Grafikler yalnız kayıtlı değerleri gösterir. Kısmi beslenme günleri tam günlük tüketim gibi kullanılmaz.\n' +
+      '  - paragraph: Bu aralıkta karşılaştırılabilir kayıt yok.\n' +
+      '  - paragraph: Bu aralıkta karşılaştırılabilir kayıt yok.\n' +
+      '  - paragraph: 0/28 günün beslenme kaydı tamamlandı.\n' +
+      '  - heading "Karşılaştırılabilir yetenek sonuçları" [level=2]\n' +
+      '  - paragraph: Karşılaştırılabilir test kaydı henüz yok.\n' +
+      '  - link "Capability Lab’i aç":\n' +
+      '    - /url: "#capability"\n' +
+      '  - heading "Bu hesabın dayanağı" [level=2]\n' +
+      '  - paragraph: Model exposure-1 · Veri sürümü 0 · Güncel kayıtlarla yeniden hesap\n' +
+      '  - paragraph: Kişisel zamana sıralı doğrulama ve uzman incelemesi yok; başlangıç modeli kullanılıyor.\n' +
+      '  - button "Kararı geçmişime kaydet"\n' +
+      '  - link "PDF raporu":\n' +
+      '    - /url: /api/v2/reports/pdf?on=2026-09-24&window_days=28\n' +
+      '  - link "Bilim ve sınırlar":\n' +
+      '    - /url: "#science"\n' +
+      '  - text: Saklanan kararlar\n' +
+      '  - combobox "Saklanan kararlar":\n' +
+      '    - option "Canlı hesap" [selected]\n' +
+      '- contentinfo "Sayfa gezintisi":\n' +
+      '  - button "Geri git": Geri\n' +
+      '  - button "Ana sayfaya dön": Bugün\n' +
+      '  - button "İleri git": İleri'
+  }
+}
+
+Node.js v24.19.0

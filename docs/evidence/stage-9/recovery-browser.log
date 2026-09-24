@@ -1,0 +1,54 @@
+/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+  from starlette.testclient import TestClient as TestClient  # noqa
+Traceback (most recent call last):
+  File "<string>", line 7, in <module>
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/apps/api/alos/domain/science.py", line 162, in compute
+    lineage.append({"kind": "set", "id": row["id"], "version": row["version"]})
+                                                               ~~~^^^^^^^^^^^
+KeyError: 'version'
+node:internal/errors:985
+  const err = new Error(message);
+              ^
+
+Error: Command failed: /Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/bin/python -c import json,sys
+sys.path.insert(0,'apps/api')
+from alos.domain.science import compute
+from datetime import datetime,timezone,timedelta
+at=datetime(2026,9,24,12,tzinfo=timezone.utc)
+s={'timezone':'Europe/Istanbul','sets':[{'id':'s'+str(i),'modality':'strength','movement_id':'weighted-pull-up','name':'Weighted Pull-Up','local_date':'2026-09-24','occurred_at':at.isoformat(),'reps':10,'rir':1,'external_kg':20,'status':'completed'} for i in range(8)]}
+print(json.dumps([compute(s,at+timedelta(hours=h)) for h in (0,48)]))
+Traceback (most recent call last):
+  File "<string>", line 7, in <module>
+  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/apps/api/alos/domain/science.py", line 162, in compute
+    lineage.append({"kind": "set", "id": row["id"], "version": row["version"]})
+                                                               ~~~^^^^^^^^^^^
+KeyError: 'version'
+
+    at genericNodeError (node:internal/errors:985:15)
+    at wrappedFn (node:internal/errors:539:14)
+    at checkExecSyncError (node:child_process:942:11)
+    at execFileSync (node:child_process:978:15)
+    at file:///Users/caglarcetin/Documents/GitHub/Athlete-Life/tools/v2/recovery_browser.mjs:12:28 {
+  status: 1,
+  signal: null,
+  output: [
+    null,
+    '',
+    'Traceback (most recent call last):\n' +
+      '  File "<string>", line 7, in <module>\n' +
+      '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/apps/api/alos/domain/science.py", line 162, in compute\n' +
+      '    lineage.append({"kind": "set", "id": row["id"], "version": row["version"]})\n' +
+      '                                                               ~~~^^^^^^^^^^^\n' +
+      "KeyError: 'version'\n"
+  ],
+  pid: 14358,
+  stdout: '',
+  stderr: 'Traceback (most recent call last):\n' +
+    '  File "<string>", line 7, in <module>\n' +
+    '  File "/Users/caglarcetin/Documents/GitHub/Athlete-Life/apps/api/alos/domain/science.py", line 162, in compute\n' +
+    '    lineage.append({"kind": "set", "id": row["id"], "version": row["version"]})\n' +
+    '                                                               ~~~^^^^^^^^^^^\n' +
+    "KeyError: 'version'\n"
+}
+
+Node.js v24.19.0

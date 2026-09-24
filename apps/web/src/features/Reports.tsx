@@ -1,4 +1,5 @@
 import { useEffect, useState, lazy, Suspense } from "react";
+import { recoverySchema } from "./muscleRecovery";
 const BodyModel = lazy(() => import("./BodyModel"));
 import { z } from "zod";
 import {
@@ -15,6 +16,7 @@ const point = z
   .object({ id: z.string(), local_date: z.string(), value: z.number() })
   .catchall(z.unknown());
 const schema = z.object({
+  muscle_recovery: recoverySchema.optional(),
   model_version: z.string(),
   as_of: z.string(),
   input_revision: z.number(),
@@ -333,7 +335,17 @@ export function Reports({
       if (document.visibilityState !== "hidden" && !saved)
         setRefresh((n) => n + 1);
     }, 60000);
-    return () => clearInterval(t);
+    const resume = () => {
+      if (document.visibilityState !== "hidden" && !saved)
+        setRefresh((n) => n + 1);
+    };
+    document.addEventListener("visibilitychange", resume);
+    window.addEventListener("focus", resume);
+    return () => {
+      clearInterval(t);
+      document.removeEventListener("visibilitychange", resume);
+      window.removeEventListener("focus", resume);
+    };
   }, [saved]);
   useEffect(() => {
     if (saved) {
@@ -414,7 +426,24 @@ export function Reports({
           </button>
           {showBody && (
             <Suspense fallback={<p role="status">3B görünüm hazırlanıyor…</p>}>
-              <BodyModel store={store} />
+              <BodyModel
+                store={store}
+                recovery={error ? undefined : report?.muscle_recovery}
+                asOf={report?.as_of}
+                context={report?.readiness.reasons}
+                frozen={
+                  !!saved || selected !== new Date().toLocaleDateString("en-CA")
+                }
+                exposure={report?.muscles}
+                pending={loading}
+                error={error}
+                onNow={() => {
+                  setSaved("");
+                  setKnowledge("recomputed");
+                  onDate(new Date().toLocaleDateString("en-CA"));
+                  setRefresh((n) => n + 1);
+                }}
+              />
             </Suspense>
           )}
         </>
@@ -648,7 +677,10 @@ export function Reports({
                   ))}
                 </details>
               </section>
-              <MuscleMap report={report} />
+              <details className="card">
+                <summary>2B alternatif harita ve yük tablosu</summary>
+                <MuscleMap report={report} />
+              </details>
               <section className="card">
                 <h2>Beslenme ve uyku eğilimleri</h2>
                 <p>

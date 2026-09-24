@@ -31,6 +31,18 @@ class EvidenceRule(StrictModel):
 
 RULES = [
     EvidenceRule(
+        id="load-reserve", status="heuristic",
+        title="Athlete Life regional load/reserve visualization",
+        authors_year="Athlete Life mühendislik modeli, 2026",
+        access_scope="Kaynak ve sentetik davranış testleri; klinik doğrulama yok",
+        population="Kayıtlı kuvvet setleri", experience="Kişiye kalibre edilmemiş",
+        outcome="Bölgesel yorgunluk ve tamamlayıcı rezerv endeksi",
+        evidence_type="Ürün varsayımı",
+        limitation="Hasar, hipertrofi, gerçek kapasite veya spora hazır oluş ölçümü değildir. Mutlak kg kişisel kapasiteye çevrilmez; ağrı/uyku ayrı gösterilir.",
+        product_parameter="load-reserve-1: 100*(1-exp(-dose/8)); sqrt(reps/10) bounded .5..2; effort=max(.35,1-.12*RIR) or RPE/10; missing effort .35..1; inherited 36/48h half-life",
+        interpretation="Kas katsayılı set dozu saatle azalır. 24/48 saat yeni yük yok varsayımıdır. Model renkleri bölgeseldir; adsız GLB yaklaşık ayakta-vücut bölgeleri kullanır. Sol/sağ ayrımı ve kişisel biyolojik kalibrasyon yoktur.",
+    ),
+    EvidenceRule(
         id="progressive-resistance",
         status="provisional",
         title="Resistance Training Prescription for Muscle Function, Hypertrophy, and Physical Performance in Healthy Adults: An Overview of Reviews",

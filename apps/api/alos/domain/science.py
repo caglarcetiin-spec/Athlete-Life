@@ -9,6 +9,7 @@ from zoneinfo import ZoneInfo
 
 from ..errors import DomainError
 from ..lifestyle import capability_series, nutrition_summary
+from .recovery import contribution, summarize
 
 MODELS = {
     "exposure-1": {"strength": 36, "isometric": 36, "skill": 24, "cardio": 24, "circuit": 30},
@@ -106,6 +107,7 @@ def compute(snapshot, as_of, model_version="exposure-1", window_days=28, knowled
     lineage = []
     loads = []
     muscles = {}
+    recovery_entries = []
     unmapped = []
     uncertain = []
     missing = []
@@ -169,6 +171,9 @@ def compute(snapshot, as_of, model_version="exposure-1", window_days=28, knowled
         for group, weight in definition.get("muscles", {}).items():
             if not isinstance(weight, (float, int)) or not 0 <= weight <= 1:
                 continue
+            entry = contribution(row, amount, group, weight, earliest, latest, half)
+            if entry is not None:
+                recovery_entries.append(entry)
             exposure = float(amount) * weight
             low = (
                 0.0
@@ -375,6 +380,7 @@ def compute(snapshot, as_of, model_version="exposure-1", window_days=28, knowled
         "input_lineage": sorted(lineage, key=lambda x: (x["kind"], x["id"])),
         "evidence_ids": [
             "exposure-decay",
+            "load-reserve",
             "session-rpe",
             "cycle-individual",
             "illness-return",
@@ -422,6 +428,7 @@ def compute(snapshot, as_of, model_version="exposure-1", window_days=28, knowled
                 "source_ids": n["source_ids"] + [r["id"] for r in sleep_rows],
             }
         )
+    result["muscle_recovery"] = summarize(recovery_entries, as_of)
     result["input_digest"] = hashlib.sha256(
         json.dumps(relevant, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()
     ).hexdigest()

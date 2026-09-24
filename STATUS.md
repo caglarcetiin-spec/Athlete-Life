@@ -1,3 +1,11 @@
+# 3B bölgesel toparlanma güncellemesi — 24 Eylül 2026
+
+Birleşik 3B yük/endeks boyaması, kas seçimi, kaynak setler, 24/48 saat tahmini ve dakikalık yenileme uygulandı. Tüm sentetik API paketi 63 PASS; Mongo hedefli 4, istemci 12 test; WebGL, mevcut GLB yükleme/yeniden açma ve rapor/axe tarayıcı kontrolleri PASS. Kaynak commit 9856435. Mac kilitli olduğu için GitHub Desktop gönderimi bekliyor; yeni sürüm henüz GitHub/Render üzerinde yayınlanmadı. CI ve canlı doğrulama yayın sonrası yapılacak. Yeni hesaplar biyolojik ölçüm değil açıklanmış varsayımlardır. Şema/hesap/medya göçü yok; MongoDB ve ücretsiz Render korunuyor. Ayrıntı `docs/evidence/stage-9/RECOVERY_REVIEW.md`.
+
+# Son yayın doğrulaması — 24 Eylül 2026
+
+96 MiB GLB ve altı hareketlik görsel rehber **yayında**: https://athlete-life.onrender.com/ . PR #3 merge `107967bc`, Render `dep-daqfvk0ae00c738dnnr0` LIVE. CI 35988524978 core/container/mongodb SUCCESS. Yedi herkese açık paket dosyasının SHA-256 değerleri eşleşti; ready/root 200, oturumsuz hesap 401, özel dosya yolu 404. MongoDB ve ücretsiz plan korundu; şema/hesap/medya göçü yok. Doğrulama: `docs/evidence/stage-9/LIVE_LARGE_MODEL.json`. GitHub PR #3 içinde yayın sonucu kaydedildi. Aşağıdaki bekleme ifadeleri geçmiş aşamaları anlatır.
+
 # GLB güncellemesi — 24 Eylül 2026
 
 96 MiB GLB yükleme ve ilerleme/onay arayüzü hazır. 80/95 MiB sentetik modellerin yükleme, indirme, tam tarayıcı yedeği ve geri yükleme SHA-256 eşleşmeleri geçti. Son 80 MiB testinde tepe sunucu belleği 466 MiB altında; fiziksel telefon veya kullanıcının gerçek modeli test edilmedi. 78 Mongo regresyonu, son komut yolu için 13 test, 3 boyut/serileştirme koruma testi ve 30 PostgreSQL ortak API testi PASS. Mobil boyutta sentetik WebGL/kamera/yükleme/yeniden açma PASS. Yayın dalının Linux CI ve Render doğrulaması henüz bekleniyor.
