@@ -1,3 +1,4 @@
+import { MovementHelp, MovementLibrary } from "./MovementGuide";
 import { useState } from "react";
 import {
   CalendarDays,
@@ -476,6 +477,7 @@ export function Programming({
                       });
                     return (
                       <div className="exercise-editor" key={ei}>
+                        <MovementHelp name={exercise.name} variant={exercise.variant} />
                         <div className="form-grid">
                           <label className="wide">
                             Hareket adı
@@ -812,6 +814,7 @@ export function Programming({
           </div>
         )}
       </section>
+      <MovementLibrary />
     </>
   );
 }

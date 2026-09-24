@@ -120,3 +120,13 @@ Full backups remain self-contained JSON with the same canonical checksums; HTTP
 export streams base64 and import is bounded at 192 MiB. Text transfer envelopes
 are normalized to the existing parsed transfer format after computing the source
 digest; exact integers, local journals/drafts and unknown fields remain intact.
+
+## 2026-09-24: Movement visual layer
+
+`features/movementLibrary.ts` owns six explicit, versioned-in-source exercise
+illustrations and reference links. `MovementGuide.tsx` supplies one shared library
+and contextual help to Programming and Workouts. No persistent fields, API or
+matching changes to the training/science engines. Known standard variants only;
+unknown exercise names never inherit a guessed diagram. Reduced-motion and
+reduced-transparency preferences control cosmetic CSS. No third-party assets or
+analytics calls are introduced.

@@ -122,3 +122,7 @@ Aşama 4 DEVAM EDİYOR: beslenme, su, günlük sağlık, Capability, hedef ve so
 Beslenme/yiyecek/tarif, su, check-in/uyku/ağrı/sağlık kayıtları, Capability, hedef ve sosyal/gerçek aktivite modelleri ortak transaction ve offline protokolüne bağlı. 31 backend testi ve gerçek mobil/ikinci oturum akışı PASS. [Kanıt](docs/evidence/stage-4/RESULT.md).
 
 Aşama 5 DEVAM EDİYOR: açıklanabilir, sürümlü hesaplar; 37 backend regression PASS. Rapor arayüzü ve PDF kontrolleri sürüyor.
+
+## Görsel katman — 24 Eylül 2026
+
+Hareket kütüphanesi (6 temel hareket, iki pozisyon, şematik kas haritası ve kaynak bağlantıları), program/set bağlamında yardım ve azaltılabilir kısa geçişler tamamlandı. Sentetik mobil/açık-koyu/WCAG AA kontrolü, 10 client testi, lint/build PASS. GLB ve görsel katman aynı yayın dalında; nihai CI/yayın sonucu ayrıca kaydedilir.
