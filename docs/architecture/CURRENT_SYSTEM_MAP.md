@@ -130,3 +130,15 @@ matching changes to the training/science engines. Known standard variants only;
 unknown exercise names never inherit a guessed diagram. Reduced-motion and
 reduced-transparency preferences control cosmetic CSS. No third-party assets or
 analytics calls are introduced.
+
+## 24 Eylül 2026 — V2 birleşik 3B yük/toparlanma
+
+`science.compute → recovery.summarize → analysis.muscle_recovery → Reports → BodyModel → bodyOverlay` tek veri akışıdır. Saat sunucudan gelir; bugün analizi görünürken 60 saniyede bir, sekmeye dönüşte ve kayıt cursor değişince hesap yenilenir. GLB geometri dosyası bu yenilemelerde yeniden indirilmez. Eski/sabit analizler kendi zamanını korur; “Şimdi hesapla” bugüne döner. 2B harita aynı raporun erişilebilir alternatifidir.
+
+Yeni türetilmiş alan `muscle_recovery`: `version`, `scale`, `calibrated=false`, `meaning`, `forecast_assumption`, `groups`. Her grupta `fatigue`, `reserve`, `released_since_last_load` low/high; `last_load_at`; `forecast[{hours,fatigue}]`; `uncertain_time`, `missing_effort`, ve kaynak setlerin `id/name/local_date/reps/external_kg/rir/rpe/dose_low/dose_high/half_hours/note` alanları vardır. Kullanıcı ana verisi değildir, mevcut analiz snapshot JSON'una dahil edilir. Eski analizlerde yokluğu kabul edilir; kaynak alanları silinmez. `spinalErectors` yeni endekste `lowerBack` altında birleştirilir.
+
+Kuvvet endeksi mühendislik varsayımıdır: kas katsayılı set × sınırlı sqrt(reps/10) × bildirilen efor; eksik efor aralık. `100*(1-exp(-kalan_doz/8))`; yarılanma 36/48 saat. Rezerv bu endeksin 100'e tamamlayıcısıdır, kuvvet kapasitesi veya hazır oluş değildir. Diğer modaliteler özgün birimlerinde kalır. Uyku/ağrı/hastalık bağlamı ayrıca görünür, doğrulanmamış biyolojik katsayı eklenmez.
+
+Mesh adları varsa bölgeye eşlenir; tek parça/adsız yüzeyler ayakta vücut koordinatlarıyla **yaklaşık** boyanır. Bölge seçimi pointer raycast veya klavye erişimli select ile yapılır. Y/Z/X ve ön/arka düzeltmesi yalnız görünümü değiştirir; hesaba yazılmaz. Gri veri yokluğudur; gerçek iyileşme kanıtı değildir. Sol/sağ ayrı hesaplanmaz.
+
+Şema/hesap/medya göçü yok. MongoDB ve ücretsiz Render korunur. Geri dönüş önceki kaynak/paket commit'idir; ham kayıtları veya GLB'yi dönüştürmez. Yeni analiz alanı eski istemcilerde bilinmeyen ek JSON olarak kalır.

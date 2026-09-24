@@ -4,12 +4,12 @@ import struct
 from conftest import login
 
 
-def synthetic_glb():
+def synthetic_glb(name="synthetic_triangle"):
     document = {
         "asset": {"version": "2.0"},
         "scene": 0,
         "scenes": [{"nodes": [0]}],
-        "nodes": [{"mesh": 0, "name": "synthetic_triangle"}],
+        "nodes": [{"mesh": 0, "name": name}],
         "meshes": [{"primitives": [{"attributes": {"POSITION": 0}}]}],
         "buffers": [{"byteLength": 36}],
         "bufferViews": [{"buffer": 0, "byteLength": 36}],

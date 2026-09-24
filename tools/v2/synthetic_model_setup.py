@@ -29,5 +29,5 @@ else:
     engine.dispose()
 folder = Path(tempfile.mkdtemp(prefix="alos-synthetic-glb-"))
 path = folder / "triangle.glb"
-path.write_bytes(synthetic_glb())
+path.write_bytes(synthetic_glb("Latissimus_Dorsi" if os.environ.get("ALOS_SYNTHETIC_NAMED_MODEL") == "1" else "synthetic_triangle"))
 print(json.dumps({"owner": str(owner), "path": str(path)}))

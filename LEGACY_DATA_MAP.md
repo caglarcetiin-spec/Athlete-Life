@@ -113,3 +113,7 @@ escaping changes representation only, preserving exact decoded values.
 all canonical values/journal/draft/unknown envelope fields in the existing
 `alos-v2-transfer` representation. Only the redundant canonical text serialization
 is replaced; exact integer values are preserved. No personal records are migrated.
+
+### 3B analiz türetilmiş verisi — 24 Eylül 2026
+
+Yeni `analysis.result.muscle_recovery` mevcut canonical setlerden hesaplanır; eski GLB, eski hesabın yükleri veya 2B harita için ayrı bir kayıt havuzu oluşturulmaz. Eski sabit analizde alan yoksa UNKNOWN gösterilir; yeni hesap isteğiyle üretilebilir. `spinalErectors` yalnız yeni bölgesel endekste `lowerBack` olarak gruplanır; kaynak hareket-kas kayıtları ve özgün maruziyet tablosu aynen korunur. Şema/migration yok; geçmiş analiz snapshotları yeniden yazılmaz.

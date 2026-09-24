@@ -1,9 +1,9 @@
 {
   "app-icon.svg": "b522854da5018dd6c00135200de3a4415773cbbc429df5de1b0a7d59b23ab6a1",
-  "assets/BodyModel-CfZVbI-C.js": "496625b071a5d588c2c1db5db70d02853f99bf88a8eb555aa8399c0944f099ed",
-  "assets/index-BYxK0Im2.js": "2647c3881b35a79c6dd70e81f73e53621b4f7e93cf3487f346760f69d9322ae2",
+  "assets/BodyModel-Bjz5D2fQ.js": "b8007a3b8a14c72247f9c27978ba3a7547f647222ccad291798fd84a82d1d31f",
+  "assets/index-CijywPwU.js": "23dfc0c2b7e7a12e6c7c3766c709b21e649bb754aa4c634e49823854db10db35",
   "assets/index-DBMhrk8E.css": "465c30a69d7e6ade59a694708fa092174a67ce0fa419559e6459f5b43598ef0c",
-  "index.html": "d742a73ebe5326e278927bf981b679c1ad2148d03bbdd8df4c1d2a4db3cff32c",
+  "index.html": "94375a10631270ce7e89cfff4352c76e20102325575ba5ae1e58d51848e32cda",
   "manifest.webmanifest": "f1da0bfbcba614493c0d5f97fe40892627c2196aaf44434ac42ae148d4effb16",
-  "sw.js": "b4268d795daa8560abd664893ef0b51ded389511e17bdfab285d7082b0a23d45"
+  "sw.js": "a5765e16969d31a056a53d10b2e63d914a536ec99d7d20a1aac196cad54c471c"
 }
