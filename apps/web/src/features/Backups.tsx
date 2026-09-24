@@ -63,9 +63,9 @@ export function Backups({ store }: { store: SyncStore }) {
     setBusy(true);
     setError("");
     try {
-      if (file.size > 64 * 1024 * 1024)
+      if (file.size > 192 * 1024 * 1024)
         throw new Error(
-          "Dosya 64 MB sınırını aşıyor. Büyük arşiv için yönetici geri yükleme aracı gerekli; mevcut kayıtların değişmedi.",
+          "Dosya 192 MB sınırını aşıyor. Büyük arşiv için yönetici geri yükleme aracı gerekli; mevcut kayıtların değişmedi.",
         );
       const result = await api("imports/stage", {
         method: "POST",

@@ -1,0 +1,72 @@
+..............F
+=================================== FAILURES ===================================
+__ test_large_backup_restore_preserves_data_without_recursive_canonical_copy ___
+
+app = <fastapi.applications.FastAPI object at 0x10ebd7980>
+client = <starlette.testclient.TestClient object at 0x10ec2ade0>
+
+    def test_large_backup_restore_preserves_data_without_recursive_canonical_copy(
+        app, client
+    ):
+        # A bounded synthetic unknown field deliberately exceeds the old 16 MB transport.
+        payload = "z" * (17 * 1024 * 1024)
+        source = {"data": {"unknownLargeText": payload}}
+        staged_response = client.post("/api/v2/imports/stage", content=json.dumps(source))
+        assert staged_response.status_code == 200, staged_response.text[:500]
+        staged = staged_response.json()
+        write(client, cmd("import.apply", staged["id"], staged["version"]))
+        package = client.get("/api/v2/backups/export").json()
+        encoded = json.dumps(package)
+        assert len(encoded) > 32 * 1024 * 1024
+        other = login(app, "arda", "test-password-456")
+        envelope = {
+            "format": "alos-v2-transfer-text",
+            "canonical_text": encoded,
+            "pending_journal": [{"id": "uncommitted"}],
+            "local_drafts": {"x": "kept"},
+            "unknownEnvelope": "kept",
+        }
+        staged = other.post("/api/v2/imports/stage", content=json.dumps(envelope))
+        assert staged.status_code == 200, staged.text[:500]
+        staged = staged.json()
+        write(other, cmd("import.apply", staged["id"], staged["version"]))
+        restored = other.get("/api/v2/backups/export").json()
+        assert restored["records"]["legacy"][0]["value"] == payload
+        provenance = next(
+            r["raw"]
+            for r in restored["records"]["import"]
+            if r["raw"].get("format") == "alos-restored-provenance"
+        )
+        assert provenance["source_envelope"]["pending_journal"] == [{"id": "uncommitted"}]
+        assert provenance["source_envelope"]["local_drafts"] == {"x": "kept"}
+        assert provenance["source_envelope"]["unknownEnvelope"] == "kept"
+        assert "records" not in provenance["source_manifest"]
+        assert len(json.dumps(restored)) < len(encoded) + 100_000
+>       assert (
+            client.post(
+                "/api/v2/imports/stage",
+                content=b"{}",
+                headers={"Content-Length": str(65 * 1024 * 1024)},
+            ).status_code
+            == 413
+        )
+E       AssertionError: assert 422 == 413
+E        +  where 422 = <Response [422 Unprocessable Entity]>.status_code
+E        +    where <Response [422 Unprocessable Entity]> = post('/api/v2/imports/stage', content=b'{}', headers={'Content-Length': '68157440'})
+E        +      where post = <starlette.testclient.TestClient object at 0x10ec2ade0>.post
+
+tests/v2/test_backups.py:579: AssertionError
+=============================== warnings summary ===============================
+.venv-v2/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+.venv-v2/lib/python3.12/site-packages/starlette/testclient.py:53
+  /Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/mongodb/test_domain_parity.py::test_large_backup_restore_preserves_data_without_recursive_canonical_copy
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 14 passed, 2 warnings in 48.40s

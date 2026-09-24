@@ -1,3 +1,9 @@
+# GLB güncellemesi — 24 Eylül 2026
+
+96 MiB GLB yükleme ve ilerleme/onay arayüzü hazır. 80/95 MiB sentetik modellerin yükleme, indirme, tam tarayıcı yedeği ve geri yükleme SHA-256 eşleşmeleri geçti. Son 80 MiB testinde tepe sunucu belleği 466 MiB altında; fiziksel telefon veya kullanıcının gerçek modeli test edilmedi. 78 Mongo regresyonu, son komut yolu için 13 test, 3 boyut/serileştirme koruma testi ve 30 PostgreSQL ortak API testi PASS. Mobil boyutta sentetik WebGL/kamera/yükleme/yeniden açma PASS. Yayın dalının Linux CI ve Render doğrulaması henüz bekleniyor.
+
+Şema/hesap göçü yok; MongoDB ve ücretsiz Render korunur. Önceki sürüm aynı BSON kayıtlarını okuyabilir, ancak geri dönüldüğünde küçük yükleme sınırları geri gelir. Ayrıntı: `docs/evidence/stage-9/LARGE_MODEL_REVIEW.md`.
+
 # Canlı durum — 24 Eylül 2026
 
 V2 mevcut ücretsiz Render servisinde **yayında**: https://athlete-life.onrender.com/ . MongoDB korundu; yeni ücretli kaynak açılmadı. Kullanıcının açık gerçek veri geçişi onayıyla üç hesap ve kaynak snapshotları, eşleşen önizlemenin 11 canonical kaydı ve cihazda bekleyen eksik taslağın arşivi taşındı. Eski koleksiyonlar değişmedi; özel kurtarma dosyaları Git dışında durur. Önizleme HTTP yazıcısı durduruldu; üretimde tek yazar vardır.

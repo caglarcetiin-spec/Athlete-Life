@@ -1,0 +1,8 @@
+upload {'peak_mib': 317.65625}
+download {'peak_mib': 331.296875}
+export {'peak_mib': 544.046875}
+stage {'peak_mib': 800.375}
+restore {'peak_mib': 800.375}
+{"result": "PASS", "model_bytes": 83886176, "hash_matches": true, "bootstrap_bytes": 1070, "backup_bytes": 111852362, "elapsed_seconds": 5.59}
+{"server_peak_mib": 800.375}
+

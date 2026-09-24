@@ -101,3 +101,15 @@ Kontrollü aktarım (`alos.cutover`): `account_users` → `users`/`athletes`, sc
 ### Controlled preview consolidation
 
 The explicit cutover snapshot can include a local V2 `preview` export matched by casefolded username (exactly one existing v10 account required). Restore into the empty deterministic destination precedes legacy import; a newer active program stays active and older plans are archived. Canonical IDs are remapped by the existing restore protocol. `preview_journal` is retained verbatim as `preview_device_journal` in the immutable legacy import package; pending commands are not replayed. Both source writers must be stopped first. All old source collections remain unchanged.
+
+### 2026-09-24 — large owner GLB
+
+`media_objects.details.bytes` stores the raw GLB length for metadata-only reads;
+absence in old rows is valid. `media.upload` takes name/SHA-256 plus a validated
+binary attachment at the API boundary; journals contain metadata, not base64.
+The existing `alos_v2_blobs` BSON chunk layout is unchanged. JSON column Unicode
+escaping changes representation only, preserving exact decoded values.
+`alos-v2-transfer-text` staging computes the original source digest, then retains
+all canonical values/journal/draft/unknown envelope fields in the existing
+`alos-v2-transfer` representation. Only the redundant canonical text serialization
+is replaced; exact integer values are preserved. No personal records are migrated.

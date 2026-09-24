@@ -1,7 +1,7 @@
 name: V2 acceptance
 on:
   push:
-    branches: ["codex/alos-2-stage-0"]
+    branches: ["codex/**"]
     paths: ["apps/**", "release/v2/**", "start_render.py", "requirements.txt", "tests/v2/**", "tests/mongodb/**", "tools/v2/**", "infra/v2/**", ".github/workflows/v2-acceptance.yml"]
   workflow_dispatch:
 permissions:
@@ -75,6 +75,8 @@ jobs:
             docs/evidence/stage-6/*.json
             docs/evidence/stage-8/*.log
             docs/evidence/stage-8/*.json
+            docs/evidence/stage-9/*.log
+            docs/evidence/stage-9/*.json
           retention-days: 14
   container:
     runs-on: ubuntu-24.04
@@ -137,6 +139,8 @@ jobs:
         run: |
           .venv-v2/bin/python tools/v2/run_evidence.py --stage 8 ci-mongo-lint .venv-v2/bin/ruff check apps/api tests/mongodb tools/v2
           .venv-v2/bin/python tools/v2/run_evidence.py --stage 8 ci-mongo-api .venv-v2/bin/python -m pytest tests/mongodb -q
+      - name: Synthetic 80 MB upload and full backup
+        run: .venv-v2/bin/python tools/v2/run_evidence.py --stage 9 ci-large-model-80m .venv-v2/bin/python tools/v2/large_model_probe.py
       - name: Client checks and build
         run: |
           .venv-v2/bin/python tools/v2/run_evidence.py --stage 8 ci-client npm --prefix apps/web test
@@ -163,6 +167,8 @@ jobs:
             docs/evidence/stage-6/*.json
             docs/evidence/stage-8/*.log
             docs/evidence/stage-8/*.json
+            docs/evidence/stage-9/*.log
+            docs/evidence/stage-9/*.json
           retention-days: 14
       - name: Mongo logs and cleanup
         if: always()

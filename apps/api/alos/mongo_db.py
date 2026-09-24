@@ -14,7 +14,8 @@ from datetime import date, datetime
 from functools import wraps
 from uuid import UUID, uuid4
 
-from bson import BSON
+from bson import decode as bson_decode
+from bson import encode as bson_encode
 from pymongo import ASCENDING, MongoClient
 from pymongo.errors import BulkWriteError, DuplicateKeyError, PyMongoError
 from pymongo.read_concern import ReadConcern
@@ -53,7 +54,7 @@ def retry_transaction(function):
 
 def encode(column, raw):
     if isinstance(column.type, JSONB):
-        return json.dumps(raw, ensure_ascii=False, separators=(",", ":"), allow_nan=False)
+        return json.dumps(raw, ensure_ascii=True, separators=(",", ":"), allow_nan=False)
     return value(raw)
 
 
@@ -261,27 +262,30 @@ class MongoSession:
         for row in rows:
             self.add(row)
 
+    def plain(self, row):
+        return {c.name: getattr(row, c.name) for c in inspect(type(row)).columns}
+
     def document(self, row):
         return {c.name: encode(c, getattr(row, c.name)) for c in inspect(type(row)).columns}
 
-    def unpack(self, model, document):
+    def unpack(self, model, document, metadata_only=False):
         if document is None:
             return None
         key = model.__tablename__, document["_id"]
         if key in self.rows:
             return self.rows[key]
-        if "_large" in document:
-            chunks = list(
-                self.database.collection("blobs")
-                .find({"record": document["_large"]}, session=self.session)
-                .sort("ordinal", 1)
-            )
-            data = b"".join(bytes(c["content"]) for c in chunks)
+        if "_large" in document and not metadata_only:
+            chunks = self.database.collection("blobs").find(
+                {"record": document["_large"]}, session=self.session, batch_size=4
+            ).sort("ordinal", 1)
+            data = bytearray()
+            for chunk in chunks:
+                data.extend(chunk["content"])
             if len(data) != document["_size"] or hashlib.sha256(data).hexdigest() != document["_sha256"]:
                 raise RuntimeError("Private record content integrity failure")
-            document = BSON(data).decode()
-        row = model(**{c.name: decode(c, document[c.name]) for c in inspect(model).columns})
-        self.rows[key], self.original[key] = row, self.document(row)
+            document = bson_decode(data)
+        row = model(**{c.name: decode(c, b"" if metadata_only and c.name == "content" else document[c.name]) for c in inspect(model).columns})
+        self.rows[key], self.original[key] = row, copy.deepcopy(self.plain(row))
         return row
 
     def get(self, model, identity, with_for_update=False):
@@ -318,7 +322,10 @@ class MongoSession:
             if statement._limit_clause.value == 0:
                 return Values()
             cursor = cursor.limit(statement._limit_clause.value)
-        return Values(self.unpack(model, doc) for doc in cursor)
+        metadata_only = bool(statement.get_execution_options().get("alos_media_metadata"))
+        if metadata_only and (self.write or table.name != "media_objects"):
+            raise ValueError("Metadata projection is only for read-only media queries")
+        return Values(self.unpack(model, doc, metadata_only) for doc in cursor)
 
     def scalar(self, statement):
         return self.scalars(statement).first()
@@ -368,11 +375,11 @@ class MongoSession:
             for key, row in list(self.rows.items()):
                 if key in self.deleted:
                     continue
-                data = self.document(row)
-                if data == self.original[key]:
+                plain = self.plain(row)
+                if plain == self.original[key]:
                     continue
+                data = self.document(row)
                 table = inspect(type(row)).local_table
-                plain = {c.name: getattr(row, c.name) for c in table.columns}
                 for col in table.columns:
                     if plain[col.name] is None and not col.nullable and not isinstance(col.type, JSONB):
                         raise IntegrityError(None, None, ValueError("Required record field"))
@@ -409,25 +416,28 @@ class MongoSession:
                         {"record": old["_large"]}, session=self.session
                     )
                 doc = {"_id": key[1], **data}
-                encoded = BSON.encode(doc)
-                if len(encoded) > 8 * CHUNK:
+                if any(isinstance(v, (str, bytes)) and len(v) >= CHUNK for v in doc.values()):
+                    from .bson_stream import document_chunks
                     blob_id = str(uuid4())
-                    self.database.collection("blobs").insert_many(
-                        [
-                            {"record": blob_id, "ordinal": i // CHUNK, "content": encoded[i : i + CHUNK]}
-                            for i in range(0, len(encoded), CHUNK)
-                        ],
-                        session=self.session,
-                    )
-                    doc = {k: v for k, v in doc.items() if len(BSON.encode({"v": v})) < CHUNK}
-                    doc.update(
-                        _large=blob_id, _size=len(encoded), _sha256=hashlib.sha256(encoded).hexdigest()
-                    )
+                    digest, size, batch = hashlib.sha256(), 0, []
+                    for ordinal, chunk in enumerate(document_chunks(doc)):
+                        digest.update(chunk)
+                        size += len(chunk)
+                        batch.append({"record": blob_id, "ordinal": ordinal, "content": chunk})
+                        if len(batch) == 4:
+                            self.database.collection("blobs").insert_many(batch, session=self.session)
+                            batch.clear()
+                    if batch:
+                        self.database.collection("blobs").insert_many(batch, session=self.session)
+                    doc = {k: v for k, v in doc.items()
+                           if not (isinstance(v, (str, bytes)) and len(v) >= CHUNK)
+                           and len(bson_encode({"v": v})) < CHUNK}
+                    doc.update(_large=blob_id, _size=size, _sha256=digest.hexdigest())
                 if creating:
                     inserts.setdefault(table.name, []).append(doc)
                 else:
                     coll.replace_one({"_id": key[1]}, doc, upsert=True, session=self.session)
-                self.original[key] = copy.deepcopy(data)
+                self.original[key] = copy.deepcopy(plain)
             # New identities use insert semantics, never upsert: duplicates still abort
             # the entire transaction. Batching avoids one network round trip per row.
             for table, documents in inserts.items():

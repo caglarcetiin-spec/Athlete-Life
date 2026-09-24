@@ -6,7 +6,7 @@
     "Owner library file loads in WebGL",
     "Camera controls and reload",
     "Broken file retains navigation and record access",
-    "UI upload persists in PostgreSQL and opens after reload"
+    "UI upload persists in configured test database and opens after reload"
   ],
   "errors": []
 }

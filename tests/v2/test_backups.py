@@ -580,7 +580,7 @@ def test_large_backup_restore_preserves_data_without_recursive_canonical_copy(
         client.post(
             "/api/v2/imports/stage",
             content=b"{}",
-            headers={"Content-Length": str(65 * 1024 * 1024)},
+            headers={"Content-Length": str(193 * 1024 * 1024)},
         ).status_code
         == 413
     )

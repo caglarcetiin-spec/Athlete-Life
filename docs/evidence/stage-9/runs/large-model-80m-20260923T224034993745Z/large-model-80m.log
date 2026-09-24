@@ -1,0 +1,3 @@
+{"result": "PASS", "model_bytes": 83886176, "hash_matches": true, "bootstrap_bytes": 1070, "backup_bytes": 111852362, "elapsed_seconds": 21.29}
+{"server_peak_mib": 1049.765625}
+

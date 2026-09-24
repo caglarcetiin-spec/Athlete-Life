@@ -27,28 +27,49 @@ export default function BodyModel({ store }: { store: SyncStore }) {
     .map((row) => row.id + ":" + row.version)
     .sort()
     .join("|");
+  const uploadIdentity = useRef<{ key: string; operation: string; entity: string } | null>(null);
   async function upload(file: File) {
     setUploading(true);
     try {
       if (
         !file.name.toLowerCase().endsWith(".glb") ||
-        file.size > 8 * 1024 * 1024
+        file.size > 96 * 1024 * 1024
       )
-        throw Error("En fazla 8 MB boyutunda GLB dosyası seç.");
-      const content = await new Promise<string>((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(String(reader.result));
-        reader.onerror = () => reject(Error("Dosya okunamadı."));
-        reader.readAsDataURL(file);
-      });
-      await store.enqueue("media.save", null, {
+        throw Error("En fazla 96 MB boyutunda GLB dosyası seç.");
+      const key = `${file.name}:${file.size}:${file.lastModified}`;
+      if (uploadIdentity.current?.key !== key)
+        uploadIdentity.current = { key, operation: crypto.randomUUID(), entity: crypto.randomUUID() };
+      const params = new URLSearchParams({
+        operation_id: uploadIdentity.current.operation,
+        entity_id: uploadIdentity.current.entity,
         name: file.name.slice(0, 150),
-        mime: "model/gltf-binary",
-        content,
       });
-      setUploadNotice(
-        "Model bu cihazda korundu. Sunucuya kaydedildiğinde kütüphanende açılacak ve tam yedeğe dahil edilecek.",
-      );
+      setUploadNotice("Model yükleniyor · %0");
+      await new Promise<void>((resolve, reject) => {
+        const request = new XMLHttpRequest();
+        request.open("POST", "/api/v2/body-model/upload?" + params);
+        request.setRequestHeader("Content-Type", "model/gltf-binary");
+        request.setRequestHeader("X-CSRF-Token", store.me.csrf);
+        request.upload.onprogress = (event) => {
+          if (event.lengthComputable) {
+            const percent = Math.round((event.loaded / event.total) * 100);
+            setUploadNotice(percent < 100 ? `Model yükleniyor · %${percent}` : "Dosya gönderildi; sunucu kaydı doğrulanıyor…");
+          }
+        };
+        request.onerror = () => reject(Error("Bağlantı kesildi. Aynı dosyayı yeniden seçerek güvenle tekrar deneyebilirsin."));
+        request.onload = () => {
+          if (request.status >= 200 && request.status < 300) resolve();
+          else {
+            let message = "Model kaydedilemedi. Aynı dosyayla yeniden deneyebilirsin.";
+            try { message = JSON.parse(request.responseText).error?.message || message; } catch { /* Non-JSON proxy response. */ }
+            reject(Error(message));
+          }
+        };
+        request.send(file);
+      });
+      setUploadNotice("Model sunucuya kaydedildi. Kütüphanende diğer cihazlarından da açabilirsin.");
+      setAttempt((value) => value + 1);
+      await store.sync();
     } catch (error) {
       setUploadNotice((error as Error).message);
     } finally {
@@ -191,7 +212,7 @@ export default function BodyModel({ store }: { store: SyncStore }) {
     <section className="card">
       <h2>3B model kütüphanem</h2>
       <label>
-        Kalıcı 3B model ekle (GLB, en fazla 8 MB)
+        Kalıcı 3B model ekle (GLB, en fazla 96 MB)
         <input
           type="file"
           accept=".glb,model/gltf-binary"

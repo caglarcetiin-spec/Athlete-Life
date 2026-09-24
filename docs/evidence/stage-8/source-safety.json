@@ -1,6 +1,6 @@
 {
   "result": "PASS",
-  "files": 5,
+  "files": 83,
   "findings": [],
   "scope": "Text pattern and file-type screening, not proof that all personal information is absent."
 }
