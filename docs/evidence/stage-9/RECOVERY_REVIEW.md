@@ -14,8 +14,13 @@ Context literature: [systematic review of exercise-induced muscle damage markers
 - `regional-recovery`: 11 science tests PASS, including clock progression, repeated load, source links, missing effort/time, future/skipped exclusion and no false non-strength conversion.
 - `recovery-mongo`: 4 targeted tests PASS against local synthetic Mongo replica set, including existing GLB owner/upload behavior.
 - Frontend: 12 tests PASS; TypeScript/build and ESLint PASS; Python Ruff PASS.
-- `recovery-browser-v4`: PASS, Chrome mobile viewport 390×844. Synthetic named triangle + pure-engine synthetic workout fixture. Shader compilation, raycast selection, unknown region, changed canvas pixels, 60-second clock refresh, no extra GLB download, orientation controls. Personal GLB/accounts not accessed. This does not prove rendering performance of the user's actual 80 MB geometry or physical-phone behavior.
+- `recovery-browser-final`: PASS (material-name mapping and instancing transforms included), Chrome mobile viewport 390×844. Synthetic named triangle + pure-engine synthetic workout fixture. Shader compilation, raycast selection, unknown region, changed canvas pixels, 60-second clock refresh, no extra GLB download, orientation controls. Personal GLB/accounts not accessed. This does not prove rendering performance of the user's actual 80 MB geometry or physical-phone behavior.
 - Report regression expands the intentionally collapsed 2D alternative before retaining all previous source→metric, delete, immutable snapshot, mobile and axe assertions.
+
+- `recovery-api-final`: all 63 API tests PASS at source commit 9856435.
+- `recovery-reports`: actual synthetic set creation/deletion, immutable snapshot, mobile layout and axe PASS.
+- `recovery-model-regression`: existing GLB upload/reload/camera/broken-file isolation PASS.
+- Commit 9856435 prepared locally. GitHub Desktop reports Mac locked; user asked to unlock. No push, CI or Render publication claimed yet.
 
 ## Failed attempts retained
 - Initial pure/API suite inside sandbox: first four tests passed, then local PostgreSQL TCP denied; rerun with authorized localhost access passed (no assertion changed).

@@ -1,6 +1,6 @@
 # 3B bölgesel toparlanma güncellemesi — 24 Eylül 2026
 
-Birleşik 3B yük/endeks boyaması, kas seçimi, kaynak setler, 24/48 saat tahmini ve dakikalık yenileme uygulandı. Sentetik science 11, Mongo hedefli 4, istemci 12 test ve WebGL tarayıcı kontrolü PASS. Yayın/CI doğrulaması bekleniyor; bu bölüm henüz canlı başarı iddiası değildir. Yeni hesaplar biyolojik ölçüm değil açıklanmış varsayımlardır. Şema/hesap/medya göçü yok; MongoDB ve ücretsiz Render korunuyor. Ayrıntı `docs/evidence/stage-9/RECOVERY_REVIEW.md`.
+Birleşik 3B yük/endeks boyaması, kas seçimi, kaynak setler, 24/48 saat tahmini ve dakikalık yenileme uygulandı. Tüm sentetik API paketi 63 PASS; Mongo hedefli 4, istemci 12 test; WebGL, mevcut GLB yükleme/yeniden açma ve rapor/axe tarayıcı kontrolleri PASS. Kaynak commit 9856435. Mac kilitli olduğu için GitHub Desktop gönderimi bekliyor; yeni sürüm henüz GitHub/Render üzerinde yayınlanmadı. CI ve canlı doğrulama yayın sonrası yapılacak. Yeni hesaplar biyolojik ölçüm değil açıklanmış varsayımlardır. Şema/hesap/medya göçü yok; MongoDB ve ücretsiz Render korunuyor. Ayrıntı `docs/evidence/stage-9/RECOVERY_REVIEW.md`.
 
 # Son yayın doğrulaması — 24 Eylül 2026
 
