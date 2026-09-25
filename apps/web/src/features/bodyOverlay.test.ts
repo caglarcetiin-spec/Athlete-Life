@@ -24,3 +24,51 @@ describe("regional body mapping", () => {
     original.dispose();
   });
 });
+
+it("maps detailed muscle heads without treating fascia as muscle", () => {
+  expect(regions[namedRegion("Clavicular part of deltoid muscle.l")]).toBe(
+    "frontDelts",
+  );
+  expect(regions[namedRegion("Vastus medialis muscle.r")]).toBe("quads");
+  expect(namedRegion("Deltoid fascia.l")).toBe(-1);
+});
+it("isolates every primitive of one atlas structure and restores visibility", () => {
+  const model = new THREE.Group();
+  const parts = [
+    "Vastus medialis muscle.l",
+    "Vastus medialis muscle.l",
+    "Vastus medialis muscle.r",
+  ].map((name) => {
+    const mesh = new THREE.Mesh(
+      new THREE.BoxGeometry(),
+      new THREE.MeshStandardMaterial(),
+    );
+    mesh.userData.za_name = name;
+    model.add(mesh);
+    return mesh;
+  });
+  const overlay = attachOverlay(
+    model,
+    new THREE.Box3().setFromObject(model),
+    false,
+  );
+  overlay.update(
+    undefined,
+    "quads",
+    "load",
+    overlay.surfaces[0].id,
+    true,
+    true,
+  );
+  expect(parts.map((m) => m.material.visible)).toEqual([true, true, false]);
+  expect(overlay.surface(new THREE.Vector3(), parts[1])?.id).toBe(
+    overlay.surfaces[0].id,
+  );
+  overlay.update(undefined, "quads", "load");
+  expect(parts.every((m) => m.material.visible)).toBe(true);
+  overlay.dispose();
+  parts.forEach((m) => {
+    m.material.dispose();
+    m.geometry.dispose();
+  });
+});

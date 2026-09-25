@@ -142,3 +142,13 @@ Kuvvet endeksi mühendislik varsayımıdır: kas katsayılı set × sınırlı s
 Mesh adları varsa bölgeye eşlenir; tek parça/adsız yüzeyler ayakta vücut koordinatlarıyla **yaklaşık** boyanır. Bölge seçimi pointer raycast veya klavye erişimli select ile yapılır. Y/Z/X ve ön/arka düzeltmesi yalnız görünümü değiştirir; hesaba yazılmaz. Gri veri yokluğudur; gerçek iyileşme kanıtı değildir. Sol/sağ ayrı hesaplanmaz.
 
 Şema/hesap/medya göçü yok. MongoDB ve ücretsiz Render korunur. Geri dönüş önceki kaynak/paket commit'idir; ham kayıtları veya GLB'yi dönüştürmez. Yeni analiz alanı eski istemcilerde bilinmeyen ek JSON olarak kalır.
+
+## 25 Eylül 2026 — Kalıcı görünüm ve ayrıntılı atlas
+
+`apps/web/public/anatomy/muscles.glb` açık lisanslı Z-Anatomy/BodyParts3D kas atlasıdır; kişisel model değildir. 669 özgün `extras.za_name` kimliği, 475 kas odaklı yapı; çok parçalı bir kas birlikte seçilir/izole edilir. GLTF hiyerarşisi atlas için world transform ve özgün ad korunarak düzleştirilir. Yük eşlemesi olmayan yapıya başka kasın yüzdesi aktarılmaz. Grup yüzdeleri kas başına/sağ-sola ayrı ölçüm değildir.
+
+Kişisel GLB hâlâ hesaba bağlı Mongo medya nesnesidir; `body-model` metadata yanıtına mevcut `name` eklenir, şema değişmez. Rapor açılışında metadata kontrolü kayıtlı modeli otomatik açar. Dosya değiştirme bölümü isteğe bağlıdır. Görünüm tercihleri yerel `alos-body-open:<athlete_id>` ve `alos-body-view:<athlete_id>` anahtarlarında tutulur; dosya bunlara bağımlı değildir. Atlas dosyası ve lisansı statik sunucuda yalnız iki açıkça izin verilen yoldan sunulur; genel GLB/TXT izni verilmez, CSP gevşetilmez.
+
+Service worker `GET_VERSION` mesajıyla kendi cache sürümünü verir. `alos-update-dismissed` yalnız ertelenen genel yazılım sürümünü tutar; aynı sürüm sonraki girişte küçük isteğe bağlı düğmedir. Bekleyen kayıtlar güncellemeyi engellemeye devam eder. `alos-guide-dismissed:<athlete_id>` cihazdaki rehber hatırlatmasını kapatır; rehber menüden erişilebilir. İlk profil yüklenmesi mod değişikliği sayılmaz.
+
+MongoDB/hesap/medya göçü yok. Geri dönüş eski kaynak/paket commit'i; yeni yerel görünüm anahtarları eski istemcilerce kullanılmaz, kullanıcı kayıtları değişmez. Atlas ~35.6 MB, isteğe bağlı yüklenir; servis çalışanı kurulurken önbelleğe alınmaz. Kişisel GLB hâlâ özel API'den sunulur.

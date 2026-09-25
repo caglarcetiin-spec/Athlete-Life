@@ -10,7 +10,7 @@ allowed = {".html", ".js", ".css", ".svg", ".webmanifest"}
 files = sorted(p for p in source.rglob("*") if p.is_file())
 if not files or not (source / "index.html").is_file():
     raise SystemExit("Build the frontend first")
-if any(p.suffix not in allowed for p in files):
+if any(p.suffix not in allowed and str(p.relative_to(source)) not in {"anatomy/muscles.glb", "anatomy/LICENSE.txt"} for p in files):
     raise SystemExit("Unexpected build file type; publication stopped")
 if target.exists():
     shutil.rmtree(target)  # Only this generated, public asset directory.

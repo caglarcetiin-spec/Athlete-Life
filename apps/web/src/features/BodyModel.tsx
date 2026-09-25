@@ -4,7 +4,7 @@ import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { api } from "../api/contracts";
 import type { SyncStore } from "../sync/store";
-import { attachOverlay } from "./bodyOverlay";
+import { attachOverlay, type AnatomicalSurface } from "./bodyOverlay";
 import {
   muscleNames,
   regions,
@@ -50,21 +50,76 @@ export default function BodyModel({
   error?: string;
   onNow: () => void;
 }) {
+  const preferenceKey = "alos-body-view:" + store.me.athlete_id;
+  const [initial] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem(preferenceKey) || "{}") as {
+        source?: string;
+        axis?: string;
+        flipped?: boolean;
+      };
+    } catch {
+      return {};
+    }
+  });
+  const [source, setSource] = useState(
+    initial.source === "atlas" ? "atlas" : "personal",
+  );
+  const [library, setLibrary] = useState<{ available: boolean; name?: string }>(
+    { available: false },
+  );
+  const [surfaces, setSurfaces] = useState<AnatomicalSurface[]>([]);
+  const [surfaceId, setSurfaceId] = useState("");
+  const [search, setSearch] = useState("");
+  const [isolate, setIsolate] = useState(false);
+  const [musclesOnly, setMusclesOnly] = useState(true);
+  const focusSurface = useRef<() => void>(() => {});
+  const selectedSurface = surfaces.find((s) => s.id === surfaceId);
   const [selected, setSelected] = useState("lats");
   const [mode, setMode] = useState("load");
-  const [axis, setAxis] = useState("auto");
-  const [flipped, setFlipped] = useState(false);
+  const [axis, setAxis] = useState(initial.axis || "auto");
+  const [flipped, setFlipped] = useState(initial.flipped || false);
   const updateOverlay = useRef<() => void>(() => {});
   const orientModel = useRef<() => void>(() => {});
-  const current = useRef({ recovery, selected, mode, axis, flipped });
-  current.current = { recovery, selected, mode, axis, flipped };
+  const current = useRef({
+    recovery,
+    selected,
+    mode,
+    axis,
+    flipped,
+    surfaceId,
+    isolate,
+    musclesOnly,
+  });
+  current.current = {
+    recovery,
+    selected,
+    mode,
+    axis,
+    flipped,
+    surfaceId,
+    isolate,
+    musclesOnly,
+  };
+  useEffect(() => {
+    try {
+      localStorage.setItem(
+        preferenceKey,
+        JSON.stringify({ source, axis, flipped }),
+      );
+    } catch {
+      /* Display preferences only. */
+    }
+  }, [preferenceKey, source, axis, flipped]);
   useEffect(() => {
     updateOverlay.current();
-  }, [recovery, selected, mode]);
+  }, [recovery, selected, mode, surfaceId, isolate, musclesOnly]);
   useEffect(() => {
     orientModel.current();
   }, [axis, flipped]);
-  const detail = recoveryGroup(recovery, selected);
+  const activeRegion =
+    source === "atlas" && selectedSurface ? selectedSurface.region : selected;
+  const detail = recoveryGroup(recovery, activeRegion);
 
   const [uploadNotice, setUploadNotice] = useState("");
   const [uploading, setUploading] = useState(false);
@@ -140,6 +195,9 @@ export default function BodyModel({
       setUploadNotice(
         "Model sunucuya kaydedildi. Kütüphanende diğer cihazlarından da açabilirsin.",
       );
+      setSource("personal");
+      setAxis("auto");
+      setFlipped(false);
       setAttempt((value) => value + 1);
       await store.sync();
     } catch (error) {
@@ -163,6 +221,9 @@ export default function BodyModel({
       model: THREE.Object3D | undefined,
       overlay: ReturnType<typeof attachOverlay> | undefined;
     setReady(false);
+    setSurfaces([]);
+    setSurfaceId("");
+    setIsolate(false);
     setFailed(false);
     setStatus("3B kütüphanesi kontrol ediliyor…");
     async function load() {
@@ -171,18 +232,27 @@ export default function BodyModel({
         message?: string;
         url?: string;
         bytes?: number;
+        name?: string;
       };
       if (cancelled) return;
-      if (!info.available) {
-        setStatus(info.message || "Bu profil için 3B model yapılandırılmadı.");
+      setLibrary({ available: info.available, name: info.name });
+      if (!info.available && source === "personal") {
+        setSource("atlas");
+        setAxis("auto");
+        setFlipped(false);
         return;
       }
       if (!mount.current) return;
       setStatus("Kütüphanendeki model yükleniyor…");
-      const response = await fetch("/api/v2/body-model/content", {
-        credentials: "same-origin",
-        signal: abort.signal,
-      });
+      const response = await fetch(
+        source === "atlas"
+          ? "/anatomy/muscles.glb"
+          : "/api/v2/body-model/content",
+        {
+          credentials: "same-origin",
+          signal: abort.signal,
+        },
+      );
       if (!response.ok)
         throw Error("Model alınamadı. Kayıtlar ve 2B harita kullanılabilir.");
       const buffer = await response.arrayBuffer();
@@ -201,6 +271,20 @@ export default function BodyModel({
         );
       });
       const gltf = await new GLTFLoader(manager).parseAsync(buffer, "");
+      if (source === "atlas") {
+        gltf.scene.updateMatrixWorld(true);
+        const meshes: THREE.Mesh[] = [];
+        gltf.scene.traverse((node) => {
+          if (node instanceof THREE.Mesh) meshes.push(node);
+        });
+        for (const mesh of meshes) {
+          let ancestor: THREE.Object3D | null = mesh;
+          while (ancestor && !ancestor.userData.za_name)
+            ancestor = ancestor.parent;
+          if (ancestor) mesh.userData.za_name = ancestor.userData.za_name;
+        }
+        for (const mesh of meshes) gltf.scene.attach(mesh);
+      }
       model = new THREE.Group();
       model.add(gltf.scene);
       if (cancelled) {
@@ -242,6 +326,9 @@ export default function BodyModel({
           current.current.recovery,
           current.current.selected,
           current.current.mode,
+          current.current.surfaceId,
+          current.current.isolate,
+          source === "atlas" && current.current.musclesOnly,
         );
         draw();
       };
@@ -270,9 +357,28 @@ export default function BodyModel({
           .multiplyScalar(-scale);
         model.scale.setScalar(scale);
         model.updateMatrixWorld(true);
-        overlay = attachOverlay(model, new THREE.Box3().setFromObject(model));
+        overlay = attachOverlay(
+          model,
+          new THREE.Box3().setFromObject(model),
+          source !== "atlas",
+        );
+        setSurfaces(overlay.surfaces);
+        focusSurface.current = () => {
+          const box = overlay?.bounds(current.current.surfaceId);
+          if (!box) return;
+          const center = box.getCenter(new THREE.Vector3()),
+            extent = box.getSize(new THREE.Vector3());
+          controls?.target.copy(center);
+          camera.position
+            .copy(center)
+            .add(new THREE.Vector3(0, 0, Math.max(0.2, extent.length() * 1.8)));
+          controls?.update();
+          draw();
+        };
         setStatus(
-          `3B analiz açık · ${overlay.named}/${overlay.total} parça adıyla eşleşti. Adsız yüzeyler yaklaşık vücut bölgeleriyle boyanır; bu bir anatomik segmentasyon değildir.`,
+          source === "atlas"
+            ? `Ayrıntılı anatomik atlas · ${overlay.surfaces.length} seçilebilir yüzey. Kas alt yapıları ayrı seçilir; yük yüzdesi ait olduğu kas grubunun ortak tahminidir.`
+            : `Kayıtlı model açık · ${overlay.named}/${overlay.total} parça adıyla eşleşti. Adsız yüzeylerde boyama yaklaşık bölgeseldir. Ayrıntılı kas yapıları için anatomik atlası seçebilirsin.`,
         );
         updateOverlay.current();
       };
@@ -297,7 +403,15 @@ export default function BodyModel({
           ),
           camera,
         );
-        const hit = ray.intersectObject(model, true)[0];
+        const hit = ray.intersectObject(model, true).find((hit) => {
+          if (!(hit.object instanceof THREE.Mesh)) return false;
+          const materials = hit.object.material;
+          return (
+            Array.isArray(materials)
+              ? materials[hit.face?.materialIndex || 0]
+              : materials
+          )?.visible;
+        });
         if (hit) {
           const key = overlay?.pick(
             hit.point,
@@ -305,6 +419,12 @@ export default function BodyModel({
             hit.face?.materialIndex,
           );
           if (key) setSelected(key);
+          const surface = overlay?.surface(
+            hit.point,
+            hit.object,
+            hit.face?.materialIndex,
+          );
+          if (surface) setSurfaceId(surface.id);
         }
       };
       const resize = () => {
@@ -318,6 +438,7 @@ export default function BodyModel({
       observer = new ResizeObserver(resize);
       observer.observe(mount.current);
       actions.current = (angle) => {
+        controls?.target.set(0, 0, 0);
         camera.position.set(Math.sin(angle) * 3.4, 0, Math.cos(angle) * 3.4);
         controls?.update();
         draw();
@@ -348,7 +469,7 @@ export default function BodyModel({
       updateOverlay.current = () => {};
       orientModel.current = () => {};
     };
-  }, [attempt, revision]);
+  }, [attempt, revision, source]);
   return (
     <section className="card">
       <h2>3B kas yükü ve toparlanma</h2>
@@ -377,7 +498,11 @@ export default function BodyModel({
           <select
             aria-label="Kas bölgesi"
             value={selected}
-            onChange={(e) => setSelected(e.target.value)}
+            onChange={(e) => {
+              setSelected(e.target.value);
+              setSurfaceId("");
+              setIsolate(false);
+            }}
           >
             {regions.filter(Boolean).map((key) => (
               <option key={key} value={key}>
@@ -403,27 +528,153 @@ export default function BodyModel({
         hesabı için veri yok. Sağ ve sol taraf birlikte değerlendirilir.
       </p>
       <label>
-        Kalıcı 3B model ekle (GLB, en fazla 96 MB)
-        <input
-          type="file"
-          accept=".glb,model/gltf-binary"
-          disabled={uploading}
+        Görüntülenecek model
+        <select
+          aria-label="Görüntülenecek model"
+          value={source}
           onChange={(e) => {
-            const file = e.target.files?.[0];
-            if (file) void upload(file);
-            e.target.value = "";
+            setSource(e.target.value);
+            setAxis("auto");
+            setFlipped(false);
           }}
-        />
+        >
+          <option value="atlas">Ayrıntılı anatomik kas atlası</option>
+          <option value="personal" disabled={!library.available}>
+            Kayıtlı modelim{library.name ? " · " + library.name : ""}
+          </option>
+        </select>
       </label>
+      {library.available && (
+        <p>Kayıtlı modelin hesabında korunuyor; tekrar yüklemen gerekmez.</p>
+      )}
+      <details>
+        <summary>
+          {library.available
+            ? "Kayıtlı modelimi değiştir"
+            : "Kendi 3B modelimi ekle"}
+        </summary>
+        <label>
+          Kalıcı 3B model ekle (GLB, en fazla 96 MB)
+          <input
+            type="file"
+            accept=".glb,model/gltf-binary"
+            disabled={uploading}
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) void upload(file);
+              e.target.value = "";
+            }}
+          />
+        </label>
+      </details>
       {uploadNotice && <p role="status">{uploadNotice}</p>}
       <p role={failed ? "alert" : "status"}>{status}</p>
       <div className="body-model-canvas" ref={mount} />
+      {ready && (
+        <div className="card">
+          <h3>Anatomik yapıları incele</h3>
+          <label>
+            Kas / yapı ara
+            <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Örn. vastus, biceps, latissimus"
+            />
+          </label>
+          <label>
+            Anatomik yapı
+            <select
+              aria-label="Anatomik yapı"
+              value={surfaceId}
+              onChange={(e) => {
+                setSurfaceId(e.target.value);
+                const item = surfaces.find((s) => s.id === e.target.value);
+                if (item?.region) setSelected(item.region);
+              }}
+            >
+              <option value="">Modelden dokunarak veya listeden seç</option>
+              {surfaces
+                .filter(
+                  (s, i) =>
+                    source !== "atlas" ||
+                    surfaces.findIndex((other) => other.name === s.name) === i,
+                )
+                .filter(
+                  (s) =>
+                    (!musclesOnly || !s.support) &&
+                    s.name
+                      .toLocaleLowerCase()
+                      .includes(search.toLocaleLowerCase()),
+                )
+                .map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.name.replace(/\.l$/, " · Sol").replace(/\.r$/, " · Sağ")}
+                  </option>
+                ))}
+            </select>
+          </label>
+          <div className="actions">
+            <label>
+              <input
+                type="checkbox"
+                checked={isolate}
+                onChange={(e) => setIsolate(e.target.checked)}
+                disabled={!surfaceId}
+              />
+              Yalnız seçili yapıyı göster
+            </label>
+            <button
+              className="secondary"
+              disabled={!surfaceId}
+              onClick={() => focusSurface.current()}
+            >
+              Seçili yapıya yaklaş
+            </button>
+          </div>
+          {source === "atlas" && (
+            <label>
+              <input
+                type="checkbox"
+                checked={musclesOnly}
+                onChange={(e) => setMusclesOnly(e.target.checked)}
+              />
+              Kas dışı destek dokularını gizle
+            </label>
+          )}
+          {selectedSurface && (
+            <p>
+              <strong>{selectedSurface.name}</strong> ·{" "}
+              {selectedSurface.region
+                ? muscleNames[selectedSurface.region] + " grubu"
+                : "Bu yapı için antrenman yük eşlemesi yok"}
+              . Ayrı kas başlarına veya sağ/sol tarafa özel ölçüm üretilmez.
+            </p>
+          )}
+        </div>
+      )}
+      {source === "atlas" && (
+        <details>
+          <summary>Atlas kaynağı ve lisansı</summary>
+          <p>
+            BodyParts3D - The Database Center for Life Science - CC-BY-SA 2.1
+            Japan
+            <br />
+            Z-Anatomy - The open source atlas of anatomy - CC-BY-SA 4.0
+          </p>
+          <a href="/anatomy/LICENSE.txt">
+            Kaynak, değişiklik ve lisans bilgisi
+          </a>{" "}
+          · <a href="/anatomy/muscles.glb">Atlas GLB dosyasını indir</a>
+        </details>
+      )}
       <section
         className="card"
         aria-label="Seçili kas analizi"
         aria-live="polite"
       >
-        <h3>{muscleNames[selected]}</h3>
+        <h3>
+          {selectedSurface?.name || muscleNames[selected] || "Eşlenmemiş yapı"}
+        </h3>
         {detail ? (
           <>
             <div className="report-controls">
@@ -482,7 +733,7 @@ export default function BodyModel({
             iyileştiği anlamına gelmez.
           </p>
         )}
-        {Object.entries(exposure?.[selected] || {}).map(([key, value]) => (
+        {Object.entries(exposure?.[activeRegion] || {}).map(([key, value]) => (
           <p key={key}>
             {key}: {value.low.toFixed(2)}–{value.high.toFixed(2)} {value.unit}{" "}
             kalan kayıtlı yük
@@ -552,7 +803,11 @@ export default function BodyModel({
           </button>
           <a
             className="link-button secondary"
-            href="/api/v2/body-model/content"
+            href={
+              source === "atlas"
+                ? "/anatomy/muscles.glb"
+                : "/api/v2/body-model/content"
+            }
           >
             Kütüphane dosyasını indir
           </a>

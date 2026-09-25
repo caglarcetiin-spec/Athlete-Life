@@ -1,0 +1,73 @@
+{
+  "checked_at": "2026-09-24T22:11:50.799453+00:00",
+  "url": "https://athlete-life.onrender.com",
+  "source_head": "6636eb601f2a89682b5a26ad3c0ba607acd3b79f",
+  "ci_run": 36064850328,
+  "checks": [
+    {
+      "path": "app-icon.svg",
+      "status": 200,
+      "sha256_match": true
+    },
+    {
+      "path": "assets/BodyModel-Bjz5D2fQ.js",
+      "status": 200,
+      "sha256_match": true
+    },
+    {
+      "path": "assets/index-CijywPwU.js",
+      "status": 200,
+      "sha256_match": true
+    },
+    {
+      "path": "assets/index-DBMhrk8E.css",
+      "status": 200,
+      "sha256_match": true
+    },
+    {
+      "path": "index.html",
+      "status": 200,
+      "sha256_match": true
+    },
+    {
+      "path": "manifest.webmanifest",
+      "status": 200,
+      "sha256_match": true
+    },
+    {
+      "path": "sw.js",
+      "status": 200,
+      "sha256_match": true
+    },
+    {
+      "path": "/health/ready",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "path": "/api/v2/auth/me",
+      "status": 401,
+      "expected": 401
+    },
+    {
+      "path": "/.env",
+      "status": 404,
+      "expected": 404
+    }
+  ],
+  "result": "PASS",
+  "scope": "Public assets and readiness only; no real account, health data or GLB accessed",
+  "merge_commit": "544c3c692e23e8e147b9566c0c45be820fea0daa",
+  "render_deploy": "dep-daqpv92vcj2c73fv4e30",
+  "render_status": "live",
+  "ci_jobs": {
+    "core": "success",
+    "mongodb": "success",
+    "container": "success"
+  }
+}

@@ -82,3 +82,7 @@ Yeni release için her satır V2 API+DB+UI kanıtıyla tekrar ele alınacak; kri
 ### V2 3B bölgesel analiz — 24 Eylül 2026
 
 Yüklenen GLB yalnız görüntüleyici değildir: aynı analiz raporundaki kuvvet yükleri 3B yüzeyde renklenir; kas seçimi, kaynak setler, belirsizlik aralıkları, model rezervi ve 24/48 saatlik yük azalması tek paneldedir. Adsız yüzeylerde eski sürümün koordinat yaklaşımı yaklaşık olarak kullanılır; anatomik segmentasyon olduğu iddia edilmez. 2B görünüm aynı hesabın alternatifidir. Büyük GLB yükleme/hesaba bağlı saklama değişmez.
+
+### Ayrıntılı anatomi ve kalıcı görünüm — 25 Eylül 2026
+
+669 adlandırılmış anatomik yapı içeren lisanslı kas atlası, seçili kasın tüm parçalarını izole etme/yakınlaştırma ve özgün sağ/sol adlarla arama eklendi. Kişisel yüklenen model korunur; kayıtlı model ve cihazdaki kaynak seçimi sonraki girişte otomatik açılır. Tekrar eden sürüm/rehber bildirimleri ertelenebilir; başlangıç profil yüklemesi sahte mod bildirimi oluşturmaz.

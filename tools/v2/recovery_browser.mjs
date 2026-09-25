@@ -20,7 +20,7 @@ print(json.dumps([compute(s,at+timedelta(hours=h)) for h in (0,48)]))`],{cwd:roo
  page.on('request',r=>{if(r.url().endsWith('/api/v2/body-model/content'))models++});
  page.on('console',message=>{if(message.type()==='error'&&/shader|webglprogram/i.test(message.text()))errors.push(message.text())});
  await page.route('**/api/v2/analysis?*',async route=>{const response=await route.fetch();const data=await response.json();await route.fulfill({response,json:{...data,muscle_recovery:fixtures[phase].muscle_recovery,muscles:fixtures[phase].muscles}})});
- await page.goto(base+'/#reports');await page.getByRole('button',{name:'3B kütüphanemi aç',exact:true}).click();
+ await page.goto(base+'/#reports');
  await expect(page.getByRole('button',{name:'Önden',exact:true})).toBeVisible({timeout:15000});
  const canvas=page.locator('.body-model-canvas canvas'),detail=page.getByRole('region',{name:'Seçili kas analizi'});
  await expect(detail.getByText('Hesaba giren 8 set')).toBeVisible();

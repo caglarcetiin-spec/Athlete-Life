@@ -1,0 +1,120 @@
+/Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+  from starlette.testclient import TestClient as TestClient  # noqa
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+ExpectError: expect(locator).toBeVisible() failed
+
+Locator: getByRole('button', { name: 'Önden', exact: true })
+Expected: visible
+Timeout: 20000ms
+Error: element(s) not found
+
+Call log:
+  - Expect "toBeVisible" getByRole('button', { name: 'Önden', exact: true }) with timeout 20000ms
+  - waiting for getByRole('button', { name: 'Önden', exact: true })
+
+    at captureRawStack (/Users/caglarcetin/Documents/GitHub/Athlete-Life/apps/web/node_modules/playwright-core/lib/coreBundle.js:8588:17)
+    at callMatcherAsStep (/Users/caglarcetin/Documents/GitHub/Athlete-Life/apps/web/node_modules/playwright/lib/matchers/expect.js:13310:57)
+    at Object.toBeVisible (/Users/caglarcetin/Documents/GitHub/Athlete-Life/apps/web/node_modules/playwright/lib/matchers/expect.js:13302:23)
+    at /Users/caglarcetin/Documents/GitHub/Athlete-Life/tools/v2/anatomy_browser.mjs:15:67 {
+  matcherResult: {
+    message: 'expect(locator).toBeVisible() failed\n' +
+      '\n' +
+      "Locator: getByRole('button', { name: 'Önden', exact: true })\n" +
+      'Expected: visible\n' +
+      'Timeout: 20000ms\n' +
+      'Error: element(s) not found\n' +
+      '\n' +
+      'Call log:\n' +
+      `  - Expect "toBeVisible" getByRole('button', { name: 'Önden', exact: true }) with timeout 20000ms\n` +
+      "  - waiting for getByRole('button', { name: 'Önden', exact: true })\n",
+    pass: false,
+    actual: undefined,
+    name: 'toBeVisible',
+    expected: 'visible',
+    log: [
+      `  - Expect "toBeVisible" getByRole('button', { name: 'Önden', exact: true }) with timeout 20000ms`,
+      "  - waiting for getByRole('button', { name: 'Önden', exact: true })"
+    ],
+    timeout: 20000,
+    ariaSnapshot: '- link "İçeriğe geç":\n' +
+      '  - /url: "#content"\n' +
+      '- banner:\n' +
+      '  - button "Menüyü aç"\n' +
+      '  - button "Sunucuya kaydedildi"\n' +
+      '  - button "Sürpriz plan ekle"\n' +
+      '  - button "Açık tema; koyu temaya geç": Açık\n' +
+      '  - button "Tüm verileri yedekle"\n' +
+      '  - link "D":\n' +
+      '    - /url: "#profile"\n' +
+      '- main:\n' +
+      '  - text: Kaydına dayanan içgörüler\n' +
+      '  - heading "Raporlar" [level=1]\n' +
+      '  - paragraph: Yük, alışkanlık ve gelişim. Her hesap kendi kaynaklarıyla birlikte.\n' +
+      '  - button "3B kütüphanemi aç"\n' +
+      '  - text: Görüntülenen tarih\n' +
+      '  - textbox "Görüntülenen tarih": 2026-09-25\n' +
+      '  - text: Zaman aralığı\n' +
+      '  - combobox "Zaman aralığı":\n' +
+      '    - option "Günlük"\n' +
+      '    - option "Haftalık"\n' +
+      '    - option "4 hafta" [selected]\n' +
+      '    - option "12 hafta"\n' +
+      '  - text: Hesap görünümü\n' +
+      '  - combobox "Hesap görünümü":\n' +
+      '    - option "Güncel kayıtlarla yeniden hesap" [selected]\n' +
+      '    - option "O tarihte bilinen kayıtlarla"\n' +
+      '  - button "Raporu yenile"\n' +
+      '  - text: Son hesap · 25.09.2026 22:54:07\n' +
+      '  - heading "Biraz daha bilgiye ihtiyacımız var." [level=2]\n' +
+      '  - paragraph: Kayıtlar bir güvenli antrenman garantisi değildir.\n' +
+      '  - paragraph: "Eksik: Bugünün enerji/yorgunluk öz-bildirimi · Son iki günde biten uyku kaydı · Tamamlanmış beslenme günlüğü · Su kaydı"\n' +
+      '  - link "Günlük durumumu gir":\n' +
+      '    - /url: "#health"\n' +
+      '  - link "Hedeflerimi düzenle":\n' +
+      '    - /url: "#goals"\n' +
+      '  - heading "İlk hedefini belirle." [level=2]\n' +
+      '  - paragraph: Ölçülebilir bir hedef eklediğinde gelişimin burada görünür.\n' +
+      '  - link "Hedef ekle":\n' +
+      '    - /url: "#goals"\n' +
+      '  - heading "Gerçekleşen çalışmalar" [level=2]\n' +
+      '  - text: Grafikte göster\n' +
+      '  - combobox "Grafikte göster":\n' +
+      '    - option "Gerçek kuvvet setleri" [selected]\n' +
+      '    - option "Sabit tutuş süresi"\n' +
+      '    - option "Kardiyo çalışma süresi"\n' +
+      '    - option "Kardiyo mesafesi"\n' +
+      '  - paragraph: Bu aralıkta karşılaştırılabilir kayıt yok.\n' +
+      '  - paragraph: Yalnız kayıt bulunan günler gösterilir. Eksik gün, yapılmamış antrenman sayılmaz.\n' +
+      '  - group: Dayanak seansları aç\n' +
+      '  - group: 2B alternatif harita ve yük tablosu\n' +
+      '  - heading "Beslenme ve uyku eğilimleri" [level=2]\n' +
+      '  - paragraph: Grafikler yalnız kayıtlı değerleri gösterir. Kısmi beslenme günleri tam günlük tüketim gibi kullanılmaz.\n' +
+      '  - paragraph: Bu aralıkta karşılaştırılabilir kayıt yok.\n' +
+      '  - paragraph: Bu aralıkta karşılaştırılabilir kayıt yok.\n' +
+      '  - paragraph: 0/28 günün beslenme kaydı tamamlandı.\n' +
+      '  - heading "Karşılaştırılabilir yetenek sonuçları" [level=2]\n' +
+      '  - paragraph: Karşılaştırılabilir test kaydı henüz yok.\n' +
+      '  - link "Capability Lab’i aç":\n' +
+      '    - /url: "#capability"\n' +
+      '  - heading "Bu hesabın dayanağı" [level=2]\n' +
+      '  - paragraph: Model exposure-1 · Veri sürümü 0 · Güncel kayıtlarla yeniden hesap\n' +
+      '  - paragraph: Kişisel zamana sıralı doğrulama ve uzman incelemesi yok; başlangıç modeli kullanılıyor.\n' +
+      '  - button "Kararı geçmişime kaydet"\n' +
+      '  - link "PDF raporu":\n' +
+      '    - /url: /api/v2/reports/pdf?on=2026-09-25&window_days=28\n' +
+      '  - link "Bilim ve sınırlar":\n' +
+      '    - /url: "#science"\n' +
+      '  - text: Saklanan kararlar\n' +
+      '  - combobox "Saklanan kararlar":\n' +
+      '    - option "Canlı hesap" [selected]\n' +
+      '- contentinfo "Sayfa gezintisi":\n' +
+      '  - button "Geri git": Geri\n' +
+      '  - button "Ana sayfaya dön": Bugün\n' +
+      '  - button "İleri git": İleri'
+  }
+}
+
+Node.js v24.19.0
