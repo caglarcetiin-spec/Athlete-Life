@@ -66,6 +66,8 @@ function Workspace({
   const [store] = useState(() => new SyncStore(me));
   const [tour, setTour] = useState<number | null>(null);
   const [modeNotice, setModeNotice] = useState("");
+  const welcomeKey="alos-guide-dismissed:"+me.athlete_id;
+  const [welcomeDismissed,setWelcomeDismissed]=useState(()=>{try{return localStorage.getItem(welcomeKey)==="yes";}catch{return false;}});
   const [backupNotice, setBackupNotice] = useState("");
   const [previousMode, setPreviousMode] = useState("");
   const profile = store.view("profile")[0];
@@ -194,6 +196,7 @@ function Workspace({
     }
   }
   useEffect(() => {
+    if (!store.snapshot) return;
     const current = professional ? "professional" : "simple";
     if (previousMode && previousMode !== current)
       setModeNotice(
@@ -202,7 +205,7 @@ function Workspace({
           : "Sade görünüm açık. Gelişmiş özelliklerin tamamı Araçlar bölümünde.",
       );
     setPreviousMode(current);
-  }, [professional, previousMode]);
+  }, [professional, previousMode, store.snapshot]);
   const conflicts = store.pending.filter(
     (p) => p.state === "conflict" || p.state === "failed",
   );
@@ -536,7 +539,7 @@ function Workspace({
                     <Activity />
                   </span>
                 </div>
-                {!profile?.tutorial_completed && (
+                {!profile?.tutorial_completed && !welcomeDismissed && (
                   <section className="welcome-path card">
                     <GraduationCap size={24} />
                     <div>
@@ -549,6 +552,7 @@ function Workspace({
                     <a className="link-button secondary" href="#guide">
                       Yol haritamı aç
                     </a>
+                    <button className="text-button" onClick={()=>{setWelcomeDismissed(true);try{localStorage.setItem(welcomeKey,"yes");}catch{/* optional preference */}}}>Bu hatırlatmayı kapat</button>
                   </section>
                 )}
                 <div className="today-grid">

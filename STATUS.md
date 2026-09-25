@@ -1,3 +1,11 @@
+# Ayrıntılı atlas ve kalıcılık düzeltmeleri — 25 Eylül 2026
+
+Lisanslı 669 yapılı kas atlası, anatomik yapı arama/izolasyon/yakınlaştırma, kayıtlı kişisel modelin otomatik açılması ve sürüm/rehber bildirimlerini erteleme hazır. 9 birleşik tarayıcı akışı, 14 istemci testi, PostgreSQL ve Mongo model kalıcılık kontrolleri PASS. GitHub/Render yayını bu başlık için henüz bekleniyor. Şema/hesap/medya göçü yok; ücretsiz Render ve MongoDB korunur. Ayrıntı `docs/evidence/stage-9/ANATOMY_LIBRARY_REVIEW.md`.
+
+# Canlı 3B toparlanma yayını — 25 Eylül 2026
+
+Birleşik 3B kas yükü/toparlanma güncellemesi mevcut ücretsiz Render servisinde **yayında**. PR #4 merge `544c3c69`; Render `dep-daqpv92vcj2c73fv4e30` LIVE. GitHub CI `36064850328`: core, mongodb ve container SUCCESS. Yedi herkese açık yayın dosyasının SHA-256 değerleri birebir eşleşti; root/ready 200, oturumsuz hesap 401, özel dosya 404. MongoDB ve hesap/model verileri korundu; şema/hesap/medya göçü veya yeni ücretli kaynak yok. Kanıt: `docs/evidence/stage-9/LIVE_RECOVERY.json`. Aşağıdaki yayın bekleme notları geçmiş durumu anlatır.
+
 # 3B bölgesel toparlanma güncellemesi — 24 Eylül 2026
 
 Birleşik 3B yük/endeks boyaması, kas seçimi, kaynak setler, 24/48 saat tahmini ve dakikalık yenileme uygulandı. Tüm sentetik API paketi 63 PASS; Mongo hedefli 4, istemci 12 test; WebGL, mevcut GLB yükleme/yeniden açma ve rapor/axe tarayıcı kontrolleri PASS. Kaynak commit 9856435. Mac kilitli olduğu için GitHub Desktop gönderimi bekliyor; yeni sürüm henüz GitHub/Render üzerinde yayınlanmadı. CI ve canlı doğrulama yayın sonrası yapılacak. Yeni hesaplar biyolojik ölçüm değil açıklanmış varsayımlardır. Şema/hesap/medya göçü yok; MongoDB ve ücretsiz Render korunuyor. Ayrıntı `docs/evidence/stage-9/RECOVERY_REVIEW.md`.

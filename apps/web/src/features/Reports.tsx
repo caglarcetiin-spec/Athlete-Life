@@ -321,7 +321,51 @@ export function Reports({
   onDate: (s: string) => void;
   statusOnly?: boolean;
 }) {
-  const [showBody, setShowBody] = useState(false);
+  const visibilityKey = "alos-body-open:" + store.me.athlete_id;
+  const [showBody, setShowBody] = useState(() => {
+    try {
+      return localStorage.getItem(visibilityKey) === "yes";
+    } catch {
+      return false;
+    }
+  });
+  useEffect(() => {
+    let active = true;
+    let preference: string | null = null;
+    try {
+      preference = localStorage.getItem(visibilityKey);
+    } catch {
+      /* Storage may be unavailable. */
+    }
+    if (preference === null)
+      void api("body-model")
+        .then((value) => {
+          if (active && (value as { available?: boolean }).available) {
+            try {
+              if (localStorage.getItem(visibilityKey) === "no") return;
+              localStorage.setItem(visibilityKey, "yes");
+            } catch {
+              /* Display only. */
+            }
+            setShowBody(true);
+          }
+        })
+        .catch(() => {});
+    return () => {
+      active = false;
+    };
+  }, [visibilityKey]);
+  function toggleBody() {
+    setShowBody((value) => {
+      const next = !value;
+      try {
+        localStorage.setItem(visibilityKey, next ? "yes" : "no");
+      } catch {
+        /* Display only. */
+      }
+      return next;
+    });
+  }
   const [report, setReport] = useState<Report>(),
     [days, setDays] = useState(28),
     [knowledge, setKnowledge] = useState("recomputed"),
@@ -421,7 +465,7 @@ export function Reports({
       </div>
       {!statusOnly && (
         <>
-          <button className="secondary" onClick={() => setShowBody(!showBody)}>
+          <button className="secondary" onClick={toggleBody}>
             {showBody ? "3B görünümü kapat" : "3B kütüphanemi aç"}
           </button>
           {showBody && (

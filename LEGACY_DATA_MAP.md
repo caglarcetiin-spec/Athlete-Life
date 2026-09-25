@@ -117,3 +117,7 @@ is replaced; exact integer values are preserved. No personal records are migrate
 ### 3B analiz türetilmiş verisi — 24 Eylül 2026
 
 Yeni `analysis.result.muscle_recovery` mevcut canonical setlerden hesaplanır; eski GLB, eski hesabın yükleri veya 2B harita için ayrı bir kayıt havuzu oluşturulmaz. Eski sabit analizde alan yoksa UNKNOWN gösterilir; yeni hesap isteğiyle üretilebilir. `spinalErectors` yalnız yeni bölgesel endekste `lowerBack` olarak gruplanır; kaynak hareket-kas kayıtları ve özgün maruziyet tablosu aynen korunur. Şema/migration yok; geçmiş analiz snapshotları yeniden yazılmaz.
+
+### Atlas ve görünüm tercihleri — 25 Eylül 2026
+
+Yeni atlas herkese açık lisanslı uygulama varlığıdır, eski kişisel GLB'nin yerine veritabanına yazılmaz. Mevcut medya `name` alanı salt okunur model metadata yanıtına eklenir. Dosya/hesap şema göçü yok. `alos-body-open:<athlete_id>`, `alos-body-view:<athlete_id>` ve `alos-guide-dismissed:<athlete_id>` cihaz görünüm tercihleri; `alos-update-dismissed` genel sürüm tercihi. Bunlar canonical antrenman/sağlık verisi veya yedeğin alternatifi değildir.

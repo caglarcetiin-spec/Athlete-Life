@@ -111,3 +111,21 @@ def test_uploaded_model_is_private_deduplicated_exported_and_restorable(app, cli
         == 422
     )
     assert client.get("/api/v2/body-model/content").content == raw
+
+
+def test_uploaded_model_survives_logout_and_new_app_instance(app, client):
+    from uuid import uuid4
+
+    from alos.main import create_app
+    raw = synthetic_glb()
+    reply = client.post(f'/api/v2/body-model/upload?operation_id={uuid4()}&entity_id={uuid4()}&name=Permanent.glb',content=raw,headers={'Content-Type':'model/gltf-binary'})
+    assert reply.status_code == 200
+    assert client.post('/api/v2/auth/logout').status_code == 200
+    restarted = create_app(app.state.settings)
+    try:
+        again = login(restarted)
+        assert again.get('/api/v2/body-model').json()['name'] == 'Permanent.glb'
+        assert again.get('/api/v2/body-model/content').content == raw
+        assert login(restarted,'arda','test-password-456').get('/api/v2/body-model').json()['available'] is False
+    finally:
+        restarted.state.database.dispose() if hasattr(restarted.state.database,'dispose') else restarted.state.database.engine.dispose()

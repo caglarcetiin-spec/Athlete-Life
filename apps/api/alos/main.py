@@ -302,6 +302,7 @@ def create_app(settings: Settings | None = None):
                 "available": True,
                 "status": "uploaded",
                 "id": stored["id"],
+                "name": stored["name"],
                 "bytes": stored["bytes"],
                 "url": "/api/v2/body-model/content",
                 "included_in_backup": True,
@@ -626,7 +627,7 @@ def create_app(settings: Settings | None = None):
         target = (root / (path or "index.html")).resolve()
         if not target.is_relative_to(root) or not target.is_file():
             raise DomainError("not_found", "Sayfa bulunamadı.", 404)
-        if target.suffix not in {".html", ".js", ".css", ".svg", ".png", ".webmanifest", ".woff2", ".ico"}:
+        if target.suffix not in {".html", ".js", ".css", ".svg", ".png", ".webmanifest", ".woff2", ".ico"} and path not in {"anatomy/muscles.glb", "anatomy/LICENSE.txt"}:
             raise DomainError("not_found", "Sayfa bulunamadı.", 404)
         return FileResponse(target)
 

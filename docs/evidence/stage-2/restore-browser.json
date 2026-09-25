@@ -1,8 +1,8 @@
 {
   "result": "PASS",
-  "browser": "153.0.8010.53",
+  "browser": "154.0.8037.57",
   "independentPostgresDatabases": true,
-  "rtoMs": 5142,
+  "rtoMs": 4661,
   "rpo": "0 canonical records at export; pending retained separately",
   "paths": [
     "shift",

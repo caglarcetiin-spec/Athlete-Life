@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 export function AppUpdate({ blocked }: { blocked: boolean }) {
   const [waiting, setWaiting] = useState<ServiceWorker | null>(null),
     [error, setError] = useState("");
+  const [version, setVersion] = useState("");
+  const [dismissed, setDismissed] = useState(false);
   useEffect(() => {
     if (!("serviceWorker" in navigator) || import.meta.env.DEV) return;
     let mounted = true;
@@ -21,13 +23,37 @@ export function AppUpdate({ blocked }: { blocked: boolean }) {
     void navigator.serviceWorker
       .register("/sw.js", { updateViaCache: "none" })
       .then((reg) => {
-        const inspect = () => {
+        const inspect = async () => {
           if (
             mounted &&
             navigator.serviceWorker.controller &&
             reg.waiting?.state === "installed"
-          )
-            setWaiting(reg.waiting);
+          ) {
+            const worker = reg.waiting;
+            const key = await new Promise<string>((resolve) => {
+              const channel = new MessageChannel();
+              const timer = setTimeout(() => {
+                channel.port1.close();
+                resolve("");
+              }, 1500);
+              channel.port1.onmessage = (event) => {
+                clearTimeout(timer);
+                channel.port1.close();
+                resolve(typeof event.data === "string" ? event.data : "");
+              };
+              worker.postMessage({ type: "GET_VERSION" }, [channel.port2]);
+            });
+            if (!mounted || reg.waiting !== worker) return;
+            setVersion(key);
+            try {
+              setDismissed(
+                !!key && localStorage.getItem("alos-update-dismissed") === key,
+              );
+            } catch {
+              /* optional preference */
+            }
+            setWaiting(worker);
+          }
         };
         inspect();
         reg.addEventListener("updatefound", () =>
@@ -47,10 +73,16 @@ export function AppUpdate({ blocked }: { blocked: boolean }) {
     };
   }, []);
   return waiting ? (
-    <aside className="notice" role="status">
-      <span>
-        Yeni sürüm hazır. Açık formunu kaydettikten sonra geçebilirsin.
-      </span>
+    <aside
+      className={dismissed ? "caption" : "notice"}
+      aria-label="Uygulama güncellemesi"
+      role={dismissed ? undefined : "status"}
+    >
+      {!dismissed && (
+        <span>
+          Yeni sürüm hazır. Açık formunu kaydettikten sonra geçebilirsin.
+        </span>
+      )}
       <button
         disabled={blocked}
         onClick={() => {
@@ -64,8 +96,28 @@ export function AppUpdate({ blocked }: { blocked: boolean }) {
             );
         }}
       >
-        {blocked ? "Önce bekleyen kayıtları eşitle" : "Yeni sürümü aç"}
+        {blocked
+          ? "Önce bekleyen kayıtları eşitle"
+          : dismissed
+            ? "Güncellemeyi aç"
+            : "Yeni sürümü aç"}
       </button>
+      {!dismissed && (
+        <button
+          className="text-button"
+          onClick={() => {
+            setDismissed(true);
+            try {
+              if (version)
+                localStorage.setItem("alos-update-dismissed", version);
+            } catch {
+              /* optional preference */
+            }
+          }}
+        >
+          Daha sonra
+        </button>
+      )}
     </aside>
   ) : error ? (
     <p className="caption">{error}</p>
