@@ -314,12 +314,10 @@ export function Workouts({
   store,
   selected,
   onDate,
-  onPlan,
 }: {
   store: SyncStore;
   selected: string;
   onDate: (d: string) => void;
-  onPlan: () => void;
 }) {
   const [sessionId, setSessionId] = useState<string | null>(
     new URLSearchParams(location.search).get("session"),
@@ -431,9 +429,6 @@ export function Workouts({
             onChange={(e) => e.target.value && onDate(e.target.value)}
           />
         </label>
-        <button className="secondary" onClick={onPlan}>
-          Programımı düzenle
-        </button>
       </div>
       {active && (
         <section className="card runner">

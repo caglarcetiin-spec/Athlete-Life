@@ -16,7 +16,7 @@ try{
  await page.locator('.skip-link').focus();await page.keyboard.press('Enter');expect(new URL(page.url()).hash).toBe('#today');
  await page.goto(base+'/#profile');await page.getByLabel('Tercih ettiğim görünüm',{exact:true}).selectOption('professional');
  await page.locator('section').filter({has:page.getByRole('heading',{name:'Spor ve sağlık profilim',exact:true})}).getByRole('button',{name:'Kaydı sakla',exact:true}).click();await synced();
- await expect(page.getByText('Profesyonel görünüm açık. Planım, raporlar ve Capability Lab menüye eklendi.',{exact:true})).toBeVisible();
+ await expect(page.getByText('Profesyonel görünüm açık. Bölümler aynı yerde; ayrıntılı araçlara Araçlar’dan ulaşabilirsin.',{exact:true})).toBeVisible();
  await page.getByLabel('E-posta adresim',{exact:true}).fill('deniz@example.invalid');
  await page.locator('section').filter({has:page.getByRole('heading',{name:'Hesap bilgilerim',exact:true})}).getByRole('button',{name:'Kaydı sakla',exact:true}).click();
  await expect.poll(async()=> (await api('auth/me')).email).toBe('deniz@example.invalid');
@@ -39,7 +39,7 @@ try{
  await page.evaluate(async()=>{const registration=await navigator.serviceWorker.getRegistration();await registration.update()});
  await expect(page.getByRole('button',{name:'Önce bekleyen kayıtları eşitle',exact:true})).toBeDisabled();
  await page.unroute('**/api/v2/commands');await page.getByRole('button',{name:'Tekrar dene',exact:true}).click();await synced();
- await expect(page.getByRole('button',{name:'Yeni sürümü aç',exact:true})).toBeEnabled();await page.getByRole('button',{name:'Daha sonra',exact:true}).click();await page.reload();await synced();await expect(page.getByRole('button',{name:'Yeni sürümü aç',exact:true})).toHaveCount(0);await expect(page.getByText('Profesyonel görünüm açık. Planım, raporlar ve Capability Lab menüye eklendi.',{exact:true})).toHaveCount(0);await expect(page.getByRole('button',{name:'Güncellemeyi aç',exact:true})).toBeEnabled();page.once('dialog',d=>d.accept());await Promise.all([page.waitForEvent('domcontentloaded'),page.getByRole('button',{name:'Güncellemeyi aç',exact:true}).click()]);await synced();
+ await expect(page.getByRole('button',{name:'Yeni sürümü aç',exact:true})).toBeEnabled();await page.getByRole('button',{name:'Daha sonra',exact:true}).click();await page.reload();await synced();await expect(page.getByRole('button',{name:'Yeni sürümü aç',exact:true})).toHaveCount(0);await expect(page.getByText('Profesyonel görünüm açık. Bölümler aynı yerde; ayrıntılı araçlara Araçlar’dan ulaşabilirsin.',{exact:true})).toHaveCount(0);await expect(page.getByRole('button',{name:'Güncellemeyi aç',exact:true})).toBeEnabled();page.once('dialog',d=>d.accept());await Promise.all([page.waitForEvent('domcontentloaded'),page.getByRole('button',{name:'Güncellemeyi aç',exact:true}).click()]);await synced();
  expect((await api('bootstrap')).hydrations.filter(r=>!r.deleted_at).map(r=>r.ml).sort((a,b)=>a-b)).toEqual([375,500]);
  const cacheKeys=await page.evaluate(async()=>{const names=await caches.keys();return (await Promise.all(names.map(async name=>(await(await caches.open(name)).keys()).map(r=>r.url)))).flat()});expect(cacheKeys.some(u=>u.includes('/api/'))).toBe(false);
  await context.setOffline(true);await page.reload();await expect(page.getByRole('button',{name:'Giriş yap',exact:true})).toBeVisible();expect(await page.locator('body').innerText()).not.toContain('deniz@example.invalid');await context.setOffline(false);

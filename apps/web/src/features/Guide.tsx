@@ -2,13 +2,11 @@ import {
   ArrowRight,
   GraduationCap,
   Route,
-  ChartNoAxesCombined,
   FlaskConical,
   Archive,
   BookOpen,
   ShieldCheck,
   CalendarPlus,
-  Target,
 } from "lucide-react";
 import type { SyncStore } from "../sync/store";
 const steps = [
@@ -171,25 +169,12 @@ export function Tools() {
         <div>
           <span className="eyebrow">Gerektiğinde daha fazlası</span>
           <h1>Araçlar</h1>
-          <p>Gelişmiş özellikler sade görünümde de erişilebilir.</p>
+          <p>Testler, yedekler ve yardım. Günlük kayıtların ana bölümlerde.</p>
         </div>
         <Route className="heading-icon" />
       </div>
       <div className="tools-grid">
         {[
-          [
-            "program",
-            "Planım",
-            "Dönem oluştur, incele ve ana plana al.",
-            Route,
-          ],
-          ["goals", "Hedeflerim", "Başlangıç, hedef ve ölçümler.", Target],
-          [
-            "reports",
-            "Raporlar",
-            "Grafikler, kas haritası ve PDF raporu.",
-            ChartNoAxesCombined,
-          ],
           [
             "capability",
             "Capability Lab",

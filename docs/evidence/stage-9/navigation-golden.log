@@ -1,0 +1,10 @@
+shift-regression: exit 0; 18.82s; /Users/caglarcetin/Documents/GitHub/Athlete-Life/docs/evidence/stage-6/shift-regression.log
+restore-regression: exit 0; 12.21s; /Users/caglarcetin/Documents/GitHub/Athlete-Life/docs/evidence/stage-6/restore-regression.log
+runner-regression: exit 0; 11.09s; /Users/caglarcetin/Documents/GitHub/Athlete-Life/docs/evidence/stage-6/runner-regression.log
+lifestyle-regression: exit 0; 7.34s; /Users/caglarcetin/Documents/GitHub/Athlete-Life/docs/evidence/stage-6/lifestyle-regression.log
+reports-regression: exit 0; 7.95s; /Users/caglarcetin/Documents/GitHub/Athlete-Life/docs/evidence/stage-6/reports-regression.log
+movement-regression: exit 0; 5.11s; /Users/caglarcetin/Documents/GitHub/Athlete-Life/docs/evidence/stage-6/movement-regression.log
+recovery-regression: exit 0; 5.68s; /Users/caglarcetin/Documents/GitHub/Athlete-Life/docs/evidence/stage-6/recovery-regression.log
+anatomy-regression: exit 0; 6.58s; /Users/caglarcetin/Documents/GitHub/Athlete-Life/docs/evidence/stage-6/anatomy-regression.log
+navigation-regression: exit 0; 12.79s; /Users/caglarcetin/Documents/GitHub/Athlete-Life/docs/evidence/stage-6/navigation-regression.log
+experience-regression: exit 0; 10.40s; /Users/caglarcetin/Documents/GitHub/Athlete-Life/docs/evidence/stage-6/experience-regression.log

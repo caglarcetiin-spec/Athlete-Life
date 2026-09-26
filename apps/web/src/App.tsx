@@ -11,23 +11,11 @@ import {
   Moon,
   RefreshCw,
   Sun,
-  UserRound,
-  Download,
-  Menu,
-  X,
-  Utensils,
-  HeartPulse,
-  FlaskConical,
-  Target,
-  CalendarPlus,
-  ChartNoAxesCombined,
-  BookOpen,
-  Grid2X2,
   GraduationCap,
 } from "lucide-react";
 import { api, meSchema, serverNow, type Me } from "./api/contracts";
 import { SyncStore } from "./sync/store";
-import { Backups, backupAll } from "./features/Backups";
+import { Backups } from "./features/Backups";
 import { Programming } from "./features/Programming";
 import { Login } from "./features/Login";
 import { Profile } from "./features/Profile";
@@ -41,6 +29,7 @@ import { Workouts } from "./features/Workouts";
 import { Scheduling } from "./features/Scheduling";
 import { displayDate, today, selectedAfterTick } from "./time";
 import { readLocation } from "./navigation";
+import { PrimaryNavigation, SectionNavigation } from "./features/Navigation";
 import { AppUpdate } from "./features/AppUpdate";
 import { SystemChecks } from "./features/SystemChecks";
 import { PageBoundary } from "./PageBoundary";
@@ -68,7 +57,6 @@ function Workspace({
   const [modeNotice, setModeNotice] = useState("");
   const welcomeKey="alos-guide-dismissed:"+me.athlete_id;
   const [welcomeDismissed,setWelcomeDismissed]=useState(()=>{try{return localStorage.getItem(welcomeKey)==="yes";}catch{return false;}});
-  const [backupNotice, setBackupNotice] = useState("");
   const [previousMode, setPreviousMode] = useState("");
   const profile = store.view("profile")[0];
   const professional = profile?.interface_mode === "professional";
@@ -76,13 +64,19 @@ function Workspace({
   const [route, setRoute] = useState(
     readLocation(new URL(location.href)).route,
   );
+  const lastRoute = useRef(route);
+  useEffect(() => {
+    if (lastRoute.current === route) return;
+    lastRoute.current = route;
+    document.getElementById("content")?.focus({ preventScroll: true });
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, [route]);
   const [selected, setSelected] = useState(
     readLocation(new URL(location.href)).selected,
   );
   const [following, setFollowing] = useState(
     readLocation(new URL(location.href)).following,
   );
-  const [menu, setMenu] = useState(false);
   const [theme, setTheme] = useState(
     localStorage.getItem("alos-theme") || "light",
   );
@@ -141,7 +135,6 @@ function Workspace({
       setRoute(next.route);
       setSelected(next.selected);
       setFollowing(next.following);
-      setMenu(false);
     };
     window.addEventListener("hashchange", changed);
     window.addEventListener("popstate", changed);
@@ -201,8 +194,8 @@ function Workspace({
     if (previousMode && previousMode !== current)
       setModeNotice(
         professional
-          ? "Profesyonel görünüm açık. Planım, raporlar ve Capability Lab menüye eklendi."
-          : "Sade görünüm açık. Gelişmiş özelliklerin tamamı Araçlar bölümünde.",
+          ? "Profesyonel görünüm açık. Bölümler aynı yerde; ayrıntılı araçlara Araçlar’dan ulaşabilirsin."
+          : "Sade görünüm açık. Beş ana bölüm aynı yerde; diğer araçlar Araçlar’da.",
       );
     setPreviousMode(current);
   }, [professional, previousMode, store.snapshot]);
@@ -221,62 +214,12 @@ function Workspace({
       >
         İçeriğe geç
       </a>
-      <aside
-        aria-label="Ana gezinme"
-        className={"sidebar " + (menu ? "open" : "")}
-      >
-        <a className="brand" href="#today">
-          <Activity />
-          ATHLETE LIFE
+      <aside className="sidebar">
+        <a className="brand" href="#today" aria-label="Athlete Life ana sayfa">
+          <Activity /> ATHLETE LIFE
         </a>
-        <span className="eyebrow nav-caption">Her gün biraz daha iyi</span>
-        <nav>
-          {[
-            ["today", "Bugün", House],
-            ["week", "Haftam", CalendarDays],
-            ["workout", "Antrenman", Activity],
-            ["program", "Planım", CalendarDays],
-            ["nutrition", "Beslenme", Utensils],
-            ["health", "Sağlık", HeartPulse],
-            ["capability", "Capability Lab", FlaskConical],
-            ["status", "Durumum", Target],
-            ["reports", "Raporlar", ChartNoAxesCombined],
-            ["science", "Bilim ve sınırlar", BookOpen],
-            ["goals", "Hedeflerim", Target],
-            ["system", "Sistem Durumu", CloudCheck],
-            ["backups", "Yedekler", Download],
-            ["tools", "Araçlar", Grid2X2],
-            ["profile", "Profilim", UserRound],
-          ]
-            .filter(
-              ([key]) =>
-                professional ||
-                [
-                  "today",
-                  "week",
-                  "workout",
-                  "nutrition",
-                  "health",
-                  "status",
-                  "tools",
-                  "profile",
-                ].includes(String(key)),
-            )
-            .map(([key, label, Icon]) => {
-              const I = Icon as typeof House;
-              return (
-                <a
-                  key={String(key)}
-                  href={"#" + key}
-                  aria-current={route === key ? "page" : undefined}
-                >
-                  <I size={20} />
-                  {String(label)}
-                  <ChevronRight size={16} />
-                </a>
-              );
-            })}
-        </nav>
+        <span className="eyebrow nav-caption">Kendi ritmini bul</span>
+        <PrimaryNavigation route={route} />
         <div className="sidebar-foot">
           <span className="avatar">{me.name.slice(0, 1)}</span>
           <div>
@@ -287,13 +230,6 @@ function Workspace({
       </aside>
       <div className="shell">
         <header>
-          <button
-            className="icon mobile-menu"
-            aria-label={menu ? "Menüyü kapat" : "Menüyü aç"}
-            onClick={() => setMenu(!menu)}
-          >
-            {menu ? <X /> : <Menu />}
-          </button>
           <button className="sync-pill" onClick={() => go("system")}>
             {store.error || store.pending.length ? (
               <CloudOff size={17} />
@@ -315,13 +251,6 @@ function Workspace({
           <div className="header-actions">
             <button
               className="icon"
-              aria-label="Sürpriz plan ekle"
-              onClick={() => go("events")}
-            >
-              <CalendarPlus size={19} />
-            </button>
-            <button
-              className="icon"
               aria-label={
                 theme === "light"
                   ? "Açık tema; koyu temaya geç"
@@ -334,18 +263,7 @@ function Workspace({
                 {theme === "light" ? "Açık" : "Koyu"}
               </span>
             </button>
-            <button
-              className="icon"
-              aria-label="Tüm verileri yedekle"
-              onClick={() =>
-                void backupAll(store)
-                  .then(setBackupNotice)
-                  .catch((e) => setError(e.message))
-              }
-            >
-              <Download size={19} />
-            </button>
-            <a className="profile-link" href="#profile">
+            <a className="profile-link" href="#profile" aria-label={"Profilim · " + me.name} aria-current={route === "profile" ? "page" : undefined}>
               <span className="avatar small-avatar">
                 {profile?.avatar_id ? (
                   <img src={"/api/v2/media/" + profile.avatar_id} alt="" />
@@ -358,11 +276,6 @@ function Workspace({
           </div>
         </header>
         <main id="content" tabIndex={-1}>
-          {backupNotice && (
-            <div className="notice" role="status">
-              {backupNotice}
-            </div>
-          )}
           <AppUpdate blocked={!!store.writing || store.pending.length > 0} />
           {modeNotice && (
             <div className="notice" role="status">
@@ -403,6 +316,7 @@ function Workspace({
               </button>
             </div>
           )}
+          <SectionNavigation route={route} />
           <PageBoundary key={route}>
             <div className="page-enter">
             {route === "tools" ? (
@@ -439,10 +353,9 @@ function Workspace({
                 store={store}
                 selected={selected}
                 onDate={date}
-                onPlan={() => go("program")}
               />
             ) : route === "program" ? (
-              <Programming store={store} onWorkout={() => go("workout")} />
+              <Programming store={store} />
             ) : route === "backups" ? (
               <Backups store={store} />
             ) : route === "week" ? (
@@ -557,18 +470,18 @@ function Workspace({
                 )}
                 <div className="today-grid">
                   <section className="hero-card">
-                    <span className="eyebrow">Yaşam ritmin</span>
+                    <span className="eyebrow">Sıradaki adımın</span>
                     <h2>
-                      İyi bir hafta,
+                      Kendi hızında.
                       <br />
-                      <em>alan açmakla başlar.</em>
+                      <em>Her gün ileri.</em>
                     </h2>
                     <p>
-                      Çalışma ve dinlenme zamanlarını belirle. Planını hayatının
-                      etrafında oluştur.
+                      Planındaki antrenmanı aç veya serbest bir seans kaydet.
+                      İlerlemeni kendi kayıtların üzerinden takip et.
                     </p>
-                    <button onClick={() => go("week")}>
-                      Haftamı düzenle
+                    <button onClick={() => go("workout")}>
+                      Antrenmanımı aç
                       <ArrowRight size={19} />
                     </button>
                   </section>
@@ -639,22 +552,26 @@ function Workspace({
                       </button>
                     </section>
                   ))}
-                <section className="section-heading compact">
-                  <div>
-                    <span className="eyebrow">Küçük adımlar, sağlam temel</span>
-                    <h2>Kayıtların seninle gelir.</h2>
-                    <p>
-                      Her değişiklik önce cihazında korunur; sunucuya
-                      ulaştığında durumunu burada görürsün.
-                    </p>
+                <section className="card activity-feed">
+                  <div className="section-heading compact">
+                    <div><span className="eyebrow">Senin hareket günlüğün</span><h2>Son aktiviteler</h2></div>
+                    <Activity size={24} />
                   </div>
+                  {store.view("session").length === 0 ? <p>İlk seansını kaydettiğinde burada göreceksin.</p> :
+                    [...store.view("session")].sort((a,b)=>String(b.local_date).localeCompare(String(a.local_date))).slice(0,4).map(session=>(
+                      <a className="activity-item" key={session.id} href={"?date="+encodeURIComponent(String(session.local_date))+"&session="+encodeURIComponent(session.id)+"#workout"}>
+                        <span className="activity-symbol"><Activity size={20}/></span>
+                        <span><strong>{String(session.title)}</strong><small>{displayDate(String(session.local_date))} · {({ready:"Başlamadı",active:"Devam ediyor",paused:"Molada",completed:"Tamamlandı",abandoned:"Bırakıldı"} as Record<string,string>)[String(session.status)] || "Eşitleme bekliyor"}</small></span>
+                        <ChevronRight size={18}/>
+                      </a>
+                    ))}
                 </section>
               </>
             )}
           </div>
           </PageBoundary>
         </main>
-        <footer className="bottom-nav" aria-label="Sayfa gezintisi">
+        <footer className="page-history" aria-label="Sayfa gezintisi">
           <button aria-label="Geri git" onClick={() => history.back()}>
             <ArrowLeft size={18} />
             <span>Geri</span>
@@ -668,6 +585,7 @@ function Workspace({
             <span>İleri</span>
           </button>
         </footer>
+        <PrimaryNavigation route={route} mobile />
       </div>
       {logoutDialog && (
         <div className="modal-backdrop">
