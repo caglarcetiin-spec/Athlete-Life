@@ -1,3 +1,11 @@
+## 2026-09-27 — Sade gezinme yayına hazır
+
+Beş ana bölüm, bağlamsal alt sekmeler, mobil alt menü ve aktivite akışı tamamlandı. 14 istemci testi, lint/build ve 10 birleşik tarayıcı akışı PASS. Ayrıntı `docs/evidence/stage-9/NAVIGATION_REVIEW.md`. GitHub CI/Render canlı doğrulaması bu güncelleme için bekleniyor. Ücretsiz Render/MongoDB korunur; şema/hesap/medya göçü yok.
+
+## 2026-09-25 — Ayrıntılı anatomi ve kalıcı model deneyimi yayında
+
+PR #5 birleştirildi. Kaynak `5ab4d75`, main `563a90e`, GitHub Actions `36184211994`: core/mongodb/container SUCCESS. Render `dep-dardef8u01pc73e38c0g` LIVE. Canlı 9 dosyanın SHA-256 karşılaştırması, readiness ve özel yol koruması PASS; yayın sonrası hata kaydı yok. Kanıt: `docs/evidence/stage-9/LIVE_ANATOMY.json`. Mevcut ücretsiz Render ve MongoDB korundu; şema/hesap/medya göçü yok. Rollback önceki main `544c3c6` yeniden yayınlanarak yapılabilir.
+
 # Ayrıntılı atlas ve kalıcılık düzeltmeleri — 25 Eylül 2026
 
 Lisanslı 669 yapılı kas atlası, anatomik yapı arama/izolasyon/yakınlaştırma, kayıtlı kişisel modelin otomatik açılması ve sürüm/rehber bildirimlerini erteleme hazır. 9 birleşik tarayıcı akışı, 14 istemci testi, PostgreSQL ve Mongo model kalıcılık kontrolleri PASS. GitHub/Render yayını bu başlık için henüz bekleniyor. Şema/hesap/medya göçü yok; ücretsiz Render ve MongoDB korunur. Ayrıntı `docs/evidence/stage-9/ANATOMY_LIBRARY_REVIEW.md`.

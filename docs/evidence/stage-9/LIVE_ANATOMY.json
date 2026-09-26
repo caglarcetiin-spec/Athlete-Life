@@ -1,0 +1,84 @@
+{
+  "checked_at": "2026-09-25T20:21:28.928310+00:00",
+  "url": "https://athlete-life.onrender.com",
+  "source_head": "5ab4d7561e148cae12b65af760bd18d8a8f4ed23",
+  "ci_run": 36184211994,
+  "checks": [
+    {
+      "path": "anatomy/LICENSE.txt",
+      "status": 200,
+      "sha256_match": true
+    },
+    {
+      "path": "anatomy/muscles.glb",
+      "status": 200,
+      "sha256_match": true
+    },
+    {
+      "path": "app-icon.svg",
+      "status": 200,
+      "sha256_match": true
+    },
+    {
+      "path": "assets/BodyModel-B1iabk2u.js",
+      "status": 200,
+      "sha256_match": true
+    },
+    {
+      "path": "assets/index-DBMhrk8E.css",
+      "status": 200,
+      "sha256_match": true
+    },
+    {
+      "path": "assets/index-iBxX4IqK.js",
+      "status": 200,
+      "sha256_match": true
+    },
+    {
+      "path": "index.html",
+      "status": 200,
+      "sha256_match": true
+    },
+    {
+      "path": "manifest.webmanifest",
+      "status": 200,
+      "sha256_match": true
+    },
+    {
+      "path": "sw.js",
+      "status": 200,
+      "sha256_match": true
+    },
+    {
+      "path": "/health/ready",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "expected": 200
+    },
+    {
+      "path": "/api/v2/auth/me",
+      "status": 401,
+      "expected": 401
+    },
+    {
+      "path": "/.env",
+      "status": 404,
+      "expected": 404
+    }
+  ],
+  "result": "PASS",
+  "scope": "Public assets and readiness only; public licensed atlas included; no real account, health data or personal GLB accessed",
+  "merge_commit": "563a90e847ae221e46de195a217b1c83cc8a50d5",
+  "deploy_id": "dep-dardef8u01pc73e38c0g",
+  "deploy_status": "live",
+  "ci_jobs": {
+    "core": "success",
+    "mongodb": "success",
+    "container": "success"
+  },
+  "post_deploy_error_logs": 0
+}

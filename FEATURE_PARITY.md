@@ -86,3 +86,6 @@ Yüklenen GLB yalnız görüntüleyici değildir: aynı analiz raporundaki kuvve
 ### Ayrıntılı anatomi ve kalıcı görünüm — 25 Eylül 2026
 
 669 adlandırılmış anatomik yapı içeren lisanslı kas atlası, seçili kasın tüm parçalarını izole etme/yakınlaştırma ve özgün sağ/sol adlarla arama eklendi. Kişisel yüklenen model korunur; kayıtlı model ve cihazdaki kaynak seçimi sonraki girişte otomatik açılır. Tekrar eden sürüm/rehber bildirimleri ertelenebilir; başlangıç profil yüklemesi sahte mod bildirimi oluşturmaz.
+
+### 27 Eylül 2026 gezinme sadeleştirmesi
+Tüm 17 route korunur; yalnız birincil menüdeki tekrarlar kaldırıldı. Araçlar kart düzeni korunur; plan/hedef/rapor kartları ilgili ana bölümlerin sekmelerine taşındı. Profil, geri/ileri/ana sayfa, seçili tarih, antrenman runner, 3B model ve yedek işlevleri korunur. Gezinme ve birleşik tarayıcı kanıtları stage-9/navigation-* altında.

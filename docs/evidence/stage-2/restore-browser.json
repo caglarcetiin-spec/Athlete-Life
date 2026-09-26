@@ -2,7 +2,7 @@
   "result": "PASS",
   "browser": "154.0.8037.57",
   "independentPostgresDatabases": true,
-  "rtoMs": 4661,
+  "rtoMs": 4637,
   "rpo": "0 canonical records at export; pending retained separately",
   "paths": [
     "shift",

@@ -1,0 +1,66 @@
+{
+  "result": "PASS",
+  "browser": "154.0.8037.57",
+  "checks": [
+    "Five primary destinations on desktop and mobile",
+    "No duplicated Tools destinations",
+    "All 17 deep links retain their parent section",
+    "Section navigation preserves selected past date",
+    "Back/forward restores section",
+    "Focus and reduced motion",
+    "Light/dark accessibility and no horizontal overflow"
+  ],
+  "audit": [
+    {
+      "width": 390,
+      "route": "today",
+      "violations": []
+    },
+    {
+      "width": 390,
+      "route": "workout",
+      "violations": []
+    },
+    {
+      "width": 390,
+      "route": "health",
+      "violations": []
+    },
+    {
+      "width": 390,
+      "route": "status",
+      "violations": []
+    },
+    {
+      "width": 390,
+      "route": "tools",
+      "violations": []
+    },
+    {
+      "width": 1280,
+      "route": "today",
+      "violations": []
+    },
+    {
+      "width": 1280,
+      "route": "workout",
+      "violations": []
+    },
+    {
+      "width": 1280,
+      "route": "health",
+      "violations": []
+    },
+    {
+      "width": 1280,
+      "route": "status",
+      "violations": []
+    },
+    {
+      "width": 1280,
+      "route": "tools",
+      "violations": []
+    }
+  ],
+  "errors": []
+}

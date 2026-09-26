@@ -152,3 +152,7 @@ Kişisel GLB hâlâ hesaba bağlı Mongo medya nesnesidir; `body-model` metadata
 Service worker `GET_VERSION` mesajıyla kendi cache sürümünü verir. `alos-update-dismissed` yalnız ertelenen genel yazılım sürümünü tutar; aynı sürüm sonraki girişte küçük isteğe bağlı düğmedir. Bekleyen kayıtlar güncellemeyi engellemeye devam eder. `alos-guide-dismissed:<athlete_id>` cihazdaki rehber hatırlatmasını kapatır; rehber menüden erişilebilir. İlk profil yüklenmesi mod değişikliği sayılmaz.
 
 MongoDB/hesap/medya göçü yok. Geri dönüş eski kaynak/paket commit'i; yeni yerel görünüm anahtarları eski istemcilerce kullanılmaz, kullanıcı kayıtları değişmez. Atlas ~35.6 MB, isteğe bağlı yüklenir; servis çalışanı kurulurken önbelleğe alınmaz. Kişisel GLB hâlâ özel API'den sunulur.
+
+## 27 Eylül 2026 — Tek hiyerarşili gezinme
+
+`features/Navigation.tsx` 5 ana bölüm tanımlar: Bugün; Antrenman (seans/plan/hafta); Sağlık (sağlık/beslenme); Gelişim (durum/rapor/hedef); Araçlar (test/ek aktivite/yedek/bilim/sistem/rehber). Masaüstü yan menü ve mobil alt menü aynı haritayı kullanır; yalnız uygun viewport menüsü erişilebilirlik ağacında görünür. Profil başlıkta bulunur. Eski hash URL, seçili tarih ve seans kimliği korunur. Bugün aktivite akışı canonical `session` kayıtlarını okur; yeni veri alanı veya göç yok.

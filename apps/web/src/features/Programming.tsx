@@ -78,10 +78,8 @@ const words = {
 };
 export function Programming({
   store,
-  onWorkout,
 }: {
   store: SyncStore;
-  onWorkout: () => void;
 }) {
   const [draft, setDraft] = useState<PlanDraft | null>(null);
   const [error, setError] = useState("");
@@ -200,9 +198,6 @@ export function Programming({
         <button onClick={() => void start()}>
           <Plus size={18} />
           Dönem oluştur
-        </button>
-        <button className="secondary" onClick={onWorkout}>
-          Antrenmana geç
         </button>
       </div>
       {draft && (

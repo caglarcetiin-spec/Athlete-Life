@@ -15,6 +15,7 @@ for name, script in [
     ("movement-regression", "movement_browser.mjs"),
     ("recovery-regression", "recovery_browser.mjs"),
     ("anatomy-regression", "anatomy_browser.mjs"),
+    ("navigation-regression", "navigation_browser.mjs"),
     ("experience-regression", "experience_browser.mjs"),
 ]:
     result = subprocess.run(
