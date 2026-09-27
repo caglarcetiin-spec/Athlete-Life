@@ -472,10 +472,10 @@ export default function BodyModel({
   }, [attempt, revision, source]);
   return (
     <section className="card">
-      <h2>3B kas yükü ve toparlanma</h2>
+      <h2>3B kas dağılımı ve kayıt endeksi</h2>
       <p>
         Modelde bir bölgeye dokun veya kas listesinden seç. Renkler kayıtlı
-        kuvvet setlerinden hesaplanan yorgunluk endeksini gösterir.
+        kuvvet setlerinden hesaplanan kayıt yükü endeksini gösterir.
       </p>
       <div className="actions">
         <span>
@@ -518,7 +518,7 @@ export default function BodyModel({
             value={mode}
             onChange={(e) => setMode(e.target.value)}
           >
-            <option value="load">Yorgunluk endeksi</option>
+            <option value="load">Kayıt yükü endeksi</option>
             <option value="original">Orijinal model</option>
           </select>
         </label>
@@ -679,11 +679,11 @@ export default function BodyModel({
           <>
             <div className="report-controls">
               <div>
-                <span>Tahmini yorgunluk endeksi</span>
+                <span>Zamanla azalan kayıt endeksi</span>
                 <h3>{rangeText(detail.fatigue)}</h3>
               </div>
               <div>
-                <span>Model rezervi</span>
+                <span>Endeksin 100’e tamamlayanı</span>
                 <h3>{rangeText(detail.reserve)}</h3>
               </div>
             </div>
@@ -697,7 +697,7 @@ export default function BodyModel({
               {detail.forecast
                 .map(
                   (f) =>
-                    `${f.hours} saat sonra yorgunluk ${rangeText(f.fatigue)}`,
+                    `${f.hours} saat sonra kayıt endeksi ${rangeText(f.fatigue)}`,
                 )
                 .join(" · ")}
             </p>

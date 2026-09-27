@@ -68,6 +68,12 @@ class Materialize(StrictModel):
     scheduled_date: date
 
 
+class DurationRequest(StrictModel):
+    days: list[DayInput] = Field(max_length=7)
+    execution_seconds: float | None = Field(default=None, ge=0, le=86400)
+    transition_seconds: float | None = Field(default=None, ge=0, le=86400)
+
+
 def owned(db, model, athlete_id, entity_id):
     row = db.scalar(
         select(model).where(model.id == entity_id, model.athlete_id == athlete_id, model.deleted_at.is_(None))
@@ -96,6 +102,15 @@ def apply_program(db, athlete, command):
         data = ProgramInput.model_validate(command.payload)
         parent = owned(db, Program, athlete.id, data.parent_id) if data.parent_id else None
         analysis = program_analysis([d.model_dump() for d in data.days])
+        from .models import AthleteProfile
+        from .planning_context import profile_context
+
+        profile = db.scalar(
+            select(AthleteProfile).where(
+                AthleteProfile.athlete_id == athlete.id, AthleteProfile.deleted_at.is_(None)
+            )
+        )
+        analysis["planning_context"] = profile_context(serial(profile) if profile else None)
         row = Program(
             id=command.entity_id,
             athlete_id=athlete.id,
@@ -282,8 +297,8 @@ def draft_program(data: DraftRequest):
             if cardio:
                 exercises = [
                     {
-                        "movement_id": "easy-locomotion",
-                        "name": "Rahat yürüyüş / koşu",
+                        "movement_id": "walk",
+                        "name": "Walk",
                         "modality": "cardio",
                         "sets": 1,
                         "seconds": 900,
@@ -295,6 +310,8 @@ def draft_program(data: DraftRequest):
                 exercises = [
                     {
                         "movement_id": key,
+                        "catalog_version": "movement-catalog-2",
+                        "set_kind": "working",
                         "name": name,
                         "modality": "strength",
                         "variant": "comfortable-range",
@@ -305,8 +322,8 @@ def draft_program(data: DraftRequest):
                         "rest_seconds": 90,
                     }
                     for key, name, reps in [
-                        ("squat", "Vücut ağırlığıyla çömelme", 8),
-                        ("incline-pushup", "Yükseltilmiş zeminde şınav", 6),
+                        ("bodyweight-squat", "Vücut ağırlığıyla çömelme", 8),
+                        ("incline-push-up", "Yükseltilmiş zeminde şınav", 6),
                         ("glute-bridge", "Kalça köprüsü", 8),
                     ]
                 ]
@@ -335,7 +352,16 @@ def draft_program(data: DraftRequest):
             "days": days,
         },
         "notes": notes,
-        "model_version": "starter-heuristic-1",
+        "model_version": "starter-heuristic-2",
+        "template": {
+            "id": "inherited-general-starter",
+            "version": 2,
+            "experience_scope": ["new", "returning", "regular", "advanced"],
+            "goal": data.objective,
+            "minimum_equipment": ["floor", "stable elevated surface"],
+            "effort_policy": "Inherited RIR 3 and 90 s rest; unreviewed coaching example, not individualized prescription",
+            "content_approval": None,
+        },
         "status": "proposed",
         "evidence_status": "heuristic",
         "source_urls": ["https://pubmed.ncbi.nlm.nih.gov/41843416/"],
@@ -348,6 +374,7 @@ def draft_with_context(data: DraftRequest, snapshot, as_of):
     from zoneinfo import ZoneInfo
 
     from .domain.science import compute
+    from .planning_context import equipment_matches, profile_context
 
     current_day = as_of.astimezone(ZoneInfo(snapshot["timezone"])).date()
     profiles = [p for p in snapshot.get("profiles", []) if not p.get("deleted_at")]
@@ -374,6 +401,55 @@ def draft_with_context(data: DraftRequest, snapshot, as_of):
             "Güncel sağlık kayıtlarında dikkat gerektiren durum var. Bildirilen belirti/toparlanma durumu doz önerisini sınırlar; mevcut ana programın değiştirilmedi."
         )
     result = draft_program(data.model_copy(update=changes))
+    context = profile_context(profile)
+    result["planning_context"] = context
+    result["notes"].extend(context["missing"])
+    # Preserve manual choices when equipment is unknown; do not pretend free text
+    # is a verified inventory or manufacture a clinical exercise prescription.
+    if context.get("equipment"):
+        from .movements import BY_ID, normalize
+
+        available = {normalize(e) for e in context["equipment"]["equipment"]} | {"floor", "bodyweight"}
+        for day in result["program"]["days"]:
+            kept = []
+            for exercise in day["exercises"]:
+                definition = BY_ID.get(exercise["movement_id"])
+                if definition and equipment_matches(definition, available):
+                    kept.append(exercise)
+                else:
+                    result["notes"].append(
+                        exercise["name"]
+                        + ": seçili envanter ekipmanını doğrulamıyor; taslaktan çıkarıldı. Katalogdan uygun hareketi sen seçebilirsin."
+                    )
+            day["exercises"] = kept
+    from .movements import BY_ID
+
+    patterns = sorted(
+        {
+            BY_ID[e["movement_id"]].get("pattern", "unknown")
+            for day in result["program"]["days"]
+            for e in day["exercises"]
+            if e["movement_id"] in BY_ID
+        }
+    )
+    result["pattern_review"] = {
+        "observed": patterns,
+        "meaning": "Katalog örüntü envanteri; kişisel denge veya doz yeterliliği onayı değil.",
+    }
+    result["notes"].append(
+        "Bu şablon barbell/dumbbell için kişiselleştirilmiş kuvvet programı değildir. Ekipman seçimi uygunluğu filtreler; örüntüleri ve yükleri manuel düzenle. İçerik uzman onayı bekliyor."
+    )
+    result["notes"].append(
+        str(len(patterns))
+        + " farklı katalog hareket örüntüsü var. Tam vücut dengesi ayrıca değerlendirilmelidir."
+    )
+    if context.get("preferences", {}).get("minutes"):
+        result["notes"].append(
+            "Profil süre bütçen "
+            + str(context["preferences"]["minutes"])
+            + " dakika. Süre önizlemesinde uygulama/geçiş varsayımlarını gir; otomatik sığma garantisi verilmez."
+        )
+    result["missing"] = list(dict.fromkeys(result["missing"] + context["missing"]))
     result["notes"].extend(reasons)
     result["input_revision"] = snapshot["cursor"]
     result["as_of"] = as_of.isoformat()

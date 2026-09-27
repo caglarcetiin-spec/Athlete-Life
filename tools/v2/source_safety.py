@@ -3,15 +3,23 @@
 import json
 import re
 import subprocess
+import sys
 from pathlib import Path
 
 root = Path(__file__).resolve().parents[2]
 paths = subprocess.check_output(
     ["git", "ls-files", "--others", "--exclude-standard"], cwd=root, text=True
 ).splitlines()
-paths = sorted(set(paths) | set(subprocess.check_output(
-    ["git", "diff", "--cached", "--name-only", "--diff-filter=ACMR"], cwd=root, text=True
-).splitlines()))
+paths = sorted(
+    set(paths)
+    | set(
+        subprocess.check_output(
+            ["git", "diff", "--cached", "--name-only", "--diff-filter=ACMR"],
+            cwd=root,
+            text=True,
+        ).splitlines()
+    )
+)
 patterns = {
     "credential_uri": re.compile(
         r"(?:mongodb(?:\+srv)?|postgres(?:ql)?|https?)://[^\s/@:]+:[^\s/@]+@"
@@ -75,7 +83,8 @@ report = {
     "scope": "Text pattern and file-type screening, not proof that all personal information is absent.",
 }
 print(json.dumps(report, indent=2))
-(root / "docs/evidence/stage-8/source-safety.json").write_text(
-    json.dumps(report, indent=2) + "\n"
-)
+(
+    root
+    / (sys.argv[1] if len(sys.argv) > 1 else "docs/evidence/stage-8/source-safety.json")
+).write_text(json.dumps(report, indent=2) + "\n")
 raise SystemExit(bool(findings))

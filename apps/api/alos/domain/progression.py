@@ -2,6 +2,7 @@
 
 from collections import defaultdict
 
+from ..policies import POLICIES
 from .science import active, date_bounds
 
 
@@ -10,12 +11,14 @@ def propose(snapshot, as_of, readiness):
     zone = snapshot.get("timezone", "Europe/Istanbul")
     active_programs = {p["id"] for p in active(snapshot, "program") if p["status"] == "active"}
     active_days = {d["id"] for d in active(snapshot, "program_day") if d["program_id"] in active_programs}
+    completed_sessions = {s["id"] for s in active(snapshot, "session") if s["status"] == "completed"}
     performed = [
         r for r in active(snapshot, "set") if r.get("status") != "skipped" and date_bounds(r, as_of, zone)
     ]
     for target in active(snapshot, "program_exercise"):
         if target["day_id"] not in active_days:
             continue
+        exclusions = []
         before = {k: target.get(k) for k in ("sets", "reps", "seconds", "external_kg", "rir", "rest_seconds")}
         after = dict(before)
         reason = []
@@ -27,18 +30,18 @@ def propose(snapshot, as_of, readiness):
             status = "review"
             rule = "self-report-caution"
             reason = readiness["reasons"]
-            if before.get("sets") and before["sets"] > 1:
-                after["sets"] = before["sets"] - 1
-            if before.get("external_kg"):
-                after["external_kg"] = round(before["external_kg"] * 0.9, 2)
-            if before.get("rir") is not None:
-                after["rir"] = max(3, before["rir"])
-            reason = reason + [
-                "Bir set azaltma ve ek yükte %10 azaltma yalnız düzenlenebilir koçluk varsayımıdır; tıbbi dönüş protokolü değildir."
-            ]
+            reason = reason + [POLICIES["clinical_dose"]["reason"]]
         elif target.get("modality") == "strength" and before.get("rir") is not None:
             groups = defaultdict(list)
             for row in performed:
+                if (
+                    row.get("set_kind", "unknown") != "working"
+                    or row.get("session_id") not in completed_sessions
+                ):
+                    exclusions.append(
+                        {"id": row["id"], "reason": "Çalışma seti türü veya tamamlanmış seans doğrulanmamış."}
+                    )
+                    continue
                 if all(
                     row.get(k) == target.get(k)
                     for k in (
@@ -52,6 +55,13 @@ def propose(snapshot, as_of, readiness):
                     )
                 ):
                     groups[row.get("session_id")].append(row)
+                else:
+                    exclusions.append(
+                        {
+                            "id": row["id"],
+                            "reason": "Hareket, varyasyon, taraf, ekipman veya yük anlamı karşılaştırılabilir değil.",
+                        }
+                    )
             previous = sorted(
                 groups.values(), key=lambda rows: max(r.get("occurred_at") or r["local_date"] for r in rows)
             )[-2:]
@@ -68,14 +78,11 @@ def propose(snapshot, as_of, readiness):
             )
             sources = [r["id"] for rows in previous for r in rows]
             if sufficient:
-                status = "proposed"
-                rule = "two-comparable-completions"
-                if before.get("external_kg"):
-                    after["external_kg"] = round(before["external_kg"] * 1.025, 2)
-                elif before.get("reps"):
-                    after["reps"] = before["reps"] + 1
+                status = "review"
+                rule = "two-comparable-completions-review-only"
                 reason = [
-                    "İki benzer seansta hedef miktar ve bildirilen RIR korundu. Küçük artış incelenebilir; oran/tekrar adımı doğrulanmış kişisel eşik değildir."
+                    "İki karşılaştırılabilir seansta hedef miktar ve bildirilen RIR korundu.",
+                    POLICIES["progression"]["reason"],
                 ]
             else:
                 missing = ["İki karşılaştırılabilir seansta bütün setler ve RIR bilgisi"]
@@ -88,13 +95,17 @@ def propose(snapshot, as_of, readiness):
                 "name": target["name"],
                 "variant": target.get("variant"),
                 "rule_id": rule,
-                "model_version": "progression-advice-1",
+                "model_version": "progression-review-2",
+                "policy": POLICIES["clinical_dose"]
+                if readiness["status"] == "caution"
+                else POLICIES["progression"],
                 "status": status,
                 "before": before,
                 "after": after,
                 "reason": reason,
                 "missing": missing,
                 "input_lineage": sources,
+                "excluded": exclusions.copy(),
                 "input_revision": snapshot.get("cursor", 0),
                 "approval": "Yeni program sürümü oluşturup onaylayarak uygulanır; ana plan otomatik değişmez.",
             }

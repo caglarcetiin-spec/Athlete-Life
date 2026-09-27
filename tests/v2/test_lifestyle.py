@@ -14,6 +14,13 @@ def test_nutrition_unknown_partial_complete_and_dedup(client):
         },
         "water_ml": None,
         "source_ids": [],
+        "known_counts": {
+            k: 0 for k in ["kcal", "protein_g", "carbs_g", "fat_g", "fiber_g"]
+        },
+        "missing_counts": {
+            k: 0 for k in ["kcal", "protein_g", "carbs_g", "fat_g", "fiber_g"]
+        },
+        "meaning": "Kaydedilen bilinen toplam; tam günlük alım veya beslenme yeterliliği değildir.",
     }
     meal = write(
         client,

@@ -109,7 +109,7 @@ def bounded(value):
         elif isinstance(item, str):
             try:
                 for offset in range(0, len(item), 65536):
-                    item[offset:offset + 65536].encode("utf-8")
+                    item[offset : offset + 65536].encode("utf-8")
             except UnicodeError:
                 raise DomainError("import_text", "Geçersiz Unicode metni.") from None
         elif not isinstance(item, (int, float, bool, type(None))):
@@ -132,8 +132,9 @@ def parse_bytes(raw):
 
 
 def parse_text(raw):
-    if sum(len(raw[i:i + 65536].encode("utf-8")) for i in range(0, len(raw), 65536)) > MAX_BYTES:
+    if sum(len(raw[i : i + 65536].encode("utf-8")) for i in range(0, len(raw), 65536)) > MAX_BYTES:
         raise DomainError("import_size", "Yedek 192 MB sınırını aşıyor.", 413)
+
     def pairs(items):
         output = {}
         for key, value in items:
@@ -171,29 +172,35 @@ def parse_stream(source):
         return result
 
     total = 0
-    decoder = codecs.getincrementaldecoder('utf-8-sig')()
-    non_ascii = re.compile(r'[^\x00-\x7f]')
+    decoder = codecs.getincrementaldecoder("utf-8-sig")()
+    non_ascii = re.compile(r"[^\x00-\x7f]")
     try:
         with TemporaryFile() as normalized:
             while True:
                 chunk = source.read(65536)
                 total += len(chunk)
                 if total == len(chunk) and chunk.startswith((b"PK", b"\x1f\x8b")):
-                    raise DomainError("compressed_not_supported", "Sıkıştırılmış dosya açılmaz. Uygulamanın JSON veri yedeğini seç.")
+                    raise DomainError(
+                        "compressed_not_supported",
+                        "Sıkıştırılmış dosya açılmaz. Uygulamanın JSON veri yedeğini seç.",
+                    )
                 if total > MAX_BYTES:
                     raise DomainError("import_size", "Yedek 192 MB sınırını aşıyor.", 413)
                 text = decoder.decode(chunk, final=not chunk)
                 text = non_ascii.sub(lambda match: json.dumps(match.group(), ensure_ascii=True)[1:-1], text)
-                normalized.write(text.encode('ascii'))
+                normalized.write(text.encode("ascii"))
                 if not chunk:
                     break
             normalized.seek(0)
-            with TextIOWrapper(normalized, encoding='ascii') as text:
-                obj = json.load(text, object_pairs_hook=pairs,
-                                parse_constant=lambda _: (_ for _ in ()).throw(ValueError('nonfinite')))
+            with TextIOWrapper(normalized, encoding="ascii") as text:
+                obj = json.load(
+                    text,
+                    object_pairs_hook=pairs,
+                    parse_constant=lambda _: (_ for _ in ()).throw(ValueError("nonfinite")),
+                )
         bounded(obj)
         if not isinstance(obj, dict):
-            raise TypeError('root')
+            raise TypeError("root")
         return obj
     except (ValueError, TypeError, UnicodeError, RecursionError):
         raise DomainError("invalid_backup", "Dosya geçerli, sınırlı bir JSON yedeği değil.") from None
@@ -202,12 +209,16 @@ def parse_stream(source):
 def rfc_checksum(body):
     # Keep RFC numeric formatting, but avoid encoding a complete large media string.
     digest = hashlib.sha256()
+
     class Sink:
         def write(self, data):
             digest.update(data)
+
     sink = Sink()
+
     def write(value):
         from .large_json import Base64Content
+
         if isinstance(value, Base64Content):
             sink.write(b'"')
             for chunk in value.chunks():
@@ -216,26 +227,29 @@ def rfc_checksum(body):
         elif isinstance(value, str):
             sink.write(b'"')
             for offset in range(0, len(value), 65536):
-                sink.write(json.dumps(value[offset:offset + 65536], ensure_ascii=False)[1:-1].encode('utf-8'))
+                sink.write(
+                    json.dumps(value[offset : offset + 65536], ensure_ascii=False)[1:-1].encode("utf-8")
+                )
             sink.write(b'"')
         elif isinstance(value, dict):
-            sink.write(b'{')
-            for index, key in enumerate(sorted(value, key=lambda key: key.encode('utf-16be'))):
+            sink.write(b"{")
+            for index, key in enumerate(sorted(value, key=lambda key: key.encode("utf-16be"))):
                 if index:
-                    sink.write(b',')
+                    sink.write(b",")
                 write(key)
-                sink.write(b':')
+                sink.write(b":")
                 write(value[key])
-            sink.write(b'}')
+            sink.write(b"}")
         elif isinstance(value, (list, tuple)):
-            sink.write(b'[')
+            sink.write(b"[")
             for index, item in enumerate(value):
                 if index:
-                    sink.write(b',')
+                    sink.write(b",")
                 write(item)
-            sink.write(b']')
+            sink.write(b"]")
         else:
             rfc8785.dump(value, sink)
+
     write(body)
     return digest.hexdigest()
 
@@ -276,6 +290,8 @@ def validate_export(obj):
 
 
 def detect(obj):
+    if obj.get("format") == "alos-csv-1":
+        return "csv", obj
     if obj.get("format") == "alos-v2-transfer-text":
         raw = obj.get("canonical_text")
         if not isinstance(raw, str):
@@ -351,6 +367,10 @@ def legacy_rows(data):
 
 def preview(obj):
     format, data = detect(obj)
+    if format == "csv":
+        from .csv_transfer import parse
+
+        return format, parse(data)
     if format in ("v2", "v2_transfer"):
         return format, {
             "counts": data["counts"],
@@ -410,12 +430,20 @@ def stage_object(database, athlete_id, obj):
         obj.pop("canonical_text")
         obj.update(format="alos-v2-transfer", canonical=canonical)
     format, summary = preview(obj)
+    if format == "csv":
+        digest = summary["source_sha256"]
     with database.sessions.begin() as db:
         db.get(Athlete, athlete_id, with_for_update=True)
         existing = db.scalar(
             select(ImportRun).where(ImportRun.athlete_id == athlete_id, ImportRun.source_digest == digest)
         )
         if existing:
+            if format == "csv" and existing.status == "staged" and existing.raw != obj:
+                existing.raw = obj
+                existing.summary = summary
+                existing.version += 1
+                existing.updated_at = utcnow()
+                db.flush()
             return serial(existing)
         row = ImportRun(athlete_id=athlete_id, format=format, source_digest=digest, summary=summary, raw=obj)
         db.add(row)
@@ -437,7 +465,10 @@ def export_row(row, stream_media=False):
         data["raw"] = row.raw
     if isinstance(row, MediaObject):
         from .large_json import Base64Content
-        data["content"] = Base64Content(row.content) if stream_media else base64.b64encode(row.content).decode()
+
+        data["content"] = (
+            Base64Content(row.content) if stream_media else base64.b64encode(row.content).decode()
+        )
     return data
 
 
@@ -681,7 +712,11 @@ def apply_import(db, athlete, command):
     if row.status != "staged":
         raise DomainError("import_applied", "Bu kaynak zaten aktarılmış.", 409)
     changes = []
-    if row.format in ("v2", "v2_transfer"):
+    if row.format == "csv":
+        from .csv_transfer import apply
+
+        changes = apply(db, athlete, row)
+    elif row.format in ("v2", "v2_transfer"):
         _, package = detect(row.raw)
         changes = restore_rows(db, athlete, package)
         # Canonical records are now present individually. Retaining another full copy

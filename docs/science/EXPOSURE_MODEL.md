@@ -27,7 +27,7 @@ Hareket katsayıları eski kütüphaneden birebir korunmuş **ürün varsayımla
 
 ## Program önerisi
 
-`progression-advice-1` ana planı değiştirmez. Aynı hareket/varyasyon/ekipman/taraf/yükte, iki benzer seansta set sayısı/tekrar/RIR yeterliyse +%2,5 ek yük veya +1 tekrar incelenebilir. Bu adımlar koçluk varsayımıdır, kaynaktan alınmış kişisel eşik değildir. Teknik becerilerde kalite/önkoşul eksikse kuvvet kuralı uygulanmaz. Rahatsızlık/ağrı/yorgunlukta bir set ve %10 yük azaltma seçeneği yine açık varsayımdır; tıbbi dönüş izni değildir. Kullanıcı yeni plan sürümü oluşturup onaylar.
+Güncel `progression-review-2` ve `clinical-dose-disabled-1` sayısal değişikliğe kapalıdır. İki tamamlanmış karşılaştırılabilir çalışma seansı yalnız manuel inceleme bildirimi üretir. +%2,5/−%10 yük ve set azaltma devreden çıkarıldı. Güncel hesap sözleşmesi ve içerik sınırları: `docs/model-card.md`.
 
 ## Kalibrasyon ve kanıt
 

@@ -89,3 +89,7 @@ Yüklenen GLB yalnız görüntüleyici değildir: aynı analiz raporundaki kuvve
 
 ### 27 Eylül 2026 gezinme sadeleştirmesi
 Tüm 17 route korunur; yalnız birincil menüdeki tekrarlar kaldırıldı. Araçlar kart düzeni korunur; plan/hedef/rapor kartları ilgili ana bölümlerin sekmelerine taşındı. Profil, geri/ileri/ana sayfa, seçili tarih, antrenman runner, 3B model ve yedek işlevleri korunur. Gezinme ve birleşik tarayıcı kanıtları stage-9/navigation-* altında.
+
+## Birleşik V2 revizyon
+
+Mevcut Mongo, GLB kalıcılığı, 2B/3B rapor ve manuel plan yolları korunur. Kanonik hareket seçimi, bilinen beslenme toplamları, reddedilmiş kayıt düzeltmesi, açık çakışma çözümü, set türü/superset, ekipman profili snapshot'ı, süre/gün taşıma önizlemesi, isteğe bağlı seans geri bildirimi, genel CSV ve kapsam seçmeli PDF eklendi. Sayısal sağlık/otomatik yük artışı kapalıdır; değişmez plan sürümü üzerinden manuel kabul sürer. Yeni marka bağlayıcısı veya klinik doğruluk iddiası yok. Ayrıntılı kabul matrisi `docs/revision-status.md`.

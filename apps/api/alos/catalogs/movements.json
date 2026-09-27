@@ -32,7 +32,12 @@
     "staticHoldBandSec": [
       4,
       12
-    ]
+    ],
+    "id": "full-planche",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "bodyweight",
+    "modality": "isometric"
   },
   "Front Lever": {
     "name": "Front Lever",
@@ -69,7 +74,12 @@
     ],
     "variantGroup": "front_lever",
     "variantEquipment": "Pull-Up Bar",
-    "displayName": "Front Lever"
+    "displayName": "Front Lever",
+    "id": "front-lever",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "bodyweight",
+    "modality": "isometric"
   },
   "Back Lever": {
     "name": "Back Lever",
@@ -106,7 +116,12 @@
     ],
     "variantGroup": "back_lever",
     "variantEquipment": "Pull-Up Bar",
-    "displayName": "Back Lever"
+    "displayName": "Back Lever",
+    "id": "back-lever",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "bodyweight",
+    "modality": "isometric"
   },
   "Muscle-Up": {
     "name": "Muscle-Up",
@@ -142,7 +157,12 @@
     "staticHoldBandSec": null,
     "variantGroup": "muscle_up",
     "variantEquipment": "Pull-Up Bar",
-    "displayName": "Muscle-Up"
+    "displayName": "Muscle-Up",
+    "id": "muscle-up",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "bodyweight",
+    "modality": "strength"
   },
   "Weighted Pull-Up": {
     "name": "Weighted Pull-Up",
@@ -174,7 +194,12 @@
     "evidence": "Resistance-training evidence + biomechanics",
     "evidenceConfidence": "high",
     "note": "Ek yük + tekrar ile kaydedilir. Örn. +35 kg, 5 tekrar.",
-    "staticHoldBandSec": null
+    "staticHoldBandSec": null,
+    "id": "weighted-pull-up",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "external",
+    "modality": "strength"
   },
   "Weighted Ring Dip": {
     "name": "Weighted Ring Dip",
@@ -207,7 +232,12 @@
     "evidence": "Ring-dip EMG + biomechanics",
     "evidenceConfidence": "high",
     "note": "Loaded pressing plus high ring-control demand; ring dips show high upper-limb muscle activation.",
-    "staticHoldBandSec": null
+    "staticHoldBandSec": null,
+    "id": "weighted-ring-dip",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "external",
+    "modality": "strength"
   },
   "Ring Push-Up": {
     "name": "Ring Push-Up",
@@ -238,7 +268,12 @@
     "evidence": "Suspension/ring push-up EMG + biomechanics",
     "evidenceConfidence": "medium-high",
     "note": "Instability increases stabilization demands; chest remains a major prime mover.",
-    "staticHoldBandSec": null
+    "staticHoldBandSec": null,
+    "id": "ring-push-up",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "bodyweight",
+    "modality": "strength"
   },
   "Ring Support Hold": {
     "name": "Ring Support Hold",
@@ -272,7 +307,12 @@
     "staticHoldBandSec": [
       5,
       20
-    ]
+    ],
+    "id": "ring-support-hold",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "bodyweight",
+    "modality": "isometric"
   },
   "Ring Turned-Out Support": {
     "name": "Ring Turned-Out Support",
@@ -307,7 +347,12 @@
     "staticHoldBandSec": [
       5,
       15
-    ]
+    ],
+    "id": "ring-turned-out-support",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "bodyweight",
+    "modality": "isometric"
   },
   "Ring Dip": {
     "name": "Ring Dip",
@@ -339,7 +384,12 @@
     "evidence": "Direct ring-dip EMG",
     "evidenceConfidence": "high",
     "note": "Ring dip showed similar or higher activation than stable dip for several upper-limb muscles.",
-    "staticHoldBandSec": null
+    "staticHoldBandSec": null,
+    "id": "ring-dip",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "bodyweight",
+    "modality": "strength"
   },
   "Ring Muscle-Up": {
     "name": "Ring Muscle-Up",
@@ -375,7 +425,12 @@
     "staticHoldBandSec": null,
     "variantGroup": "muscle_up",
     "variantEquipment": "Rings",
-    "displayName": "Muscle-Up"
+    "displayName": "Muscle-Up",
+    "id": "ring-muscle-up",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "bodyweight",
+    "modality": "strength"
   },
   "Ring Pull-Up": {
     "name": "Ring Pull-Up",
@@ -408,7 +463,12 @@
     "staticHoldBandSec": null,
     "variantGroup": "pull_up",
     "variantEquipment": "Rings",
-    "displayName": "Pull-Up"
+    "displayName": "Pull-Up",
+    "id": "ring-pull-up",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "bodyweight",
+    "modality": "strength"
   },
   "Ring Chin-Up": {
     "name": "Ring Chin-Up",
@@ -441,7 +501,12 @@
     "staticHoldBandSec": null,
     "variantGroup": "chin_up",
     "variantEquipment": "Rings",
-    "displayName": "Chin-Up"
+    "displayName": "Chin-Up",
+    "id": "ring-chin-up",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "bodyweight",
+    "modality": "strength"
   },
   "Ring Archer Pull-Up": {
     "name": "Ring Archer Pull-Up",
@@ -472,7 +537,12 @@
     "evidence": "Biomechanical inference",
     "evidenceConfidence": "medium",
     "note": "",
-    "staticHoldBandSec": null
+    "staticHoldBandSec": null,
+    "id": "ring-archer-pull-up",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "bodyweight",
+    "modality": "strength"
   },
   "Ring Row": {
     "name": "Ring Row",
@@ -503,7 +573,12 @@
     "evidence": "Biomechanical inference",
     "evidenceConfidence": "medium-high",
     "note": "",
-    "staticHoldBandSec": null
+    "staticHoldBandSec": null,
+    "id": "ring-row",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "bodyweight",
+    "modality": "strength"
   },
   "Feet-Elevated Ring Row": {
     "name": "Feet-Elevated Ring Row",
@@ -535,7 +610,12 @@
     "evidence": "Biomechanical inference",
     "evidenceConfidence": "medium",
     "note": "",
-    "staticHoldBandSec": null
+    "staticHoldBandSec": null,
+    "id": "feet-elevated-ring-row",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "bodyweight",
+    "modality": "strength"
   },
   "Ring Face Pull": {
     "name": "Ring Face Pull",
@@ -565,7 +645,12 @@
     "evidence": "Biomechanical inference",
     "evidenceConfidence": "medium",
     "note": "",
-    "staticHoldBandSec": null
+    "staticHoldBandSec": null,
+    "id": "ring-face-pull",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "bodyweight",
+    "modality": "strength"
   },
   "Ring Rear-Delt Row": {
     "name": "Ring Rear-Delt Row",
@@ -595,7 +680,12 @@
     "evidence": "Biomechanical inference",
     "evidenceConfidence": "medium",
     "note": "",
-    "staticHoldBandSec": null
+    "staticHoldBandSec": null,
+    "id": "ring-rear-delt-row",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "bodyweight",
+    "modality": "strength"
   },
   "Ring Archer Push-Up": {
     "name": "Ring Archer Push-Up",
@@ -626,7 +716,12 @@
     "evidence": "Biomechanical inference",
     "evidenceConfidence": "medium",
     "note": "",
-    "staticHoldBandSec": null
+    "staticHoldBandSec": null,
+    "id": "ring-archer-push-up",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "bodyweight",
+    "modality": "strength"
   },
   "Ring RTO Push-Up": {
     "name": "Ring RTO Push-Up",
@@ -657,7 +752,12 @@
     "evidence": "Biomechanical inference",
     "evidenceConfidence": "medium",
     "note": "",
-    "staticHoldBandSec": null
+    "staticHoldBandSec": null,
+    "id": "ring-rto-push-up",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "bodyweight",
+    "modality": "strength"
   },
   "Ring Chest Fly": {
     "name": "Ring Chest Fly",
@@ -687,7 +787,12 @@
     "evidence": "Biomechanical inference",
     "evidenceConfidence": "medium",
     "note": "",
-    "staticHoldBandSec": null
+    "staticHoldBandSec": null,
+    "id": "ring-chest-fly",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "bodyweight",
+    "modality": "strength"
   },
   "Ring Biceps Curl": {
     "name": "Ring Biceps Curl",
@@ -717,7 +822,12 @@
     "evidence": "Biomechanical inference",
     "evidenceConfidence": "medium",
     "note": "",
-    "staticHoldBandSec": null
+    "staticHoldBandSec": null,
+    "id": "ring-biceps-curl",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "bodyweight",
+    "modality": "strength"
   },
   "Ring Triceps Extension": {
     "name": "Ring Triceps Extension",
@@ -747,7 +857,12 @@
     "evidence": "Biomechanical inference",
     "evidenceConfidence": "medium",
     "note": "",
-    "staticHoldBandSec": null
+    "staticHoldBandSec": null,
+    "id": "ring-triceps-extension",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "bodyweight",
+    "modality": "strength"
   },
   "Ring Rollout": {
     "name": "Ring Rollout",
@@ -777,7 +892,12 @@
     "evidence": "Biomechanical inference",
     "evidenceConfidence": "medium",
     "note": "",
-    "staticHoldBandSec": null
+    "staticHoldBandSec": null,
+    "id": "ring-rollout",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "bodyweight",
+    "modality": "strength"
   },
   "Ring Body Saw": {
     "name": "Ring Body Saw",
@@ -807,7 +927,12 @@
     "evidence": "Biomechanical inference",
     "evidenceConfidence": "medium",
     "note": "",
-    "staticHoldBandSec": null
+    "staticHoldBandSec": null,
+    "id": "ring-body-saw",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "bodyweight",
+    "modality": "strength"
   },
   "Ring L-Sit": {
     "name": "Ring L-Sit",
@@ -840,7 +965,12 @@
     "staticHoldBandSec": [
       5,
       20
-    ]
+    ],
+    "id": "ring-l-sit",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "bodyweight",
+    "modality": "isometric"
   },
   "Ring Tuck Front Lever": {
     "name": "Ring Tuck Front Lever",
@@ -877,7 +1007,12 @@
     ],
     "variantGroup": "tuck_front_lever",
     "variantEquipment": "Rings",
-    "displayName": "Tuck Front Lever"
+    "displayName": "Tuck Front Lever",
+    "id": "ring-tuck-front-lever",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "bodyweight",
+    "modality": "isometric"
   },
   "Ring Front Lever": {
     "name": "Ring Front Lever",
@@ -914,7 +1049,12 @@
     ],
     "variantGroup": "front_lever",
     "variantEquipment": "Rings",
-    "displayName": "Front Lever"
+    "displayName": "Front Lever",
+    "id": "ring-front-lever",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "bodyweight",
+    "modality": "isometric"
   },
   "Ring Back Lever": {
     "name": "Ring Back Lever",
@@ -952,7 +1092,12 @@
     ],
     "variantGroup": "back_lever",
     "variantEquipment": "Rings",
-    "displayName": "Back Lever"
+    "displayName": "Back Lever",
+    "id": "ring-back-lever",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "bodyweight",
+    "modality": "isometric"
   },
   "Ring Handstand": {
     "name": "Ring Handstand",
@@ -987,7 +1132,12 @@
     "staticHoldBandSec": [
       3,
       15
-    ]
+    ],
+    "id": "ring-handstand",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "bodyweight",
+    "modality": "isometric"
   },
   "Skin the Cat": {
     "name": "Skin the Cat",
@@ -1019,7 +1169,12 @@
     "evidence": "Gymnastics biomechanics",
     "evidenceConfidence": "medium",
     "note": "Treat shoulder range conservatively; not a pure hypertrophy exercise.",
-    "staticHoldBandSec": null
+    "staticHoldBandSec": null,
+    "id": "skin-the-cat",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "bodyweight",
+    "modality": "strength"
   },
   "German Hang": {
     "name": "German Hang",
@@ -1052,7 +1207,12 @@
     "staticHoldBandSec": [
       5,
       20
-    ]
+    ],
+    "id": "german-hang",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "bodyweight",
+    "modality": "isometric"
   },
   "Ring Hamstring Curl": {
     "name": "Ring Hamstring Curl",
@@ -1081,7 +1241,12 @@
     "evidence": "Biomechanical inference",
     "evidenceConfidence": "medium",
     "note": "",
-    "staticHoldBandSec": null
+    "staticHoldBandSec": null,
+    "id": "ring-hamstring-curl",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "bodyweight",
+    "modality": "strength"
   },
   "Ring Pike Compression": {
     "name": "Ring Pike Compression",
@@ -1110,7 +1275,12 @@
     "evidence": "Biomechanical inference",
     "evidenceConfidence": "medium",
     "note": "",
-    "staticHoldBandSec": null
+    "staticHoldBandSec": null,
+    "id": "ring-pike-compression",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "bodyweight",
+    "modality": "strength"
   },
   "Handstand": {
     "name": "Handstand",
@@ -1145,7 +1315,12 @@
     "staticHoldBandSec": [
       10,
       40
-    ]
+    ],
+    "id": "handstand",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "bodyweight",
+    "modality": "isometric"
   },
   "Tuck Planche": {
     "name": "Tuck Planche",
@@ -1179,7 +1354,12 @@
     "staticHoldBandSec": [
       8,
       25
-    ]
+    ],
+    "id": "tuck-planche",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "bodyweight",
+    "modality": "isometric"
   },
   "Straddle Planche": {
     "name": "Straddle Planche",
@@ -1213,7 +1393,12 @@
     "staticHoldBandSec": [
       4,
       15
-    ]
+    ],
+    "id": "straddle-planche",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "bodyweight",
+    "modality": "isometric"
   },
   "Tuck Front Lever": {
     "name": "Tuck Front Lever",
@@ -1249,7 +1434,12 @@
     ],
     "variantGroup": "tuck_front_lever",
     "variantEquipment": "Pull-Up Bar",
-    "displayName": "Tuck Front Lever"
+    "displayName": "Tuck Front Lever",
+    "id": "tuck-front-lever",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "bodyweight",
+    "modality": "isometric"
   },
   "Straddle Front Lever": {
     "name": "Straddle Front Lever",
@@ -1285,7 +1475,12 @@
     ],
     "variantGroup": "straddle_front_lever",
     "variantEquipment": "Pull-Up Bar",
-    "displayName": "Straddle Front Lever"
+    "displayName": "Straddle Front Lever",
+    "id": "straddle-front-lever",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "bodyweight",
+    "modality": "isometric"
   },
   "Human Flag": {
     "name": "Human Flag",
@@ -1319,7 +1514,12 @@
     "staticHoldBandSec": [
       4,
       15
-    ]
+    ],
+    "id": "human-flag",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "bodyweight",
+    "modality": "isometric"
   },
   "Ring Straddle Front Lever": {
     "name": "Ring Straddle Front Lever",
@@ -1356,7 +1556,12 @@
     ],
     "variantGroup": "straddle_front_lever",
     "variantEquipment": "Rings",
-    "displayName": "Straddle Front Lever"
+    "displayName": "Straddle Front Lever",
+    "id": "ring-straddle-front-lever",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "bodyweight",
+    "modality": "isometric"
   },
   "Pull-Up": {
     "name": "Pull-Up",
@@ -1389,7 +1594,12 @@
     "staticHoldBandSec": null,
     "variantGroup": "pull_up",
     "variantEquipment": "Pull-Up Bar",
-    "displayName": "Pull-Up"
+    "displayName": "Pull-Up",
+    "id": "pull-up",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "bodyweight",
+    "modality": "strength"
   },
   "Chin-Up": {
     "name": "Chin-Up",
@@ -1422,7 +1632,12 @@
     "staticHoldBandSec": null,
     "variantGroup": "chin_up",
     "variantEquipment": "Pull-Up Bar",
-    "displayName": "Chin-Up"
+    "displayName": "Chin-Up",
+    "id": "chin-up",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "bodyweight",
+    "modality": "strength"
   },
   "Front Lever Pull / Raise": {
     "name": "Front Lever Pull / Raise",
@@ -1457,7 +1672,12 @@
     "staticHoldBandSec": null,
     "variantGroup": "front_lever_pull_raise",
     "variantEquipment": "Pull-Up Bar",
-    "displayName": "Front Lever Pull / Raise"
+    "displayName": "Front Lever Pull / Raise",
+    "id": "front-lever-pull-raise",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "bodyweight",
+    "modality": "strength"
   },
   "Ring Front Lever Pull / Raise": {
     "name": "Ring Front Lever Pull / Raise",
@@ -1492,7 +1712,12 @@
     "staticHoldBandSec": null,
     "variantGroup": "front_lever_pull_raise",
     "variantEquipment": "Rings",
-    "displayName": "Front Lever Pull / Raise"
+    "displayName": "Front Lever Pull / Raise",
+    "id": "ring-front-lever-pull-raise",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "bodyweight",
+    "modality": "strength"
   },
   "Planche Push-Up": {
     "name": "Planche Push-Up",
@@ -1524,7 +1749,12 @@
     "evidence": "Calisthenics biomechanics + resistance-training principles",
     "evidenceConfidence": "medium",
     "note": "Tekrar bazlı dinamik planche press/push-up. Statik lean ayrı hareket olarak kaydedilir.",
-    "staticHoldBandSec": null
+    "staticHoldBandSec": null,
+    "id": "planche-push-up",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "bodyweight",
+    "modality": "strength"
   },
   "Planche Lean": {
     "name": "Planche Lean",
@@ -1559,7 +1789,12 @@
     "staticHoldBandSec": [
       10,
       35
-    ]
+    ],
+    "id": "planche-lean",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "bodyweight",
+    "modality": "isometric"
   },
   "Planche Push-Up / Lean": {
     "name": "Planche Push-Up / Lean",
@@ -1592,7 +1827,12 @@
     "note": "Eski kayıt uyumluluğu için tutulur. Yeni girişte Planche Push-Up veya Planche Lean kullan.",
     "staticHoldBandSec": null,
     "hiddenFromManual": true,
-    "aliasTo": "Planche Push-Up"
+    "aliasTo": "Planche Push-Up",
+    "id": "planche-push-up-lean",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "bodyweight",
+    "modality": "strength"
   },
   "EZ-Bar Curl": {
     "name": "EZ-Bar Curl",
@@ -1619,7 +1859,12 @@
     "evidence": "Biomechanics + resistance-training principles",
     "evidenceConfidence": "medium",
     "note": "Tekrar + yük ile kaydedilir.",
-    "staticHoldBandSec": null
+    "staticHoldBandSec": null,
+    "id": "ez-bar-curl",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "external",
+    "modality": "strength"
   },
   "DB Hammer Curl": {
     "name": "DB Hammer Curl",
@@ -1646,7 +1891,12 @@
     "evidence": "Biomechanics + resistance-training principles",
     "evidenceConfidence": "medium",
     "note": "Tekrar + dumbbell yükü ile kaydedilir.",
-    "staticHoldBandSec": null
+    "staticHoldBandSec": null,
+    "id": "db-hammer-curl",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "external",
+    "modality": "strength"
   },
   "OHP": {
     "name": "OHP",
@@ -1677,7 +1927,12 @@
     "evidence": "Biomechanics + resistance-training principles",
     "evidenceConfidence": "medium",
     "note": "Tekrar + dış yük ile kaydedilir.",
-    "staticHoldBandSec": null
+    "staticHoldBandSec": null,
+    "id": "ohp",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "external",
+    "modality": "strength"
   },
   "DB Lateral Raise": {
     "name": "DB Lateral Raise",
@@ -1704,7 +1959,12 @@
     "evidence": "Biomechanics + resistance-training principles",
     "evidenceConfidence": "medium",
     "note": "Tekrar + dumbbell yükü ile kaydedilir.",
-    "staticHoldBandSec": null
+    "staticHoldBandSec": null,
+    "id": "db-lateral-raise",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "external",
+    "modality": "strength"
   },
   "Triceps Extension": {
     "name": "Triceps Extension",
@@ -1734,7 +1994,12 @@
     "evidence": "Biomechanics + resistance-training principles",
     "evidenceConfidence": "medium",
     "note": "",
-    "staticHoldBandSec": null
+    "staticHoldBandSec": null,
+    "id": "triceps-extension",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "external",
+    "modality": "strength"
   },
   "Bulgarian Split Squat": {
     "name": "Bulgarian Split Squat",
@@ -1765,7 +2030,12 @@
     "evidence": "Biomechanics + resistance-training principles",
     "evidenceConfidence": "medium",
     "note": "",
-    "staticHoldBandSec": null
+    "staticHoldBandSec": null,
+    "id": "bulgarian-split-squat",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "external",
+    "modality": "strength"
   },
   "RDL": {
     "name": "RDL",
@@ -1795,7 +2065,12 @@
     "evidence": "Biomechanics + resistance-training principles",
     "evidenceConfidence": "medium",
     "note": "",
-    "staticHoldBandSec": null
+    "staticHoldBandSec": null,
+    "id": "rdl",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "external",
+    "modality": "strength"
   },
   "Backpack/Goblet Squat": {
     "name": "Backpack/Goblet Squat",
@@ -1825,7 +2100,12 @@
     "evidence": "Biomechanics + resistance-training principles",
     "evidenceConfidence": "medium",
     "note": "",
-    "staticHoldBandSec": null
+    "staticHoldBandSec": null,
+    "id": "backpack-goblet-squat",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "external",
+    "modality": "strength"
   },
   "Single-Leg RDL": {
     "name": "Single-Leg RDL",
@@ -1855,7 +2135,12 @@
     "evidence": "Biomechanics + resistance-training principles",
     "evidenceConfidence": "medium",
     "note": "",
-    "staticHoldBandSec": null
+    "staticHoldBandSec": null,
+    "id": "single-leg-rdl",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "external",
+    "modality": "strength"
   },
   "Calf Raise": {
     "name": "Calf Raise",
@@ -1883,7 +2168,12 @@
     "evidence": "Biomechanics + resistance-training principles",
     "evidenceConfidence": "medium",
     "note": "",
-    "staticHoldBandSec": null
+    "staticHoldBandSec": null,
+    "id": "calf-raise",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "external",
+    "modality": "strength"
   },
   "Dragon Flag": {
     "name": "Dragon Flag",
@@ -1911,7 +2201,12 @@
     "evidence": "Biomechanics + resistance-training principles",
     "evidenceConfidence": "medium",
     "note": "",
-    "staticHoldBandSec": null
+    "staticHoldBandSec": null,
+    "id": "dragon-flag",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "bodyweight",
+    "modality": "strength"
   },
   "Zone 2 Run": {
     "name": "Zone 2 Run",
@@ -1942,7 +2237,12 @@
     "evidence": "Biomechanics + resistance-training principles",
     "evidenceConfidence": "medium",
     "note": "Mesafe kilometre olarak kaydedilir; pace/süre ayrı running verisiyle analiz edilir.",
-    "staticHoldBandSec": null
+    "staticHoldBandSec": null,
+    "id": "zone-2-run",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "none",
+    "modality": "cardio"
   },
   "Mobility": {
     "name": "Mobility",
@@ -1966,7 +2266,12 @@
     "evidence": "Biomechanics + resistance-training principles",
     "evidenceConfidence": "medium",
     "note": "Dakika bazlı recovery/mobility çalışmasıdır.",
-    "staticHoldBandSec": null
+    "staticHoldBandSec": null,
+    "id": "mobility",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "none",
+    "modality": "skill"
   },
   "Walk": {
     "name": "Walk",
@@ -1995,7 +2300,12 @@
     "evidence": "Biomechanics + resistance-training principles",
     "evidenceConfidence": "medium",
     "note": "Dakika bazlı düşük yoğunluklu aktivite.",
-    "staticHoldBandSec": null
+    "staticHoldBandSec": null,
+    "id": "walk",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "none",
+    "modality": "cardio"
   },
   "Bodyweight Squat": {
     "name": "Bodyweight Squat",
@@ -2025,7 +2335,17 @@
     "evidence": "Biomechanics + resistance-training principles",
     "evidenceConfidence": "medium",
     "note": "Plan dışı circuit/conditioning girişlerinde barbell Squat'tan ayrı tutulur.",
-    "staticHoldBandSec": null
+    "staticHoldBandSec": null,
+    "id": "bodyweight-squat",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [
+      "Vücut ağırlığıyla squat",
+      "Vücut ağırlığıyla çömelme",
+      "çömelme",
+      "squat"
+    ],
+    "load_kind": "bodyweight",
+    "modality": "strength"
   },
   "Sprint": {
     "name": "Sprint",
@@ -2064,7 +2384,12 @@
       "mode": "sprint",
       "highSpeed": true,
       "locomotor": true
-    }
+    },
+    "id": "sprint",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "none",
+    "modality": "cardio"
   },
   "Hill Sprint": {
     "name": "Hill Sprint",
@@ -2102,7 +2427,12 @@
       "mode": "sprint",
       "highSpeed": true,
       "locomotor": true
-    }
+    },
+    "id": "hill-sprint",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "none",
+    "modality": "cardio"
   },
   "Intervals": {
     "name": "Intervals",
@@ -2139,7 +2469,12 @@
       "mode": "interval",
       "highSpeed": false,
       "locomotor": true
-    }
+    },
+    "id": "intervals",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "none",
+    "modality": "cardio"
   },
   "VO2 Intervals": {
     "name": "VO2 Intervals",
@@ -2176,7 +2511,12 @@
       "mode": "interval",
       "highSpeed": false,
       "locomotor": true
-    }
+    },
+    "id": "vo2-intervals",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "none",
+    "modality": "cardio"
   },
   "Tempo Run": {
     "name": "Tempo Run",
@@ -2213,7 +2553,12 @@
       "mode": "interval",
       "highSpeed": false,
       "locomotor": true
-    }
+    },
+    "id": "tempo-run",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "none",
+    "modality": "cardio"
   },
   "Threshold Run": {
     "name": "Threshold Run",
@@ -2250,7 +2595,12 @@
       "mode": "interval",
       "highSpeed": false,
       "locomotor": true
-    }
+    },
+    "id": "threshold-run",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "none",
+    "modality": "cardio"
   },
   "Long Run": {
     "name": "Long Run",
@@ -2287,6 +2637,114 @@
       "mode": "interval",
       "highSpeed": false,
       "locomotor": true
-    }
+    },
+    "id": "long-run",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [],
+    "load_kind": "none",
+    "modality": "cardio"
+  },
+  "Barbell Squat": {
+    "name": "Barbell Squat",
+    "type": "DYNAMIC",
+    "metric": "reps",
+    "equipment": [
+      "Barbell",
+      "Squat Rack"
+    ],
+    "pattern": "Squat",
+    "muscles": {
+      "quads": 1,
+      "glutes": 0.85,
+      "adductors": 0.5,
+      "spinalErectors": 0.35,
+      "abs": 0.25
+    },
+    "evidence": "Inherited engineering visualization weights from app.js; not validated physiology",
+    "evidenceConfidence": "unvalidated",
+    "mapping_source": "app.js:1662/1681",
+    "id": "barbell-squat",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [
+      "Squat",
+      "Back Squat",
+      "Barbell Back Squat"
+    ],
+    "load_kind": "external",
+    "modality": "strength"
+  },
+  "Glute Bridge": {
+    "name": "Glute Bridge",
+    "type": "DYNAMIC",
+    "metric": "reps",
+    "equipment": [
+      "Floor"
+    ],
+    "pattern": "Hip extension",
+    "muscles": {
+      "glutes": 1,
+      "hamstrings": 0.4
+    },
+    "evidence": "Inherited engineering visualization weights from app.js; not validated physiology",
+    "evidenceConfidence": "unvalidated",
+    "mapping_source": "app.js:1662/1681",
+    "id": "glute-bridge",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [
+      "Kalça köprüsü",
+      "glutebridge"
+    ],
+    "load_kind": "bodyweight",
+    "modality": "strength"
+  },
+  "Push-Up": {
+    "id": "push-up",
+    "name": "Push-Up",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [
+      "Şınav",
+      "pushup"
+    ],
+    "type": "DYNAMIC",
+    "metric": "reps",
+    "equipment": [
+      "Floor"
+    ],
+    "pattern": "Horizontal push",
+    "muscles": {
+      "chest": 1,
+      "triceps": 0.7,
+      "frontDelts": 0.55,
+      "abs": 0.25
+    },
+    "mapping_source": "app.js:1680/1769 inherited display mapping, not validated activation",
+    "evidence": "Inherited engineering assumption; no individual physiological validation",
+    "load_kind": "bodyweight",
+    "modality": "strength"
+  },
+  "Incline Push-Up": {
+    "id": "incline-push-up",
+    "name": "Incline Push-Up",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [
+      "incline-pushup",
+      "Yükseltilmiş zeminde şınav"
+    ],
+    "type": "DYNAMIC",
+    "metric": "reps",
+    "equipment": [
+      "Elevated Support"
+    ],
+    "pattern": "Horizontal push",
+    "muscles": {
+      "chest": 1,
+      "triceps": 0.7,
+      "frontDelts": 0.55,
+      "abs": 0.25
+    },
+    "mapping_source": "app.js:1680/1769 inherited display mapping, not validated activation",
+    "evidence": "Inherited engineering assumption; no individual physiological validation",
+    "load_kind": "bodyweight",
+    "modality": "strength"
   }
 }

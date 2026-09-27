@@ -16,6 +16,7 @@ from .db import utcnow
 from .domain.scheduling import local_instant
 from .domain.workouts import decimal
 from .errors import DomainError
+from .planning_context import PlanningPreferences
 from .programming import owned, touched
 from .service import get_owned, serial
 
@@ -70,6 +71,7 @@ class RecipeInput(StrictModel):
 
 
 class MealInput(DailyInput):
+    copy_from: UUID | None = None
     name: str = Field(min_length=1, max_length=150)
     meal_type: Literal["meal", "breakfast", "lunch", "dinner", "snack"] = "meal"
     grams: Positive | None = None
@@ -83,6 +85,8 @@ class MealInput(DailyInput):
 
     @model_validator(mode="after")
     def source(self):
+        if self.copy_from and (self.food_id or self.recipe_id):
+            raise ValueError("Geçmiş öğün kopyası ile güncel kütüphane kaynağı birlikte seçilemez.")
         if self.food_id and self.recipe_id:
             raise ValueError("Bir besin veya tarif seç.")
         if (self.food_id or self.recipe_id) and self.grams is None:
@@ -214,6 +218,7 @@ class EventInput(DailyInput):
 
 
 class ProfileInput(StrictModel):
+    planning_preferences: PlanningPreferences = Field(default_factory=PlanningPreferences)
     birth_date: date | None = None
     sex: Literal["female", "male", "intersex", "unspecified"] = "unspecified"
     experience: Literal["new", "returning", "regular", "advanced"] = "new"
@@ -357,6 +362,7 @@ def apply(db, athlete, command):
                 "source": "recipe-version",
             }
         elif kind == "meal":
+            fields.pop("copy_from", None)
             same = row is not None and data.food_id == row.food_id and data.recipe_id == row.recipe_id
             if same and (data.food_id or data.recipe_id):
                 snapshot = row.nutrient_snapshot
@@ -379,6 +385,43 @@ def apply(db, athlete, command):
                     "source": "self-reported",
                 }
                 version = None
+            if (
+                same
+                and row
+                and not data.food_id
+                and not data.recipe_id
+                and row.nutrient_snapshot.get("copied_from")
+            ):
+                # Editing title/date must retain the original provenance. Manual
+                # nutrient edits are explicit overrides, never a new verified source.
+                snapshot["original_source"] = row.nutrient_snapshot
+                snapshot["copied_from"] = row.nutrient_snapshot["copied_from"]
+                snapshot["copied_version"] = row.nutrient_snapshot["copied_version"]
+                snapshot["source"] = "edited-copied-portion"
+                if all(getattr(data, k) == getattr(row, k) for k in NUTRIENTS) and data.grams == row.grams:
+                    snapshot = row.nutrient_snapshot
+                version = row.source_version
+            if data.copy_from:
+                previous = owned(db, m.Meal, athlete.id, data.copy_from)
+                if data.grams is not None and previous.grams is None:
+                    raise DomainError(
+                        "unknown_portion",
+                        "Eski gramaj bilinmediği için porsiyon ölçeklenemez; aynı porsiyonu kopyala.",
+                    )
+                factor = data.grams / previous.grams if data.grams is not None else 1
+                for key in NUTRIENTS:
+                    value = getattr(previous, key)
+                    fields[key] = value * factor if value is not None else None
+                fields["grams"] = data.grams if data.grams is not None else previous.grams
+                snapshot = {
+                    "source": "copied-recorded-portion",
+                    "copied_from": str(previous.id),
+                    "copied_version": previous.version,
+                    "original_source": previous.nutrient_snapshot,
+                    "factor": factor,
+                    "direct_portion": {k: fields[k] for k in NUTRIENTS},
+                }
+                version = previous.source_version
             if "per100" in snapshot:
                 for key in NUTRIENTS:
                     fields[key] = (
@@ -442,6 +485,8 @@ def apply(db, athlete, command):
             row = model(id=command.entity_id, athlete_id=athlete.id, version=0)
             db.add(row)
         for key, value in fields.items():
+            if kind == "profile" and key == "planning_preferences" and key not in data.model_fields_set:
+                continue
             setattr(row, key, value)
         row.version += 1
         row.updated_at = utcnow()
@@ -464,9 +509,14 @@ def nutrition_summary(snapshot, on):
         "status": state,
         "entries": len(meals),
         "totals": {
-            k: sum(r[k] for r in meals) if meals and all(r.get(k) is not None for r in meals) else None
+            k: sum(r[k] for r in meals if r.get(k) is not None)
+            if any(r.get(k) is not None for r in meals)
+            else None
             for k in NUTRIENTS
         },
+        "missing_counts": {k: sum(r.get(k) is None for r in meals) for k in NUTRIENTS},
+        "known_counts": {k: sum(r.get(k) is not None for r in meals) for k in NUTRIENTS},
+        "meaning": "Kaydedilen bilinen toplam; tam günlük alım veya beslenme yeterliliği değildir.",
         "water_ml": sum(
             r["ml"]
             for r in snapshot.get("hydrations", [])

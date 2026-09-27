@@ -1,3 +1,8 @@
+import { MoveDayPreview } from "./MoveDayPreview";
+import { DurationPreview } from "./DurationPreview";
+import { MovementAlternatives } from "./MovementAlternatives";
+import type { PlanningPrefs } from "./PlanningPreferences";
+import { ExercisePicker } from "./ExercisePicker";
 import { MovementHelp, MovementLibrary } from "./MovementGuide";
 import { useState } from "react";
 import {
@@ -16,6 +21,10 @@ export type ExerciseDraft = {
     minimum: number | string;
     maximum: number | string;
   } | null;
+  catalog_version?: string | null;
+  set_kind?: string;
+  superset_group?: string | null;
+  sequence?: number | null;
   movement_id: string;
   name: string;
   variant?: string;
@@ -28,6 +37,8 @@ export type ExerciseDraft = {
   seconds?: number | string | null;
   distance_m?: number | string | null;
   external_kg?: number | string | null;
+  assistance_kg?: number | string | null;
+  bodyweight_kg?: number | string | null;
   rir?: number | string | null;
   rest_seconds?: number | string | null;
 };
@@ -76,18 +87,18 @@ const words = {
   skill: "Teknik deneme",
   circuit: "Tur / istasyon",
 };
-export function Programming({
-  store,
-}: {
-  store: SyncStore;
-}) {
+export function Programming({ store }: { store: SyncStore }) {
+  const preferences = (store.view("profile")[0]?.planning_preferences ||
+    {}) as PlanningPrefs;
   const [draft, setDraft] = useState<PlanDraft | null>(null);
   const [error, setError] = useState("");
   const [notes, setNotes] = useState<string[]>([]);
   const [objective, setObjective] = useState("hybrid");
-  const [experience, setExperience] = useState("new");
+  const [experience, setExperience] = useState(
+    String(store.view("profile")[0]?.experience || "new"),
+  );
   const [sport, setSport] = useState("strength");
-  const [days, setDays] = useState([0, 2, 4]);
+  const [days, setDays] = useState(preferences.weekdays || [0, 2, 4]);
   const [adult, setAdult] = useState(false);
   const [symptoms, setSymptoms] = useState(false);
   const programs = store
@@ -99,7 +110,7 @@ export function Programming({
   }
   async function start() {
     const saved = await store.loadDraft("program");
-    setDraft(saved || blank());
+    setDraft(saved || { ...blank(), goal: preferences.goal || "" });
   }
   async function suggest() {
     if (!draft) return;
@@ -119,7 +130,7 @@ export function Programming({
           symptoms,
         }),
       })) as { program: PlanDraft; notes: string[] };
-      edit(response.program);
+      edit({ ...response.program, name: draft.name });
       setNotes(response.notes);
       setError("");
     } catch (e) {
@@ -153,6 +164,10 @@ export function Programming({
                 Object.entries(e).filter(([k]) =>
                   [
                     "target_range",
+                    "catalog_version",
+                    "set_kind",
+                    "superset_group",
+                    "sequence",
                     "movement_id",
                     "name",
                     "variant",
@@ -364,6 +379,24 @@ export function Programming({
                   ? "Dinlenme"
                   : `${day.exercises.length} hareket`}
               </summary>
+              <MoveDayPreview
+                start={draft.start_date}
+                weekday={day.weekday}
+                onApply={(to) =>
+                  edit({
+                    ...draft,
+                    days: draft.days.map((d) => ({
+                      ...d,
+                      weekday:
+                        d.weekday === day.weekday
+                          ? to
+                          : d.weekday === to
+                            ? day.weekday
+                            : d.weekday,
+                    })),
+                  })
+                }
+              />
               <div className="form-grid">
                 <label>
                   İlk uygulama haftası
@@ -455,8 +488,13 @@ export function Programming({
               </div>
               {day.kind === "training" && (
                 <>
+                  <DurationPreview
+                    store={store}
+                    day={day}
+                    minutes={preferences.minutes}
+                  />
                   {day.exercises.map((exercise, ei) => {
-                    const update = (key: string, value: unknown) =>
+                    const patch = (changes: Partial<ExerciseDraft>) =>
                       edit({
                         ...draft,
                         days: draft.days.map((d, i) =>
@@ -464,21 +502,104 @@ export function Programming({
                             ? {
                                 ...d,
                                 exercises: d.exercises.map((x, j) =>
-                                  j === ei ? { ...x, [key]: value } : x,
+                                  j === ei ? { ...x, ...changes } : x,
                                 ),
                               }
                             : d,
                         ),
                       });
+                    const update = (key: string, value: unknown) =>
+                      patch({ [key]: value });
                     return (
                       <div className="exercise-editor" key={ei}>
-                        <MovementHelp name={exercise.name} variant={exercise.variant} />
+                        <MovementAlternatives
+                          store={store}
+                          movementId={exercise.movement_id}
+                          onSelect={(d) =>
+                            patch({
+                              movement_id: d.movement_id,
+                              name: d.name,
+                              catalog_version: d.catalog_version,
+                              equipment: d.equipment,
+                              modality: d.modality,
+                              load_kind: d.load_kind,
+                              external_kg: null,
+                              assistance_kg: null,
+                              bodyweight_kg: null,
+                              variant: "standard",
+                            })
+                          }
+                        />
+                        <ExercisePicker
+                          onSelect={(d) =>
+                            patch({
+                              movement_id: d.id,
+                              name: d.name,
+                              catalog_version: d.catalog_version,
+                              equipment: d.equipment.join(", "),
+                              load_kind: d.load_kind,
+                              modality: d.modality,
+                              external_kg: null,
+                              assistance_kg: null,
+                              bodyweight_kg: null,
+                            })
+                          }
+                        />
+                        <MovementHelp
+                          name={exercise.name}
+                          variant={exercise.variant}
+                        />
                         <div className="form-grid">
+                          <label>
+                            Set türü
+                            <select
+                              value={exercise.set_kind || "unknown"}
+                              onChange={(e) =>
+                                update("set_kind", e.target.value)
+                              }
+                            >
+                              <option value="unknown">Belirtilmemiş</option>
+                              <option value="working">Çalışma</option>
+                              <option value="warmup">Isınma</option>
+                            </select>
+                          </label>
+                          <label>
+                            Süperset grubu
+                            <input
+                              value={exercise.superset_group || ""}
+                              onChange={(e) =>
+                                update("superset_group", e.target.value || null)
+                              }
+                            />
+                          </label>
+                          <label>
+                            Grup içi sıra
+                            <input
+                              type="number"
+                              min={0}
+                              max={10000}
+                              value={exercise.sequence ?? ""}
+                              onChange={(e) =>
+                                update(
+                                  "sequence",
+                                  e.target.value
+                                    ? Number(e.target.value)
+                                    : null,
+                                )
+                              }
+                            />
+                          </label>
                           <label className="wide">
                             Hareket adı
                             <input
                               value={exercise.name}
-                              onChange={(e) => update("name", e.target.value)}
+                              onChange={(e) =>
+                                patch({
+                                  name: e.target.value,
+                                  movement_id: "custom-" + crypto.randomUUID(),
+                                  catalog_version: null,
+                                })
+                              }
                             />
                           </label>
                           <label>
@@ -499,9 +620,21 @@ export function Programming({
                           <label>
                             Varyasyon / koşul
                             <input
-                              value={exercise.variant || "standard"}
+                              value={
+                                exercise.variant === "comfortable-range"
+                                  ? "Rahat hareket açıklığı"
+                                  : !exercise.variant ||
+                                      exercise.variant === "standard"
+                                    ? "Standart"
+                                    : exercise.variant
+                              }
                               onChange={(e) =>
-                                update("variant", e.target.value)
+                                update(
+                                  "variant",
+                                  e.target.value === "Standart"
+                                    ? "standard"
+                                    : e.target.value,
+                                )
                               }
                             />
                           </label>
@@ -642,6 +775,7 @@ export function Programming({
                                     movement_id:
                                       "custom-" + crypto.randomUUID(),
                                     name: "",
+                                    set_kind: "working",
                                     modality: "strength",
                                     sets: 2,
                                     reps: 8,
@@ -699,11 +833,19 @@ export function Programming({
             <button
               onClick={() => {
                 if (!draft.name.trim() || !draft.goal.trim()) {
-                  setError("Dönem adını ve hedefini yaz; taslağın cihazında korunuyor.");
+                  setError(
+                    "Dönem adını ve hedefini yaz; taslağın cihazında korunuyor.",
+                  );
                   return;
                 }
-                if (draft.days.some((day) => day.exercises.some((exercise) => !exercise.name.trim()))) {
-                  setError("Her hareketin adını yaz veya boş hareketi kaldır; ardından taslağı kaydet.");
+                if (
+                  draft.days.some((day) =>
+                    day.exercises.some((exercise) => !exercise.name.trim()),
+                  )
+                ) {
+                  setError(
+                    "Her hareketin adını yaz veya boş hareketi kaldır; ardından taslağı kaydet.",
+                  );
                   return;
                 }
                 void store

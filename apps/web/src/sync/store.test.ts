@@ -154,3 +154,181 @@ describe("durable client protocol", () => {
     expect(selectedAfterTick("2026-09-10", false, next)).toBe("2026-09-10");
   });
 });
+
+it("retains a rejected draft, sends independent records, and allows corrected resubmission", async () => {
+  const s = await setup();
+  const commands: {
+    operation_id: string;
+    entity_id: string;
+    payload: Record<string, unknown>;
+  }[] = [];
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async (input: string, options?: RequestInit) => {
+      if (!input.includes("commands"))
+        return new Response(
+          JSON.stringify({
+            cursor: 0,
+            generation: snap.generation,
+            has_more: false,
+            changes: [],
+          }),
+        );
+      const command = JSON.parse(String(options?.body));
+      commands.push(command);
+      if (command.payload.social === "invalid")
+        return new Response(
+          JSON.stringify({
+            error: { code: "validation", message: "Correct the record" },
+          }),
+          { status: 422 },
+        );
+      const entity = {
+        id: command.entity_id,
+        version: command.expected_version + 1,
+        ...command.payload,
+      };
+      return new Response(
+        JSON.stringify({
+          operation_id: command.operation_id,
+          cursor: 1,
+          entity,
+          changes: [{ kind: "shift", entity }],
+          committed_at: "2026-09-27T12:00:00Z",
+        }),
+      );
+    }),
+  );
+  await s.enqueue("shift.save", null, {
+    local_date: "2026-09-15",
+    social: "invalid",
+  });
+  await vi.waitFor(() => expect(s.pending[0]?.state).toBe("failed"));
+  await s.enqueue("shift.save", null, {
+    local_date: "2026-09-16",
+    social: "valid",
+  });
+  await vi.waitFor(() =>
+    expect(
+      s.view("shift").find((r) => r.social === "valid")?.local_pending,
+    ).not.toBe(true),
+  );
+  const rejected = s.view("shift").find((r) => r.social === "invalid")!;
+  expect(rejected.local_error).toBe("Correct the record");
+  await s.enqueue("shift.save", rejected, {
+    local_date: "2026-09-15",
+    social: "corrected",
+  });
+  await vi.waitFor(() => expect(s.pending).toHaveLength(0));
+  expect(s.view("shift")).toHaveLength(2);
+  expect(commands.filter((c) => c.payload.social === "invalid")).toHaveLength(
+    1,
+  );
+  expect(commands[0].entity_id).toBe(commands[2].entity_id);
+  expect(commands[0].operation_id).not.toBe(commands[2].operation_id);
+});
+
+it("retries a lost ACK using one operation id and keeps a single server record", async () => {
+  const s = await setup();
+  const committed = new Map();
+  let lost = true;
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async (input: string, options?: RequestInit) => {
+      if (!input.includes("commands"))
+        return new Response(
+          JSON.stringify({
+            cursor: 0,
+            generation: snap.generation,
+            has_more: false,
+            changes: [],
+          }),
+        );
+      const c = JSON.parse(String(options?.body));
+      if (!committed.has(c.operation_id)) {
+        const entity = { id: c.entity_id, version: 1, ...c.payload };
+        committed.set(c.operation_id, {
+          operation_id: c.operation_id,
+          cursor: 1,
+          entity,
+          changes: [{ kind: "shift", entity }],
+          committed_at: "2026-09-27T12:00:00Z",
+        });
+      }
+      if (lost) {
+        lost = false;
+        throw new TypeError("Synthetic lost response");
+      }
+      return new Response(JSON.stringify(committed.get(c.operation_id)));
+    }),
+  );
+  await s.enqueue("shift.save", null, {
+    local_date: "2026-09-27",
+    social: "Synthetic",
+  });
+  await vi.waitFor(() => expect(s.error).toContain("Synthetic lost response"));
+  await s.retry();
+  expect(s.pending).toHaveLength(0);
+  expect(committed.size).toBe(1);
+  expect(s.view("shift")).toHaveLength(1);
+});
+
+it("resolves stale edits only after choosing a version; reapply uses the current version", async () => {
+  const s = await setup();
+  const id = crypto.randomUUID();
+  let calls = 0;
+  const current = {
+    id,
+    version: 2,
+    local_date: "2026-09-15",
+    social: "server",
+  };
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async (input: string, options?: RequestInit) => {
+      if (!input.includes("commands"))
+        return new Response(
+          JSON.stringify({
+            cursor: 0,
+            generation: snap.generation,
+            has_more: false,
+            changes: [],
+          }),
+        );
+      const c = JSON.parse(String(options?.body));
+      calls++;
+      if (c.expected_version !== 2)
+        return new Response(
+          JSON.stringify({
+            error: {
+              code: "version_conflict",
+              message: "Changed",
+              details: { current },
+            },
+          }),
+          { status: 409 },
+        );
+      const entity = { ...current, ...c.payload, version: 3 };
+      return new Response(
+        JSON.stringify({
+          operation_id: c.operation_id,
+          cursor: 1,
+          entity,
+          changes: [{ kind: "shift", entity }],
+          committed_at: "2026-09-27T12:00:00Z",
+        }),
+      );
+    }),
+  );
+  await s.enqueue(
+    "shift.save",
+    { ...current, version: 1 },
+    { social: "local" },
+  );
+  await vi.waitFor(() => expect(s.pending[0]?.state).toBe("conflict"));
+  expect(calls).toBe(1);
+  expect(s.pending[0].current?.social).toBe("server");
+  await s.resolveConflict(s.pending[0].id, true);
+  expect(s.pending).toHaveLength(0);
+  expect(s.view("shift")[0]).toMatchObject({ version: 3, social: "local" });
+});

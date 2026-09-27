@@ -1,0 +1,99 @@
+Revision browser failed: expect(received).toEqual(expected) // deep equality
+
+- Expected  -  1
++ Received  + 93
+
+- Array []
++ Array [
++   Object {
++     "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
++     "help": "Elements must meet minimum color contrast ratio thresholds",
++     "helpUrl": "https://dequeuniversity.com/rules/axe/4.13/color-contrast?application=playwright",
++     "id": "color-contrast",
++     "impact": "serious",
++     "nodes": Array [
++       Object {
++         "all": Array [],
++         "any": Array [
++           Object {
++             "data": Object {
++               "bgColor": "#ffffff",
++               "contrastRatio": 1.22,
++               "expectedContrastRatio": "4.5:1",
++               "fgColor": "#e5eadf",
++               "fontSize": "12.0pt (16px)",
++               "fontWeight": "normal",
++               "messageKey": null,
++             },
++             "id": "color-contrast",
++             "impact": "serious",
++             "message": "Element has insufficient color contrast of 1.22 (foreground color: #e5eadf, background color: #ffffff, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1",
++             "relatedNodes": Array [
++               Object {
++                 "html": "<button class=\"secondary\">Ekipman profili ekle</button>",
++                 "target": Array [
++                   "section:nth-child(3) > .secondary",
++                 ],
++               },
++             ],
++           },
++         ],
++         "failureSummary": "Fix any of the following:
++   Element has insufficient color contrast of 1.22 (foreground color: #e5eadf, background color: #ffffff, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1",
++         "html": "<button class=\"secondary\">Ekipman profili ekle</button>",
++         "impact": "serious",
++         "none": Array [],
++         "target": Array [
++           "section:nth-child(3) > .secondary",
++         ],
++       },
++       Object {
++         "all": Array [],
++         "any": Array [
++           Object {
++             "data": Object {
++               "bgColor": "#ffffff",
++               "contrastRatio": 1.22,
++               "expectedContrastRatio": "4.5:1",
++               "fgColor": "#e5eadf",
++               "fontSize": "12.0pt (16px)",
++               "fontWeight": "normal",
++               "messageKey": null,
++             },
++             "id": "color-contrast",
++             "impact": "serious",
++             "message": "Element has insufficient color contrast of 1.22 (foreground color: #e5eadf, background color: #ffffff, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1",
++             "relatedNodes": Array [
++               Object {
++                 "html": "<button class=\"secondary\">",
++                 "target": Array [
++                   "section:nth-child(8) > .secondary",
++                 ],
++               },
++             ],
++           },
++         ],
++         "failureSummary": "Fix any of the following:
++   Element has insufficient color contrast of 1.22 (foreground color: #e5eadf, background color: #ffffff, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1",
++         "html": "<button class=\"secondary\">",
++         "impact": "serious",
++         "none": Array [],
++         "target": Array [
++           "section:nth-child(8) > .secondary",
++         ],
++       },
++     ],
++     "tags": Array [
++       "cat.color",
++       "wcag2aa",
++       "wcag143",
++       "TTv5",
++       "TT13.c",
++       "EN-301-549",
++       "EN-9.1.4.3",
++       "ACT",
++       "RGAAv4",
++       "RGAA-3.2.1",
++     ],
++   },
++ ]

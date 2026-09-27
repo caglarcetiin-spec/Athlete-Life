@@ -58,7 +58,7 @@ def summarize(entries, as_of):
         "version": VERSION,
         "scale": SCALE,
         "groups": result,
-        "meaning": "Yorgunluk ve rezerv yüzdeleri doğrulanmamış yük modeli endeksidir; doku hasarı, kas büyümesi veya gerçek kuvvet kapasitesi ölçümü değildir.",
+        "meaning": "Gösterilen değerler zamanla azalan kayıt endeksidir; yorgunluk, iyileşme, doku hasarı veya gerçek kuvvet kapasitesi ölçümü değildir.",
         "forecast_assumption": "Yeni antrenman eklenmezse; sabit model varsayımlarıyla.",
         "calibrated": False,
     }

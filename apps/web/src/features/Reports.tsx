@@ -1,14 +1,9 @@
+import { ReportExport } from "./ReportExport";
 import { useEffect, useState, lazy, Suspense } from "react";
 import { recoverySchema } from "./muscleRecovery";
 const BodyModel = lazy(() => import("./BodyModel"));
 import { z } from "zod";
-import {
-  ChartNoAxesCombined,
-  Target,
-  RefreshCw,
-  Download,
-  BookOpen,
-} from "lucide-react";
+import { ChartNoAxesCombined, Target, RefreshCw, BookOpen } from "lucide-react";
 import { api } from "../api/contracts";
 import type { SyncStore } from "../sync/store";
 import { DayToolbar, shown } from "./Records";
@@ -33,10 +28,37 @@ const schema = z.object({
     ),
   }),
   coverage: z.object({
+    total_sets: z.number().optional(),
+    analyzed_sets: z.number().optional(),
     missing: z.array(z.string()),
     date_only_loads: z.number(),
     unmapped_loads: z.array(z.object({ id: z.string(), reason: z.string() })),
   }),
+  period_summary: z
+    .object({
+      planned_materialized_sessions: z.number(),
+      completed_sessions: z.number(),
+      actual_sets: z.number(),
+      plan_versions: z.array(z.string()),
+      meaning: z.string(),
+    })
+    .optional(),
+  recorded_distribution: z
+    .record(
+      z.string(),
+      z.record(
+        z.string(),
+        z.object({
+          amount: z.number(),
+          unit: z.string(),
+          source_ids: z.array(z.string()),
+        }),
+      ),
+    )
+    .optional(),
+  set_counts: z
+    .object({ working: z.number(), warmup: z.number(), unknown: z.number() })
+    .optional(),
   muscles: z.record(
     z.string(),
     z.record(
@@ -97,6 +119,10 @@ const schema = z.object({
   ),
   progression: z.array(
     z.object({
+      excluded: z
+        .array(z.object({ id: z.string(), reason: z.string() }))
+        .default([]),
+      input_lineage: z.array(z.string()).default([]),
       exercise_id: z.string(),
       name: z.string(),
       status: z.string(),
@@ -463,6 +489,80 @@ export function Reports({
           <ChartNoAxesCombined className="heading-icon" />
         )}
       </div>
+      {report && (
+        <ReportExport
+          key={[selected, days, knowledge, saved, report.input_digest].join(
+            ":",
+          )}
+          query={new URLSearchParams({
+            on: selected,
+            window_days: String(days),
+            as_of: report.as_of,
+            knowledge,
+            ...(saved ? { saved_id: saved } : {}),
+          }).toString()}
+        />
+      )}
+      {report?.period_summary && (
+        <section className="card">
+          <h2>Seçili dönemin özeti</h2>
+          <p>
+            {report.window.from} – {report.window.to} ·{" "}
+            {report.period_summary.completed_sessions} tamamlanan seans ·{" "}
+            {report.period_summary.planned_materialized_sessions} tarihe
+            bağlanmış plan hedefi · {report.period_summary.actual_sets} gerçek
+            set
+          </p>
+          <p>{report.period_summary.meaning}</p>
+          <a href="#program">Planımı gözden geçir</a>
+        </section>
+      )}
+      {report?.recorded_distribution && (
+        <section className="card">
+          <h2>Kaydedilen çalışma dağılımı</h2>
+          <p>
+            {report.coverage.analyzed_sets} / {report.coverage.total_sets}{" "}
+            gerçek kayıt kas dağılımına alınabildi. Ağırlıklar katalog
+            varsayımıdır; ölçülmüş gelişim veya kas hasarı değildir.
+          </p>
+          <p>
+            Çalışma: {report.set_counts?.working} · Isınma:{" "}
+            {report.set_counts?.warmup} · Türü belirtilmemiş:{" "}
+            {report.set_counts?.unknown}
+          </p>
+          <div className="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>Kas grubu</th>
+                  <th>Kaydedilen katkı</th>
+                  <th>Kaynak kayıt</th>
+                </tr>
+              </thead>
+              <tbody>
+                {Object.entries(report.recorded_distribution).flatMap(
+                  ([group, modes]) =>
+                    Object.entries(modes).map(([mode, value]) => (
+                      <tr key={group + mode}>
+                        <td>{muscleNames[group] || group}</td>
+                        <td>
+                          {value.amount.toLocaleString("tr-TR", {
+                            maximumFractionDigits: 2,
+                          })}{" "}
+                          {value.unit}
+                        </td>
+                        <td>{value.source_ids.length}</td>
+                      </tr>
+                    )),
+                )}
+              </tbody>
+            </table>
+          </div>
+          {report.coverage.unmapped_loads.map((r) => (
+            <p key={r.id}>Analiz dışında: {r.reason}</p>
+          ))}
+        </section>
+      )}
       {!statusOnly && (
         <>
           <button className="secondary" onClick={toggleBody}>
@@ -632,7 +732,7 @@ export function Reports({
                     {r.status === "proposed"
                       ? "Küçük artış değerlendirilebilir"
                       : r.status === "review"
-                        ? "Daha hafif seçenek var"
+                        ? "Planı gözden geçir"
                         : "Mevcut hedefi izle"}
                   </summary>
                   {r.reason.map((s) => (
@@ -672,6 +772,20 @@ export function Reports({
                       </tbody>
                     </table>
                   </div>
+                  <p>
+                    {r.input_lineage.length} karşılaştırılabilir kayıt
+                    kullanıldı.
+                  </p>
+                  {r.excluded.length > 0 && (
+                    <details>
+                      <summary>
+                        Karşılaştırma dışında kalan {r.excluded.length} kayıt
+                      </summary>
+                      {r.excluded.map((e, i) => (
+                        <p key={e.id + ":" + i}>{e.reason}</p>
+                      ))}
+                    </details>
+                  )}
                   <p>{r.approval}</p>
                   <a href="#program" className="link-button secondary">
                     Programımı incele
@@ -732,14 +846,10 @@ export function Reports({
                   günleri tam günlük tüketim gibi kullanılmaz.
                 </p>
                 <Trend
-                  label="Tam kaydedilmiş günlerde protein"
+                  label="Kaydedilen bilinen protein"
                   unit="g"
                   points={report.daily_context
-                    .filter(
-                      (r) =>
-                        r.nutrition_status === "complete" &&
-                        r.protein_g != null,
-                    )
+                    .filter((r) => r.protein_g != null)
                     .map((r) => ({ date: r.date, value: r.protein_g! }))}
                 />
                 <Trend
@@ -823,15 +933,6 @@ export function Reports({
               >
                 Kararı geçmişime kaydet
               </button>
-              <a
-                href={
-                  "/api/v2/reports/pdf?on=" + selected + "&window_days=" + days
-                }
-                className="link-button secondary"
-              >
-                <Download size={17} />
-                PDF raporu
-              </a>
               <a className="link-button secondary" href="#science">
                 <BookOpen size={17} />
                 Bilim ve sınırlar

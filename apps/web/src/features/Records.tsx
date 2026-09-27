@@ -20,6 +20,8 @@ export type Field = {
   hint?: string;
   min?: number;
   max?: number;
+  positive?: boolean;
+  onChange?: (value: string) => Record<string, string>;
 };
 export function RecordForm({
   fields,
@@ -46,6 +48,7 @@ export function RecordForm({
       null,
     ),
     [draftNotice, setDraftNotice] = useState("");
+  const [unitNotice, setUnitNotice] = useState("");
   useEffect(() => {
     if (!draft) return;
     let active = true;
@@ -88,6 +91,21 @@ export function RecordForm({
     <form
       className="record-form"
       onChange={(e) => {
+        const changed = e.target as unknown as HTMLInputElement;
+        const updates = fields
+          .find((f) => f.key === changed.name)
+          ?.onChange?.(changed.value);
+        if (updates) {
+          for (const [key, value] of Object.entries(updates)) {
+            const input = e.currentTarget.elements.namedItem(
+              key,
+            ) as HTMLInputElement | null;
+            if (input) input.value = value;
+          }
+          setUnitNotice(
+            "Ölçüm değişti; birim yenilendi. Değeri yeni birimle tekrar gir.",
+          );
+        }
         if (draft) {
           const values = rawValues(e.currentTarget);
           setDraftNotice("Form taslağı cihaza yazılıyor…");
@@ -103,22 +121,46 @@ export function RecordForm({
       }}
       onSubmit={async (e) => {
         e.preventDefault();
+        if (busy) return;
         const f = new FormData(e.currentTarget),
           values: Record<string, unknown> = {};
-        for (const field of fields) {
-          const raw = f.get(field.key);
-          if (field.type === "checkbox") values[field.key] = raw === "on";
-          else if (raw === "")
-            values[field.key] = [
-              "decimal",
-              "integer",
-              "date",
-              "time",
-              "select",
-            ].includes(field.type || "")
-              ? null
-              : "";
-          else values[field.key] = field.type === "integer" ? Number(raw) : raw;
+        try {
+          for (const field of fields) {
+            const raw = f.get(field.key);
+            if (field.type === "checkbox") values[field.key] = raw === "on";
+            else if (raw === "")
+              values[field.key] = [
+                "decimal",
+                "integer",
+                "date",
+                "time",
+                "select",
+              ].includes(field.type || "")
+                ? null
+                : "";
+            else if (["integer", "decimal"].includes(field.type || "")) {
+              const value = String(raw).trim();
+              if (!/^-?\d+(?:[.,]\d+)?$/.test(value))
+                throw new Error(
+                  field.label + ": Geçerli sayı gir; binlik ayraç kullanma.",
+                );
+              const number = Number(value.replace(",", "."));
+              if (
+                !Number.isFinite(number) ||
+                (field.type === "integer" && !Number.isInteger(number)) ||
+                (field.min != null && number < field.min) ||
+                (field.max != null && number > field.max) ||
+                (field.positive && number <= 0)
+              )
+                throw new Error(
+                  field.label + ": Değer izin verilen aralıkta olmalı.",
+                );
+              values[field.key] = number;
+            } else values[field.key] = raw;
+          }
+        } catch (e) {
+          setError((e as Error).message);
+          return;
         }
         setBusy(true);
         setError("");
@@ -225,6 +267,7 @@ export function RecordForm({
           {draftNotice}
         </p>
       )}
+      {unitNotice && <p role="status">{unitNotice}</p>}
       {error && (
         <p role="alert" className="error">
           {error}
@@ -323,13 +366,21 @@ export function RecordList({
         <article key={r.id} className="record-row">
           <div>
             {describe(r)}
-            {Boolean(r.local_pending) && <small>Sunucu onayı bekliyor</small>}
+            {Boolean(r.local_pending) && (
+              <small>
+                {r.local_state === "failed"
+                  ? "Kaydedilmedi: " +
+                    String(r.local_error) +
+                    " — Düzenleyip yeniden gönder."
+                  : "Sunucu onayı bekliyor"}
+              </small>
+            )}
           </div>
           <div className="record-actions">
             <button
               className="icon"
               aria-label={title + " kaydını düzenle"}
-              disabled={Boolean(r.local_pending)}
+              disabled={Boolean(r.local_pending) && r.local_state !== "failed"}
               onClick={() => setEdit(r)}
             >
               <Pencil size={16} />
@@ -398,6 +449,21 @@ export const decimalField = (
   required,
   value,
   hint: "Ondalık için virgül veya nokta kullanabilirsin.",
+  ...([
+    "kcal",
+    "protein_g",
+    "carbs_g",
+    "fat_g",
+    "fiber_g",
+    "baseline",
+    "target",
+  ].includes(key)
+    ? { min: 0, max: 1000000 }
+    : {}),
+  ...(["grams", "total_grams"].includes(key)
+    ? { positive: true, max: 1000000 }
+    : {}),
+  ...(key === "ml" ? { positive: true, max: 10000 } : {}),
 });
 export const choice = (
   key: string,

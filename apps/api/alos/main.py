@@ -56,14 +56,24 @@ def create_app(settings: Settings | None = None):
     @app.middleware("http")
     async def boundary(request: Request, call_next):
         large_transfer = request.url.path in {
-            "/api/v2/body-model/upload", "/api/v2/body-model/content",
-            "/api/v2/backups/export", "/api/v2/imports/stage",
+            "/api/v2/body-model/upload",
+            "/api/v2/body-model/content",
+            "/api/v2/backups/export",
+            "/api/v2/imports/stage",
         } or request.url.path.startswith("/api/v2/media/")
         if not large_transfer:
             return await bounded_request(request, call_next)
         if transfer_lock.locked():
-            return JSONResponse({"error": {"code": "transfer_busy", "message": "Başka bir dosya aktarımı sürüyor. Kısa süre sonra yeniden dene."}}, 429,
-                                headers={"Retry-After": "5"})
+            return JSONResponse(
+                {
+                    "error": {
+                        "code": "transfer_busy",
+                        "message": "Başka bir dosya aktarımı sürüyor. Kısa süre sonra yeniden dene.",
+                    }
+                },
+                429,
+                headers={"Retry-After": "5"},
+            )
         await transfer_lock.acquire()
         try:
             response = await bounded_request(request, call_next)
@@ -104,6 +114,7 @@ def create_app(settings: Settings | None = None):
                 limit = MAX_BYTES
             if request.url.path == "/api/v2/body-model/upload":
                 from .body_model import MAX_MODEL_BYTES
+
                 try:
                     auth.identity(request, database, settings, True)
                 except DomainError as exc:
@@ -120,7 +131,9 @@ def create_app(settings: Settings | None = None):
                 async for chunk in request.stream():
                     size += len(chunk)
                     if size > limit:
-                        return JSONResponse({"error": {"code": "size", "message": "Dosya/istek çok büyük."}}, 413)
+                        return JSONResponse(
+                            {"error": {"code": "size", "message": "Dosya/istek çok büyük."}}, 413
+                        )
                     chunks.append(chunk)
                 request._body = b"".join(chunks)
                 chunks.clear()
@@ -324,6 +337,7 @@ def create_app(settings: Settings | None = None):
 
     async def transfer_file(request):
         from tempfile import SpooledTemporaryFile
+
         size = 0
         temporary = SpooledTemporaryFile(max_size=1024 * 1024)  # noqa: SIM115 — caller owns and closes this stream
         try:
@@ -356,10 +370,17 @@ def create_app(settings: Settings | None = None):
 
         identity = who(request, True)
         content = validate_glb(await transfer_body(request))
-        command = Command(operation_id=operation_id, entity_id=entity_id, expected_version=0,
-                          schema_version=1, command_type="media.upload",
-                          payload={"name": name, "sha256": hashlib.sha256(content).hexdigest()})
-        return await run_in_threadpool(service.execute, database, UUID(identity["athlete_id"]), command, content)
+        command = Command(
+            operation_id=operation_id,
+            entity_id=entity_id,
+            expected_version=0,
+            schema_version=1,
+            command_type="media.upload",
+            payload={"name": name, "sha256": hashlib.sha256(content).hexdigest()},
+        )
+        return await run_in_threadpool(
+            service.execute, database, UUID(identity["athlete_id"]), command, content
+        )
 
     @app.get("/api/v2/body-model/content")
     def body_model_content(request: Request):
@@ -398,12 +419,15 @@ def create_app(settings: Settings | None = None):
     @app.post("/api/v2/commands", response_model=CommandResult)
     async def command(body: Command, request: Request):
         from starlette.concurrency import run_in_threadpool
+
         identity = await run_in_threadpool(who, request, True)
         athlete_id = UUID(identity["athlete_id"])
         if body.command_type != "import.apply":
             return await run_in_threadpool(service.execute, database, athlete_id, body)
         if transfer_lock.locked():
-            raise DomainError("transfer_busy", "Başka bir dosya aktarımı sürüyor. Kısa süre sonra yeniden dene.", 429)
+            raise DomainError(
+                "transfer_busy", "Başka bir dosya aktarımı sürüyor. Kısa süre sonra yeniden dene.", 429
+            )
         async with transfer_lock:
             return await run_in_threadpool(service.execute, database, athlete_id, body)
 
@@ -474,22 +498,67 @@ def create_app(settings: Settings | None = None):
             headers={"Content-Disposition": 'attachment; filename="Athlete-Life-arsiv.pdf"'},
         )
 
-    @app.get("/api/v2/reports/pdf")
-    def report_pdf(request: Request, on: str | None = None, window_days: int = 28):
-        from .reports import build_pdf
+    def report_data(request, on, window_days, as_of, knowledge, saved_id, expected_digest):
+        from .analysis import AnalysisInput, calculate
+        from .models import AnalysisRun
+        from .programming import owned
 
         account = who(request)
-        result = analysis(request, on=on, window_days=window_days)
-        from .analysis import AnalysisInput, calculate
+        if saved_id:
+            with database.sessions() as db:
+                saved = owned(db, AnalysisRun, UUID(account["athlete_id"]), saved_id)
+                result = saved.result
+                snapshot = result.get("report_records", {})
+        else:
+            initial = analysis(request, on=on, window_days=window_days, as_of=as_of, knowledge=knowledge)
+            result, snapshot = calculate(
+                database,
+                UUID(account["athlete_id"]),
+                AnalysisInput(as_of=initial["as_of"], window_days=window_days, knowledge=knowledge),
+                with_snapshot=True,
+            )
+        if expected_digest and result["input_digest"] != expected_digest:
+            raise DomainError(
+                "report_changed", "Kayıtlar önizlemeden sonra değişti; raporu yeniden önizle.", 409
+            )
+        return account, result, snapshot
 
-        result, snapshot = calculate(
-            database,
-            UUID(account["athlete_id"]),
-            AnalysisInput(as_of=result["as_of"], window_days=window_days),
-            with_snapshot=True,
+    @app.get("/api/v2/reports/preview")
+    def report_preview(
+        request: Request,
+        on: str | None = None,
+        window_days: int = 28,
+        as_of: str | None = None,
+        knowledge: str = "recomputed",
+        saved_id: UUID | None = None,
+        selection: str = "training,nutrition",
+        expected_digest: str | None = None,
+    ):
+        from .reports import report_sections
+
+        _, result, snapshot = report_data(
+            request, on, window_days, as_of, knowledge, saved_id, expected_digest
+        )
+        return report_sections(snapshot, result, selection)
+
+    @app.get("/api/v2/reports/pdf")
+    def report_pdf(
+        request: Request,
+        on: str | None = None,
+        window_days: int = 28,
+        as_of: str | None = None,
+        knowledge: str = "recomputed",
+        saved_id: UUID | None = None,
+        selection: str = "training,nutrition",
+        expected_digest: str | None = None,
+    ):
+        from .reports import build_pdf
+
+        account, result, snapshot = report_data(
+            request, on, window_days, as_of, knowledge, saved_id, expected_digest
         )
         return Response(
-            build_pdf(snapshot, result, account["name"]),
+            build_pdf(snapshot, result, account["name"], selection),
             media_type="application/pdf",
             headers={"Content-Disposition": 'attachment; filename="Athlete-Life-rapor.pdf"'},
         )
@@ -513,12 +582,15 @@ def create_app(settings: Settings | None = None):
         import json
 
         from .lifestyle import DEFINITIONS
+        from .movements import BY_ID, VERSION
 
         who(request)
         sports = json.loads((Path(__file__).parent / "catalogs/sports.json").read_text())
         return {
             "capabilities": [{k: v for k, v in row.items() if k != "bands"} for row in DEFINITIONS.values()],
             "sports": sports,
+            "movements": list(BY_ID.values()),
+            "movement_catalog_version": VERSION,
             "notice": "Katalog sayısal kişisel yeterlik ya da otomatik ileri beceri reçetesi değildir.",
         }
 
@@ -550,11 +622,54 @@ def create_app(settings: Settings | None = None):
         snapshot = service.bootstrap(database, UUID(identity["athlete_id"]))
         return draft_with_context(DraftRequest.model_validate(await request.json()), snapshot, utcnow())
 
+    @app.get("/api/v2/movement-alternatives")
+    def movement_alternatives(request: Request, movement_id: str):
+        from .planning_context import alternatives, profile_context
+
+        snapshot = service.bootstrap(database, UUID(who(request)["athlete_id"]))
+        profiles = [p for p in snapshot["profiles"] if not p.get("deleted_at")]
+        context = profile_context(profiles[0] if profiles else None)
+        equipment = context.get("equipment")
+        return {
+            "candidates": alternatives(
+                movement_id,
+                equipment["equipment"] if equipment else None,
+                context.get("preferences", {}).get("disliked_movements", []),
+            ),
+            "context": context,
+            "notice": "Tercih/ekipman alternatifleri; ağrı için güvenli hareket önerisi değildir. Yükü yeniden belirle.",
+        }
+
+    @app.get("/api/v2/schedule-window")
+    def schedule_window(request: Request, on: str):
+        from datetime import date
+
+        from .domain.scheduling import propose_week
+
+        try:
+            chosen = date.fromisoformat(on)
+        except ValueError:
+            raise DomainError("date", "Geçerli bir tarih seç.") from None
+        snapshot = service.bootstrap(database, UUID(who(request)["athlete_id"]))
+        return propose_week(chosen, snapshot["shifts"])[0]
+
+    @app.post("/api/v2/program-duration")
+    async def program_duration(request: Request):
+        from .planning_context import duration_preview
+        from .programming import DurationRequest
+
+        who(request, True)
+        data = DurationRequest.model_validate(await request.json())
+        return duration_preview(
+            [d.model_dump() for d in data.days], data.execution_seconds, data.transition_seconds
+        )
+
     @app.post("/api/v2/imports/stage")
     async def stage_import(request: Request):
         from starlette.concurrency import run_in_threadpool
 
         from .backups import parse_stream, stage_object
+
         identity = UUID(who(request, True)["athlete_id"])
         temporary = await transfer_file(request)
         try:
@@ -572,6 +687,17 @@ def create_app(settings: Settings | None = None):
 
         package = full_export(database, UUID(who(request)["athlete_id"]), stream_media=True)
         return StreamingResponse(json_bytes(package, ensure_ascii=True), media_type="application/json")
+
+    @app.get("/api/v2/sets/export.csv")
+    def export_sets_csv(request: Request):
+        from .csv_transfer import export
+
+        snapshot = service.bootstrap(database, UUID(who(request)["athlete_id"]))
+        return Response(
+            export(snapshot["sets"]),
+            media_type="text/csv; charset=utf-8",
+            headers={"Content-Disposition": 'attachment; filename="Athlete-Life-gercek-setler.csv"'},
+        )
 
     @app.get("/api/v2/legacy")
     def legacy_records(request: Request, domain: str | None = None, offset: int = 0):
@@ -627,7 +753,16 @@ def create_app(settings: Settings | None = None):
         target = (root / (path or "index.html")).resolve()
         if not target.is_relative_to(root) or not target.is_file():
             raise DomainError("not_found", "Sayfa bulunamadı.", 404)
-        if target.suffix not in {".html", ".js", ".css", ".svg", ".png", ".webmanifest", ".woff2", ".ico"} and path not in {"anatomy/muscles.glb", "anatomy/LICENSE.txt"}:
+        if target.suffix not in {
+            ".html",
+            ".js",
+            ".css",
+            ".svg",
+            ".png",
+            ".webmanifest",
+            ".woff2",
+            ".ico",
+        } and path not in {"anatomy/muscles.glb", "anatomy/LICENSE.txt"}:
             raise DomainError("not_found", "Sayfa bulunamadı.", 404)
         return FileResponse(target)
 

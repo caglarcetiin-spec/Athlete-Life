@@ -1,3 +1,5 @@
+import { OptionalModule } from "./OptionalModule";
+import { MealReuse } from "./MealReuse";
 import { useState } from "react";
 import { Utensils, GlassWater } from "lucide-react";
 import type { Entity } from "../api/contracts";
@@ -44,8 +46,8 @@ export function Nutrition({
   const totals = Object.fromEntries(
     nutrients.map(([k]) => [
       k,
-      meals.length && meals.every((r) => r[k] != null)
-        ? meals.reduce((s, r) => s + Number(r[k]), 0)
+      meals.some((r) => r[k] != null)
+        ? meals.reduce((s, r) => s + (r[k] == null ? 0 : Number(r[k])), 0)
         : null,
     ]),
   );
@@ -112,99 +114,108 @@ export function Nutrition({
       {tab === "day" ? (
         <>
           <DayToolbar selected={selected} onDate={onDate} />
-          <div className="metric-grid">
-            {nutrients.slice(0, 4).map(([k, l]) => (
-              <article className="metric card" key={k}>
-                <span>{l}</span>
-                <strong>{shown(totals[k])}</strong>
-                <small>
-                  {status?.status === "complete"
-                    ? "Gün tamamlandı"
-                    : meals.length
-                      ? "Kısmi günlük"
-                      : "Kayıt yok"}
-                </small>
-              </article>
-            ))}
-          </div>
-          <section className="card">
-            <h2>Günlük kapsamı</h2>
-            <p>
-              Tüm öğünleri girdin mi? Bu seçim yalnız kayıtların ne kadar tamam
-              olduğunu belirtir.
-            </p>
-            <div className="actions">
-              {[
-                ["complete", "Günü tamamladım"],
-                ["partial", "Henüz bitmedi"],
-              ].map(([value, label]) => (
-                <button
-                  key={value}
-                  className={status?.status === value ? "" : "secondary"}
-                  disabled={Boolean(status?.local_pending)}
-                  onClick={() =>
-                    void store
-                      .enqueue("nutrition_day.save", status || null, {
-                        local_date: selected,
-                        status: value,
-                      })
-                      .catch((e) => setError(e.message))
-                  }
-                >
-                  {label}
-                </button>
+          <OptionalModule store={store} id="nutrition" label="Beslenme">
+            <div className="metric-grid">
+              {nutrients.slice(0, 4).map(([k, l]) => (
+                <article className="metric card" key={k}>
+                  <span>Bilinen {l.toLocaleLowerCase("tr-TR")}</span>
+                  <strong>{shown(totals[k])}</strong>
+                  <small>
+                    {meals.filter((r) => r[k] == null).length} öğünde bilgi
+                    eksik.
+                  </small>
+                  <small>
+                    {status?.status === "complete"
+                      ? "Günlük tamamlandı beyanı; yeterlilik değerlendirmesi değil"
+                      : meals.length
+                        ? "Kısmi günlük"
+                        : "Kayıt yok"}
+                  </small>
+                </article>
               ))}
             </div>
-          </section>
-          <RecordList
-            store={store}
-            kind="meal"
-            title="Öğünler"
-            fields={mealFields}
-            rows={meals}
-            describe={(r) => (
-              <>
-                <strong>{String(r.name)}</strong>
-                <p>
-                  {shown(r.grams, "g")} · {shown(r.kcal, "kcal")} · Protein{" "}
-                  {shown(r.protein_g, "g")}
-                </p>
-              </>
-            )}
-          >
-            <p>
-              Besin veya tarif seçersen o sürümün değerleri saklanır. Doğrudan
-              giriyorsan makroları tükettiğin porsiyon için yaz; bilmediklerini
-              boş bırak.
-            </p>
-          </RecordList>
-          <RecordList
-            store={store}
-            kind="hydration"
-            title="Su"
-            fields={[
-              day(selected),
-              decimalField("ml", "Su (ml)", true, 250),
-              note,
-            ]}
-            rows={waters}
-            describe={(r) => (
-              <>
-                <strong>{shown(r.ml, "ml")}</strong>
-                <p>{String(r.note || "")}</p>
-              </>
-            )}
-          >
-            <p>
-              <GlassWater size={17} /> Bugünkü kayıt:{" "}
-              {waters.length
-                ? shown(
-                    waters.reduce((s, r) => s + Number(r.ml), 0),
-                    "ml",
-                  )
-                : "Henüz yok"}
-            </p>
-          </RecordList>
+            <section className="card">
+              <h2>Günlük kapsamı</h2>
+              <p>
+                Tüm öğünleri girdin mi? Bu seçim yalnız kayıtların ne kadar
+                tamam olduğunu belirtir.
+              </p>
+              <div className="actions">
+                {[
+                  ["complete", "Günü tamamladım"],
+                  ["partial", "Henüz bitmedi"],
+                ].map(([value, label]) => (
+                  <button
+                    key={value}
+                    className={status?.status === value ? "" : "secondary"}
+                    disabled={Boolean(status?.local_pending)}
+                    onClick={() =>
+                      void store
+                        .enqueue("nutrition_day.save", status || null, {
+                          local_date: selected,
+                          status: value,
+                        })
+                        .catch((e) => setError(e.message))
+                    }
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            </section>
+            <MealReuse key={selected} store={store} selected={selected} />
+            <RecordList
+              store={store}
+              kind="meal"
+              title="Öğünler"
+              fields={mealFields}
+              rows={meals}
+              describe={(r) => (
+                <>
+                  <strong>{String(r.name)}</strong>
+                  <p>
+                    {shown(r.grams, "g")} · {shown(r.kcal, "kcal")} · Protein{" "}
+                    {shown(r.protein_g, "g")}
+                  </p>
+                </>
+              )}
+            >
+              <p>
+                Besin veya tarif seçersen o sürümün değerleri saklanır. Doğrudan
+                giriyorsan makroları tükettiğin porsiyon için yaz;
+                bilmediklerini boş bırak.
+              </p>
+            </RecordList>
+          </OptionalModule>
+          <OptionalModule store={store} id="hydration" label="Su">
+            <RecordList
+              store={store}
+              kind="hydration"
+              title="Su"
+              fields={[
+                day(selected),
+                decimalField("ml", "Su (ml)", true, 250),
+                note,
+              ]}
+              rows={waters}
+              describe={(r) => (
+                <>
+                  <strong>{shown(r.ml, "ml")}</strong>
+                  <p>{String(r.note || "")}</p>
+                </>
+              )}
+            >
+              <p>
+                <GlassWater size={17} /> Bugünkü kayıt:{" "}
+                {waters.length
+                  ? shown(
+                      waters.reduce((s, r) => s + Number(r.ml), 0),
+                      "ml",
+                    )
+                  : "Henüz yok"}
+              </p>
+            </RecordList>
+          </OptionalModule>
         </>
       ) : (
         <>
@@ -212,7 +223,36 @@ export function Nutrition({
             store={store}
             kind="food"
             title="Besin kütüphanem"
+            getInitial={(r) => ({
+              ...r,
+              source_kind: String(r.reference).startsWith("Etiket girişi:")
+                ? "label"
+                : "user",
+            })}
+            mapSave={(values) => {
+              const { source_kind, ...rest } = values;
+              return {
+                ...rest,
+                reference:
+                  (source_kind === "label"
+                    ? "Etiket girişi: "
+                    : "Kullanıcı girişi: ") +
+                  String(rest.reference || "").replace(
+                    /^(Etiket girişi|Kullanıcı girişi): /,
+                    "",
+                  ),
+              };
+            }}
             fields={[
+              choice(
+                "source_kind",
+                "Değerlerin kaynağı",
+                [
+                  ["user", "Kullanıcı hesabı / beyanı"],
+                  ["label", "Ambalaj etiketi aktarımı (kullanıcı girişi)"],
+                ],
+                "user",
+              ),
               textField("name", "Besin adı"),
               ...nutrients.map(([k, l]) => decimalField(k, l, k !== "fiber_g")),
               textField(
@@ -233,6 +273,8 @@ export function Nutrition({
           >
             <p>
               Ambalajdaki veya güvendiğin kaynaktaki 100 gram değerlerini gir.
+              Etiket aktarımı kullanıcı beyanıdır; doğrulanmış veri tabanı
+              rozeti verilmez.
             </p>
           </RecordList>
           <section className="card">

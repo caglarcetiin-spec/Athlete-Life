@@ -121,3 +121,14 @@ Yeni `analysis.result.muscle_recovery` mevcut canonical setlerden hesaplanır; e
 ### Atlas ve görünüm tercihleri — 25 Eylül 2026
 
 Yeni atlas herkese açık lisanslı uygulama varlığıdır, eski kişisel GLB'nin yerine veritabanına yazılmaz. Mevcut medya `name` alanı salt okunur model metadata yanıtına eklenir. Dosya/hesap şema göçü yok. `alos-body-open:<athlete_id>`, `alos-body-view:<athlete_id>` ve `alos-guide-dismissed:<athlete_id>` cihaz görünüm tercihleri; `alos-update-dismissed` genel sürüm tercihi. Bunlar canonical antrenman/sağlık verisi veya yedeğin alternatifi değildir.
+
+## Birleşik V2 eklemeli set alanları (yayın adayı)
+- program_exercises / prescription_set_slots / performed_sets: catalog_version nullable; set_kind working/warmup/unknown (eski kayıtta unknown); superset_group nullable; sequence nullable.
+- Mongo eski dokümanlar yalnız bu dört alan için eklemeli varsayılanla okunur; diğer eksik zorunlu alanlar hata verir. Okuma veri yazmaz.
+- Offline hareket eşleme: alos.movement_migration.preview kesin/kararsız/eşleşmeyen/değişmeyen ayrımı. transform yalnız kopya üretir; eski alanın varlığı, değeri ve bilinmeyen alanları rollback ile korunur. Canlı veritabanına bağlanmaz; imzalı yedeğin checksum'unu geçersiz kılacak şekilde değiştirilmiş kopya restore'a verilmemeli.
+- Komut: `.venv-v2/bin/python tools/v2/movement_mapping.py records.json proposal.json`; yalnız kanonik kind→liste nesnesi. `--proposal proposal.json` yeni kopya, `--rollback` orijinal alanları geri koyar. Girdi dosyaları kişisel veri olabilir: yayın/commit edilmez.
+- Üretim geçişi çalıştırılmadı. PG downgrade yeni semantik alanları kaldırır; önce tam yedek gerekir. Eski API yeni alanları tanımaz: yeni yazımlardan sonra sadece kod rollback güvenli değildir; yedekten veya bu alanları koruyan uyumlu sürümden dönülür.
+
+## Birleşik revizyon V2 ek alanları
+
+Tam alan/varsayılan/kaynak ve geri alma sözleşmesi: `docs/migration/REVISION_V2.md`. Profil `planning_preferences`, seans `planning_context/feedback`, vardiya uygunluk/planlanan uyku/süre, meal `nutrient_snapshot` kopya provenansı ve analysis `report_records` eklemelidir. Mongo eski belge okuması yazım yapmaz; bilinmeyen başka alanlar sessiz atılmaz. CSV raw kaynağı private ImportRun içinde korunur. Gerçek kullanıcı geçişi yapılmadı.

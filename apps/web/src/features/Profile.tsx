@@ -1,3 +1,4 @@
+import { PlanningPreferences } from "./PlanningPreferences";
 import { useEffect, useState } from "react";
 import {
   UserRound,
@@ -156,6 +157,13 @@ export function Profile({
           </a>
         </div>
       </section>
+      {profile && (
+        <PlanningPreferences
+          key={profile.id + ":" + profile.version}
+          store={store}
+          profile={profile}
+        />
+      )}
       <section className="card">
         <h2>Spor ve sağlık profilim</h2>
         <p>

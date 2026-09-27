@@ -308,7 +308,7 @@ def test_late_shift_proposal_never_wraps_to_earlier_same_day():
     }
     suggestion = propose_week(date(2026, 9, 14), [row])[0]
     assert suggestion["window"] is None
-    assert "ertesi güne" in suggestion["reason"]
+    assert "planlanan uyku penceresi" in suggestion["reason"]
 
 
 def test_readiness_rejects_a_stale_migration_revision_without_exposing_database(

@@ -82,6 +82,11 @@ class Owned:
 
 class Shift(Owned, Base):
     __tablename__ = "shifts"
+    available_start_local: Mapped[str | None] = mapped_column(String(5))
+    available_end_local: Mapped[str | None] = mapped_column(String(5))
+    sleep_start_local: Mapped[str | None] = mapped_column(String(5))
+    sleep_end_local: Mapped[str | None] = mapped_column(String(5))
+    training_minutes: Mapped[int | None] = mapped_column(Integer)
     local_date: Mapped[date] = mapped_column(Date)
     timezone: Mapped[str] = mapped_column(String(80))
     status: Mapped[str] = mapped_column(String(12), default="off")
@@ -253,6 +258,10 @@ class ProgramDay(Owned, Base):
 
 
 class ExerciseTargets:
+    catalog_version: Mapped[str | None] = mapped_column(String(80))
+    set_kind: Mapped[str] = mapped_column(String(20), default="unknown")
+    superset_group: Mapped[str | None] = mapped_column(String(80))
+    sequence: Mapped[int | None] = mapped_column(Integer)
     movement_id: Mapped[str] = mapped_column(String(100))
     name: Mapped[str] = mapped_column(String(150))
     variant: Mapped[str] = mapped_column(String(150), default="standard")
@@ -322,6 +331,8 @@ class PrescriptionSlot(ExerciseTargets, Owned, Base):
 
 class WorkoutSession(Owned, Base):
     __tablename__ = "workout_sessions"
+    planning_context: Mapped[dict] = mapped_column(JSONB, default=dict)
+    feedback: Mapped[dict] = mapped_column(JSONB, default=dict)
     prescription_id: Mapped[UUID | None] = mapped_column(PGUUID)
     local_date: Mapped[date] = mapped_column(Date)
     timezone: Mapped[str] = mapped_column(String(80))
@@ -570,6 +581,7 @@ class LifeEvent(DailyRecord, Owned, Base):
 
 class AthleteProfile(Owned, Base):
     __tablename__ = "athlete_profiles"
+    planning_preferences: Mapped[dict] = mapped_column(JSONB, default=dict)
     birth_date: Mapped[date | None] = mapped_column(Date)
     sex: Mapped[str] = mapped_column(String(20), default="unspecified")
     experience: Mapped[str] = mapped_column(String(20), default="new")

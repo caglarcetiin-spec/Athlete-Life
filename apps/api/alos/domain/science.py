@@ -2,13 +2,13 @@
 
 import hashlib
 import json
-import re
 from datetime import UTC, datetime, time, timedelta
-from pathlib import Path
 from zoneinfo import ZoneInfo
 
 from ..errors import DomainError
 from ..lifestyle import capability_series, nutrition_summary
+from ..movements import VERSION as CATALOG_VERSION
+from ..movements import resolve
 from .recovery import contribution, summarize
 
 MODELS = {
@@ -21,15 +21,6 @@ UNITS = {
     "skill": "ağırlıklı teknik deneme",
     "cardio": "ağırlıklı çalışma saniyesi",
     "circuit": "ağırlıklı dakika",
-}
-MOVEMENTS = json.loads((Path(__file__).parents[1] / "catalogs/movements.json").read_text())
-normalize = lambda s: re.sub(r"[^a-z0-9]", "", str(s).casefold())
-BY_NAME = {normalize(k): v for k, v in MOVEMENTS.items()}
-ALIASES = {
-    "squat": "squat",
-    "inclinepushup": "pushup",
-    "easy locomotion": "walking",
-    "glutebridge": "glutebridge",
 }
 
 
@@ -54,19 +45,18 @@ def date_bounds(row, as_of, zone):
     start = datetime.combine(
         datetime.fromisoformat(local).date(), time.min, ZoneInfo(row.get("timezone") or zone)
     ).astimezone(UTC)
-    end = start + timedelta(days=1)
+    end = datetime.combine(
+        datetime.fromisoformat(local).date() + timedelta(days=1),
+        time.min,
+        ZoneInfo(row.get("timezone") or zone),
+    ).astimezone(UTC)
     if start > as_of:
         return None
     return start, min(end, as_of), end > as_of
 
 
 def movement(row):
-    key = normalize(row.get("movement_id", ""))
-    return (
-        BY_NAME.get(key)
-        or BY_NAME.get(normalize(ALIASES.get(key, "")))
-        or BY_NAME.get(normalize(row.get("name", "")))
-    )
+    return resolve(row)["definition"]
 
 
 def compute(snapshot, as_of, model_version="exposure-1", window_days=28, knowledge="recomputed"):
@@ -107,12 +97,15 @@ def compute(snapshot, as_of, model_version="exposure-1", window_days=28, knowled
     lineage = []
     loads = []
     muscles = {}
+    distribution = {}
     recovery_entries = []
     unmapped = []
     uncertain = []
     missing = []
     set_rows = []
     for row in active(snapshot, "set"):
+        if row.get("local_date", "") < start:
+            continue
         if row.get("status") == "skipped":
             continue
         bounds = date_bounds(row, as_of, zone)
@@ -120,7 +113,8 @@ def compute(snapshot, as_of, model_version="exposure-1", window_days=28, knowled
             continue
         earliest, latest, partial = bounds
         modality = row.get("modality", "strength")
-        definition = movement(row)
+        resolution = resolve(row)
+        definition = resolution["definition"]
         mode = definition.get("physiology", {}).get("mode") if definition else None
         if modality == "strength":
             amount = 1.0 if row.get("reps") is not None and row["reps"] > 0 else None
@@ -162,9 +156,28 @@ def compute(snapshot, as_of, model_version="exposure-1", window_days=28, knowled
         lineage.append({"kind": "set", "id": row["id"], "version": row["version"]})
         if earliest != latest or partial:
             uncertain.append(row["id"])
+        if definition and not definition.get("muscles"):
+            unmapped.append(
+                {
+                    "id": row["id"],
+                    "code": "missing_mapping",
+                    "candidates": resolution["candidates"],
+                    "reason": "Katalogda bu hareket için kas dağılımı tanımlanmamış.",
+                }
+            )
+            continue
         if not definition or amount is None:
             unmapped.append(
-                {"id": row["id"], "reason": "Kas eşlemesi veya modaliteye uygun miktar bilinmiyor."}
+                {
+                    "id": row["id"],
+                    "code": resolution["status"] if not definition else "missing_quantity",
+                    "candidates": resolution["candidates"],
+                    "reason": "Hareket eşleşmiyor."
+                    if not definition and resolution["status"] == "unmatched"
+                    else "Birden fazla hareket adayı var; katalogdan seç."
+                    if not definition
+                    else "Çalışma türüne uygun miktar bilinmiyor.",
+                }
             )
             continue
         half = MODELS[model_version][modality]
@@ -174,6 +187,11 @@ def compute(snapshot, as_of, model_version="exposure-1", window_days=28, knowled
             entry = contribution(row, amount, group, weight, earliest, latest, half)
             if entry is not None:
                 recovery_entries.append(entry)
+            recorded = distribution.setdefault(group, {}).setdefault(
+                modality, {"amount": 0.0, "unit": UNITS[modality], "source_ids": []}
+            )
+            recorded["amount"] += float(amount) * weight
+            recorded["source_ids"].append(row["id"])
             exposure = float(amount) * weight
             low = (
                 0.0
@@ -242,24 +260,34 @@ def compute(snapshot, as_of, model_version="exposure-1", window_days=28, knowled
     reasons = []
     if episodes:
         reasons.append(
-            "Devam eden rahatsızlık veya kaydettiğin kademeli dönüş aralığı var. Daha hafif çalışma seçeneğini değerlendir."
+            "Devam eden rahatsızlık veya kaydettiğin dönüş aralığı var. Bu kayıt tıbbi antrenman uygunluğu belirlemez; sayısal program değişikliği yapılmadı."
         )
-    if any(r["intensity"] >= 4 for r in pains):
+    if any(r["intensity"] > 0 for r in pains):
         reasons.append("Ağrı bildirimi var; kas haritası antrenmana uygunluk onayı değildir.")
     if check and check.get("fatigue") is not None and check["fatigue"] >= 7:
         reasons.append(
-            "Yüksek yorgunluk bildirdin. Efor ve çalışma miktarını azaltmayı değerlendirebilirsin."
+            "Yorgunluk bildirimini planı gözden geçirirken dikkate al. Bu kayıt tek başına sayısal doz önerisi üretmez."
         )
     if any(r.get("symptoms") is not None and r["symptoms"] >= 7 for r in cycles):
-        reasons.append("Döngü belirtilerin yüksek; çalışma seçimini kendi toleransına göre düzenle.")
+        reasons.append(
+            "Döngü belirti kaydın var; fazdan otomatik performans cezası veya doz değişikliği üretilmedi."
+        )
     if not check:
         missing.append("Bugünün enerji/yorgunluk öz-bildirimi")
-    if recent_sleep is None:
+    profiles = active(snapshot, "profile")
+    modules = (
+        (profiles[0].get("planning_preferences") or {}).get(
+            "optional_modules", ["nutrition", "sleep", "hydration"]
+        )
+        if profiles
+        else ["nutrition", "sleep", "hydration"]
+    )
+    if recent_sleep is None and "sleep" in modules:
         missing.append("Son iki günde biten uyku kaydı")
     nutrition = nutrition_summary(snapshot, on)
-    if nutrition["status"] != "complete":
+    if nutrition["status"] != "complete" and "nutrition" in modules:
         missing.append("Tamamlanmış beslenme günlüğü")
-    if nutrition["water_ml"] is None:
+    if nutrition["water_ml"] is None and "hydration" in modules:
         missing.append("Su kaydı")
     for kind, rows in [
         ("sleep", sleeps),
@@ -309,7 +337,8 @@ def compute(snapshot, as_of, model_version="exposure-1", window_days=28, knowled
             )
         points.sort(key=lambda r: (r["local_date"], r["source"] != "baseline", r["id"]))
         latest = points[-1]
-        progress = (latest["value"] - goal["baseline"]) / (goal["target"] - goal["baseline"]) * 100
+        span = goal["target"] - goal["baseline"]
+        progress = ((latest["value"] - goal["baseline"]) / span * 100 or 0.0) if span else None
         # Target line is the user's desired path, not a physiological forecast.
         duration = (
             datetime.fromisoformat(goal["target_date"]) - datetime.fromisoformat(goal["start_date"])
@@ -359,12 +388,27 @@ def compute(snapshot, as_of, model_version="exposure-1", window_days=28, knowled
     capability = [r for r in active(snapshot, "capability") if r["local_date"] <= on]
     result = {
         "model_version": model_version,
+        "catalog_version": CATALOG_VERSION,
+        "calculation_revision": "unified-revision-2",
+        "optional_modules": modules,
         "as_of": as_of.isoformat(),
         "input_revision": snapshot.get("cursor", 0),
         "knowledge": knowledge,
         "window": {"from": start, "to": on, "days": window_days},
         "readiness": readiness,
         "muscles": muscles,
+        "recorded_distribution": distribution,
+        "set_counts": {
+            kind: sum(r.get("set_kind", "unknown") == kind for r in set_rows)
+            for kind in ("working", "warmup", "unknown")
+        },
+        "effort_policy": {
+            "used": "RIR when present; otherwise RPE",
+            "warning_ids": [
+                r["id"] for r in set_rows if r.get("rir") is not None and r.get("rpe") is not None
+            ],
+            "meaning": "İki efor alanı birlikte girildiğinde dönüşüm varsayılmaz; RIR önceliklidir. Bilgileri gözden geçir.",
+        },
         "modality_loads": loads,
         "ad_hoc_loads": events,
         "nutrition": nutrition,
@@ -372,6 +416,8 @@ def compute(snapshot, as_of, model_version="exposure-1", window_days=28, knowled
         "timeline": sorted(timeline.values(), key=lambda r: r["date"]),
         "capability": capability_series(capability),
         "coverage": {
+            "total_sets": len(set_rows),
+            "analyzed_sets": len(set_rows) - len(unmapped),
             "missing": missing,
             "date_only_loads": len(uncertain),
             "unmapped_loads": unmapped,
@@ -398,6 +444,19 @@ def compute(snapshot, as_of, model_version="exposure-1", window_days=28, knowled
     }
     from .progression import propose
 
+    period_sessions = [r for r in active(snapshot, "session") if start <= r.get("local_date", "") <= on]
+    period_prescriptions = [r for r in active(snapshot, "prescription") if start <= r["scheduled_date"] <= on]
+    result["period_summary"] = {
+        "planned_materialized_sessions": len(period_prescriptions),
+        "completed_sessions": sum(r["status"] == "completed" for r in period_sessions),
+        "actual_sets": len(set_rows),
+        "plan_versions": sorted({r["program_id"] for r in period_prescriptions}),
+        "meaning": "Payda yalnız tarihe bağlanmış plan hedeflerini içerir. Kaydı olmayan gün yapılmadı sayılmaz; eski seanslar yeni planla yeniden yazılmaz.",
+        "session_feedback": [
+            {"id": r["id"], "local_date": r["local_date"], "feedback": r.get("feedback", {})}
+            for r in period_sessions
+        ],
+    }
     result["progression"] = propose(snapshot, as_of, readiness)
     result["daily_context"] = []
     for index in range(window_days):
@@ -428,6 +487,11 @@ def compute(snapshot, as_of, model_version="exposure-1", window_days=28, knowled
                 "source_ids": n["source_ids"] + [r["id"] for r in sleep_rows],
             }
         )
+    result["report_records"] = {
+        kind + "s": [r for r in active(snapshot, kind) if start <= r.get("local_date", "") <= on]
+        for kind in ("lab", "pain")
+    }
+    result["report_records"]["sets"] = set_rows
     result["muscle_recovery"] = summarize(recovery_entries, as_of)
     result["input_digest"] = hashlib.sha256(
         json.dumps(relevant, sort_keys=True, separators=(",", ":"), ensure_ascii=False).encode()

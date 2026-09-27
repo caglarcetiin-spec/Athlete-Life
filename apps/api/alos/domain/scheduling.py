@@ -57,23 +57,79 @@ def propose_week(start: date, shifts: list[dict]) -> list[dict]:
                 }
             )
             continue
-        if row["status"] == "work":
-            h, m = map(int, row["end_local"].split(":"))
-            candidate = h * 60 + m + row["commute_min"] + 45
-            overnight = row["end_local"] <= row["start_local"]
-            window = None if overnight or candidate >= 1440 else clock(candidate)
-            reason = (
-                "Gece vardiyası: önce uyku ve toparlanma zamanını belirle."
-                if overnight
-                else "İş çıkışı ve ulaşım sonrası bir seçenek; uygunsa sen seç."
-            )
+        window, window_date = None, None
+        required = (
+            "available_start_local",
+            "available_end_local",
+            "sleep_start_local",
+            "sleep_end_local",
+            "training_minutes",
+        )
+        if any(not row.get(k) for k in required):
+            reason = "Uygun saat aralığı, planlanan uyku penceresi ve antrenman süresi gerekli; eksik saatten takvim üretilmedi."
         else:
-            window = "11:00"
-            reason = "İzin günü için değiştirilebilir saat önerisi."
-        if row["status"] == "work" and not overnight and candidate >= 1440:
-            reason = (
-                "İş çıkışı ve ulaşım sonrası saat ertesi güne taşıyor; bu gün için otomatik saat önerilmedi."
-            )
+            zone = row.get("timezone", "Europe/Istanbul")
+            base_day = date.fromisoformat(key)
+            try:
+                work_end = None
+                if row["status"] == "work":
+                    _, work_end = shift_interval(
+                        base_day,
+                        row["start_local"],
+                        row["end_local"],
+                        zone,
+                        row.get("start_fold", 0),
+                        row.get("end_fold", 0),
+                    )
+                    base_day = work_end.astimezone(ZoneInfo(zone)).date()
+                available_start, available_end = shift_interval(
+                    base_day, row["available_start_local"], row["available_end_local"], zone
+                )
+                candidate = (
+                    max(
+                        available_start,
+                        work_end + timedelta(minutes=row.get("commute_min", 0) + row.get("prep_min", 0)),
+                    )
+                    if work_end
+                    else available_start
+                )
+                duration = timedelta(minutes=row["training_minutes"])
+                blocked = []
+                # Repeat the explicitly entered sleep window across any midnight
+                # crossed by availability; also respect neighbouring work shifts.
+                for n in range(-1, 3):
+                    blocked.append(
+                        shift_interval(
+                            base_day + timedelta(days=n),
+                            row["sleep_start_local"],
+                            row["sleep_end_local"],
+                            zone,
+                        )
+                    )
+                for shift in by_day.values():
+                    if shift["status"] != "work":
+                        continue
+                    a, b = shift_interval(
+                        date.fromisoformat(shift["local_date"]),
+                        shift["start_local"],
+                        shift["end_local"],
+                        shift.get("timezone", zone),
+                        shift.get("start_fold", 0),
+                        shift.get("end_fold", 0),
+                    )
+                    margin = timedelta(minutes=shift.get("commute_min", 0) + shift.get("prep_min", 0))
+                    blocked.append((a - margin, b + margin))
+                for a, b in sorted(blocked):
+                    if candidate < b and candidate + duration > a:
+                        candidate = b
+                if candidate + duration <= available_end:
+                    local = candidate.astimezone(ZoneInfo(zone))
+                    window, window_date = local.strftime("%H:%M"), local.date().isoformat()
+                    reason = "Girdiğin uygun saat, ulaşım, hazırlık ve planlanan uyku aralığına göre aday. Gerçek uyku kaydı veya toparlanma onayı değildir."
+                else:
+                    reason = "Girilen antrenman süresi uygun pencereye sığmıyor; otomatik kısaltma yapılmadı."
+            except DomainError:
+                reason = "Yerel saat penceresi geçersiz veya yaz saati geçişinde yok; saatleri düzelt."
         if row.get("social"):
             reason += " Sosyal planını da kontrol et; serbest metin saat olarak yorumlanmadı."
         rows.append(
@@ -81,6 +137,8 @@ def propose_week(start: date, shifts: list[dict]) -> list[dict]:
                 "local_date": key,
                 "status": row["status"],
                 "window": window,
+                "window_date": window_date,
+                "policy_version": "explicit-window-2",
                 "reason": reason,
                 "pinned": row["pinned"],
                 "input": {"id": row["id"], "version": row["version"]},

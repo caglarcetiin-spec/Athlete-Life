@@ -313,52 +313,92 @@
     {
       "id": "bench",
       "name": "Bench Press",
-      "type": "barbell"
+      "type": "barbell",
+      "metric": "load_reps",
+      "unit": "kg",
+      "higher": true,
+      "description": "Kullandığın harici ağırlığı kg olarak ve bu ağırlıkla tamamladığın tekrar sayısını ayrı kaydet. Aynı varyasyon ve ekipmanla karşılaştır; sonuç hesaplanmış 1RM değildir."
     },
     {
       "id": "ohp",
       "name": "Overhead Press",
-      "type": "barbell"
+      "type": "barbell",
+      "metric": "load_reps",
+      "unit": "kg",
+      "higher": true,
+      "description": "Kullandığın harici ağırlığı kg olarak ve bu ağırlıkla tamamladığın tekrar sayısını ayrı kaydet. Aynı varyasyon ve ekipmanla karşılaştır; sonuç hesaplanmış 1RM değildir."
     },
     {
       "id": "squat",
       "name": "Back Squat",
-      "type": "barbell"
+      "type": "barbell",
+      "metric": "load_reps",
+      "unit": "kg",
+      "higher": true,
+      "description": "Kullandığın harici ağırlığı kg olarak ve bu ağırlıkla tamamladığın tekrar sayısını ayrı kaydet. Aynı varyasyon ve ekipmanla karşılaştır; sonuç hesaplanmış 1RM değildir."
     },
     {
       "id": "front_squat",
       "name": "Front Squat",
-      "type": "barbell"
+      "type": "barbell",
+      "metric": "load_reps",
+      "unit": "kg",
+      "higher": true,
+      "description": "Kullandığın harici ağırlığı kg olarak ve bu ağırlıkla tamamladığın tekrar sayısını ayrı kaydet. Aynı varyasyon ve ekipmanla karşılaştır; sonuç hesaplanmış 1RM değildir."
     },
     {
       "id": "deadlift",
       "name": "Deadlift",
-      "type": "barbell"
+      "type": "barbell",
+      "metric": "load_reps",
+      "unit": "kg",
+      "higher": true,
+      "description": "Kullandığın harici ağırlığı kg olarak ve bu ağırlıkla tamamladığın tekrar sayısını ayrı kaydet. Aynı varyasyon ve ekipmanla karşılaştır; sonuç hesaplanmış 1RM değildir."
     },
     {
       "id": "rdl",
       "name": "Romanian Deadlift",
-      "type": "barbell"
+      "type": "barbell",
+      "metric": "load_reps",
+      "unit": "kg",
+      "higher": true,
+      "description": "Kullandığın harici ağırlığı kg olarak ve bu ağırlıkla tamamladığın tekrar sayısını ayrı kaydet. Aynı varyasyon ve ekipmanla karşılaştır; sonuç hesaplanmış 1RM değildir."
     },
     {
       "id": "weighted_pullup",
       "name": "Weighted Pull-Up",
-      "type": "bodyweight_plus"
+      "type": "bodyweight_plus",
+      "metric": "load_reps",
+      "unit": "kg",
+      "higher": true,
+      "description": "Kullandığın harici ağırlığı kg olarak ve bu ağırlıkla tamamladığın tekrar sayısını ayrı kaydet. Aynı varyasyon ve ekipmanla karşılaştır; sonuç hesaplanmış 1RM değildir."
     },
     {
       "id": "weighted_dip",
       "name": "Weighted Dip",
-      "type": "bodyweight_plus"
+      "type": "bodyweight_plus",
+      "metric": "load_reps",
+      "unit": "kg",
+      "higher": true,
+      "description": "Kullandığın harici ağırlığı kg olarak ve bu ağırlıkla tamamladığın tekrar sayısını ayrı kaydet. Aynı varyasyon ve ekipmanla karşılaştır; sonuç hesaplanmış 1RM değildir."
     },
     {
       "id": "barbell_row",
       "name": "Barbell Row",
-      "type": "barbell"
+      "type": "barbell",
+      "metric": "load_reps",
+      "unit": "kg",
+      "higher": true,
+      "description": "Kullandığın harici ağırlığı kg olarak ve bu ağırlıkla tamamladığın tekrar sayısını ayrı kaydet. Aynı varyasyon ve ekipmanla karşılaştır; sonuç hesaplanmış 1RM değildir."
     },
     {
       "id": "bulgarian",
       "name": "Bulgarian Split Squat",
-      "type": "external"
+      "type": "external",
+      "metric": "load_reps",
+      "unit": "kg",
+      "higher": true,
+      "description": "Kullandığın harici ağırlığı kg olarak ve bu ağırlıkla tamamladığın tekrar sayısını ayrı kaydet. Aynı varyasyon ve ekipmanla karşılaştır; sonuç hesaplanmış 1RM değildir."
     }
   ],
   "running": [

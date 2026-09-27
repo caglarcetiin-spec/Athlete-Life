@@ -31,11 +31,13 @@ class EvidenceRule(StrictModel):
 
 RULES = [
     EvidenceRule(
-        id="load-reserve", status="heuristic",
+        id="load-reserve",
+        status="heuristic",
         title="Athlete Life regional load/reserve visualization",
         authors_year="Athlete Life mühendislik modeli, 2026",
         access_scope="Kaynak ve sentetik davranış testleri; klinik doğrulama yok",
-        population="Kayıtlı kuvvet setleri", experience="Kişiye kalibre edilmemiş",
+        population="Kayıtlı kuvvet setleri",
+        experience="Kişiye kalibre edilmemiş",
         outcome="Bölgesel yorgunluk ve tamamlayıcı rezerv endeksi",
         evidence_type="Ürün varsayımı",
         limitation="Hasar, hipertrofi, gerçek kapasite veya spora hazır oluş ölçümü değildir. Mutlak kg kişisel kapasiteye çevrilmez; ağrı/uyku ayrı gösterilir.",
@@ -57,7 +59,7 @@ RULES = [
         outcome="Kuvvet, hipertrofi ve fiziksel performans",
         evidence_type="Sistematik derlemelerin meslek kuruluşu bildirisi",
         limitation="Kişisel yük, beceri yeterliği veya toparlanma yarılanma süresi sağlamaz.",
-        product_parameter="starter-heuristic-1; progression-advice-1",
+        product_parameter="starter-heuristic-2 (unreviewed inherited example); progression-review-2 (numeric progression disabled)",
         interpretation="Düzenli progresif direnç çalışması için genel dayanak. Başlangıç taslağındaki sayılar kişisel doğrulama almış reçete değildir.",
     ),
     EvidenceRule(

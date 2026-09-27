@@ -1,3 +1,6 @@
+import { RecordForm, choice, decimalField, note } from "./Records";
+import { previousComparable } from "./setHistory";
+import { ExercisePicker } from "./ExercisePicker";
 import { MovementHelp, MovementLibrary } from "./MovementGuide";
 import { useEffect, useState } from "react";
 import {
@@ -15,6 +18,10 @@ import { serverNow, type Entity } from "../api/contracts";
 import type { SyncStore } from "../sync/store";
 import { displayDate, today } from "../time";
 const targetFields = [
+  "catalog_version",
+  "set_kind",
+  "superset_group",
+  "sequence",
   "movement_id",
   "name",
   "variant",
@@ -96,6 +103,7 @@ function SetForm({
     status = "completed",
     useTarget = false,
   ) {
+    if (busy) return;
     setBusy(true);
     setError("");
     try {
@@ -108,13 +116,21 @@ function SetForm({
       );
       if (!source) {
         fields.movement_id = String(
-          data.get("movement_id") || "custom-" + crypto.randomUUID(),
+          formDraft.movement_id || "custom-" + crypto.randomUUID(),
         );
         fields.name = String(data.get("name"));
-        fields.variant = String(data.get("variant") || "standard");
+        fields.variant =
+          data.get("variant") === "Standart"
+            ? "standard"
+            : String(data.get("variant") || "standard");
         fields.modality = String(data.get("modality") || "strength");
-        fields.load_kind = "external";
+        fields.load_kind = formDraft.load_kind || "external";
+        fields.equipment = formDraft.equipment || "";
+        fields.catalog_version = formDraft.catalog_version || null;
       }
+      fields.set_kind = data.get("set_kind") || "unknown";
+      fields.superset_group = data.get("superset_group") || null;
+      fields.sequence = numeric(data.get("sequence"));
       for (const [key] of metrics)
         fields[key] =
           status === "skipped"
@@ -122,6 +138,41 @@ function SetForm({
             : useTarget
               ? (source?.[key] ?? null)
               : numeric(data.get(key));
+      const limits: Record<string, number> = {
+        reps: 10000,
+        seconds: 86400,
+        distance_m: 1000000,
+        external_kg: 2000,
+        assistance_kg: 2000,
+        bodyweight_kg: 500,
+        rir: 10,
+        rpe: 10,
+        rest_seconds: 7200,
+        sequence: 10000,
+      };
+      for (const [key, max] of Object.entries(limits)) {
+        const value = fields[key];
+        if (
+          value != null &&
+          (!Number.isFinite(Number(value)) ||
+            Number(value) < 0 ||
+            Number(value) > max ||
+            (["reps", "rest_seconds", "sequence"].includes(key) &&
+              !Number.isInteger(Number(value))) ||
+            (key === "bodyweight_kg" && Number(value) === 0))
+        )
+          throw new Error(
+            "Miktarı ve birimi kontrol et; teknik aralık dışında değer var.",
+          );
+      }
+      if (
+        fields.assistance_kg != null &&
+        fields.external_kg != null &&
+        Number(fields.external_kg) !== 0
+      )
+        throw new Error(
+          "Yardım kuvveti ile ek ağırlığı aynı sette birlikte girme.",
+        );
       const payload = {
         ...fields,
         session_id: session.id,
@@ -160,6 +211,25 @@ function SetForm({
     }
   }
   const source = editing || slot;
+  const mainMetricKeys =
+    (source?.modality || formDraft.modality || "strength") === "strength"
+      ? ["reps", "external_kg"]
+      : ["seconds", "distance_m"];
+  const comparison: Entity = source || {
+    id: "draft",
+    version: 0,
+    movement_id: formDraft.movement_id,
+    variant:
+      !formDraft.variant || formDraft.variant === "Standart"
+        ? "standard"
+        : formDraft.variant,
+    equipment: formDraft.equipment || "",
+    side: "both",
+    load_kind: formDraft.load_kind || "external",
+    modality: formDraft.modality || "strength",
+    set_kind: formDraft.set_kind || "working",
+  };
+  const previous = previousComparable(store.view("set"), comparison, session);
   return (
     <form
       className="set-form"
@@ -171,6 +241,18 @@ function SetForm({
         const data = Object.fromEntries(
           new FormData(e.currentTarget).entries(),
         ) as Record<string, string>;
+        if ((e.target as unknown as HTMLInputElement).name === "name") {
+          data.movement_id = "custom-" + crypto.randomUUID();
+          data.catalog_version = "";
+        } else {
+          for (const k of [
+            "movement_id",
+            "catalog_version",
+            "equipment",
+            "load_kind",
+          ])
+            data[k] = formDraft[k] || "";
+        }
         setFormDraft(data);
         void store.saveDraft(key, data).catch((e) => setError(e.message));
       }}
@@ -182,17 +264,69 @@ function SetForm({
             ? "Sıradaki çalışma"
             : "Plan dışı ek çalışma"}
       </div>
-      <h2>{String(source?.name || "Hareket ekle")}</h2>
-      <MovementHelp name={String(source?.name || formDraft.name || "")} variant={String(source?.variant || formDraft.variant || "standard")} />
+      <h2>{String(source?.name || formDraft.name || "Hareket ekle")}</h2>
+      {previous && (
+        <aside className="card">
+          <strong>
+            Önceki kayıt · {displayDate(String(previous.local_date))}
+          </strong>
+          <p>{describe(previous)}</p>
+          <button
+            type="button"
+            className="secondary"
+            onClick={() => {
+              const next = {
+                ...formDraft,
+                ...Object.fromEntries(
+                  metrics.map(([k]) => [
+                    k,
+                    previous[k] == null ? "" : String(previous[k]),
+                  ]),
+                ),
+              };
+              setFormDraft(next);
+              void store.saveDraft(key, next);
+            }}
+          >
+            Öncekini kullan
+          </button>
+          <small>Yalnız alanları doldurur; tamamlamak için kaydet.</small>
+        </aside>
+      )}
+      <MovementHelp
+        name={String(source?.name || formDraft.name || "")}
+        variant={String(source?.variant || formDraft.variant || "standard")}
+      />
       {slot && (
         <p className="target">
           <strong>Hedef:</strong> {describe(slot)}
           <br />
           <small>
-            {String(slot.variant)} ·{" "}
-            {String(slot.equipment || "Ekipman belirtilmemiş")}
+            {slot.variant === "standard"
+              ? "Standart"
+              : slot.variant === "comfortable-range"
+                ? "Kullanıcının seçtiği hareket açıklığı"
+                : String(slot.variant)}{" "}
+            · {String(slot.equipment || "Ekipman belirtilmemiş")}
           </small>
         </p>
+      )}
+      {!source && (
+        <ExercisePicker
+          onSelect={(d) => {
+            const next = {
+              ...formDraft,
+              movement_id: d.id,
+              name: d.name,
+              catalog_version: d.catalog_version,
+              equipment: d.equipment.join(", "),
+              load_kind: d.load_kind,
+              modality: d.modality,
+            };
+            setFormDraft(next);
+            void store.saveDraft(key, next);
+          }}
+        />
       )}
       {!source && (
         <div className="form-grid">
@@ -209,7 +343,7 @@ function SetForm({
             Varyasyon / koşul
             <input
               name="variant"
-              value={formDraft.variant || "standard"}
+              value={formDraft.variant || "Standart"}
               onChange={() => {}}
             />
           </label>
@@ -230,47 +364,118 @@ function SetForm({
         </div>
       )}
       <div className="form-grid">
-        {metrics.map(([key, label]) => (
-          <label key={key}>
-            {label}
-            <input
-              name={key}
-              inputMode={key === "reps" ? "numeric" : "decimal"}
-              value={
-                formDraft[key] ??
-                (editing?.[key] != null ? String(editing[key]) : "")
-              }
-              onChange={() => {}}
-              placeholder={
-                slot?.[key] != null
-                  ? "Hedef: " + String(slot[key])
-                  : "İsteğe bağlı"
-              }
-            />
-          </label>
-        ))}
-        {past && !editing && (
-          <label>
-            Gerçek saat (isteğe bağlı)
-            <input
-              name="time"
-              type="time"
-              value={formDraft.time || ""}
-              onChange={() => {}}
-            />
-            <small>{String(session.timezone)}; boşsa yalnız tarih kaydı.</small>
-          </label>
-        )}
-        <label className="wide">
-          Not
-          <input
-            name="note"
-            maxLength={1000}
-            value={formDraft.note ?? String(editing?.note || "")}
-            onChange={() => {}}
-          />
-        </label>
+        {metrics
+          .filter(([key]) => mainMetricKeys.includes(key))
+          .map(([key, label]) => (
+            <label key={key}>
+              {label}
+              <input
+                name={key}
+                inputMode={key === "reps" ? "numeric" : "decimal"}
+                value={
+                  formDraft[key] ??
+                  (editing?.[key] != null ? String(editing[key]) : "")
+                }
+                onChange={() => {}}
+                placeholder={
+                  slot?.[key] != null
+                    ? "Hedef: " + String(slot[key])
+                    : "Gerçek değer"
+                }
+              />
+            </label>
+          ))}
       </div>
+      <details>
+        <summary>Efor, set türü ve diğer ayrıntılar</summary>
+        <div className="form-grid">
+          <label>
+            Set türü
+            <select
+              name="set_kind"
+              value={
+                formDraft.set_kind ?? String(source?.set_kind || "working")
+              }
+              onChange={() => {}}
+            >
+              <option value="working">Çalışma seti</option>
+              <option value="warmup">Isınma seti</option>
+              <option value="unknown">Belirtilmemiş</option>
+            </select>
+          </label>
+          <label>
+            Süperset grubu (isteğe bağlı)
+            <input
+              name="superset_group"
+              value={
+                formDraft.superset_group ?? String(source?.superset_group || "")
+              }
+              onChange={() => {}}
+              placeholder="Örneğin A"
+            />
+          </label>
+          <label>
+            Grup içi sıra
+            <input
+              name="sequence"
+              inputMode="numeric"
+              value={formDraft.sequence ?? String(source?.sequence ?? "")}
+              onChange={() => {}}
+            />
+          </label>
+          {metrics
+            .filter(([key]) => !mainMetricKeys.includes(key))
+            .map(([key, label]) => (
+              <label key={key}>
+                {label}
+                <input
+                  name={key}
+                  inputMode={key === "reps" ? "numeric" : "decimal"}
+                  value={
+                    formDraft[key] ??
+                    (editing?.[key] != null ? String(editing[key]) : "")
+                  }
+                  onChange={() => {}}
+                  placeholder={
+                    slot?.[key] != null
+                      ? "Hedef: " + String(slot[key])
+                      : "İsteğe bağlı"
+                  }
+                />
+              </label>
+            ))}
+          {past && !editing && (
+            <label>
+              Gerçek saat (isteğe bağlı)
+              <input
+                name="time"
+                type="time"
+                value={formDraft.time || ""}
+                onChange={() => {}}
+              />
+              <small>
+                {String(session.timezone)}; boşsa yalnız tarih kaydı.
+              </small>
+            </label>
+          )}
+          <label className="wide">
+            Not
+            <input
+              name="note"
+              maxLength={1000}
+              value={formDraft.note ?? String(editing?.note || "")}
+              onChange={() => {}}
+            />
+          </label>
+        </div>
+      </details>
+      {formDraft.rir && formDraft.rpe && (
+        <p role="status">
+          İki efor değeri girdin; birbirine dönüşüm varsayılmaz. Kayıt
+          endeksinde RIR önceliklidir, RPE ikinci kez ağırlıklandırılmaz.
+          Değerleri gözden geçir.
+        </p>
+      )}
       {error && (
         <p className="error" role="alert">
           {error}
@@ -607,11 +812,88 @@ export function Workouts({
               </>
             )}
           </div>
+          {active.status === "completed" && (
+            <details className="card">
+              <summary>Seans özeti ve isteğe bağlı geri bildirim</summary>
+              <p>
+                {actuals.filter((a) => a.status !== "skipped").length} gerçek
+                kayıt ·{" "}
+                {
+                  actuals.filter(
+                    (a) => a.set_kind === "working" && a.status !== "skipped",
+                  ).length
+                }{" "}
+                çalışma seti ·{" "}
+                {
+                  actuals.filter(
+                    (a) => a.set_kind === "warmup" && a.status !== "skipped",
+                  ).length
+                }{" "}
+                ısınma seti
+              </p>
+              <RecordForm
+                key={active.id + ":" + active.version}
+                initial={active.feedback as Record<string, unknown>}
+                fields={[
+                  {
+                    ...decimalField("session_rpe", "Tüm seansın eforu (0–10)"),
+                    min: 0,
+                    max: 10,
+                  },
+                  {
+                    ...decimalField(
+                      "duration_seconds",
+                      "Gerçek toplam seans süresi (saniye)",
+                    ),
+                    min: 1,
+                    max: 86400,
+                  },
+                  choice(
+                    "feasibility",
+                    "Plan günlük koşullarıma uydu mu?",
+                    [
+                      ["not_reported", "Belirtmek istemiyorum"],
+                      ["manageable", "Uygulanabilirdi"],
+                      ["hard_to_fit", "Süreye sığdırmak zordu"],
+                      ["could_not_finish", "Tamamlayamadım"],
+                    ],
+                    "not_reported",
+                  ),
+                  note,
+                ]}
+                onSave={(v) => store.enqueue("session.feedback", active, v)}
+              />
+              {(active.feedback as Record<string, unknown>)?.session_load_au !=
+                null && (
+                <p>
+                  Kaydedilen seans yükü:{" "}
+                  {String(
+                    (active.feedback as Record<string, unknown>)
+                      .session_load_au,
+                  )}{" "}
+                  AU · dakika × seans RPE. Set RIR değerinden türetilmedi.
+                </p>
+              )}
+              <a className="link-button secondary" href="#reports">
+                Gelişimi incele
+              </a>
+            </details>
+          )}
           <h3 className="subheading">Kaydettiğin setler</h3>
           {actuals.map((a) => (
             <div className="record-row" key={a.id}>
               <div>
                 <strong>{String(a.name)}</strong>
+                <small>
+                  {a.set_kind === "working"
+                    ? "Çalışma"
+                    : a.set_kind === "warmup"
+                      ? "Isınma"
+                      : "Tür belirtilmemiş"}
+                  {a.superset_group
+                    ? ` · Süperset ${a.superset_group} / ${a.sequence ?? "sıra belirtilmemiş"}`
+                    : ""}
+                </small>
                 <span>
                   {a.status === "skipped"
                     ? "Atlandı; gerçek yük sayılmaz"
@@ -619,7 +901,9 @@ export function Workouts({
                 </span>
                 <small>
                   {a.local_pending
-                    ? "Cihazda · onay bekliyor"
+                    ? a.local_state === "failed"
+                      ? "Kaydedilmedi · Düzenleyip tekrar gönder"
+                      : "Cihazda · onay bekliyor"
                     : a.time_precision === "date_only"
                       ? "Yalnız tarih biliniyor"
                       : "Kaydedildi"}
@@ -628,7 +912,9 @@ export function Workouts({
               <div className="actions">
                 <button
                   className="text-button"
-                  disabled={Boolean(a.local_pending)}
+                  disabled={
+                    Boolean(a.local_pending) && a.local_state !== "failed"
+                  }
                   onClick={() => {
                     setEditing(a);
                     setExtra(false);

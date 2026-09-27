@@ -1,0 +1,78 @@
+...................................F.............F..............         [100%]
+=================================== FAILURES ===================================
+______________ test_nutrition_unknown_partial_complete_and_dedup _______________
+
+client = <starlette.testclient.TestClient object at 0x10e1286e0>
+
+    def test_nutrition_unknown_partial_complete_and_dedup(client):
+>       assert client.get("/api/v2/nutrition-summary?on=2026-09-15").json() == {
+            "status": "not_logged",
+            "entries": 0,
+            "totals": {
+                k: None for k in ["kcal", "protein_g", "carbs_g", "fat_g", "fiber_g"]
+            },
+            "water_ml": None,
+            "source_ids": [],
+        }
+E       AssertionError: assert {'status': 'n... 0, ...}, ...} == {'status': 'n...l': None, ...}
+E         
+E         Omitting 5 identical items, use -vv to show
+E         Left contains 3 more items:
+E         {'known_counts': {'carbs_g': 0,
+E                           'fat_g': 0,
+E                           'fiber_g': 0,
+E                           'kcal': 0,...
+E         
+E         ...Full output truncated (9 lines hidden), use '-vv' to show
+
+tests/v2/test_lifestyle.py:9: AssertionError
+_____ test_progression_uses_complete_comparable_history_and_keeps_program ______
+
+    def test_progression_uses_complete_comparable_history_and_keeps_program():
+        data = snap(
+            setrow(id="1", session_id="first", rir=3, local_date="2026-09-14"),
+            setrow(id="2", session_id="second", rir=3),
+        )
+        target = {
+            "id": "exercise",
+            "version": 1,
+            "day_id": "day",
+            "movement_id": "weighted-pull-up",
+            "name": "Weighted Pull-Up",
+            "variant": "strict",
+            "equipment": "bar",
+            "side": "both",
+            "modality": "strength",
+            "sets": 1,
+            "reps": 5,
+            "external_kg": 20,
+            "rir": 3,
+        }
+        data.update(
+            programs=[{"id": "program", "version": 1, "status": "active"}],
+            program_days=[{"id": "day", "version": 1, "program_id": "program"}],
+            program_exercises=[target],
+        )
+        original = deepcopy(data)
+        result = compute(data, AT)
+>       assert (
+            result["progression"][0]["after"]["external_kg"] == 20.5
+            and result["progression"][0]["status"] == "proposed"
+        )
+E       assert (20 == 20.5)
+
+tests/v2/test_science.py:261: AssertionError
+=============================== warnings summary ===============================
+.venv-v2/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+.venv-v2/lib/python3.12/site-packages/starlette/testclient.py:53
+  /Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/v2/test_lifestyle.py::test_nutrition_unknown_partial_complete_and_dedup
+FAILED tests/v2/test_science.py::test_progression_uses_complete_comparable_history_and_keeps_program
+2 failed, 62 passed, 2 warnings in 39.94s

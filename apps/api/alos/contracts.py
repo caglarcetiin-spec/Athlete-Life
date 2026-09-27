@@ -28,6 +28,11 @@ class Command(StrictModel):
 
 
 class ShiftPatch(StrictModel):
+    available_start_local: str | None = Field(default=None, pattern=r"^([01]\d|2[0-3]):[0-5]\d$")
+    available_end_local: str | None = Field(default=None, pattern=r"^([01]\d|2[0-3]):[0-5]\d$")
+    sleep_start_local: str | None = Field(default=None, pattern=r"^([01]\d|2[0-3]):[0-5]\d$")
+    sleep_end_local: str | None = Field(default=None, pattern=r"^([01]\d|2[0-3]):[0-5]\d$")
+    training_minutes: int | None = Field(default=None, ge=1, le=1440)
     local_date: date | None = None
     timezone: str | None = Field(default=None, max_length=80)
     status: Literal["work", "off", "annual"] | None = None

@@ -1,0 +1,4 @@
+Revision browser failed: locator.selectOption: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('.plan-day').nth(3).getByLabel('Yeni gün', { exact: true })[22m
+

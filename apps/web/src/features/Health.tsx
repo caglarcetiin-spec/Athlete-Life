@@ -1,3 +1,4 @@
+import { OptionalModule } from "./OptionalModule";
 import { useState } from "react";
 import { HeartPulse } from "lucide-react";
 import type { SyncStore } from "../sync/store";
@@ -17,6 +18,8 @@ const scale = (key: string, label: string): Field => ({
   key,
   label: label + " (0–10)",
   type: "integer",
+  min: 0,
+  max: 10,
 });
 const sides: [string, string][] = [
   ["unknown", "Belirtilmedi"],
@@ -99,84 +102,86 @@ export function Health({
               yorgunlukta 10 çok yorgun anlamına gelir.
             </p>
           </RecordList>
-          <RecordList
-            store={store}
-            kind="sleep"
-            title="Uyku geceleri"
-            fields={[
-              {
-                key: "start_date",
-                label: "Uykuya başlama tarihi",
-                type: "date",
-                required: true,
-                value: addDays(selected, -1),
-              },
-              {
-                key: "start_time",
-                label: "Uykuya başlama saati",
-                type: "time",
-                required: true,
-                value: "23:00",
-              },
-              {
-                key: "end_date",
-                label: "Uyanma tarihi",
-                type: "date",
-                required: true,
-                value: selected,
-              },
-              {
-                key: "end_time",
-                label: "Uyanma saati",
-                type: "time",
-                required: true,
-                value: "07:00",
-              },
-              scale("quality", "Uyku kalitesi"),
-              note,
-            ]}
-            getInitial={(r) => {
-              const parts = (key: string) => {
-                const d = new Date(String(r[key]));
-                return Object.fromEntries(
-                  new Intl.DateTimeFormat("sv-SE", {
-                    timeZone: String(r.timezone),
-                    year: "numeric",
-                    month: "2-digit",
-                    day: "2-digit",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    hourCycle: "h23",
-                  })
-                    .formatToParts(d)
-                    .map((x) => [x.type, x.value]),
-                );
-              };
-              const a = parts("start_at"),
-                b = parts("end_at");
-              return {
-                ...r,
-                start_date: `${a.year}-${a.month}-${a.day}`,
-                start_time: `${a.hour}:${a.minute}`,
-                end_date: `${b.year}-${b.month}-${b.day}`,
-                end_time: `${b.hour}:${b.minute}`,
-              };
-            }}
-            describe={(r) => (
-              <>
-                <strong>
-                  {new Date(String(r.end_at)).toLocaleDateString("tr-TR")} ·{" "}
-                  {shown(
-                    (Date.parse(String(r.end_at)) -
-                      Date.parse(String(r.start_at))) /
-                      3600000,
-                    "saat",
-                  )}
-                </strong>
-                <p>Kalite {shown(r.quality, "/ 10")}</p>
-              </>
-            )}
-          />
+          <OptionalModule store={store} id="sleep" label="Uyku">
+            <RecordList
+              store={store}
+              kind="sleep"
+              title="Uyku geceleri"
+              fields={[
+                {
+                  key: "start_date",
+                  label: "Uykuya başlama tarihi",
+                  type: "date",
+                  required: true,
+                  value: addDays(selected, -1),
+                },
+                {
+                  key: "start_time",
+                  label: "Uykuya başlama saati",
+                  type: "time",
+                  required: true,
+                  value: "23:00",
+                },
+                {
+                  key: "end_date",
+                  label: "Uyanma tarihi",
+                  type: "date",
+                  required: true,
+                  value: selected,
+                },
+                {
+                  key: "end_time",
+                  label: "Uyanma saati",
+                  type: "time",
+                  required: true,
+                  value: "07:00",
+                },
+                scale("quality", "Uyku kalitesi"),
+                note,
+              ]}
+              getInitial={(r) => {
+                const parts = (key: string) => {
+                  const d = new Date(String(r[key]));
+                  return Object.fromEntries(
+                    new Intl.DateTimeFormat("sv-SE", {
+                      timeZone: String(r.timezone),
+                      year: "numeric",
+                      month: "2-digit",
+                      day: "2-digit",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      hourCycle: "h23",
+                    })
+                      .formatToParts(d)
+                      .map((x) => [x.type, x.value]),
+                  );
+                };
+                const a = parts("start_at"),
+                  b = parts("end_at");
+                return {
+                  ...r,
+                  start_date: `${a.year}-${a.month}-${a.day}`,
+                  start_time: `${a.hour}:${a.minute}`,
+                  end_date: `${b.year}-${b.month}-${b.day}`,
+                  end_time: `${b.hour}:${b.minute}`,
+                };
+              }}
+              describe={(r) => (
+                <>
+                  <strong>
+                    {new Date(String(r.end_at)).toLocaleDateString("tr-TR")} ·{" "}
+                    {shown(
+                      (Date.parse(String(r.end_at)) -
+                        Date.parse(String(r.start_at))) /
+                        3600000,
+                      "saat",
+                    )}
+                  </strong>
+                  <p>Kalite {shown(r.quality, "/ 10")}</p>
+                </>
+              )}
+            />
+          </OptionalModule>
           <RecordList
             store={store}
             kind="pain"
@@ -189,6 +194,8 @@ export function Health({
               {
                 key: "intensity",
                 label: "Ağrı şiddeti (0–10)",
+                min: 0,
+                max: 10,
                 type: "integer",
                 required: true,
               },
@@ -344,19 +351,51 @@ export function Health({
           store={store}
           kind="measurement"
           title="Vücut ölçümleri"
+          mapSave={(values) => {
+            const unit = (
+              {
+                weight: "kg",
+                height: "cm",
+                waist: "cm",
+                bodyfat: "percent",
+              } as Record<string, string>
+            )[String(values.metric)];
+            if (values.unit !== unit)
+              throw new Error("Birim: Bu ölçüm için " + unit + " kullan.");
+            if (
+              !(Number(values.value) > 0) ||
+              Number(values.value) > 1000000 ||
+              (values.metric === "bodyfat" && Number(values.value) > 100)
+            )
+              throw new Error("Değer: Pozitif, geçerli bir ölçüm gir.");
+            return values;
+          }}
           fields={[
             day(selected),
-            choice(
-              "metric",
-              "Ölçüm",
-              [
-                ["weight", "Kilo"],
-                ["waist", "Bel çevresi"],
-                ["height", "Boy"],
-                ["bodyfat", "Yağ oranı"],
-              ],
-              "weight",
-            ),
+            {
+              ...choice(
+                "metric",
+                "Ölçüm",
+                [
+                  ["weight", "Kilo"],
+                  ["waist", "Bel çevresi"],
+                  ["height", "Boy"],
+                  ["bodyfat", "Yağ oranı"],
+                ],
+                "weight",
+              ),
+              onChange: (value) => ({
+                unit: (
+                  {
+                    weight: "kg",
+                    height: "cm",
+                    waist: "cm",
+                    bodyfat: "percent",
+                  } as Record<string, string>
+                )[value],
+                value: "",
+              }),
+            },
             decimalField("value", "Değer", true),
             choice(
               "unit",

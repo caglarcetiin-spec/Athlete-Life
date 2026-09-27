@@ -69,6 +69,7 @@ def serial(row):
 
 def digest_of(value):
     from .large_json import json_bytes
+
     digest = hashlib.sha256()
     for chunk in json_bytes(value, sort_keys=True):
         digest.update(chunk)
@@ -156,7 +157,10 @@ def apply_shift(db, athlete, command):
             Optimization.deleted_at.is_(None),
         )
     ):
-        if any(proposal.week_start <= day < proposal.week_start + timedelta(days=7) for day in dates):
+        if any(
+            proposal.week_start - timedelta(days=1) <= day < proposal.week_start + timedelta(days=9)
+            for day in dates
+        ):
             proposal.status, proposal.version, proposal.updated_at = "stale", proposal.version + 1, utcnow()
             changes.append({"kind": "optimization", "entity": serial(proposal)})
     return row, before, changes
@@ -177,8 +181,8 @@ def apply_optimization(db, athlete, command):
                 select(Shift).where(
                     Shift.athlete_id == athlete.id,
                     Shift.deleted_at.is_(None),
-                    Shift.local_date >= spec.week_start,
-                    Shift.local_date < spec.week_start + timedelta(days=7),
+                    Shift.local_date >= spec.week_start - timedelta(days=1),
+                    Shift.local_date < spec.week_start + timedelta(days=9),
                 )
             )
         )
@@ -323,6 +327,7 @@ def bootstrap(database, athlete_id):
             query = select(model).where(model.athlete_id == athlete_id).order_by(model.id)
             if model is MediaObject:
                 from sqlalchemy.orm import defer
+
                 query = query.options(defer(MediaObject.content)).execution_options(alos_media_metadata=True)
             result[kind + "s"] = [serial(r) for r in db.scalars(query)]
         return result

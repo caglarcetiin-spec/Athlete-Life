@@ -1,3 +1,6 @@
+import { BrandLogo } from "./BrandLogo";
+import { ConflictComparison } from "./features/ConflictComparison";
+import { brand } from "./brand";
 import { useEffect, useRef, useState } from "react";
 import {
   Activity,
@@ -55,8 +58,14 @@ function Workspace({
   const [store] = useState(() => new SyncStore(me));
   const [tour, setTour] = useState<number | null>(null);
   const [modeNotice, setModeNotice] = useState("");
-  const welcomeKey="alos-guide-dismissed:"+me.athlete_id;
-  const [welcomeDismissed,setWelcomeDismissed]=useState(()=>{try{return localStorage.getItem(welcomeKey)==="yes";}catch{return false;}});
+  const welcomeKey = "alos-guide-dismissed:" + me.athlete_id;
+  const [welcomeDismissed, setWelcomeDismissed] = useState(() => {
+    try {
+      return localStorage.getItem(welcomeKey) === "yes";
+    } catch {
+      return false;
+    }
+  });
   const [previousMode, setPreviousMode] = useState("");
   const profile = store.view("profile")[0];
   const professional = profile?.interface_mode === "professional";
@@ -215,10 +224,14 @@ function Workspace({
         İçeriğe geç
       </a>
       <aside className="sidebar">
-        <a className="brand" href="#today" aria-label="Athlete Life ana sayfa">
-          <Activity /> ATHLETE LIFE
+        <a
+          className="brand"
+          href="#today"
+          aria-label={brand.name + " ana sayfa"}
+        >
+          <BrandLogo /> {brand.name}
         </a>
-        <span className="eyebrow nav-caption">Kendi ritmini bul</span>
+        <span className="eyebrow nav-caption">{brand.tagline}</span>
         <PrimaryNavigation route={route} />
         <div className="sidebar-foot">
           <span className="avatar">{me.name.slice(0, 1)}</span>
@@ -263,7 +276,12 @@ function Workspace({
                 {theme === "light" ? "Açık" : "Koyu"}
               </span>
             </button>
-            <a className="profile-link" href="#profile" aria-label={"Profilim · " + me.name} aria-current={route === "profile" ? "page" : undefined}>
+            <a
+              className="profile-link"
+              href="#profile"
+              aria-label={"Profilim · " + me.name}
+              aria-current={route === "profile" ? "page" : undefined}
+            >
               <span className="avatar small-avatar">
                 {profile?.avatar_id ? (
                   <img src={"/api/v2/media/" + profile.avatar_id} alt="" />
@@ -319,256 +337,320 @@ function Workspace({
           <SectionNavigation route={route} />
           <PageBoundary key={route}>
             <div className="page-enter">
-            {route === "tools" ? (
-              <Tools />
-            ) : route === "guide" ? (
-              <Guide
-                store={store}
-                onStart={() => {
-                  setTour(0);
-                  go("profile");
-                }}
-              />
-            ) : route === "reports" || route === "status" ? (
-              <Reports
-                store={store}
-                selected={selected}
-                onDate={date}
-                statusOnly={route === "status"}
-              />
-            ) : route === "science" ? (
-              <Science />
-            ) : route === "goals" ? (
-              <Goals store={store} selected={selected} />
-            ) : route === "events" ? (
-              <Events store={store} selected={selected} />
-            ) : route === "nutrition" ? (
-              <Nutrition store={store} selected={selected} onDate={date} />
-            ) : route === "health" ? (
-              <Health store={store} selected={selected} onDate={date} />
-            ) : route === "capability" ? (
-              <Capabilities store={store} selected={selected} />
-            ) : route === "workout" ? (
-              <Workouts
-                store={store}
-                selected={selected}
-                onDate={date}
-              />
-            ) : route === "program" ? (
-              <Programming store={store} />
-            ) : route === "backups" ? (
-              <Backups store={store} />
-            ) : route === "week" ? (
-              <Scheduling store={store} selected={selected} onDate={date} />
-            ) : route === "system" ? (
-              <>
-                <div className="section-heading">
-                  <div>
-                    <span className="eyebrow">Kayıtlarının durumu</span>
-                    <h1>Sistem Durumu</h1>
-                    <p>Sunucu onayı ve cihazındaki bekleyen işlemler.</p>
-                  </div>
-                  <CloudCheck className="heading-icon" />
-                </div>
-                <div className="card">
-                  <h2>
-                    {store.pending.length
-                      ? `${store.pending.length} işlem bekliyor`
-                      : "Kayıtların güncel"}
-                  </h2>
-                  <p>
-                    Son onay:{" "}
-                    {store.lastSync
-                      ? new Date(store.lastSync).toLocaleString("tr-TR")
-                      : "Henüz yok"}
-                  </p>
-                  <button onClick={() => void store.retry()}>
-                    <RefreshCw size={18} />
-                    Eşitlemeyi dene
-                  </button>
-                </div>
-                {store.pending.map((p) => (
-                  <article className="card" key={p.id}>
-                    <h3>{p.command.command_type}</h3>
-                    <p>
-                      {p.error ||
-                        "Bu cihazda kaydedildi — sunucu onayı bekliyor."}
-                    </p>
-                    <details>
-                      <summary>İki sürümü karşılaştır</summary>
-                      <div className="compare">
-                        <div>
-                          <h4>Senin değişikliğin</h4>
-                          <pre>
-                            {JSON.stringify(p.command.payload, null, 2)}
-                          </pre>
-                        </div>
-                        <div>
-                          <h4>Sunucudaki kayıt</h4>
-                          <pre>
-                            {JSON.stringify(p.current || p.base, null, 2)}
-                          </pre>
-                        </div>
-                      </div>
-                    </details>
-                    <button
-                      className="secondary"
-                      disabled={p.state === "in_flight"}
-                      onClick={() => {
-                        download(p, "bekleyen-islem.json");
-                        void store
-                          .discard(p.id)
-                          .catch((e) => setError(e.message));
-                      }}
-                    >
-                      Yerel işlemi indir ve kuyruktan kaldır
-                    </button>
-                  </article>
-                ))}
-                <SystemChecks store={store} />
-                <p className="caption">
-                  Tarayıcı verilerini silmek, henüz sunucuya ulaşmamış kayıtları
-                  silebilir. Yedekte bekleyen işlemler ayrıca gösterilir.
-                </p>
-              </>
-            ) : route === "profile" ? (
-              <Profile
-                store={store}
-                me={me}
-                onAccount={onAccount}
-                onLogout={() => setLogoutDialog(true)}
-              />
-            ) : (
-              <>
-                <div className="section-heading">
-                  <div>
-                    <span className="eyebrow">
-                      {displayDate(selected, true)}
-                    </span>
-                    <h1>Merhaba, {me.name.split(" ")[0]}.</h1>
-                    <p>Bugün kendine iyi gelen bir adımla başla.</p>
-                  </div>
-                  <span className="hero-mark">
-                    <Activity />
-                  </span>
-                </div>
-                {!profile?.tutorial_completed && !welcomeDismissed && (
-                  <section className="welcome-path card">
-                    <GraduationCap size={24} />
+              {route === "tools" ? (
+                <Tools />
+              ) : route === "guide" ? (
+                <Guide
+                  store={store}
+                  onStart={() => {
+                    setTour(0);
+                    go("profile");
+                  }}
+                />
+              ) : route === "reports" || route === "status" ? (
+                <Reports
+                  store={store}
+                  selected={selected}
+                  onDate={date}
+                  statusOnly={route === "status"}
+                />
+              ) : route === "science" ? (
+                <Science />
+              ) : route === "goals" ? (
+                <Goals store={store} selected={selected} />
+              ) : route === "events" ? (
+                <Events store={store} selected={selected} />
+              ) : route === "nutrition" ? (
+                <Nutrition store={store} selected={selected} onDate={date} />
+              ) : route === "health" ? (
+                <Health store={store} selected={selected} onDate={date} />
+              ) : route === "capability" ? (
+                <Capabilities store={store} selected={selected} />
+              ) : route === "workout" ? (
+                <Workouts store={store} selected={selected} onDate={date} />
+              ) : route === "program" ? (
+                <Programming store={store} />
+              ) : route === "backups" ? (
+                <Backups store={store} />
+              ) : route === "week" ? (
+                <Scheduling store={store} selected={selected} onDate={date} />
+              ) : route === "system" ? (
+                <>
+                  <div className="section-heading">
                     <div>
-                      <h2>Kendi yolunu birlikte oluşturalım.</h2>
-                      <p>
-                        Profil, hedef, haftalık plan. Nereden başlayacağını
-                        rehberde görebilirsin.
-                      </p>
+                      <span className="eyebrow">Kayıtlarının durumu</span>
+                      <h1>Sistem Durumu</h1>
+                      <p>Sunucu onayı ve cihazındaki bekleyen işlemler.</p>
                     </div>
-                    <a className="link-button secondary" href="#guide">
-                      Yol haritamı aç
-                    </a>
-                    <button className="text-button" onClick={()=>{setWelcomeDismissed(true);try{localStorage.setItem(welcomeKey,"yes");}catch{/* optional preference */}}}>Bu hatırlatmayı kapat</button>
-                  </section>
-                )}
-                <div className="today-grid">
-                  <section className="hero-card">
-                    <span className="eyebrow">Sıradaki adımın</span>
+                    <CloudCheck className="heading-icon" />
+                  </div>
+                  <div className="card">
                     <h2>
-                      Kendi hızında.
-                      <br />
-                      <em>Her gün ileri.</em>
+                      {store.pending.length
+                        ? `${store.pending.length} işlem bekliyor`
+                        : "Kayıtların güncel"}
                     </h2>
                     <p>
-                      Planındaki antrenmanı aç veya serbest bir seans kaydet.
-                      İlerlemeni kendi kayıtların üzerinden takip et.
+                      Son onay:{" "}
+                      {store.lastSync
+                        ? new Date(store.lastSync).toLocaleString("tr-TR")
+                        : "Henüz yok"}
                     </p>
-                    <button onClick={() => go("workout")}>
-                      Antrenmanımı aç
-                      <ArrowRight size={19} />
+                    <button onClick={() => void store.retry()}>
+                      <RefreshCw size={18} />
+                      Eşitlemeyi dene
                     </button>
-                  </section>
-                  <section className="card">
-                    <CalendarDays size={25} />
-                    <h2>Seçili gün</h2>
-                    <label>
-                      Tarih
-                      <input
-                        type="date"
-                        value={selected}
-                        onChange={(e) => e.target.value && date(e.target.value)}
-                      />
-                    </label>
-                    {!following && (
+                  </div>
+                  {store.pending.map((p) => (
+                    <article className="card" key={p.id}>
+                      <h3>{p.command.command_type}</h3>
+                      <p>
+                        {p.error ||
+                          "Bu cihazda kaydedildi — sunucu onayı bekliyor."}
+                      </p>
+                      {p.state === "conflict" && p.current && (
+                        <div className="actions">
+                          <button
+                            className="secondary"
+                            onClick={() =>
+                              void store
+                                .resolveConflict(p.id, false)
+                                .catch((e) => setError(e.message))
+                            }
+                          >
+                            Sunucu sürümünü kullan
+                          </button>
+                          <button
+                            onClick={() =>
+                              void store
+                                .resolveConflict(p.id, true)
+                                .catch((e) => setError(e.message))
+                            }
+                          >
+                            Karşılaştırdım, benim değişikliğimi uygula
+                          </button>
+                        </div>
+                      )}
+                      <details>
+                        <summary>İki sürümü karşılaştır</summary>
+                        <ConflictComparison pending={p} />
+                      </details>
+                      <button
+                        className="secondary"
+                        disabled={p.state === "in_flight"}
+                        onClick={() => {
+                          download(p, "bekleyen-islem.json");
+                          void store
+                            .discard(p.id)
+                            .catch((e) => setError(e.message));
+                        }}
+                      >
+                        Yerel işlemi indir ve kuyruktan kaldır
+                      </button>
+                    </article>
+                  ))}
+                  <SystemChecks store={store} />
+                  <p className="caption">
+                    Tarayıcı verilerini silmek, henüz sunucuya ulaşmamış
+                    kayıtları silebilir. Yedekte bekleyen işlemler ayrıca
+                    gösterilir.
+                  </p>
+                </>
+              ) : route === "profile" ? (
+                <Profile
+                  store={store}
+                  me={me}
+                  onAccount={onAccount}
+                  onLogout={() => setLogoutDialog(true)}
+                />
+              ) : (
+                <>
+                  <div className="section-heading">
+                    <div>
+                      <span className="eyebrow">
+                        {displayDate(selected, true)}
+                      </span>
+                      <h1>Merhaba, {me.name.split(" ")[0]}.</h1>
+                      <p>Bugün kendine iyi gelen bir adımla başla.</p>
+                    </div>
+                    <span className="hero-mark">
+                      <Activity />
+                    </span>
+                  </div>
+                  {!profile?.tutorial_completed && !welcomeDismissed && (
+                    <section className="welcome-path card">
+                      <GraduationCap size={24} />
+                      <div>
+                        <h2>Kendi yolunu birlikte oluşturalım.</h2>
+                        <p>
+                          Profil, hedef, haftalık plan. Nereden başlayacağını
+                          rehberde görebilirsin.
+                        </p>
+                      </div>
+                      <a className="link-button secondary" href="#guide">
+                        Yol haritamı aç
+                      </a>
                       <button
                         className="text-button"
                         onClick={() => {
-                          setFollowing(true);
-                          setSelected(
-                            today(
-                              store.snapshot?.timezone,
-                              new Date(serverNow()),
-                              store.snapshot?.day_boundary_hour,
-                            ),
-                          );
-                          const url = new URL(location.href);
-                          url.searchParams.delete("date");
-                          history.pushState(null, "", url);
+                          setWelcomeDismissed(true);
+                          try {
+                            localStorage.setItem(welcomeKey, "yes");
+                          } catch {
+                            /* optional preference */
+                          }
                         }}
                       >
-                        Bugüne dön
-                      </button>
-                    )}
-                    <div className="day-summary">
-                      {store
-                        .view("shift")
-                        .find((s) => s.local_date === selected)?.status ===
-                      "work"
-                        ? "Çalışma günü"
-                        : store
-                              .view("shift")
-                              .some((s) => s.local_date === selected)
-                          ? "Dinlenme / izin günü"
-                          : "Vardiya henüz girilmedi"}
-                    </div>
-                    <button className="text-button" onClick={() => go("week")}>
-                      Haftalık planı aç
-                      <ChevronRight size={16} />
-                    </button>
-                  </section>
-                </div>
-                {store
-                  .view("program")
-                  .filter((p) => p.status === "active")
-                  .map((p) => (
-                    <section className="card active-plan" key={p.id}>
-                      <div>
-                        <span className="eyebrow">Ana programın</span>
-                        <h2>{String(p.name)}</h2>
-                        <p>
-                          {String(p.goal)} · {Number(p.weeks)} hafta
-                        </p>
-                      </div>
-                      <button onClick={() => go("workout")}>
-                        Günün antrenmanını aç
-                        <ArrowRight size={18} />
+                        Bu hatırlatmayı kapat
                       </button>
                     </section>
-                  ))}
-                <section className="card activity-feed">
-                  <div className="section-heading compact">
-                    <div><span className="eyebrow">Senin hareket günlüğün</span><h2>Son aktiviteler</h2></div>
-                    <Activity size={24} />
+                  )}
+                  <div className="today-grid">
+                    <section className="hero-card">
+                      <span className="eyebrow">Sıradaki adımın</span>
+                      <h2>
+                        Kendi hızında.
+                        <br />
+                        <em>Her gün ileri.</em>
+                      </h2>
+                      <p>
+                        Planındaki antrenmanı aç veya serbest bir seans kaydet.
+                        İlerlemeni kendi kayıtların üzerinden takip et.
+                      </p>
+                      <button onClick={() => go("workout")}>
+                        Antrenmanımı aç
+                        <ArrowRight size={19} />
+                      </button>
+                    </section>
+                    <section className="card">
+                      <CalendarDays size={25} />
+                      <h2>Seçili gün</h2>
+                      <label>
+                        Tarih
+                        <input
+                          type="date"
+                          value={selected}
+                          onChange={(e) =>
+                            e.target.value && date(e.target.value)
+                          }
+                        />
+                      </label>
+                      {!following && (
+                        <button
+                          className="text-button"
+                          onClick={() => {
+                            setFollowing(true);
+                            setSelected(
+                              today(
+                                store.snapshot?.timezone,
+                                new Date(serverNow()),
+                                store.snapshot?.day_boundary_hour,
+                              ),
+                            );
+                            const url = new URL(location.href);
+                            url.searchParams.delete("date");
+                            history.pushState(null, "", url);
+                          }}
+                        >
+                          Bugüne dön
+                        </button>
+                      )}
+                      <div className="day-summary">
+                        {store
+                          .view("shift")
+                          .find((s) => s.local_date === selected)?.status ===
+                        "work"
+                          ? "Çalışma günü"
+                          : store
+                                .view("shift")
+                                .some((s) => s.local_date === selected)
+                            ? "Dinlenme / izin günü"
+                            : "Vardiya henüz girilmedi"}
+                      </div>
+                      <button
+                        className="text-button"
+                        onClick={() => go("week")}
+                      >
+                        Haftalık planı aç
+                        <ChevronRight size={16} />
+                      </button>
+                    </section>
                   </div>
-                  {store.view("session").length === 0 ? <p>İlk seansını kaydettiğinde burada göreceksin.</p> :
-                    [...store.view("session")].sort((a,b)=>String(b.local_date).localeCompare(String(a.local_date))).slice(0,4).map(session=>(
-                      <a className="activity-item" key={session.id} href={"?date="+encodeURIComponent(String(session.local_date))+"&session="+encodeURIComponent(session.id)+"#workout"}>
-                        <span className="activity-symbol"><Activity size={20}/></span>
-                        <span><strong>{String(session.title)}</strong><small>{displayDate(String(session.local_date))} · {({ready:"Başlamadı",active:"Devam ediyor",paused:"Molada",completed:"Tamamlandı",abandoned:"Bırakıldı"} as Record<string,string>)[String(session.status)] || "Eşitleme bekliyor"}</small></span>
-                        <ChevronRight size={18}/>
-                      </a>
+                  {store
+                    .view("program")
+                    .filter((p) => p.status === "active")
+                    .map((p) => (
+                      <section className="card active-plan" key={p.id}>
+                        <div>
+                          <span className="eyebrow">Ana programın</span>
+                          <h2>{String(p.name)}</h2>
+                          <p>
+                            {String(p.goal)} · {Number(p.weeks)} hafta
+                          </p>
+                        </div>
+                        <button onClick={() => go("workout")}>
+                          Günün antrenmanını aç
+                          <ArrowRight size={18} />
+                        </button>
+                      </section>
                     ))}
-                </section>
-              </>
-            )}
-          </div>
+                  <section className="card activity-feed">
+                    <div className="section-heading compact">
+                      <div>
+                        <span className="eyebrow">Senin hareket günlüğün</span>
+                        <h2>Son aktiviteler</h2>
+                      </div>
+                      <Activity size={24} />
+                    </div>
+                    {store.view("session").length === 0 ? (
+                      <p>İlk seansını kaydettiğinde burada göreceksin.</p>
+                    ) : (
+                      [...store.view("session")]
+                        .sort((a, b) =>
+                          String(b.local_date).localeCompare(
+                            String(a.local_date),
+                          ),
+                        )
+                        .slice(0, 4)
+                        .map((session) => (
+                          <a
+                            className="activity-item"
+                            key={session.id}
+                            href={
+                              "?date=" +
+                              encodeURIComponent(String(session.local_date)) +
+                              "&session=" +
+                              encodeURIComponent(session.id) +
+                              "#workout"
+                            }
+                          >
+                            <span className="activity-symbol">
+                              <Activity size={20} />
+                            </span>
+                            <span>
+                              <strong>{String(session.title)}</strong>
+                              <small>
+                                {displayDate(String(session.local_date))} ·{" "}
+                                {(
+                                  {
+                                    ready: "Başlamadı",
+                                    active: "Devam ediyor",
+                                    paused: "Molada",
+                                    completed: "Tamamlandı",
+                                    abandoned: "Bırakıldı",
+                                  } as Record<string, string>
+                                )[String(session.status)] ||
+                                  "Eşitleme bekliyor"}
+                              </small>
+                            </span>
+                            <ChevronRight size={18} />
+                          </a>
+                        ))
+                    )}
+                  </section>
+                </>
+              )}
+            </div>
           </PageBoundary>
         </main>
         <footer className="page-history" aria-label="Sayfa gezintisi">

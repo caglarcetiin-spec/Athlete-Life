@@ -1644,3 +1644,27 @@ button:active:not(:disabled), .link-button:active { transform: scale(.97); }
 @media (prefers-reduced-motion: reduce) {
   .section-navigation a, .mobile-primary a { transition: none; }
 }
+
+/* Revision V2: compact visuals retain a full touch/focus target. */
+button,
+.link-button,
+.text-button,
+summary {
+  min-height: 44px;
+  min-width: 44px;
+}
+summary {
+  padding-block: 12px;
+}
+label.check {
+  min-height: 44px;
+}
+:root:not([data-theme="dark"]) .error {
+  color: var(--error, #b42318);
+}
+:root:not([data-theme="dark"]) .warning {
+  color: var(--warning, #8a4b00);
+}
+/* Theme colors change together; a delayed secondary background briefly
+   leaves dark-theme light text on the old white surface. */
+button.secondary { transition: transform 0.18s; }

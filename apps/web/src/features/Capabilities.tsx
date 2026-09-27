@@ -176,7 +176,7 @@ export function Capabilities({
               Protokol:{" "}
               {group === "custom"
                 ? "Kullanıcının tanımladığı yöntem"
-                : "legacy-catalog-1"}{" "}
+                : "Aynı hareket, ekipman ve uygulama koşulları"}{" "}
               · İstatistiksel toplum normları doğrulanmadığı için seviye yüzdesi
               üretilmez.
             </small>
@@ -193,6 +193,11 @@ export function Capabilities({
           initial={{ definition_id: test }}
           getInitial={(r) => ({
             ...r,
+            protocol_version:
+              r.protocol_version === "legacy-catalog-1"
+                ? "Aynı hareket ve uygulama koşulları"
+                : r.protocol_version,
+            variant: r.variant === "standard" ? "Standart" : r.variant,
             component_reps: (r.components as Record<string, unknown>)?.reps,
             component_bodyweight_kg: (r.components as Record<string, unknown>)
               ?.bodyweight_kg,
@@ -206,6 +211,11 @@ export function Capabilities({
             delete extra.bodyweight_kg;
             return {
               ...base,
+              protocol_version:
+                base.protocol_version === "Aynı hareket ve uygulama koşulları"
+                  ? "legacy-catalog-1"
+                  : base.protocol_version,
+              variant: base.variant === "Standart" ? "standard" : base.variant,
               components: strength
                 ? {
                     ...extra,
@@ -233,9 +243,11 @@ export function Capabilities({
               "protocol_version",
               "Uyguladığım yöntem / protokol",
               true,
-              group === "custom" ? "custom-v1" : "legacy-catalog-1",
+              group === "custom"
+                ? "Kendi yöntemim"
+                : "Aynı hareket ve uygulama koşulları",
             ),
-            textField("variant", "Varyasyon / koşul", true, "standard"),
+            textField("variant", "Varyasyon / koşul", true, "Standart"),
             choice(
               "side",
               "Taraf",
@@ -262,22 +274,25 @@ export function Capabilities({
                   ),
                 ]
               : []),
-            choice(
-              "unit",
-              "Birim",
-              [
-                "kg",
-                "reps",
-                "seconds",
-                "min",
-                "m",
-                "cm",
-                "km",
-                "deg",
-                "percent",
-              ].map((u) => [u, u]),
-              unit,
-            ),
+            {
+              ...choice(
+                "unit",
+                "Birim",
+                [
+                  "kg",
+                  "reps",
+                  "seconds",
+                  "min",
+                  "m",
+                  "cm",
+                  "km",
+                  "deg",
+                  "percent",
+                ].map((u) => [u, u]),
+                unit,
+              ),
+              onChange: () => ({ value: "" }),
+            },
             {
               key: "attempt",
               label: "Deneme numarası",
@@ -301,11 +316,15 @@ export function Capabilities({
           describe={(r: Entity) => (
             <>
               <strong>
-                {shown(r.value, String(r.unit))} · {String(r.variant)}
+                {shown(r.value, String(r.unit))} ·{" "}
+                {r.variant === "standard" ? "Standart" : String(r.variant)}
               </strong>
               <p>
-                {String(r.local_date)} · {String(r.protocol_version)} ·{" "}
-                {String(r.equipment)}
+                {String(r.local_date)} ·{" "}
+                {r.protocol_version === "legacy-catalog-1"
+                  ? "Aynı hareket ve uygulama koşulları"
+                  : String(r.protocol_version)}{" "}
+                · {String(r.equipment)}
               </p>
             </>
           )}

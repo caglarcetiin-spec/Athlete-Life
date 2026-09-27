@@ -17,6 +17,10 @@ def decimal(value):
 
 
 class Targets(StrictModel):
+    catalog_version: str | None = Field(default=None, max_length=80)
+    set_kind: Literal["working", "warmup", "unknown"] = "unknown"
+    superset_group: str | None = Field(default=None, max_length=80)
+    sequence: int | None = Field(default=None, ge=0, le=10000)
     movement_id: str = Field(min_length=1, max_length=100)
     name: str = Field(min_length=1, max_length=150)
     variant: str = Field(default="standard", max_length=150)

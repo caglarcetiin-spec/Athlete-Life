@@ -42,8 +42,12 @@ def retry_transaction(function):
             try:
                 return function(*args, **kwargs)
             except PyMongoError as exc:
-                if exc.has_error_label("TransientTransactionError") and attempt < 39 and time.monotonic() < deadline:
-                    time.sleep(min(0.01 * 2**min(attempt, 5), 0.25) + random.uniform(0, 0.025))
+                if (
+                    exc.has_error_label("TransientTransactionError")
+                    and attempt < 39
+                    and time.monotonic() < deadline
+                ):
+                    time.sleep(min(0.01 * 2 ** min(attempt, 5), 0.25) + random.uniform(0, 0.025))
                     continue
                 raise DomainError(
                     "storage_retry", "Kayıt tamamlanamadı; aynı işlemi yeniden dene.", 503
@@ -147,7 +151,8 @@ class MongoDatabase:
             return False
         row = self.collection("schema").find_one({"_id": "revision"})
         return bool(
-            row and row.get("value") == REVISION
+            row
+            and row.get("value") == REVISION
             and self.collection("cutovers").find_one({"status": {"$ne": "complete"}}) is None
         )
 
@@ -275,16 +280,48 @@ class MongoSession:
         if key in self.rows:
             return self.rows[key]
         if "_large" in document and not metadata_only:
-            chunks = self.database.collection("blobs").find(
-                {"record": document["_large"]}, session=self.session, batch_size=4
-            ).sort("ordinal", 1)
+            chunks = (
+                self.database.collection("blobs")
+                .find({"record": document["_large"]}, session=self.session, batch_size=4)
+                .sort("ordinal", 1)
+            )
             data = bytearray()
             for chunk in chunks:
                 data.extend(chunk["content"])
             if len(data) != document["_size"] or hashlib.sha256(data).hexdigest() != document["_sha256"]:
                 raise RuntimeError("Private record content integrity failure")
             document = bson_decode(data)
-        row = model(**{c.name: decode(c, b"" if metadata_only and c.name == "content" else document[c.name]) for c in inspect(model).columns})
+        # V2 additive fields have no historic meaning. Do not infer working sets
+        # or a catalog revision for records written before this migration.
+        additive = {"catalog_version": None, "set_kind": "unknown", "superset_group": None, "sequence": None}
+        values = {}
+        for column in inspect(model).columns:
+            if metadata_only and column.name == "content":
+                values[column.name] = b""
+            elif column.name in document:
+                values[column.name] = decode(column, document[column.name])
+            elif (
+                model.__tablename__ in {"program_exercises", "prescription_set_slots", "performed_sets"}
+                and column.name in additive
+            ):
+                values[column.name] = additive[column.name]
+            elif (model.__tablename__, column.name) in {
+                ("athlete_profiles", "planning_preferences"),
+                ("workout_sessions", "planning_context"),
+                ("workout_sessions", "feedback"),
+            }:
+                values[column.name] = {}
+            elif model.__tablename__ == "shifts" and column.name in {
+                "available_start_local",
+                "available_end_local",
+                "sleep_start_local",
+                "sleep_end_local",
+                "training_minutes",
+            }:
+                values[column.name] = None
+            else:
+                raise ValueError(f"Missing persisted field: {model.__tablename__}.{column.name}")
+        row = model(**values)
         self.rows[key], self.original[key] = row, copy.deepcopy(self.plain(row))
         return row
 
@@ -401,16 +438,25 @@ class MongoSession:
                     }
                     reference = (target.name, json.dumps(match, sort_keys=True))
                     known = any(
-                        row_key[0] == target.name and row_key not in self.deleted
-                        and all(value(getattr(known_row, name)) == expected for name, expected in match.items())
+                        row_key[0] == target.name
+                        and row_key not in self.deleted
+                        and all(
+                            value(getattr(known_row, name)) == expected for name, expected in match.items()
+                        )
                         for row_key, known_row in self.rows.items()
                     )
-                    if not known and reference not in references and not self.database.collection(target).find_one(match, session=self.session):
+                    if (
+                        not known
+                        and reference not in references
+                        and not self.database.collection(target).find_one(match, session=self.session)
+                    ):
                         raise IntegrityError(None, None, ValueError("Record reference"))
                     references.add(reference)
                 coll = self.database.collection(table)
                 creating = self.original[key] is None
-                old = None if creating else coll.find_one({"_id": key[1]}, {"_large": 1}, session=self.session)
+                old = (
+                    None if creating else coll.find_one({"_id": key[1]}, {"_large": 1}, session=self.session)
+                )
                 if old and old.get("_large"):
                     self.database.collection("blobs").delete_many(
                         {"record": old["_large"]}, session=self.session
@@ -418,6 +464,7 @@ class MongoSession:
                 doc = {"_id": key[1], **data}
                 if any(isinstance(v, (str, bytes)) and len(v) >= CHUNK for v in doc.values()):
                     from .bson_stream import document_chunks
+
                     blob_id = str(uuid4())
                     digest, size, batch = hashlib.sha256(), 0, []
                     for ordinal, chunk in enumerate(document_chunks(doc)):
@@ -429,9 +476,12 @@ class MongoSession:
                             batch.clear()
                     if batch:
                         self.database.collection("blobs").insert_many(batch, session=self.session)
-                    doc = {k: v for k, v in doc.items()
-                           if not (isinstance(v, (str, bytes)) and len(v) >= CHUNK)
-                           and len(bson_encode({"v": v})) < CHUNK}
+                    doc = {
+                        k: v
+                        for k, v in doc.items()
+                        if not (isinstance(v, (str, bytes)) and len(v) >= CHUNK)
+                        and len(bson_encode({"v": v})) < CHUNK
+                    }
                     doc.update(_large=blob_id, _size=size, _sha256=digest.hexdigest())
                 if creating:
                     inserts.setdefault(table.name, []).append(doc)

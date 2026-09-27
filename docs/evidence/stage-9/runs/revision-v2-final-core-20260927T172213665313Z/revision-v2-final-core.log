@@ -1,0 +1,37 @@
+............................F........................................... [ 90%]
+........                                                                 [100%]
+=================================== FAILURES ===================================
+___________ test_late_shift_proposal_never_wraps_to_earlier_same_day ___________
+
+    def test_late_shift_proposal_never_wraps_to_earlier_same_day():
+        from alos.domain.scheduling import propose_week
+    
+        row = {
+            "id": "synthetic",
+            "version": 1,
+            "local_date": "2026-09-14",
+            "status": "work",
+            "start_local": "15:00",
+            "end_local": "23:30",
+            "commute_min": 30,
+            "pinned": False,
+        }
+        suggestion = propose_week(date(2026, 9, 14), [row])[0]
+        assert suggestion["window"] is None
+>       assert "ertesi güne" in suggestion["reason"]
+E       AssertionError: assert 'ertesi güne' in 'Uygun saat aralığı, planlanan uyku penceresi ve antrenman süresi gerekli; eksik saatten takvim üretilmedi.'
+
+tests/v2/test_core.py:311: AssertionError
+=============================== warnings summary ===============================
+.venv-v2/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+.venv-v2/lib/python3.12/site-packages/starlette/testclient.py:53
+  /Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/v2/test_core.py::test_late_shift_proposal_never_wraps_to_earlier_same_day
+1 failed, 79 passed, 2 warnings in 41.61s

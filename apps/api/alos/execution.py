@@ -11,7 +11,8 @@ from .db import utcnow
 from .domain.scheduling import local_instant
 from .domain.workouts import Targets, timer_remaining
 from .errors import DomainError
-from .models import PerformedSet, Prescription, PrescriptionSlot, WorkoutSession
+from .models import AthleteProfile, PerformedSet, Prescription, PrescriptionSlot, WorkoutSession
+from .planning_context import profile_context
 from .programming import owned, touched
 from .service import get_owned, serial
 
@@ -28,6 +29,13 @@ class Begin(StrictModel):
 
 class Transition(StrictModel):
     status: Literal["ready", "active", "paused", "completed", "abandoned"]
+
+
+class Feedback(StrictModel):
+    session_rpe: float | None = Field(default=None, ge=0, le=10)
+    duration_seconds: float | None = Field(default=None, gt=0, le=86400)
+    feasibility: Literal["not_reported", "manageable", "hard_to_fit", "could_not_finish"] = "not_reported"
+    note: str = Field(default="", max_length=1000)
 
 
 class Timer(StrictModel):
@@ -92,7 +100,25 @@ def apply_session(db, athlete, command):
         row = WorkoutSession(
             id=command.entity_id, athlete_id=athlete.id, timezone=athlete.timezone, **data.model_dump()
         )
+        profile = db.scalar(
+            select(AthleteProfile).where(
+                AthleteProfile.athlete_id == athlete.id, AthleteProfile.deleted_at.is_(None)
+            )
+        )
+        row.planning_context = profile_context(serial(profile) if profile else None)
         db.add(row)
+    elif command.command_type == "session.feedback" and row:
+        data = Feedback.model_validate(command.payload)
+        row.feedback = {
+            **data.model_dump(),
+            "policy_version": "session-feedback-1",
+            "recorded_at": utcnow().isoformat(),
+            "session_load_au": data.duration_seconds / 60 * data.session_rpe
+            if data.duration_seconds is not None and data.session_rpe is not None
+            else None,
+        }
+        row.version += 1
+        row.updated_at = utcnow()
     elif command.command_type == "session.begin" and row:
         data = Begin.model_validate(command.payload)
         if row.local_date != utcnow().astimezone(ZoneInfo(row.timezone)).date():

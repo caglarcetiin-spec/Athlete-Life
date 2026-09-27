@@ -34,6 +34,8 @@ def migrate(db, athlete, run, data):
         model, schema = REGISTRY[kind]
         try:
             parsed = schema.model_validate(fields).model_dump()
+            if kind == "meal":
+                parsed.pop("copy_from", None)  # Command-only relation, absent in historic input.
             if "local_date" in parsed and kind != "nutrition_day":
                 parsed["timezone"] = athlete.timezone
             row = model(id=identity(path), athlete_id=athlete.id, source="legacy", **parsed, **(extras or {}))

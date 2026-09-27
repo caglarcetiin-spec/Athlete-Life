@@ -149,7 +149,16 @@ export class SyncStore {
     };
     const tx = this.db.transaction(["outbox", "meta"], "readwrite");
     const pending = await tx.objectStore("outbox").getAll();
-    if (pending.some((p) => p.command.entity_id === id)) {
+    const rejected = pending.find(
+      (p) => p.command.entity_id === id && p.state === "failed",
+    );
+    if (rejected) {
+      command.expected_version = rejected.command.expected_version;
+      await tx.objectStore("outbox").delete(rejected.id);
+    }
+    if (
+      pending.some((p) => p.command.entity_id === id && p.id !== rejected?.id)
+    ) {
       tx.abort();
       await tx.done.catch(() => {});
       throw new Error(
@@ -157,18 +166,16 @@ export class SyncStore {
       );
     }
     try {
-      await tx
-        .objectStore("outbox")
-        .put({
-          id: command.operation_id,
-          command,
-          base: entity,
-          created: Date.now(),
-          state: "queued",
-          attempts: 0,
-          leaseUntil: 0,
-          nextTry: 0,
-        });
+      await tx.objectStore("outbox").put({
+        id: command.operation_id,
+        command,
+        base: entity,
+        created: Date.now(),
+        state: "queued",
+        attempts: 0,
+        leaseUntil: 0,
+        nextTry: 0,
+      });
       // Both the canonical cache reference and its overlay journal are transactionally durable.
       const base = await tx.objectStore("meta").get("snapshot");
       if (base) await tx.objectStore("meta").put(base, "snapshot");
@@ -196,6 +203,8 @@ export class SyncStore {
         id: p.command.entity_id,
         version: p.command.expected_version,
         local_pending: true,
+        local_state: p.state,
+        local_error: p.error,
         ...(p.command.command_type.endsWith(".delete")
           ? { deleted_at: new Date(p.created).toISOString() }
           : {}),
@@ -213,7 +222,12 @@ export class SyncStore {
       (p) =>
         (p.state === "queued" || p.state === "in_flight") &&
         p.leaseUntil <= now &&
-        p.nextTry <= now,
+        p.nextTry <= now &&
+        !all.some(
+          (other) =>
+            other.id !== p.id &&
+            JSON.stringify(p.command.payload).includes(other.command.entity_id),
+        ),
     );
     if (row) {
       row.state = "in_flight";
@@ -279,7 +293,11 @@ export class SyncStore {
             await tx.store.put(stored);
           }
           await tx.done;
-          throw e;
+          if (!(
+            e instanceof ApiError &&
+            [400, 403, 404, 409, 422].includes(e.status)
+          ))
+            throw e;
         }
       }
       let more = true;
@@ -329,6 +347,52 @@ export class SyncStore {
     await tx.store.delete(id);
     await tx.done;
     await this.refresh();
+  }
+  async resolveConflict(id: string, useLocal: boolean) {
+    const tx = this.db.transaction(["outbox", "meta"], "readwrite");
+    const row = await tx.objectStore("outbox").get(id);
+    if (!row || row.state !== "conflict" || !row.current) {
+      tx.abort();
+      await tx.done.catch(() => {});
+      throw new Error(
+        "Karşılaştırılacak güncel sürüm yok; kaydı yeniden yükle.",
+      );
+    }
+    const snapshot = (await tx.objectStore("meta").get("snapshot")) as Snapshot;
+    await tx
+      .objectStore("meta")
+      .put(
+        applyChanges(snapshot, [
+          { kind: row.command.command_type.split(".")[0], entity: row.current },
+        ]),
+        "snapshot",
+      );
+    await tx.objectStore("outbox").delete(id);
+    if (useLocal) {
+      const nextId = crypto.randomUUID();
+      await tx
+        .objectStore("outbox")
+        .put({
+          ...row,
+          id: nextId,
+          base: row.current,
+          current: undefined,
+          error: undefined,
+          state: "queued",
+          attempts: 0,
+          leaseUntil: 0,
+          nextTry: 0,
+          command: {
+            ...row.command,
+            operation_id: nextId,
+            expected_version: row.current.version,
+          },
+        });
+    }
+    await tx.done;
+    await this.refresh();
+    this.channel?.postMessage("change");
+    await this.sync();
   }
   async retry() {
     const tx = this.db.transaction("outbox", "readwrite");

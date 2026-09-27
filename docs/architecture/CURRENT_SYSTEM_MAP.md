@@ -156,3 +156,7 @@ MongoDB/hesap/medya göçü yok. Geri dönüş eski kaynak/paket commit'i; yeni 
 ## 27 Eylül 2026 — Tek hiyerarşili gezinme
 
 `features/Navigation.tsx` 5 ana bölüm tanımlar: Bugün; Antrenman (seans/plan/hafta); Sağlık (sağlık/beslenme); Gelişim (durum/rapor/hedef); Araçlar (test/ek aktivite/yedek/bilim/sistem/rehber). Masaüstü yan menü ve mobil alt menü aynı haritayı kullanır; yalnız uygun viewport menüsü erişilebilirlik ağacında görünür. Profil başlıkta bulunur. Eski hash URL, seçili tarih ve seans kimliği korunur. Bugün aktivite akışı canonical `session` kayıtlarını okur; yeni veri alanı veya göç yok.
+
+## Birleşik V2 revizyon hattı
+
+`movements.py` kanonik ID/alias/sürüm → `ExercisePicker` → program/slot/gerçek set → `science.compute` dağılım/kapsam/snapshot. `planning_context.py` ekipman snapshot/alternatif/süre hesaplarını birleştirir; `policies.py` onaysız sayısal sağlık ve ilerleme kuralını kapalı tutar. `csv_transfer.py` genel CSV preview/atomic apply/export; `movement_migration.py` yalnız çevrimdışı lossless mapping. `reports.report_sections` PDF ve içerik önizlemesinin ortak kaynağıdır. `catalogs/brand.json` web/API markasıdır. Ayrıntılı veri haritası ve uyumluluk: `docs/migration/REVISION_V2.md`.

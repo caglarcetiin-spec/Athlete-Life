@@ -126,6 +126,44 @@ function ShiftDay({
       </div>
       <details>
         <summary>Ulaşım, hazırlık ve uyku hedefi</summary>
+        <p>
+          Gece vardiyasında aşağıdaki saatler vardiyanın bittiği güne aittir.
+          Uyku penceresi planıdır; gerçek uyku günlüğüne eklenmez.
+        </p>
+        <div className="form-grid">
+          {[
+            ["available_start_local", "Uygun olduğum başlangıç"],
+            ["available_end_local", "Uygun olduğum bitiş"],
+            ["sleep_start_local", "Planlanan uyku başlangıcı"],
+            ["sleep_end_local", "Planlanan uyanış"],
+          ].map(([key, label]) => (
+            <label key={key}>
+              {label}
+              <input
+                type="time"
+                value={str(value(key, ""))}
+                onChange={(e) => change(key, e.target.value || null)}
+                disabled={pending}
+              />
+            </label>
+          ))}
+          <label>
+            Antrenmana ayıracağım dakika
+            <input
+              type="number"
+              min={1}
+              max={1440}
+              value={str(value("training_minutes", ""))}
+              onChange={(e) =>
+                change(
+                  "training_minutes",
+                  e.target.value ? Number(e.target.value) : null,
+                )
+              }
+              disabled={pending}
+            />
+          </label>
+        </div>
         <div className="form-grid">
           {[
             ["commute_min", "Ulaşım (dk)", 30],
@@ -291,6 +329,9 @@ export function Scheduling({
                       <strong>{displayDate(str(item.local_date), true)}</strong>
                       <span>
                         <Clock size={14} />
+                        {item.window_date
+                          ? displayDate(String(item.window_date)) + " · "
+                          : ""}
                         {str(item.window, "Belirlenmedi")}
                       </span>
                       <small>{str(item.reason)}</small>

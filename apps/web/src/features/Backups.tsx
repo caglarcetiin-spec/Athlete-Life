@@ -1,3 +1,4 @@
+import { CsvImport } from "./CsvImport";
 import { useEffect, useState } from "react";
 import { Archive, Download, Upload, CheckCircle2 } from "lucide-react";
 import { Lifecycle } from "./Lifecycle";
@@ -105,6 +106,7 @@ export function Backups({ store }: { store: SyncStore }) {
           {error}
         </p>
       )}
+      <CsvImport store={store} />
       <div className="today-grid">
         <section className="card">
           <Download />

@@ -1,5 +1,7 @@
+import { BrandLogo } from "../BrandLogo";
+import { brand } from "../brand";
 import { useEffect, useState } from "react";
-import { Activity, ChevronRight } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { api, meSchema, type Me } from "../api/contracts";
 export function Login({ onLogin }: { onLogin: (m: Me) => void }) {
   const [mode, setMode] = useState("login"),
@@ -22,11 +24,11 @@ export function Login({ onLogin }: { onLogin: (m: Me) => void }) {
     <main className="login">
       <section className="login-story">
         <span className="brand">
-          <Activity />
-          ATHLETE LIFE
+          <BrandLogo />
+          {brand.name}
         </span>
         <div>
-          <span className="eyebrow">Kendi ritminde, her gün.</span>
+          <span className="eyebrow">{brand.tagline}</span>
           <h1>
             İyi bir yaşam.
             <br />
@@ -37,7 +39,9 @@ export function Login({ onLogin }: { onLogin: (m: Me) => void }) {
             ilerlemek için sakin bir alan.
           </p>
         </div>
-        <small>Yaşam ritmin · Athlete Life 2.0</small>
+        <small>
+          {brand.tagline} · {brand.name}
+        </small>
       </section>
       <section className="login-form">
         <span className="eyebrow">

@@ -1,0 +1,46 @@
+{
+  "source": "0da7c5e",
+  "environment": "pure synthetic domain, no DB",
+  "command": "inline compute + nutrition_summary",
+  "muscle_unmapped": {
+    "missing": [
+      "Bugünün enerji/yorgunluk öz-bildirimi",
+      "Son iki günde biten uyku kaydı",
+      "Tamamlanmış beslenme günlüğü",
+      "Su kaydı"
+    ],
+    "date_only_loads": 0,
+    "unmapped_loads": [
+      {
+        "id": "0",
+        "reason": "Kas eşlemesi veya modaliteye uygun miktar bilinmiyor."
+      },
+      {
+        "id": "1",
+        "reason": "Kas eşlemesi veya modaliteye uygun miktar bilinmiyor."
+      },
+      {
+        "id": "2",
+        "reason": "Kas eşlemesi veya modaliteye uygun miktar bilinmiyor."
+      }
+    ],
+    "interpretation": "Veri kapsaması; klinik güven olasılığı değildir."
+  },
+  "nutrition": {
+    "status": "partial",
+    "entries": 2,
+    "totals": {
+      "kcal": 400,
+      "protein_g": null,
+      "carbs_g": null,
+      "fat_g": null,
+      "fiber_g": null
+    },
+    "water_ml": null,
+    "source_ids": [
+      "1",
+      "2"
+    ]
+  },
+  "exit_code": 0
+}
