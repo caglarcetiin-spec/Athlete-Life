@@ -164,3 +164,7 @@ MongoDB/hesap/medya göçü yok. Geri dönüş eski kaynak/paket commit'i; yeni 
 ### Guided planning eki (27 Eylül 2026)
 
 `GuidedPlan.tsx` → CSRF korumalı POST `/api/v2/guided-program-drafts` → `guided_planning.generate` → mevcut düzenleyici → `program.create`/`program.activate`. Taslak endpoint'i kalıcı kayıt yapmaz. Önceki `draft_with_context` sağlık/yaş kapısı tekrar kullanılır. Yeni SQL alanı/koleksiyon yok; onaylanan sorular karar JSON'unda korunur. Güncel kapsam ve kaynaklar: `docs/MACROFACTOR_REVIEW.md`.
+
+### Hibrit plan ve ortak kas raporu (27 Eylül 2026)
+
+`planner_catalog.py` 54 adayın yöntem/örüntü/yetkinlik metadata'sını sağlar; GET `guided-planning-options` aynı seçenekleri arayüze taşır. `GuidedPlan` on adım → `guided_planning.generate` (`guided-hybrid-2`) → mevcut plan/reçete/set hattı. Seçenekler karar JSON'unda saklanır. Teknik tekrar `skill`, tutuş `isometric`, kuvvet `strength`, kondisyon `cardio`; birimler karıştırılmaz. `BodyModel` varsayılan dağılımı `recorded_distribution` alanından okur; eski azalan endeks ayrı görünüm. `MuscleReportPanel` aynı API ve 3B bileşeni Sağlık'ta kullanır; yeni ana veri deposu yok. Kapsam/doz varsayımları, şema ve rollback: `docs/HYBRID_PLANNER.md`.

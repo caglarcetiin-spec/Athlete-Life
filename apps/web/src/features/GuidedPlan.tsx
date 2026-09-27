@@ -39,8 +39,23 @@ const equipmentNames = [
   "Yükseltilmiş destek",
   "Açık alan",
   "Koşu bandı",
+  "Ağırlık sehpası",
 ];
+type Competency = { movement_id: string; reps?: number; seconds?: number };
+type PlannerOption = {
+  movement_id: string;
+  name: string;
+  metric: string;
+  family: string;
+  equipment: string[];
+  methods: string[];
+  competency_required: boolean;
+  block: string;
+};
 type Answers = {
+  methods: string[];
+  competencies: Competency[];
+  conditioning_minutes: number;
   experience: string;
   objective: string;
   equipment: string[];
@@ -59,7 +74,23 @@ type Preview = {
   program: PlanDraft;
   notes: string[];
   review: {
-    days: { weekday: number; estimated_minutes: number }[];
+    days: {
+      weekday: number;
+      estimated_minutes: number;
+      working_sets: number;
+      missing_patterns: string[];
+      blocks: {
+        movement_id: string;
+        block: string;
+        family_label: string;
+        reason: string;
+      }[];
+    }[];
+    skill_sets: number;
+    isometric_seconds: number;
+    conditioning_seconds: number;
+    status: string;
+    excluded: { movement_id: string; reason: string }[];
     muscle_sets: Record<string, number>;
     meaning: string;
     duration_assumptions: string;
@@ -67,6 +98,8 @@ type Preview = {
 };
 const titles = [
   "Nereden başlıyoruz?",
+  "Hangi yöntemleri birlikte çalışıyorsun?",
+  "Hangi hareketleri kontrollü yapabiliyorsun?",
   "Neyi geliştirmek istiyorsun?",
   "Elinin altında neler var?",
   "Antrenmana ne zaman yer açabilirsin?",
@@ -86,6 +119,9 @@ export function GuidedPlan({
 }) {
   const profile = store.view("profile")[0];
   const [answers, setAnswers] = useState<Answers>({
+    methods: ["weights"],
+    competencies: [],
+    conditioning_minutes: 10,
     experience: String(profile?.experience || "new"),
     objective: "strength_hypertrophy",
     equipment: [],
@@ -104,9 +140,32 @@ export function GuidedPlan({
     [ready, setReady] = useState(false),
     [busy, setBusy] = useState(false),
     [error, setError] = useState("");
+  const [options, setOptions] = useState<PlannerOption[]>([]);
+  const [optionsError, setOptionsError] = useState("");
+  const [capabilitySearch, setCapabilitySearch] = useState("");
   const [preview, setPreview] = useState<Preview | null>(null);
   const heading = useRef<HTMLHeadingElement>(null);
   const synced = Boolean(store.snapshot);
+  // Old eight-step drafts retain answers but restart so new questions are not skipped.
+  const phase = step === 0 ? 0 : step >= 3 ? step - 2 : -1;
+  useEffect(() => {
+    if (!synced) return;
+    let live = true;
+    void api("guided-planning-options")
+      .then((result) => {
+        if (live)
+          setOptions((result as { movements: PlannerOption[] }).movements);
+      })
+      .catch(() => {
+        if (live)
+          setOptionsError(
+            "Yetkinlik kataloğu açılamadı. Sayfayı yenileyerek tekrar dene; yetkinlikler varsayılmayacak.",
+          );
+      });
+    return () => {
+      live = false;
+    };
+  }, [synced]);
   useEffect(() => {
     if (!synced) return;
     let live = true;
@@ -115,8 +174,10 @@ export function GuidedPlan({
       .then((saved) => {
         if (live) {
           if (saved?.answers) {
-            setAnswers(saved.answers);
-            setStep(Math.min(saved.step || 0, 6));
+            setAnswers((previous) => ({ ...previous, ...saved.answers }));
+            setStep(
+              saved.form_version === 2 ? Math.min(saved.step || 0, 8) : 0,
+            );
           } else {
             const current = store.view("profile")[0];
             const prefs = (current?.planning_preferences ||
@@ -158,7 +219,7 @@ export function GuidedPlan({
     setAnswers(next);
     setPreview(null);
     void store
-      .saveDraft("guided-plan", { answers: next, step })
+      .saveDraft("guided-plan", { answers: next, step, form_version: 2 })
       .catch(() =>
         setError(
           "Bu cihazda taslak saklanamadı. Sayfayı kapatmadan işlemi tamamla.",
@@ -169,7 +230,11 @@ export function GuidedPlan({
     setStep(next);
     setError("");
     void store
-      .saveDraft("guided-plan", { answers, step: Math.min(next, 6) })
+      .saveDraft("guided-plan", {
+        answers,
+        step: Math.min(next, 8),
+        form_version: 2,
+      })
       .catch(() => setError("Taslak cihazda saklanamadı."));
   }
   const total = Object.values(answers.focus).reduce((a, b) => a + b, 0);
@@ -180,15 +245,17 @@ export function GuidedPlan({
         ? 2
         : 1;
   const valid =
-    step === 1
+    phase === 1
       ? !!answers.goal.trim()
-      : step === 3
+      : phase === 3
         ? answers.weekdays.length > 0 && answers.weekdays.length <= 6
-        : step === 5
+        : phase === 5
           ? answers.weekdays.length >= minDays
-          : step === 6
+          : phase === 6
             ? !!answers.name.trim() && !!answers.start_date
-            : true;
+            : step === 1
+              ? answers.methods.length > 0
+              : true;
   async function generate() {
     setBusy(true);
     setError("");
@@ -199,7 +266,7 @@ export function GuidedPlan({
         body: JSON.stringify(answers),
       })) as Preview;
       setPreview(result);
-      go(7);
+      go(9);
     } catch (e) {
       setError((e as Error).message);
     } finally {
@@ -237,20 +304,20 @@ export function GuidedPlan({
       aria-label="Adım adım program oluştur"
     >
       <div className="guided-top">
-        <span className="eyebrow">Sana göre bir başlangıç · {step + 1}/8</span>
+        <span className="eyebrow">Sana göre bir başlangıç · {step + 1}/10</span>
         <button className="text-button" onClick={onClose}>
           Daha sonra
         </button>
       </div>
       <progress
-        max={8}
+        max={10}
         value={step + 1}
         aria-label="Program oluşturma ilerlemesi"
       />
       <h2 ref={heading} tabIndex={-1}>
         {titles[step]}
       </h2>
-      {step === 0 && (
+      {phase === 0 && (
         <>
           {choices("experience", [
             [
@@ -277,6 +344,160 @@ export function GuidedPlan({
         </>
       )}
       {step === 1 && (
+        <>
+          <p>
+            Birden fazla yöntem seçebilirsin. Hibrit, bu yöntemlerin tek haftada
+            birlikte planlanmasıdır.
+          </p>
+          <div className="guided-options">
+            {[
+              [
+                "weights",
+                "Ağırlık çalışması",
+                "Bar, EZ bar, dambıl; squat, kaldırış ve itiş/çekiş.",
+              ],
+              [
+                "calisthenics",
+                "Kalistenik",
+                "Vücut ağırlığı, barfiks, halka ve yük eklenmiş çalışmalar.",
+              ],
+              [
+                "gymnastics",
+                "Jimnastik becerileri",
+                "Front lever, muscle-up ve kontrollü tutuşları teknik blokta çalış.",
+              ],
+              [
+                "conditioning",
+                "Kondisyon",
+                "Yürüyüş veya yetkinliğini belirttiğin kolay tempoda koşu.",
+              ],
+            ].map(([key, label, text]) => (
+              <button
+                key={key}
+                className="guided-option secondary"
+                aria-pressed={answers.methods.includes(key)}
+                onClick={() =>
+                  update({
+                    methods: answers.methods.includes(key)
+                      ? answers.methods.filter((m) => m !== key)
+                      : [...answers.methods, key],
+                  })
+                }
+              >
+                <strong>{label}</strong>
+                <span>{text}</span>
+              </button>
+            ))}
+          </div>
+          <p>
+            Diğer branşlar için mevcut manuel planlayıcı korunur; desteklenmeyen
+            bir branş için otomatik uzman programı üretilmez.
+          </p>
+        </>
+      )}
+      {step === 2 && (
+        <>
+          <p>
+            Yalnız tekniğini bildiğin ve kontrollü yapabildiğin hareketleri seç.
+            İleri düzey seçmek, front lever veya muscle-up yapabildiğin anlamına
+            gelmez. Sayılar isteğe bağlı, kendi bildirdiğin güncel kapasitedir.
+          </p>
+          {optionsError && <p role="alert">{optionsError}</p>}
+          <label>
+            Hareket ara
+            <input
+              type="search"
+              value={capabilitySearch}
+              onChange={(e) => setCapabilitySearch(e.target.value)}
+              placeholder="Örneğin front lever, barfiks, squat"
+            />
+          </label>
+          <p>
+            {answers.competencies.length} hareket seçildi. Arama seçimlerini
+            değiştirmez.
+          </p>
+          <div className="capability-options">
+            {options
+              .filter(
+                (o) =>
+                  o.methods.some((m) => answers.methods.includes(m)) &&
+                  `${o.name} ${o.movement_id}`
+                    .toLocaleLowerCase("tr")
+                    .includes(capabilitySearch.toLocaleLowerCase("tr")),
+              )
+              .map((o) => {
+                const selected = answers.competencies.find(
+                  (c) => c.movement_id === o.movement_id,
+                );
+                return (
+                  <div className="capability-choice" key={o.movement_id}>
+                    <label className="check">
+                      <input
+                        type="checkbox"
+                        checked={!!selected}
+                        onChange={(e) =>
+                          update({
+                            competencies: e.target.checked
+                              ? [
+                                  ...answers.competencies,
+                                  { movement_id: o.movement_id },
+                                ]
+                              : answers.competencies.filter(
+                                  (c) => c.movement_id !== o.movement_id,
+                                ),
+                          })
+                        }
+                      />
+                      {o.name}
+                    </label>
+                    {selected && (
+                      <label>
+                        {o.metric === "seconds"
+                          ? "Kontrollü tutuş / süre (sn)"
+                          : "Kontrollü tekrar sayısı"}
+                        <input
+                          aria-label={o.name + " kapasitesi"}
+                          type="number"
+                          min={1}
+                          max={o.metric === "seconds" ? 600 : 100}
+                          inputMode="numeric"
+                          value={
+                            (o.metric === "seconds"
+                              ? selected.seconds
+                              : selected.reps) ?? ""
+                          }
+                          onChange={(e) =>
+                            update({
+                              competencies: answers.competencies.map((c) =>
+                                c.movement_id === o.movement_id
+                                  ? {
+                                      movement_id: c.movement_id,
+                                      ...(e.target.value
+                                        ? {
+                                            [o.metric === "seconds"
+                                              ? "seconds"
+                                              : "reps"]: Number(e.target.value),
+                                          }
+                                        : {}),
+                                    }
+                                  : c,
+                              ),
+                            })
+                          }
+                        />
+                      </label>
+                    )}
+                  </div>
+                );
+              })}
+          </div>
+          <p>
+            Boş bıraktığın kapasiteye test sonucu uydurulmaz. Seçmediğin ileri
+            beceriler programa konulmaz.
+          </p>
+        </>
+      )}
+      {phase === 1 && (
         <>
           {choices("objective", [
             [
@@ -306,7 +527,7 @@ export function GuidedPlan({
           </p>
         </>
       )}
-      {step === 2 && (
+      {phase === 2 && (
         <>
           <p>
             Yalnız gerçekten kullanabildiklerini seç. Hiçbiri seçili değilse
@@ -333,7 +554,7 @@ export function GuidedPlan({
           </div>
         </>
       )}
-      {step === 3 && (
+      {phase === 3 && (
         <>
           <fieldset>
             <legend>Çalışabileceğin günler · en fazla 6</legend>
@@ -375,13 +596,31 @@ export function GuidedPlan({
               ))}
             </select>
           </label>
+          {answers.methods.includes("conditioning") && (
+            <label>
+              Bir seanstaki kondisyon süresi
+              <select
+                aria-label="Bir seanstaki kondisyon süresi"
+                value={answers.conditioning_minutes}
+                onChange={(e) =>
+                  update({ conditioning_minutes: Number(e.target.value) })
+                }
+              >
+                {[5, 10, 15, 20, 30, 45].map((n) => (
+                  <option key={n} value={n}>
+                    {n} dakika
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
           <p>
             Haftada {answers.weekdays.length * answers.minutes} dakika ·
             seçmediğin günler dinlenme.
           </p>
         </>
       )}
-      {step === 4 && (
+      {phase === 4 && (
         <>
           <p>
             İstersen toplam 5 öncelik puanını dağıt. Hepsini kullanmak zorunda
@@ -433,7 +672,7 @@ export function GuidedPlan({
           </div>
         </>
       )}
-      {step === 5 && (
+      {phase === 5 && (
         <>
           {choices("split", [
             [
@@ -478,7 +717,7 @@ export function GuidedPlan({
           </p>
         </>
       )}
-      {step === 6 && (
+      {phase === 6 && (
         <>
           <label>
             Program adı
@@ -520,9 +759,27 @@ export function GuidedPlan({
           </p>
         </>
       )}
-      {step === 7 && preview && (
+      {phase === 7 && preview && (
         <>
           <h3>{preview.program.name}</h3>
+          {preview.review.status === "needs_review" && (
+            <p className="notice" role="status">
+              Bazı günler veya hedefler eksik kaldı. Aşağıdaki uyarıları gözden
+              geçir; süreyi, ekipmanı veya yetkinliklerini değiştirebilirsin.
+            </p>
+          )}
+          <div className="notice">
+            {preview.notes
+              .filter(
+                (n) =>
+                  n.includes("eksik") ||
+                  n.includes("karşılan") ||
+                  n.includes("kondisyon isteği"),
+              )
+              .map((n) => (
+                <p key={n}>{n}</p>
+              ))}
+          </div>
           <p>
             {answers.weeks} hafta · haftada {answers.weekdays.length} gün ·{" "}
             {answers.goal}
@@ -531,18 +788,50 @@ export function GuidedPlan({
             <details
               key={day.weekday}
               className="plan-day"
-              open={day.kind === "training"}
+              open={
+                day.weekday ===
+                preview.program.days.find((d) => d.kind === "training")?.weekday
+              }
             >
               <summary>
                 {names[day.weekday]} ·{" "}
-                {day.kind === "rest" ? "Dinlenme" : day.label}
+                {day.kind === "rest"
+                  ? "Dinlenme"
+                  : `${day.label} · ${day.exercises.length} hareket · ${preview.review.days.find((d) => d.weekday === day.weekday)?.estimated_minutes ?? "—"} dk`}
               </summary>
-              {day.exercises.map((e, i) => (
-                <p key={i}>
-                  <strong>{e.name}</strong> · {e.sets} set × {e.reps} tekrar ·{" "}
-                  {e.rest_seconds} sn dinlenme · {e.rir} tekrar yedek
-                </p>
-              ))}
+              {day.exercises.map((e, i) => {
+                const info = preview.review.days
+                  .find((d) => d.weekday === day.weekday)
+                  ?.blocks?.find((b) => b.movement_id === e.movement_id);
+                const blocks: Record<string, string> = {
+                  skill: "Teknik / beceri",
+                  main: "Ana çalışma",
+                  accessory: "Tamamlayıcı",
+                  conditioning: "Kondisyon",
+                };
+                return (
+                  <div className="plan-exercise-summary" key={i}>
+                    <span className="eyebrow">
+                      {info ? blocks[info.block] : "Çalışma"}
+                    </span>
+                    <p>
+                      <strong>{e.name}</strong>
+                    </p>
+                    <p>
+                      {e.sets} set ×{" "}
+                      {e.seconds != null
+                        ? `${e.seconds} saniye`
+                        : `${e.reps} tekrar`}{" "}
+                      · {e.rest_seconds} sn dinlenme
+                      {e.rir != null ? ` · ${e.rir} tekrar yedek` : ""}
+                    </p>
+                    <details>
+                      <summary>Neden bu hareket?</summary>
+                      <p>{info?.reason || "Seçimlerinle oluşturuldu."}</p>
+                    </details>
+                  </div>
+                );
+              })}
               {day.kind === "training" && (
                 <p>
                   Tahmini{" "}
@@ -561,6 +850,11 @@ export function GuidedPlan({
                 {groups[id]}: {n} ağırlıklandırılmış set / hafta
               </p>
             ))}
+            <p>
+              Teknik blok: {preview.review.skill_sets} set · toplam tutuş:{" "}
+              {preview.review.isometric_seconds} sn · kondisyon:{" "}
+              {Math.round(preview.review.conditioning_seconds / 60)} dk / hafta
+            </p>
             <p>{preview.review.duration_assumptions}</p>
             {preview.notes.map((n) => (
               <p key={n}>{n}</p>
@@ -581,18 +875,18 @@ export function GuidedPlan({
       <div className="guided-footer">
         <button
           className="secondary"
-          disabled={step === 0 || busy}
+          disabled={phase === 0 || busy}
           onClick={() => go(step - 1)}
         >
           <ArrowLeft size={18} />
           Geri
         </button>
-        {step < 6 ? (
+        {phase < 6 ? (
           <button disabled={!valid} onClick={() => go(step + 1)}>
             Devam
             <ArrowRight size={18} />
           </button>
-        ) : step === 6 ? (
+        ) : phase === 6 ? (
           <button disabled={!valid || busy} onClick={() => void generate()}>
             <Sparkles size={18} />
             {busy ? "Taslak hazırlanıyor…" : "Programımı hazırla"}

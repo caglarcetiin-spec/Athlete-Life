@@ -72,3 +72,23 @@ it("isolates every primitive of one atlas structure and restores visibility", ()
     m.geometry.dispose();
   });
 });
+
+it("colors only the selected actual modality, preserving missing data and source quantities", async () => {
+  const { distributionIntensity } = await import("./bodyOverlay");
+  const recorded = {
+    lats: {
+      strength: { amount: 4, unit: "sets", source_ids: ["a"] },
+      isometric: { amount: 100, unit: "seconds", source_ids: ["b"] },
+    },
+    chest: { strength: { amount: 2, unit: "sets", source_ids: ["c"] } },
+    spinalErectors: {
+      strength: { amount: 1, unit: "sets", source_ids: ["a"] },
+    },
+  };
+  expect(distributionIntensity(recorded, "chest", "strength")).toBe(0.5);
+  expect(distributionIntensity(recorded, "lats", "isometric")).toBe(1);
+  expect(distributionIntensity(recorded, "chest", "isometric")).toBeNull();
+  expect(distributionIntensity(recorded, "lowerBack", "strength")).toBe(0.25);
+  expect(distributionIntensity(undefined, "lats", "strength")).toBeNull();
+  expect(recorded.lats.strength.amount).toBe(4);
+});

@@ -622,6 +622,13 @@ def create_app(settings: Settings | None = None):
         snapshot = service.bootstrap(database, UUID(identity["athlete_id"]))
         return draft_with_context(DraftRequest.model_validate(await request.json()), snapshot, utcnow())
 
+    @app.get("/api/v2/guided-planning-options")
+    def guided_options(request: Request):
+        from .planner_catalog import VERSION, options
+
+        who(request)
+        return {"version": VERSION, "movements": options()}
+
     @app.post("/api/v2/guided-program-drafts")
     async def guided_program_draft(request: Request):
         from .db import utcnow

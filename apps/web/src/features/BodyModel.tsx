@@ -1,3 +1,4 @@
+import type { RecordedDistribution } from "./bodyOverlay";
 import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
@@ -33,6 +34,7 @@ export default function BodyModel({
   context,
   frozen,
   exposure,
+  distribution,
   pending,
   error,
   onNow,
@@ -42,6 +44,7 @@ export default function BodyModel({
   asOf?: string;
   context?: string[];
   frozen?: boolean;
+  distribution?: RecordedDistribution;
   exposure?: Record<
     string,
     Record<string, { low: number; high: number; unit: string }>
@@ -76,13 +79,16 @@ export default function BodyModel({
   const focusSurface = useRef<() => void>(() => {});
   const selectedSurface = surfaces.find((s) => s.id === surfaceId);
   const [selected, setSelected] = useState("lats");
-  const [mode, setMode] = useState("load");
+  const [mode, setMode] = useState("distribution");
+  const [channel, setChannel] = useState("strength");
   const [axis, setAxis] = useState(initial.axis || "auto");
   const [flipped, setFlipped] = useState(initial.flipped || false);
   const updateOverlay = useRef<() => void>(() => {});
   const orientModel = useRef<() => void>(() => {});
   const current = useRef({
     recovery,
+    distribution,
+    channel,
     selected,
     mode,
     axis,
@@ -93,6 +99,8 @@ export default function BodyModel({
   });
   current.current = {
     recovery,
+    distribution,
+    channel,
     selected,
     mode,
     axis,
@@ -113,7 +121,16 @@ export default function BodyModel({
   }, [preferenceKey, source, axis, flipped]);
   useEffect(() => {
     updateOverlay.current();
-  }, [recovery, selected, mode, surfaceId, isolate, musclesOnly]);
+  }, [
+    recovery,
+    distribution,
+    channel,
+    selected,
+    mode,
+    surfaceId,
+    isolate,
+    musclesOnly,
+  ]);
   useEffect(() => {
     orientModel.current();
   }, [axis, flipped]);
@@ -329,6 +346,8 @@ export default function BodyModel({
           current.current.surfaceId,
           current.current.isolate,
           source === "atlas" && current.current.musclesOnly,
+          current.current.distribution,
+          current.current.channel,
         );
         draw();
       };
@@ -474,8 +493,8 @@ export default function BodyModel({
     <section className="card">
       <h2>3B kas dağılımı ve kayıt endeksi</h2>
       <p>
-        Modelde bir bölgeye dokun veya kas listesinden seç. Renkler kayıtlı
-        kuvvet setlerinden hesaplanan kayıt yükü endeksini gösterir.
+        Modelde bir bölgeye dokun veya kas listesinden seç. Çalışma dağılımını
+        ve zamanla azalan kayıt endeksini ayrı görünümlerde incele.
       </p>
       <div className="actions">
         <span>
@@ -518,15 +537,39 @@ export default function BodyModel({
             value={mode}
             onChange={(e) => setMode(e.target.value)}
           >
+            <option value="distribution">Yapılan çalışmaların dağılımı</option>
             <option value="load">Kayıt yükü endeksi</option>
             <option value="original">Orijinal model</option>
           </select>
         </label>
       </div>
-      <p className="caption">
-        Yeşil: düşük kayıtlı yük · sarı: orta · kırmızı: yüksek · gri: yüzde
-        hesabı için veri yok. Sağ ve sol taraf birlikte değerlendirilir.
-      </p>
+      {mode === "distribution" ? (
+        <>
+          <label>
+            Çalışma türü
+            <select
+              aria-label="3B çalışma türü"
+              value={channel}
+              onChange={(e) => setChannel(e.target.value)}
+            >
+              <option value="strength">Kuvvet setleri</option>
+              <option value="isometric">Tutuş saniyeleri</option>
+              <option value="skill">Teknik denemeler</option>
+              <option value="cardio">Kondisyon süresi</option>
+            </select>
+          </label>
+          <p className="caption">
+            Koyu turkuaz: seçili dönemde daha çok kayıtlı çalışma. Birimler
+            birbirine eklenmez. Gri: eşleşen kayıt yok. Renkler kas büyümesi
+            veya hasar yüzdesi değildir.
+          </p>
+        </>
+      ) : (
+        <p className="caption">
+          Yeşil: düşük kayıtlı yük · sarı: orta · kırmızı: yüksek · gri: yüzde
+          hesabı için veri yok. Sağ ve sol taraf birlikte değerlendirilir.
+        </p>
+      )}
       <label>
         Görüntülenecek model
         <select
@@ -675,73 +718,126 @@ export default function BodyModel({
         <h3>
           {selectedSurface?.name || muscleNames[selected] || "Eşlenmemiş yapı"}
         </h3>
-        {detail ? (
+        {mode === "distribution" && (
           <>
-            <div className="report-controls">
-              <div>
-                <span>Zamanla azalan kayıt endeksi</span>
-                <h3>{rangeText(detail.fatigue)}</h3>
+            <h4>Seçili dönemde yapılan çalışma</h4>
+            {Object.entries(
+              distribution?.[
+                activeRegion === "lowerBack" ? "spinalErectors" : activeRegion
+              ] || {},
+            ).map(([key, value]) => (
+              <div key={key}>
+                <strong>
+                  {{
+                    strength: "Kuvvet çalışması",
+                    isometric: "Tutuş çalışması",
+                    skill: "Teknik çalışma",
+                    cardio: "Kondisyon",
+                  }[key] || key}
+                </strong>
+                <p>
+                  {value.amount.toLocaleString("tr-TR", {
+                    maximumFractionDigits: 2,
+                  })}{" "}
+                  {value.unit} · {value.source_ids.length} gerçek kayıt
+                </p>
+                <details>
+                  <summary>Katkı yapan hareketler</summary>
+                  <ul>
+                    {value.source_ids.map((id) => {
+                      const row = store.view("set").find((r) => r.id === id);
+                      return (
+                        <li key={id}>
+                          {row ? (
+                            <a href={"?date=" + row.local_date + "#workout"}>
+                              {String(row.name)} · {String(row.local_date)}
+                            </a>
+                          ) : (
+                            "Kaynak kayıt bu cihazda yok"
+                          )}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </details>
               </div>
-              <div>
-                <span>Endeksin 100’e tamamlayanı</span>
-                <h3>{rangeText(detail.reserve)}</h3>
-              </div>
-            </div>
-            <p>
-              Son kayıtlı yükten beri azalma:{" "}
-              {detail.released_since_last_load.low.toFixed(1)}–
-              {detail.released_since_last_load.high.toFixed(1)} yüzde puanı.
-            </p>
-            <p>
-              {recovery?.forecast_assumption}{" "}
-              {detail.forecast
-                .map(
-                  (f) =>
-                    `${f.hours} saat sonra kayıt endeksi ${rangeText(f.fatigue)}`,
-                )
-                .join(" · ")}
-            </p>
-            {detail.uncertain_time && (
-              <p>
-                Saat girilmeyen kayıtlar nedeniyle zaman aralığı kullanıldı.
-              </p>
-            )}
-            {detail.missing_effort && (
-              <p>
-                Bazı setlerde RIR/RPE eksik; tek bir kesin yüzde yerine aralık
-                gösteriliyor.
-              </p>
-            )}
-            <details>
-              <summary>Hesaba giren {detail.sources.length} set</summary>
-              <ul>
-                {detail.sources.map((row) => (
-                  <li key={row.id}>
-                    <a href={"?date=" + row.local_date + "#workout"}>
-                      {row.local_date} · {row.name}
-                    </a>{" "}
-                    · {row.reps ?? "?"} tekrar · {row.external_kg ?? "?"} kg ·
-                    RIR {row.rir ?? "?"} / RPE {row.rpe ?? "?"}
-                  </li>
-                ))}
-              </ul>
-            </details>
+            ))}
+            {!distribution?.[
+              activeRegion === "lowerBack" ? "spinalErectors" : activeRegion
+            ] && <p>Seçili dönemde bu bölgeye eşlenen çalışma yok.</p>}
           </>
-        ) : (
-          <p>
-            Bu bölgenin yüzde hesabı için eşleşen kuvvet seti yok. Bu, tamamen
-            iyileştiği anlamına gelmez.
-          </p>
         )}
-        {Object.entries(exposure?.[activeRegion] || {}).map(([key, value]) => (
-          <p key={key}>
-            {key}: {value.low.toFixed(2)}–{value.high.toFixed(2)} {value.unit}{" "}
-            kalan kayıtlı yük
-          </p>
-        ))}
+        {mode !== "distribution" &&
+          (detail ? (
+            <>
+              <div className="report-controls">
+                <div>
+                  <span>Zamanla azalan kayıt endeksi</span>
+                  <h3>{rangeText(detail.fatigue)}</h3>
+                </div>
+                <div>
+                  <span>Endeksin 100’e tamamlayanı</span>
+                  <h3>{rangeText(detail.reserve)}</h3>
+                </div>
+              </div>
+              <p>
+                Son kayıtlı yükten beri azalma:{" "}
+                {detail.released_since_last_load.low.toFixed(1)}–
+                {detail.released_since_last_load.high.toFixed(1)} yüzde puanı.
+              </p>
+              <p>
+                {recovery?.forecast_assumption}{" "}
+                {detail.forecast
+                  .map(
+                    (f) =>
+                      `${f.hours} saat sonra kayıt endeksi ${rangeText(f.fatigue)}`,
+                  )
+                  .join(" · ")}
+              </p>
+              {detail.uncertain_time && (
+                <p>
+                  Saat girilmeyen kayıtlar nedeniyle zaman aralığı kullanıldı.
+                </p>
+              )}
+              {detail.missing_effort && (
+                <p>
+                  Bazı setlerde RIR/RPE eksik; tek bir kesin yüzde yerine aralık
+                  gösteriliyor.
+                </p>
+              )}
+              <details>
+                <summary>Hesaba giren {detail.sources.length} set</summary>
+                <ul>
+                  {detail.sources.map((row) => (
+                    <li key={row.id}>
+                      <a href={"?date=" + row.local_date + "#workout"}>
+                        {row.local_date} · {row.name}
+                      </a>{" "}
+                      · {row.reps ?? "?"} tekrar · {row.external_kg ?? "?"} kg ·
+                      RIR {row.rir ?? "?"} / RPE {row.rpe ?? "?"}
+                    </li>
+                  ))}
+                </ul>
+              </details>
+            </>
+          ) : (
+            <p>
+              Bu bölgenin yüzde hesabı için eşleşen kuvvet seti yok. Bu, tamamen
+              iyileştiği anlamına gelmez.
+            </p>
+          ))}
+        {mode !== "distribution" &&
+          Object.entries(exposure?.[activeRegion] || {}).map(([key, value]) => (
+            <p key={key}>
+              {key}: {value.low.toFixed(2)}–{value.high.toFixed(2)} {value.unit}{" "}
+              kalan kayıtlı yük
+            </p>
+          ))}
         <p className="caption">
-          {recovery?.meaning ||
-            "Yüzdeler biyolojik ölçüm değildir. Eski sabit analizlerde bu hesap bulunmayabilir; Şimdi hesapla ile güncelle."}{" "}
+          {mode === "distribution"
+            ? "Renkler seçili dönemin kayıtlarını karşılaştırır; kas büyümesi veya hasar yüzdesi değildir."
+            : recovery?.meaning ||
+              "Yüzdeler biyolojik ölçüm değildir. Eski sabit analizlerde bu hesap bulunmayabilir; Şimdi hesapla ile güncelle."}{" "}
           Tutuş, kardiyo ve beceri yükleri kendi birimlerinde izlenir; kuvvet
           rezervine çevrilmez.
         </p>

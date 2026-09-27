@@ -74,7 +74,9 @@ def test_equipment_experience_and_split_change_actual_exercises():
     )
     split = generate(
         replace(
-            split="upper_lower", equipment=["Barbell", "Squat Rack", "Pull-Up Bar"]
+            split="upper_lower",
+            equipment=["Barbell", "Squat Rack", "Pull-Up Bar"],
+            competencies=[{"movement_id": "barbell-squat", "reps": 10}],
         ),
         snap(),
         AT,

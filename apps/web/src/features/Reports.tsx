@@ -579,6 +579,7 @@ export function Reports({
                   !!saved || selected !== new Date().toLocaleDateString("en-CA")
                 }
                 exposure={report?.muscles}
+                distribution={error ? undefined : report?.recorded_distribution}
                 pending={loading}
                 error={error}
                 onNow={() => {

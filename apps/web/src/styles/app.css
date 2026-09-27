@@ -1688,3 +1688,9 @@ button.secondary { transition: transform 0.18s; }
 .focus-map { color:var(--accent); max-width:320px; margin:20px auto; text-align:center; }
 .focus-map svg { display:block; width:100%; height:auto; }
 .focus-map figcaption { font-size:.8rem; color:var(--ink); }
+
+.capability-options { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: .65rem; max-height: 55vh; overflow: auto; padding: .3rem; }
+.capability-choice { border: 1px solid var(--line); border-radius: 14px; padding: .8rem; }
+.capability-choice:has(input:checked) { border-color: var(--accent); }
+.capability-choice > label + label { display: grid; gap: .35rem; margin-top: .6rem; }
+.plan-exercise-summary { padding-block: .65rem; border-bottom: 1px solid var(--line); }

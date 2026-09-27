@@ -1,3 +1,4 @@
+import { MuscleReportPanel } from "./MuscleReportPanel";
 import { OptionalModule } from "./OptionalModule";
 import { useState } from "react";
 import { HeartPulse } from "lucide-react";
@@ -57,6 +58,7 @@ export function Health({
         {[
           ["daily", "Günlük durum"],
           ["recovery", "Rahatsızlık ve dönüş"],
+          ["muscles", "Kas ve antrenman"],
           ["labs", "Kan tahlilleri"],
           ["measure", "Vücut ölçümleri"],
           ...(profile?.cycle_tracking ? [["cycle", "Döngü takibi"]] : []),
@@ -72,6 +74,9 @@ export function Health({
         ))}
       </div>
       <DayToolbar selected={selected} onDate={onDate} />
+      {tab === "muscles" && (
+        <MuscleReportPanel store={store} selected={selected} onDate={onDate} />
+      )}
       {tab === "daily" && (
         <>
           <RecordList

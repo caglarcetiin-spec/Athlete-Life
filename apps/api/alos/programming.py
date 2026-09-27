@@ -116,7 +116,9 @@ def apply_program(db, athlete, command):
             from .guided_planning import GuidedChoices
 
             analysis["guided_choices"] = GuidedChoices.model_validate(data.guided_choices).model_dump()
-            analysis["guided_model_version"] = "guided-strength-1"
+            from .planner_catalog import VERSION
+
+            analysis["guided_model_version"] = VERSION
         row = Program(
             id=command.entity_id,
             athlete_id=athlete.id,

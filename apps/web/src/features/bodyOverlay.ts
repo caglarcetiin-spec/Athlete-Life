@@ -1,5 +1,23 @@
 import * as THREE from "three";
 import { regions, recoveryGroup, type MuscleRecovery } from "./muscleRecovery";
+export type RecordedDistribution = Record<
+  string,
+  Record<string, { amount: number; unit: string; source_ids: string[] }>
+>;
+export function distributionIntensity(
+  distribution: RecordedDistribution | undefined,
+  group: string,
+  channel: string,
+) {
+  const key = group === "lowerBack" ? "spinalErectors" : group;
+  const amount = distribution?.[key]?.[channel]?.amount;
+  if (amount == null || amount <= 0) return null;
+  const maximum = Math.max(
+    0,
+    ...Object.values(distribution || {}).map((g) => g[channel]?.amount || 0),
+  );
+  return maximum > 0 ? amount / maximum : null;
+}
 // Relative standing-body zones, adapted from the legacy coordinate classifier.
 // These are explicitly approximate for unlabelled/one-piece surfaces.
 export function classifyBody(x: number, y: number, z: number) {
@@ -245,6 +263,8 @@ if(bodyFocus==float(bodySurface)) diffuseColor.rgb=mix(diffuseColor.rgb,vec3(1.,
       surfaceId = "",
       isolate = false,
       musclesOnly = false,
+      distribution?: RecordedDistribution,
+      channel = "strength",
     ) {
       const chosen = surfaces.find((s) => s.id === surfaceId);
       focus.value = surfaces.findIndex(
@@ -263,6 +283,12 @@ if(bodyFocus==float(bodySurface)) diffuseColor.rgb=mix(diffuseColor.rgb,vec3(1.,
       selected.value = Math.max(0, regions.indexOf(key));
       enabled.value = mode === "original" ? 0 : 1;
       colors.value = regions.map((group) => {
+        if (mode === "distribution") {
+          const intensity = distributionIntensity(distribution, group, channel);
+          if (intensity == null) return new THREE.Vector3(0.42, 0.46, 0.48);
+          const c = new THREE.Color().setHSL(0.52, 0.65, 0.7 - intensity * 0.4);
+          return new THREE.Vector3(c.r, c.g, c.b);
+        }
         const state = recoveryGroup(report, group);
         if (!state) return new THREE.Vector3(0.42, 0.46, 0.48);
         const fatigue = (state.fatigue.low + state.fatigue.high) / 200;

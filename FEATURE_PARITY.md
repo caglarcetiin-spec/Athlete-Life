@@ -97,3 +97,10 @@ Mevcut Mongo, GLB kalıcılığı, 2B/3B rapor ve manuel plan yolları korunur. 
 ### Soru tabanlı plan oluşturma
 
 MacroFactor Workouts resmî akışından esinlenen, sekiz ekranlı özgün Athlete Life sihirbazı eklendi. Beş öncelik puanı, ekipman/gün/süre/split, 4/8/12 hafta; salt okunur önizleme, manuel son düzeltme ve açık ana plana alma. Mevcut manuel plan ve kayıt hattı korunur. MacroFactor algoritma/özellik eşitliği veya kas hasarı ölçümü iddiası yok. Kapsam ve doğrulama: `docs/MACROFACTOR_REVIEW.md`.
+
+## guided-hybrid-2 yerel inceleme adayı
+
+- Karma yöntem + kontrollü hareket/kapasite soruları, 54 aday, EZ bar/halka/teknik beceri desteği; ekipman-yetkinlik-zaman kapıları.
+- Teknik/ana/tamamlayıcı/kondisyon blokları; tutuş saniye, teknik tekrar, ayrı modalite. Eksik örüntü ve hedef uyarısı.
+- Gerçek set dağılımını 3B'de kanal seçerek görme; aynı rapora Sağlık'tan erişim; mevcut beslenme kaydına bağlantı.
+- Otomatik kg/progresyon, klinik iyileşme veya bütün branşlar için uzman otomatik program iddiası yok. Yayın henüz yok; ayrıntılar docs/HYBRID_PLANNER.md.

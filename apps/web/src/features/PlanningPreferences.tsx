@@ -31,6 +31,7 @@ export const equipmentOptions = [
   "Elevated Support",
   "Outdoor",
   "Treadmill",
+  "Bench",
 ];
 const labels = [
   "Bar",
@@ -45,6 +46,7 @@ const labels = [
   "Yükseltilmiş destek",
   "Dış mekân",
   "Koşu bandı",
+  "Ağırlık sehpası",
 ];
 export function profilePayload(profile: Entity) {
   return Object.fromEntries(

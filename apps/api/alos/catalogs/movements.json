@@ -37,7 +37,8 @@
     "catalog_version": "movement-catalog-2",
     "aliases": [],
     "load_kind": "bodyweight",
-    "modality": "isometric"
+    "modality": "isometric",
+    "displayNameTR": "Tam planche tutuş"
   },
   "Front Lever": {
     "name": "Front Lever",
@@ -79,7 +80,8 @@
     "catalog_version": "movement-catalog-2",
     "aliases": [],
     "load_kind": "bodyweight",
-    "modality": "isometric"
+    "modality": "isometric",
+    "displayNameTR": "Front lever tutuş"
   },
   "Back Lever": {
     "name": "Back Lever",
@@ -162,7 +164,8 @@
     "catalog_version": "movement-catalog-2",
     "aliases": [],
     "load_kind": "bodyweight",
-    "modality": "strength"
+    "modality": "strength",
+    "displayNameTR": "Bar üzerinde muscle-up"
   },
   "Weighted Pull-Up": {
     "name": "Weighted Pull-Up",
@@ -199,7 +202,8 @@
     "catalog_version": "movement-catalog-2",
     "aliases": [],
     "load_kind": "external",
-    "modality": "strength"
+    "modality": "strength",
+    "displayNameTR": "Ek ağırlıklı barfiks"
   },
   "Weighted Ring Dip": {
     "name": "Weighted Ring Dip",
@@ -237,7 +241,8 @@
     "catalog_version": "movement-catalog-2",
     "aliases": [],
     "load_kind": "external",
-    "modality": "strength"
+    "modality": "strength",
+    "displayNameTR": "Ek ağırlıklı halka dip"
   },
   "Ring Push-Up": {
     "name": "Ring Push-Up",
@@ -273,7 +278,8 @@
     "catalog_version": "movement-catalog-2",
     "aliases": [],
     "load_kind": "bodyweight",
-    "modality": "strength"
+    "modality": "strength",
+    "displayNameTR": "Halkada şınav"
   },
   "Ring Support Hold": {
     "name": "Ring Support Hold",
@@ -312,7 +318,8 @@
     "catalog_version": "movement-catalog-2",
     "aliases": [],
     "load_kind": "bodyweight",
-    "modality": "isometric"
+    "modality": "isometric",
+    "displayNameTR": "Halkada destek tutuşu"
   },
   "Ring Turned-Out Support": {
     "name": "Ring Turned-Out Support",
@@ -389,7 +396,8 @@
     "catalog_version": "movement-catalog-2",
     "aliases": [],
     "load_kind": "bodyweight",
-    "modality": "strength"
+    "modality": "strength",
+    "displayNameTR": "Halkada dip"
   },
   "Ring Muscle-Up": {
     "name": "Ring Muscle-Up",
@@ -430,7 +438,8 @@
     "catalog_version": "movement-catalog-2",
     "aliases": [],
     "load_kind": "bodyweight",
-    "modality": "strength"
+    "modality": "strength",
+    "displayNameTR": "Halkada muscle-up"
   },
   "Ring Pull-Up": {
     "name": "Ring Pull-Up",
@@ -468,7 +477,8 @@
     "catalog_version": "movement-catalog-2",
     "aliases": [],
     "load_kind": "bodyweight",
-    "modality": "strength"
+    "modality": "strength",
+    "displayNameTR": "Halkada barfiks"
   },
   "Ring Chin-Up": {
     "name": "Ring Chin-Up",
@@ -506,7 +516,8 @@
     "catalog_version": "movement-catalog-2",
     "aliases": [],
     "load_kind": "bodyweight",
-    "modality": "strength"
+    "modality": "strength",
+    "displayNameTR": "Halkada ters tutuş barfiks"
   },
   "Ring Archer Pull-Up": {
     "name": "Ring Archer Pull-Up",
@@ -615,7 +626,8 @@
     "catalog_version": "movement-catalog-2",
     "aliases": [],
     "load_kind": "bodyweight",
-    "modality": "strength"
+    "modality": "strength",
+    "displayNameTR": "Ayak yükseltilmiş halka çekişi"
   },
   "Ring Face Pull": {
     "name": "Ring Face Pull",
@@ -650,7 +662,8 @@
     "catalog_version": "movement-catalog-2",
     "aliases": [],
     "load_kind": "bodyweight",
-    "modality": "strength"
+    "modality": "strength",
+    "displayNameTR": "Halkada yüze çekiş"
   },
   "Ring Rear-Delt Row": {
     "name": "Ring Rear-Delt Row",
@@ -685,7 +698,8 @@
     "catalog_version": "movement-catalog-2",
     "aliases": [],
     "load_kind": "bodyweight",
-    "modality": "strength"
+    "modality": "strength",
+    "displayNameTR": "Halkada arka omuz çekişi"
   },
   "Ring Archer Push-Up": {
     "name": "Ring Archer Push-Up",
@@ -827,7 +841,8 @@
     "catalog_version": "movement-catalog-2",
     "aliases": [],
     "load_kind": "bodyweight",
-    "modality": "strength"
+    "modality": "strength",
+    "displayNameTR": "Halkada kol bükme"
   },
   "Ring Triceps Extension": {
     "name": "Ring Triceps Extension",
@@ -862,7 +877,8 @@
     "catalog_version": "movement-catalog-2",
     "aliases": [],
     "load_kind": "bodyweight",
-    "modality": "strength"
+    "modality": "strength",
+    "displayNameTR": "Halkada arka kol açma"
   },
   "Ring Rollout": {
     "name": "Ring Rollout",
@@ -897,7 +913,8 @@
     "catalog_version": "movement-catalog-2",
     "aliases": [],
     "load_kind": "bodyweight",
-    "modality": "strength"
+    "modality": "strength",
+    "displayNameTR": "Halkada gövde açma"
   },
   "Ring Body Saw": {
     "name": "Ring Body Saw",
@@ -932,7 +949,8 @@
     "catalog_version": "movement-catalog-2",
     "aliases": [],
     "load_kind": "bodyweight",
-    "modality": "strength"
+    "modality": "strength",
+    "displayNameTR": "Halkada gövde ileri geri"
   },
   "Ring L-Sit": {
     "name": "Ring L-Sit",
@@ -970,7 +988,8 @@
     "catalog_version": "movement-catalog-2",
     "aliases": [],
     "load_kind": "bodyweight",
-    "modality": "isometric"
+    "modality": "isometric",
+    "displayNameTR": "Halkada L tutuş"
   },
   "Ring Tuck Front Lever": {
     "name": "Ring Tuck Front Lever",
@@ -1012,7 +1031,8 @@
     "catalog_version": "movement-catalog-2",
     "aliases": [],
     "load_kind": "bodyweight",
-    "modality": "isometric"
+    "modality": "isometric",
+    "displayNameTR": "Halkada dizler kapalı front lever"
   },
   "Ring Front Lever": {
     "name": "Ring Front Lever",
@@ -1054,7 +1074,8 @@
     "catalog_version": "movement-catalog-2",
     "aliases": [],
     "load_kind": "bodyweight",
-    "modality": "isometric"
+    "modality": "isometric",
+    "displayNameTR": "Halkada front lever"
   },
   "Ring Back Lever": {
     "name": "Ring Back Lever",
@@ -1246,7 +1267,8 @@
     "catalog_version": "movement-catalog-2",
     "aliases": [],
     "load_kind": "bodyweight",
-    "modality": "strength"
+    "modality": "strength",
+    "displayNameTR": "Halkada arka bacak bükme"
   },
   "Ring Pike Compression": {
     "name": "Ring Pike Compression",
@@ -1359,7 +1381,8 @@
     "catalog_version": "movement-catalog-2",
     "aliases": [],
     "load_kind": "bodyweight",
-    "modality": "isometric"
+    "modality": "isometric",
+    "displayNameTR": "Dizler kapalı planche"
   },
   "Straddle Planche": {
     "name": "Straddle Planche",
@@ -1439,7 +1462,8 @@
     "catalog_version": "movement-catalog-2",
     "aliases": [],
     "load_kind": "bodyweight",
-    "modality": "isometric"
+    "modality": "isometric",
+    "displayNameTR": "Dizler kapalı front lever"
   },
   "Straddle Front Lever": {
     "name": "Straddle Front Lever",
@@ -1677,7 +1701,8 @@
     "catalog_version": "movement-catalog-2",
     "aliases": [],
     "load_kind": "bodyweight",
-    "modality": "strength"
+    "modality": "strength",
+    "displayNameTR": "Front lever çekiş / yükseliş"
   },
   "Ring Front Lever Pull / Raise": {
     "name": "Ring Front Lever Pull / Raise",
@@ -1794,7 +1819,8 @@
     "catalog_version": "movement-catalog-2",
     "aliases": [],
     "load_kind": "bodyweight",
-    "modality": "isometric"
+    "modality": "isometric",
+    "displayNameTR": "Planche öne eğilme"
   },
   "Planche Push-Up / Lean": {
     "name": "Planche Push-Up / Lean",
@@ -1864,7 +1890,8 @@
     "catalog_version": "movement-catalog-2",
     "aliases": [],
     "load_kind": "external",
-    "modality": "strength"
+    "modality": "strength",
+    "displayNameTR": "EZ bar ile kol bükme"
   },
   "DB Hammer Curl": {
     "name": "DB Hammer Curl",
@@ -2206,7 +2233,8 @@
     "catalog_version": "movement-catalog-2",
     "aliases": [],
     "load_kind": "bodyweight",
-    "modality": "strength"
+    "modality": "strength",
+    "displayNameTR": "Dragon flag"
   },
   "Zone 2 Run": {
     "name": "Zone 2 Run",
@@ -2242,7 +2270,8 @@
     "catalog_version": "movement-catalog-2",
     "aliases": [],
     "load_kind": "none",
-    "modality": "cardio"
+    "modality": "cardio",
+    "displayNameTR": "Kolay tempoda koşu"
   },
   "Mobility": {
     "name": "Mobility",
@@ -2305,7 +2334,8 @@
     "catalog_version": "movement-catalog-2",
     "aliases": [],
     "load_kind": "none",
-    "modality": "cardio"
+    "modality": "cardio",
+    "displayNameTR": "Yürüyüş"
   },
   "Bodyweight Squat": {
     "name": "Bodyweight Squat",
@@ -2884,5 +2914,368 @@
     "load_kind": "bodyweight",
     "modality": "strength",
     "mapping_note": "Equipment-specific variant of calf-raise; inherited engineering muscle weights, not validated tissue measurements."
+  },
+  "EZ Bar Romanian Deadlift": {
+    "name": "EZ Bar Romanian Deadlift",
+    "type": "BARBELL",
+    "equipment": [
+      "EZ Bar"
+    ],
+    "metric": "reps",
+    "contraction": "Dynamic loaded",
+    "pattern": "Hip hinge",
+    "muscles": {
+      "hamstrings": 1,
+      "glutes": 0.86,
+      "spinalErectors": 0.56,
+      "forearms": 0.32
+    },
+    "qualities": {
+      "strength": 9,
+      "hypertrophy": 9,
+      "power": 6,
+      "skill": 4,
+      "stability": 6,
+      "core": 5,
+      "endurance": 4
+    },
+    "evidence": "Biomechanics + resistance-training principles",
+    "evidenceConfidence": "medium",
+    "note": "",
+    "staticHoldBandSec": null,
+    "id": "ez-bar-rdl",
+    "catalog_version": "movement-catalog-2.2",
+    "aliases": [
+      "EZ bar ile Romen yerden kaldırma"
+    ],
+    "load_kind": "external",
+    "modality": "strength",
+    "displayNameTR": "EZ bar ile Romen yerden kaldırma",
+    "mapping_note": "Approximate planner mapping derived from rdl; exercise-specific biological validity not established."
+  },
+  "EZ Bar Overhead Press": {
+    "name": "EZ Bar Overhead Press",
+    "type": "BARBELL",
+    "equipment": [
+      "EZ Bar"
+    ],
+    "metric": "reps",
+    "contraction": "Dynamic loaded",
+    "pattern": "Vertical push",
+    "muscles": {
+      "frontDelts": 1,
+      "sideDelts": 0.76,
+      "triceps": 0.76,
+      "traps": 0.36,
+      "abs": 0.28
+    },
+    "qualities": {
+      "strength": 9,
+      "hypertrophy": 8,
+      "power": 7,
+      "skill": 4,
+      "stability": 6,
+      "core": 5,
+      "endurance": 4
+    },
+    "evidence": "Biomechanics + resistance-training principles",
+    "evidenceConfidence": "medium",
+    "note": "Tekrar + dış yük ile kaydedilir.",
+    "staticHoldBandSec": null,
+    "id": "ez-bar-overhead-press",
+    "catalog_version": "movement-catalog-2.2",
+    "aliases": [
+      "EZ bar ile baş üstü itiş"
+    ],
+    "load_kind": "external",
+    "modality": "strength",
+    "displayNameTR": "EZ bar ile baş üstü itiş",
+    "mapping_note": "Approximate planner mapping derived from ohp; exercise-specific biological validity not established."
+  },
+  "EZ Bar Triceps Extension": {
+    "name": "EZ Bar Triceps Extension",
+    "type": "WEIGHTED",
+    "equipment": [
+      "EZ Bar"
+    ],
+    "metric": "reps",
+    "contraction": "Dynamic loaded",
+    "pattern": "Elbow extension",
+    "muscles": {
+      "triceps": 1,
+      "frontDelts": 0.16,
+      "abs": 0.12
+    },
+    "qualities": {
+      "strength": 5,
+      "hypertrophy": 9,
+      "power": 2,
+      "skill": 2,
+      "stability": 4,
+      "core": 3,
+      "endurance": 8
+    },
+    "evidence": "Biomechanics + resistance-training principles",
+    "evidenceConfidence": "medium",
+    "note": "",
+    "staticHoldBandSec": null,
+    "id": "ez-bar-triceps-extension",
+    "catalog_version": "movement-catalog-2.2",
+    "aliases": [
+      "EZ bar ile arka kol açma"
+    ],
+    "load_kind": "external",
+    "modality": "strength",
+    "displayNameTR": "EZ bar ile arka kol açma",
+    "mapping_note": "Approximate planner mapping derived from triceps-extension; exercise-specific biological validity not established."
+  },
+  "EZ Bar Row": {
+    "name": "EZ Bar Row",
+    "type": "DYNAMIC",
+    "equipment": [
+      "EZ Bar"
+    ],
+    "metric": "reps",
+    "contraction": "Dynamic / unstable",
+    "pattern": "Horizontal pull",
+    "muscles": {
+      "upperBack": 1,
+      "lats": 0.8,
+      "biceps": 0.7,
+      "rearDelts": 0.62,
+      "scapular": 0.75,
+      "forearms": 0.3
+    },
+    "qualities": {
+      "strength": 6,
+      "hypertrophy": 9,
+      "power": 3,
+      "skill": 4,
+      "stability": 8,
+      "core": 5,
+      "endurance": 8
+    },
+    "evidence": "Biomechanical inference",
+    "evidenceConfidence": "medium-high",
+    "note": "",
+    "staticHoldBandSec": null,
+    "id": "ez-bar-row",
+    "catalog_version": "movement-catalog-2.2",
+    "aliases": [
+      "EZ bar ile öne eğik çekiş"
+    ],
+    "load_kind": "external",
+    "modality": "strength",
+    "displayNameTR": "EZ bar ile öne eğik çekiş",
+    "mapping_note": "Approximate planner mapping derived from ring-row; exercise-specific biological validity not established."
+  },
+  "Dumbbell Row": {
+    "name": "Dumbbell Row",
+    "type": "DYNAMIC",
+    "equipment": [
+      "Dumbbell"
+    ],
+    "metric": "reps",
+    "contraction": "Dynamic / unstable",
+    "pattern": "Horizontal pull",
+    "muscles": {
+      "upperBack": 1,
+      "lats": 0.8,
+      "biceps": 0.7,
+      "rearDelts": 0.62,
+      "scapular": 0.75,
+      "forearms": 0.3
+    },
+    "qualities": {
+      "strength": 6,
+      "hypertrophy": 9,
+      "power": 3,
+      "skill": 4,
+      "stability": 8,
+      "core": 5,
+      "endurance": 8
+    },
+    "evidence": "Biomechanical inference",
+    "evidenceConfidence": "medium-high",
+    "note": "",
+    "staticHoldBandSec": null,
+    "id": "dumbbell-row",
+    "catalog_version": "movement-catalog-2.2",
+    "aliases": [
+      "Dambıl ile yatay çekiş"
+    ],
+    "load_kind": "external",
+    "modality": "strength",
+    "displayNameTR": "Dambıl ile yatay çekiş",
+    "mapping_note": "Approximate planner mapping derived from ring-row; exercise-specific biological validity not established."
+  },
+  "Barbell Row": {
+    "name": "Barbell Row",
+    "type": "DYNAMIC",
+    "equipment": [
+      "Barbell"
+    ],
+    "metric": "reps",
+    "contraction": "Dynamic / unstable",
+    "pattern": "Horizontal pull",
+    "muscles": {
+      "upperBack": 1,
+      "lats": 0.8,
+      "biceps": 0.7,
+      "rearDelts": 0.62,
+      "scapular": 0.75,
+      "forearms": 0.3
+    },
+    "qualities": {
+      "strength": 6,
+      "hypertrophy": 9,
+      "power": 3,
+      "skill": 4,
+      "stability": 8,
+      "core": 5,
+      "endurance": 8
+    },
+    "evidence": "Biomechanical inference",
+    "evidenceConfidence": "medium-high",
+    "note": "",
+    "staticHoldBandSec": null,
+    "id": "barbell-row",
+    "catalog_version": "movement-catalog-2.2",
+    "aliases": [
+      "Bar ile öne eğik çekiş"
+    ],
+    "load_kind": "external",
+    "modality": "strength",
+    "displayNameTR": "Bar ile öne eğik çekiş",
+    "mapping_note": "Approximate planner mapping derived from ring-row; exercise-specific biological validity not established."
+  },
+  "Barbell Deadlift": {
+    "name": "Barbell Deadlift",
+    "type": "BARBELL",
+    "equipment": [
+      "Barbell"
+    ],
+    "metric": "reps",
+    "contraction": "Dynamic loaded",
+    "pattern": "Hip hinge",
+    "muscles": {
+      "hamstrings": 1,
+      "glutes": 0.86,
+      "spinalErectors": 0.56,
+      "forearms": 0.32
+    },
+    "qualities": {
+      "strength": 9,
+      "hypertrophy": 9,
+      "power": 6,
+      "skill": 4,
+      "stability": 6,
+      "core": 5,
+      "endurance": 4
+    },
+    "evidence": "Biomechanics + resistance-training principles",
+    "evidenceConfidence": "medium",
+    "note": "",
+    "staticHoldBandSec": null,
+    "id": "barbell-deadlift",
+    "catalog_version": "movement-catalog-2.2",
+    "aliases": [
+      "Bar ile yerden kaldırma (deadlift)"
+    ],
+    "load_kind": "external",
+    "modality": "strength",
+    "displayNameTR": "Bar ile yerden kaldırma (deadlift)",
+    "mapping_note": "Approximate planner mapping derived from rdl; exercise-specific biological validity not established."
+  },
+  "Barbell Bench Press": {
+    "id": "barbell-bench-press",
+    "name": "Barbell Bench Press",
+    "catalog_version": "movement-catalog-2.2",
+    "aliases": [
+      "Sehpada bar ile göğüs itiş"
+    ],
+    "type": "DYNAMIC",
+    "metric": "reps",
+    "equipment": [
+      "Barbell",
+      "Bench",
+      "Squat Rack"
+    ],
+    "pattern": "Horizontal push",
+    "muscles": {
+      "chest": 1,
+      "triceps": 0.7,
+      "frontDelts": 0.55,
+      "abs": 0.25
+    },
+    "mapping_source": "app.js:1680/1769 inherited display mapping, not validated activation",
+    "evidence": "Inherited engineering assumption; no individual physiological validation",
+    "load_kind": "external",
+    "modality": "strength",
+    "displayNameTR": "Sehpada bar ile göğüs itiş",
+    "mapping_note": "Approximate planner mapping derived from push-up; exercise-specific biological validity not established."
+  },
+  "Bodyweight Split Squat": {
+    "name": "Bodyweight Split Squat",
+    "type": "DYNAMIC",
+    "equipment": [
+      "Bodyweight"
+    ],
+    "metric": "reps",
+    "contraction": "Dynamic bodyweight",
+    "pattern": "Squat",
+    "muscles": {
+      "quads": 1,
+      "glutes": 0.72,
+      "adductors": 0.38,
+      "calves": 0.16,
+      "abs": 0.18
+    },
+    "qualities": {
+      "strength": 4,
+      "hypertrophy": 6,
+      "power": 3,
+      "skill": 2,
+      "stability": 5,
+      "core": 3,
+      "endurance": 8
+    },
+    "evidence": "Biomechanics + resistance-training principles",
+    "evidenceConfidence": "medium",
+    "note": "Plan dışı circuit/conditioning girişlerinde barbell Squat'tan ayrı tutulur.",
+    "staticHoldBandSec": null,
+    "id": "bodyweight-split-squat",
+    "catalog_version": "movement-catalog-2.2",
+    "aliases": [
+      "Vücut ağırlığıyla ayrık duruş çömelme"
+    ],
+    "load_kind": "bodyweight",
+    "modality": "strength",
+    "displayNameTR": "Vücut ağırlığıyla ayrık duruş çömelme",
+    "mapping_note": "Approximate planner mapping derived from bodyweight-squat; exercise-specific biological validity not established."
+  },
+  "Plank": {
+    "id": "plank",
+    "name": "Plank",
+    "displayNameTR": "Ön kol plank",
+    "aliases": [
+      "ön kol plank"
+    ],
+    "catalog_version": "movement-catalog-2.2",
+    "type": "STATIC",
+    "modality": "isometric",
+    "load_kind": "bodyweight",
+    "metric": "seconds",
+    "equipment": [
+      "Floor"
+    ],
+    "pattern": "Trunk anti-extension",
+    "muscles": {
+      "abs": 1,
+      "obliques": 0.6,
+      "frontDelts": 0.2,
+      "glutes": 0.2
+    },
+    "mapping_note": "Engineering approximation, not measured muscle activation or tissue damage."
   }
 }

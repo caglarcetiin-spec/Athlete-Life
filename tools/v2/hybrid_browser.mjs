@@ -1,0 +1,81 @@
+import {chromium,expect} from '../../apps/web/node_modules/@playwright/test/index.mjs';
+import {spawn,execFileSync} from 'node:child_process';
+import {writeFileSync} from 'node:fs';
+import {randomBytes} from 'node:crypto';
+const root=process.cwd(),python=root+'/.venv-v2/bin/python',base='http://127.0.0.1:10007',name='alos_test_hybrid_'+Date.now();
+let server,browser,page;const results=[],errors=[];
+const secret=randomBytes(24).toString('base64url');
+async function synced(){await expect(page.getByRole('button',{name:'Sunucuya kaydedildi',exact:true})).toBeVisible({timeout:20000});}
+async function api(path,body){return page.evaluate(async({path,body})=>{const me=await(await fetch('/api/v2/auth/me')).json();const r=await fetch('/api/v2/'+path,body?{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':me.csrf},body:JSON.stringify(body)}:{});if(!r.ok)throw Error('Synthetic API failed: '+r.status);return r.json()},{path,body});}
+try{
+ execFileSync(python,['tools/v2/test_database.py','create',name],{cwd:root,stdio:'pipe'});
+ execFileSync(python,['-c',`import sys,json;sys.path.insert(0,'apps/api');from alos.db import Database;from alos.auth import create_user;v=json.load(sys.stdin);d=Database('postgresql+psycopg://localhost:15432/'+v['name']);\nwith d.sessions.begin() as s:create_user(s,'revision','Sentetik Revizyon',v['secret'])\nd.engine.dispose()`],{cwd:root,input:JSON.stringify({name,secret}),stdio:['pipe','pipe','pipe']});
+ server=spawn(python,['-m','uvicorn','alos.main:create_app','--factory','--host','127.0.0.1','--port','10007','--no-access-log'],{cwd:root,env:{...process.env,PYTHONPATH:root+'/apps/api',ALOS_V2_ENABLED:'1',ALOS_V2_ENVIRONMENT:'test',ALOS_V2_PUBLIC_ORIGIN:base,ALOS_V2_DATABASE_URL:'postgresql://localhost:15432/'+name},stdio:'ignore'});
+ for(let i=0;i<100;i++){try{if((await fetch(base+'/health/ready')).ok)break}catch{}await new Promise(r=>setTimeout(r,100));}
+ browser=await chromium.launch({executablePath:'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',headless:true});const context=await browser.newContext({viewport:{width:390,height:844}});page=await context.newPage();page.on('pageerror',e=>errors.push(e.message));
+ await page.goto(base);await page.getByLabel('Kullanıcı adı',{exact:true}).fill('revision');await page.getByLabel('Şifre',{exact:true}).fill(secret);await page.getByRole('button',{name:'Giriş yap',exact:true}).click();await synced();
+
+ await expect(page.getByRole('heading',{name:'Nereden başlıyoruz?',exact:true})).toBeVisible();
+ await page.getByRole('button',{name:'Düzenli çalışıyorum',exact:false}).click();
+ await page.getByRole('button',{name:'Devam',exact:true}).click();
+ await page.getByRole('button',{name:'Kalistenik',exact:false}).click();
+ await page.getByRole('button',{name:'Jimnastik becerileri',exact:false}).click();
+ await page.getByRole('button',{name:'Devam',exact:true}).click();
+ await page.getByLabel('Hareket ara',{exact:true}).fill('front-lever');
+ await page.getByRole('checkbox',{name:'Front lever tutuş',exact:true}).check();
+ await page.getByLabel('Front lever tutuş kapasitesi',{exact:true}).fill('10');
+ await page.getByLabel('Hareket ara',{exact:true}).fill('muscle-up');
+ await page.getByRole('checkbox',{name:'Bar üzerinde muscle-up',exact:true}).check();
+ await page.getByLabel('Bar üzerinde muscle-up kapasitesi',{exact:true}).fill('5');
+ await page.getByRole('button',{name:'Devam',exact:true}).click();
+ await page.getByRole('button',{name:'Kas geliştirmek',exact:false}).click();
+ await page.getByLabel('Somut hedefin ne?',{exact:true}).fill('Sekiz hafta düzenli çalışıp tekrarlarımı artırmak');
+ await page.getByRole('button',{name:'Devam',exact:true}).click();
+ await page.getByRole('button',{name:'EZ bar',exact:true}).click();
+ await page.getByRole('button',{name:'Halka',exact:true}).click();
+ await page.getByRole('button',{name:'Barfiks barı',exact:true}).click();
+ await page.getByRole('button',{name:'Devam',exact:true}).click();
+ await page.getByLabel('Bir seansa ayırabileceğin süre',{exact:true}).selectOption('75');
+ await page.getByRole('button',{name:'Devam',exact:true}).click();
+ for(let i=0;i<3;i++)await page.getByRole('button',{name:'Sırt önceliğini artır',exact:true}).click();
+ for(let i=0;i<2;i++)await page.getByRole('button',{name:'Göğüs önceliğini artır',exact:true}).click();
+ await expect(page.getByRole('button',{name:'Kol önceliğini artır',exact:true})).toBeDisabled();
+ await page.screenshot({path:root+'/docs/evidence/hybrid-planning/focus-mobile.png',fullPage:true});
+ await page.reload();await synced();await expect(page.getByRole('heading',{name:'Hangi bölgeler önceliğin?',exact:true})).toBeVisible();
+ await expect(page.getByRole('status').filter({hasText:'5 / 5 puan'})).toBeVisible();
+ results.push('Questionnaire survives reload; five-point limit enforced');
+ await page.getByRole('button',{name:'Devam',exact:true}).click();
+ await page.getByRole('button',{name:'Üst / alt vücut',exact:false}).click();
+ await page.getByRole('button',{name:'Devam',exact:true}).click();
+ await page.getByLabel('18 yaş veya üzerindeyim.',{exact:true}).check();
+ await page.getByRole('button',{name:'Programımı hazırla',exact:true}).click();
+ await expect(page.getByRole('heading',{name:'Planına göz at',exact:true})).toBeVisible();
+ expect((await api('bootstrap')).programs).toHaveLength(0);
+ results.push('Preview creates no program or actual set');
+ await expect(page.getByText('Front lever tutuş',{exact:true}).first()).toBeVisible();
+ await expect(page.getByText('EZ bar row',{exact:true})).toHaveCount(0);
+ expect(await page.locator('main').innerText()).not.toContain('Dambıl ile');
+ for(const width of [360,390,768,1280]){await page.setViewportSize({width,height:844});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);}
+ await page.setViewportSize({width:390,height:844});
+ await page.screenshot({path:root+'/docs/evidence/hybrid-planning/preview.png',fullPage:true});
+ const {default:AxeBuilder}=await import('../../apps/web/node_modules/@axe-core/playwright/dist/index.mjs');
+ const violations=(await new AxeBuilder({page}).analyze()).violations;
+ writeFileSync(root+'/docs/evidence/hybrid-planning/a11y.json',JSON.stringify(violations,null,2));expect(violations).toEqual([]);
+ await page.getByRole('button',{name:'Düzenle ve kaydet',exact:true}).click();
+ await page.getByRole('button',{name:'Taslağı kaydet',exact:true}).click();await synced();
+ let state=await api('bootstrap');expect(state.programs).toHaveLength(1);expect(state.programs[0].status).toBe('draft');
+ expect(state.programs[0].decisions.guided_choices.focus.back).toBe(3);
+ expect(state.sets).toHaveLength(0);
+ await page.getByRole('button',{name:'Ana planım yap',exact:true}).click();await synced();
+ state=await api('bootstrap');expect(state.programs[0].status).toBe('active');
+ await page.reload();await synced();await expect(page.getByRole('heading',{name:'Nereden başlıyoruz?',exact:true})).toHaveCount(0);
+ await page.goto(base+'/#today');await expect(page.getByText('Ana programın',{exact:true})).toBeVisible();
+ results.push('Canonical plan saved with questionnaire, explicitly activated, visible on today; no fabricated actual sets');
+ await page.goto(base+'/#health');
+ await page.getByRole('button',{name:'Kas ve antrenman',exact:true}).click();
+ await expect(page.getByRole('heading',{name:'Kas çalışmalarım',exact:true})).toBeVisible();
+ await expect(page.getByRole('link',{name:'Beslenmemi kaydet',exact:true})).toBeVisible();
+ await expect(page.getByText('Yapılan çalışmaların dağılımı',{exact:true})).toHaveCount(1);
+ results.push('Health exposes the shared muscle report and existing nutrition entry');
+ expect(errors).toEqual([]);writeFileSync(root+'/docs/evidence/hybrid-planning/browser.json',JSON.stringify({result:'PASS',checks:results,browser:browser.version(),errors},null,2));console.log(JSON.stringify({result:'PASS',checks:results}));
+}catch(error){if(page&&!page.isClosed())await page.screenshot({path:root+'/docs/evidence/hybrid-planning/browser-failure.png',fullPage:true});console.error('Revision browser failed:',error.message);process.exitCode=1;}finally{if(browser)await browser.close();if(server){server.kill('SIGKILL');await new Promise(r=>server.once('exit',r));}execFileSync(python,['tools/v2/test_database.py','drop',name],{cwd:root,stdio:'pipe'});}
