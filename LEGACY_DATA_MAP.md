@@ -132,3 +132,7 @@ Yeni atlas herkese açık lisanslı uygulama varlığıdır, eski kişisel GLB'n
 ## Birleşik revizyon V2 ek alanları
 
 Tam alan/varsayılan/kaynak ve geri alma sözleşmesi: `docs/migration/REVISION_V2.md`. Profil `planning_preferences`, seans `planning_context/feedback`, vardiya uygunluk/planlanan uyku/süre, meal `nutrient_snapshot` kopya provenansı ve analysis `report_records` eklemelidir. Mongo eski belge okuması yazım yapmaz; bilinmeyen başka alanlar sessiz atılmaz. CSV raw kaynağı private ImportRun içinde korunur. Gerçek kullanıcı geçişi yapılmadı.
+
+## Guided planning (27 Eylül 2026)
+
+`program.create.guided_choices` doğrulanmış soru yanıtlarını `Program.decisions.guided_choices` JSON alanına taşır (deneyim, amaç, ekipman, gün/süre, split, beş puanlık odak, serbest hedef). Eski programlarda alan yoktur; geçmiş okunurken yaratılmaz. Cihazdaki `guided-plan` IndexedDB taslağı hesap kapsamlıdır; sunucuya ancak program kaydı onaylanınca gider. `alos-guided-entry:<athlete_id>` yalnız ilk boş hesap yönlendirme tercihidir. Dört yeni katalog kimliği: dumbbell-rdl, dumbbell-overhead-press, dumbbell-goblet-squat, bodyweight-calf-raise; önceki kimlikler değiştirilmez. Ayrıntı: docs/MACROFACTOR_REVIEW.md.

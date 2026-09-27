@@ -1,3 +1,4 @@
+import { GuidedPlan } from "./GuidedPlan";
 import { MoveDayPreview } from "./MoveDayPreview";
 import { DurationPreview } from "./DurationPreview";
 import { MovementAlternatives } from "./MovementAlternatives";
@@ -51,7 +52,8 @@ type DayDraft = {
   exercises: ExerciseDraft[];
   pinned?: boolean;
 };
-type PlanDraft = {
+export type PlanDraft = {
+  guided_choices?: Record<string, unknown>;
   name: string;
   goal: string;
   start_date: string;
@@ -90,6 +92,10 @@ const words = {
 export function Programming({ store }: { store: SyncStore }) {
   const preferences = (store.view("profile")[0]?.planning_preferences ||
     {}) as PlanningPrefs;
+  const [guidedChoice, setGuided] = useState<boolean | null>(null);
+  const guided =
+    guidedChoice ??
+    (Boolean(store.snapshot) && store.view("program").length === 0);
   const [draft, setDraft] = useState<PlanDraft | null>(null);
   const [error, setError] = useState("");
   const [notes, setNotes] = useState<string[]>([]);
@@ -209,13 +215,36 @@ export function Programming({ store }: { store: SyncStore }) {
           {error}
         </p>
       )}
-      <div className="actions">
-        <button onClick={() => void start()}>
-          <Plus size={18} />
-          Dönem oluştur
-        </button>
-      </div>
-      {draft && (
+      {!guided && (
+        <div className="actions">
+          <button onClick={() => setGuided(true)}>
+            <Sparkles size={18} />
+            Birlikte program oluşturalım
+          </button>
+          <button
+            className="secondary"
+            onClick={() => {
+              setGuided(false);
+              void start();
+            }}
+          >
+            <Plus size={18} />
+            Dönem oluştur
+          </button>
+        </div>
+      )}
+      {guided && (
+        <GuidedPlan
+          store={store}
+          onClose={() => setGuided(false)}
+          onUse={(plan, messages) => {
+            edit(plan);
+            setNotes(messages);
+            setGuided(false);
+          }}
+        />
+      )}
+      {!guided && draft && (
         <section className="card builder">
           <h2>1 · Nereye ulaşmak istiyorsun?</h2>
           <div className="form-grid">
@@ -889,69 +918,73 @@ export function Programming({ store }: { store: SyncStore }) {
           </div>
         </section>
       )}
-      <section className="program-list">
-        {programs.map((p) => (
-          <article className="card" key={p.id}>
-            <span className="eyebrow">
-              {p.status === "active"
-                ? "Ana planım"
-                : p.status === "archived"
-                  ? "Geçmiş dönem"
-                  : "Onay bekleyen taslak"}
-            </span>
-            <h2>{String(p.name)}</h2>
-            <p>{String(p.goal)}</p>
-            <p>
-              {displayDate(String(p.start_date))} · {Number(p.weeks)} hafta
-            </p>
-            {Boolean(p.decisions) &&
-              typeof p.decisions === "object" &&
-              p.decisions !== null &&
-              "missing" in p.decisions &&
-              (p.decisions.missing as string[]).map((n) => <p key={n}>{n}</p>)}
-            <div className="actions">
-              {p.status === "draft" && (
-                <button
-                  disabled={Boolean(p.local_pending)}
-                  onClick={() =>
-                    void store
-                      .enqueue("program.activate", p, {})
-                      .catch((e) => setError(e.message))
-                  }
-                >
-                  <CheckCircle2 size={18} />
-                  Ana planım yap
+      {!guided && (
+        <section className="program-list">
+          {programs.map((p) => (
+            <article className="card" key={p.id}>
+              <span className="eyebrow">
+                {p.status === "active"
+                  ? "Ana planım"
+                  : p.status === "archived"
+                    ? "Geçmiş dönem"
+                    : "Onay bekleyen taslak"}
+              </span>
+              <h2>{String(p.name)}</h2>
+              <p>{String(p.goal)}</p>
+              <p>
+                {displayDate(String(p.start_date))} · {Number(p.weeks)} hafta
+              </p>
+              {Boolean(p.decisions) &&
+                typeof p.decisions === "object" &&
+                p.decisions !== null &&
+                "missing" in p.decisions &&
+                (p.decisions.missing as string[]).map((n) => (
+                  <p key={n}>{n}</p>
+                ))}
+              <div className="actions">
+                {p.status === "draft" && (
+                  <button
+                    disabled={Boolean(p.local_pending)}
+                    onClick={() =>
+                      void store
+                        .enqueue("program.activate", p, {})
+                        .catch((e) => setError(e.message))
+                    }
+                  >
+                    <CheckCircle2 size={18} />
+                    Ana planım yap
+                  </button>
+                )}
+                <button className="secondary" onClick={() => copy(p)}>
+                  Yeni sürümünü düzenle
                 </button>
-              )}
-              <button className="secondary" onClick={() => copy(p)}>
-                Yeni sürümünü düzenle
-              </button>
-              {p.status === "active" && (
-                <button
-                  className="text-button"
-                  onClick={() =>
-                    void store
-                      .enqueue("program.archive", p, {})
-                      .catch((e) => setError(e.message))
-                  }
-                >
-                  Programı arşive al
-                </button>
-              )}
+                {p.status === "active" && (
+                  <button
+                    className="text-button"
+                    onClick={() =>
+                      void store
+                        .enqueue("program.archive", p, {})
+                        .catch((e) => setError(e.message))
+                    }
+                  >
+                    Programı arşive al
+                  </button>
+                )}
+              </div>
+            </article>
+          ))}
+          {!programs.length && !draft && (
+            <div className="card">
+              <h2>İlk adım, hedefini belirlemek.</h2>
+              <p>
+                Henüz bir planın yok. İstersen önerilerle başla, istersen kendi
+                programını gir.
+              </p>
             </div>
-          </article>
-        ))}
-        {!programs.length && !draft && (
-          <div className="card">
-            <h2>İlk adım, hedefini belirlemek.</h2>
-            <p>
-              Henüz bir planın yok. İstersen önerilerle başla, istersen kendi
-              programını gir.
-            </p>
-          </div>
-        )}
-      </section>
-      <MovementLibrary />
+          )}
+        </section>
+      )}
+      {!guided && <MovementLibrary />}
     </>
   );
 }

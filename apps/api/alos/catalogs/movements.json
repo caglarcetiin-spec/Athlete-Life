@@ -2746,5 +2746,143 @@
     "evidence": "Inherited engineering assumption; no individual physiological validation",
     "load_kind": "bodyweight",
     "modality": "strength"
+  },
+  "Dumbbell Romanian Deadlift": {
+    "name": "Dumbbell Romanian Deadlift",
+    "type": "BARBELL",
+    "equipment": [
+      "Dumbbell"
+    ],
+    "metric": "reps",
+    "contraction": "Dynamic loaded",
+    "pattern": "Hip hinge",
+    "muscles": {
+      "hamstrings": 1,
+      "glutes": 0.86,
+      "spinalErectors": 0.56,
+      "forearms": 0.32
+    },
+    "qualities": {
+      "strength": 9,
+      "hypertrophy": 9,
+      "power": 6,
+      "skill": 4,
+      "stability": 6,
+      "core": 5,
+      "endurance": 4
+    },
+    "evidence": "Biomechanics + resistance-training principles",
+    "evidenceConfidence": "medium",
+    "note": "",
+    "staticHoldBandSec": null,
+    "id": "dumbbell-rdl",
+    "catalog_version": "movement-catalog-2.1",
+    "aliases": [],
+    "load_kind": "external",
+    "modality": "strength",
+    "mapping_note": "Equipment-specific variant of rdl; inherited engineering muscle weights, not validated tissue measurements."
+  },
+  "Dumbbell Overhead Press": {
+    "name": "Dumbbell Overhead Press",
+    "type": "BARBELL",
+    "equipment": [
+      "Dumbbell"
+    ],
+    "metric": "reps",
+    "contraction": "Dynamic loaded",
+    "pattern": "Vertical push",
+    "muscles": {
+      "frontDelts": 1,
+      "sideDelts": 0.76,
+      "triceps": 0.76,
+      "traps": 0.36,
+      "abs": 0.28
+    },
+    "qualities": {
+      "strength": 9,
+      "hypertrophy": 8,
+      "power": 7,
+      "skill": 4,
+      "stability": 6,
+      "core": 5,
+      "endurance": 4
+    },
+    "evidence": "Biomechanics + resistance-training principles",
+    "evidenceConfidence": "medium",
+    "note": "Tekrar + dış yük ile kaydedilir.",
+    "staticHoldBandSec": null,
+    "id": "dumbbell-overhead-press",
+    "catalog_version": "movement-catalog-2.1",
+    "aliases": [],
+    "load_kind": "external",
+    "modality": "strength",
+    "mapping_note": "Equipment-specific variant of ohp; inherited engineering muscle weights, not validated tissue measurements."
+  },
+  "Dumbbell Goblet Squat": {
+    "name": "Dumbbell Goblet Squat",
+    "type": "WEIGHTED",
+    "equipment": [
+      "Dumbbell"
+    ],
+    "metric": "reps",
+    "contraction": "Dynamic loaded",
+    "pattern": "Squat",
+    "muscles": {
+      "quads": 1,
+      "glutes": 0.78,
+      "adductors": 0.46,
+      "abs": 0.36
+    },
+    "qualities": {
+      "strength": 7,
+      "hypertrophy": 9,
+      "power": 4,
+      "skill": 3,
+      "stability": 6,
+      "core": 5,
+      "endurance": 7
+    },
+    "evidence": "Biomechanics + resistance-training principles",
+    "evidenceConfidence": "medium",
+    "note": "",
+    "staticHoldBandSec": null,
+    "id": "dumbbell-goblet-squat",
+    "catalog_version": "movement-catalog-2.1",
+    "aliases": [],
+    "load_kind": "external",
+    "modality": "strength",
+    "mapping_note": "Equipment-specific variant of backpack-goblet-squat; inherited engineering muscle weights, not validated tissue measurements."
+  },
+  "Bodyweight Calf Raise": {
+    "name": "Bodyweight Calf Raise",
+    "type": "WEIGHTED",
+    "equipment": [
+      "Bodyweight"
+    ],
+    "metric": "reps",
+    "contraction": "Dynamic",
+    "pattern": "Plantar flexion",
+    "muscles": {
+      "calves": 1
+    },
+    "qualities": {
+      "strength": 5,
+      "hypertrophy": 9,
+      "power": 3,
+      "skill": 2,
+      "stability": 5,
+      "core": 1,
+      "endurance": 8
+    },
+    "evidence": "Biomechanics + resistance-training principles",
+    "evidenceConfidence": "medium",
+    "note": "",
+    "staticHoldBandSec": null,
+    "id": "bodyweight-calf-raise",
+    "catalog_version": "movement-catalog-2.1",
+    "aliases": [],
+    "load_kind": "bodyweight",
+    "modality": "strength",
+    "mapping_note": "Equipment-specific variant of calf-raise; inherited engineering muscle weights, not validated tissue measurements."
   }
 }

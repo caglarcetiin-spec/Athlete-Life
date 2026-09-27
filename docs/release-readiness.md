@@ -40,3 +40,7 @@ Yayın sonrası bakılacaklar:401/409/422 oranları, kuyruğun kalıcı reddi, i
 ## Paket ve kaynak taraması
 
 `release/v2/build-manifest.json` yerel derleme varlıklarının SHA256 listesidir. `revision-v2-package` başarıyla yalnız kamuya açık varlıkları paketledi. `docs/evidence/revision-v2/source-safety.json` incelemesinde 182 kaynak/kanıt dosyasında tanımlı sır/dosya türü kalıpları bulunmadı (PASS). Bu tarama bütün kişisel veri türlerinin yokluğunu matematiksel olarak kanıtlamaz; kullanılan QA verileri sentetiktir.
+
+## Son ek: soru tabanlı program akışı
+
+27 Eylül 2026: MacroFactor Workouts resmî akış incelemesi sonrası sekiz adımlı, özgün Athlete Life sihirbazı ve `guided-strength-1` taslak üretimi eklendi. Eski hesap/programlar korunur; önizleme kalıcı kayıt yaratmaz. Soru yanıtları ancak açık program kaydında karar JSON'una eklenir. Yeni SQL migration/Mongo koleksiyonu yok; canlı hesap/medya göçü veya yayın yapılmadı. Dört ekipmana özgü yeni hareket kimliği eski sürümde UNKNOWN görülebilir; UI/API/katalog birlikte yayımlanmalı. İçerik varsayımları, native uygulamaya erişim sınırı ve güncel kanıtlar: `docs/MACROFACTOR_REVIEW.md`.

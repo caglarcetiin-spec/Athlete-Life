@@ -125,7 +125,25 @@ function Workspace({
   const [error, setError] = useState("");
   useEffect(() => {
     const un = store.subscribe(() => render((v) => v + 1));
-    void store.init().catch((e) => setError(e.message));
+    void store
+      .init()
+      .then(() => {
+        const key = "alos-guided-entry:" + store.me.athlete_id;
+        if (
+          !store.view("profile").length &&
+          !store.view("program").length &&
+          (!location.hash || location.hash === "#today")
+        ) {
+          try {
+            if (localStorage.getItem(key)) return;
+            localStorage.setItem(key, "seen");
+            location.hash = "program";
+          } catch {
+            /* Optional first-entry hint, manual entry remains available. */
+          }
+        }
+      })
+      .catch((e) => setError(e.message));
     return () => {
       un();
       store.close();
@@ -483,12 +501,12 @@ function Workspace({
                       <div>
                         <h2>Kendi yolunu birlikte oluşturalım.</h2>
                         <p>
-                          Profil, hedef, haftalık plan. Nereden başlayacağını
-                          rehberde görebilirsin.
+                          Birkaç kısa soruyla deneyimini, ekipmanını ve zamanını
+                          anlat. Programını birlikte oluşturalım.
                         </p>
                       </div>
-                      <a className="link-button secondary" href="#guide">
-                        Yol haritamı aç
+                      <a className="link-button secondary" href="#program">
+                        Programımı oluştur
                       </a>
                       <button
                         className="text-button"

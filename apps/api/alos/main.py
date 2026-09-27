@@ -622,6 +622,15 @@ def create_app(settings: Settings | None = None):
         snapshot = service.bootstrap(database, UUID(identity["athlete_id"]))
         return draft_with_context(DraftRequest.model_validate(await request.json()), snapshot, utcnow())
 
+    @app.post("/api/v2/guided-program-drafts")
+    async def guided_program_draft(request: Request):
+        from .db import utcnow
+        from .guided_planning import GuidedRequest, generate
+
+        identity = who(request, True)
+        snapshot = service.bootstrap(database, UUID(identity["athlete_id"]))
+        return generate(GuidedRequest.model_validate(await request.json()), snapshot, utcnow())
+
     @app.get("/api/v2/movement-alternatives")
     def movement_alternatives(request: Request, movement_id: str):
         from .planning_context import alternatives, profile_context

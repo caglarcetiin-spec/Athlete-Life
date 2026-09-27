@@ -1,0 +1,10 @@
+{
+  "result": "PASS",
+  "checks": [
+    "Questionnaire survives reload; five-point limit enforced",
+    "Preview creates no program or actual set",
+    "Canonical plan saved with questionnaire, explicitly activated, visible on today; no fabricated actual sets"
+  ],
+  "browser": "154.0.8037.57",
+  "errors": []
+}

@@ -48,6 +48,7 @@ class ProgramInput(StrictModel):
     start_date: date
     weeks: int = Field(ge=1, le=52)
     parent_id: UUID | None = None
+    guided_choices: dict | None = None
     days: list[DayInput] = Field(min_length=1, max_length=364)
 
     @model_validator(mode="after")
@@ -111,6 +112,11 @@ def apply_program(db, athlete, command):
             )
         )
         analysis["planning_context"] = profile_context(serial(profile) if profile else None)
+        if data.guided_choices is not None:
+            from .guided_planning import GuidedChoices
+
+            analysis["guided_choices"] = GuidedChoices.model_validate(data.guided_choices).model_dump()
+            analysis["guided_model_version"] = "guided-strength-1"
         row = Program(
             id=command.entity_id,
             athlete_id=athlete.id,

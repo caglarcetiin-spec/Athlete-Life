@@ -1668,3 +1668,23 @@ label.check {
 /* Theme colors change together; a delayed secondary background briefly
    leaves dark-theme light text on the old white surface. */
 button.secondary { transition: transform 0.18s; }
+
+/* Guided planning: one decision at a time, visible selection and stable controls. */
+.guided-plan { max-width: 760px; margin-inline: auto; }
+.guided-top, .guided-footer { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+.guided-plan progress { width:100%; height:6px; accent-color:var(--accent); margin:16px 0 24px; }
+.guided-plan h2 { outline:none; margin-bottom:24px; }
+.guided-options { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin:18px 0; }
+.guided-option { text-align:left; white-space:normal; padding:18px; min-height:56px; display:flex; flex-direction:column; align-items:stretch; gap:8px; }
+.guided-option strong { display:flex; justify-content:space-between; gap:8px; }
+.guided-option span { font-size:.9rem; font-weight:400; }
+.guided-option[aria-pressed="true"] { outline:2px solid currentColor; outline-offset:-2px; }
+.guided-muscles { margin:20px 0; }
+.guided-muscle { display:flex; justify-content:space-between; align-items:center; padding:12px 0; gap:12px; border-bottom:1px solid var(--line); }
+.guided-muscle > div { display:flex; align-items:center; gap:12px; }
+.guided-muscle output { min-width:1.2em; text-align:center; }
+.guided-footer { margin-top:28px; padding-top:18px; border-top:1px solid var(--line); }
+@media(max-width:480px) { .guided-options { grid-template-columns:1fr; } .guided-plan { padding:18px; } }
+.focus-map { color:var(--accent); max-width:320px; margin:20px auto; text-align:center; }
+.focus-map svg { display:block; width:100%; height:auto; }
+.focus-map figcaption { font-size:.8rem; color:var(--ink); }

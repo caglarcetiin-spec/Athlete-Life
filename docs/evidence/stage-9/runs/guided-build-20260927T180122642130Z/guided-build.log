@@ -1,0 +1,5 @@
+
+> athlete-life-web@2.0.0-dev build
+> tsc -b && vite build
+
+src/features/Programming.tsx(979,17): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?

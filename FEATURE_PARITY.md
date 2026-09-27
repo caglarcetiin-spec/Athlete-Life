@@ -93,3 +93,7 @@ Tüm 17 route korunur; yalnız birincil menüdeki tekrarlar kaldırıldı. Araç
 ## Birleşik V2 revizyon
 
 Mevcut Mongo, GLB kalıcılığı, 2B/3B rapor ve manuel plan yolları korunur. Kanonik hareket seçimi, bilinen beslenme toplamları, reddedilmiş kayıt düzeltmesi, açık çakışma çözümü, set türü/superset, ekipman profili snapshot'ı, süre/gün taşıma önizlemesi, isteğe bağlı seans geri bildirimi, genel CSV ve kapsam seçmeli PDF eklendi. Sayısal sağlık/otomatik yük artışı kapalıdır; değişmez plan sürümü üzerinden manuel kabul sürer. Yeni marka bağlayıcısı veya klinik doğruluk iddiası yok. Ayrıntılı kabul matrisi `docs/revision-status.md`.
+
+### Soru tabanlı plan oluşturma
+
+MacroFactor Workouts resmî akışından esinlenen, sekiz ekranlı özgün Athlete Life sihirbazı eklendi. Beş öncelik puanı, ekipman/gün/süre/split, 4/8/12 hafta; salt okunur önizleme, manuel son düzeltme ve açık ana plana alma. Mevcut manuel plan ve kayıt hattı korunur. MacroFactor algoritma/özellik eşitliği veya kas hasarı ölçümü iddiası yok. Kapsam ve doğrulama: `docs/MACROFACTOR_REVIEW.md`.

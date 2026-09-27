@@ -160,3 +160,7 @@ MongoDB/hesap/medya göçü yok. Geri dönüş eski kaynak/paket commit'i; yeni 
 ## Birleşik V2 revizyon hattı
 
 `movements.py` kanonik ID/alias/sürüm → `ExercisePicker` → program/slot/gerçek set → `science.compute` dağılım/kapsam/snapshot. `planning_context.py` ekipman snapshot/alternatif/süre hesaplarını birleştirir; `policies.py` onaysız sayısal sağlık ve ilerleme kuralını kapalı tutar. `csv_transfer.py` genel CSV preview/atomic apply/export; `movement_migration.py` yalnız çevrimdışı lossless mapping. `reports.report_sections` PDF ve içerik önizlemesinin ortak kaynağıdır. `catalogs/brand.json` web/API markasıdır. Ayrıntılı veri haritası ve uyumluluk: `docs/migration/REVISION_V2.md`.
+
+### Guided planning eki (27 Eylül 2026)
+
+`GuidedPlan.tsx` → CSRF korumalı POST `/api/v2/guided-program-drafts` → `guided_planning.generate` → mevcut düzenleyici → `program.create`/`program.activate`. Taslak endpoint'i kalıcı kayıt yapmaz. Önceki `draft_with_context` sağlık/yaş kapısı tekrar kullanılır. Yeni SQL alanı/koleksiyon yok; onaylanan sorular karar JSON'unda korunur. Güncel kapsam ve kaynaklar: `docs/MACROFACTOR_REVIEW.md`.
