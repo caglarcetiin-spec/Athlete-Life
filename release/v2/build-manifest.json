@@ -2,10 +2,10 @@
   "anatomy/LICENSE.txt": "bcef1a57a6c63126c3cba7fe9453240667b3b96e184daf9c7b2259cf79360a0c",
   "anatomy/muscles.glb": "39b320821f47e45024b3f65980c8ee118617a11712bd57d43244d266c052f707",
   "app-icon.svg": "b522854da5018dd6c00135200de3a4415773cbbc429df5de1b0a7d59b23ab6a1",
-  "assets/BodyModel-Cg2I4Vtx.js": "fbf76f376c7cd2e1ec16ddf4c980218f67a4fb5ecdbbffca4ca9a64e6a7f86f2",
-  "assets/index-BHHpf98f.js": "50c49fc756cee3675c348899bd2264c2c7ef26cbe0c8e87e61e7237e126b5713",
-  "assets/index-CUw1LE2c.css": "9b7a744fcc3a59a835d4c8d49a6f14752e7e441352b9c7cf7e82e03986a2de46",
-  "index.html": "89e0a5c2302ac35187ac62c57ea71579f542e281cca1538fa3fa9c6c9d56d4d8",
+  "assets/BodyModel-pZGEnWq3.js": "1a8175c08bb1458d8f9e574f3ef02b6e8e003f4ca9d28c55d7bda175c6fc0b22",
+  "assets/index-DJtJcA3k.js": "e7778d7e85b4d7383819b1ac43abb59390e23ae1f52090a55cd64fed5ce55094",
+  "assets/index-GGLz-VYK.css": "423659ce744d4c6f222039f84375231e8b25f8e4c9aa4019fc69fbba371eace1",
+  "index.html": "06ffb440b074690950678527d5dfec120e2c4eb2aae273901121dbe26c8da3c4",
   "manifest.webmanifest": "f1da0bfbcba614493c0d5f97fe40892627c2196aaf44434ac42ae148d4effb16",
-  "sw.js": "55e064a2ef365c5fb64392b459504a8af454f040227de84fa159934ca04117b7"
+  "sw.js": "5d4261794d7d1d3ee7cc2b7c19ee11ec07b803fa01d25f7c834630e50759702c"
 }

@@ -180,7 +180,8 @@ export function Admin({ me, onLogout }: { me: Me; onLogout: () => void }) {
                   <strong>
                     {u.name} · @{u.username}
                   </strong>
-                  <span>{u.email || "E-posta eklenmemiş"}</span>
+                  <span>E-posta: {u.email || "Eklenmemiş"}</span>
+                  <small>Hesap ID: {u.id}</small>
                   <small>
                     {u.is_admin ? "Yönetici" : "Kullanıcı"} ·{" "}
                     {new Date(u.created_at).toLocaleDateString("tr-TR")}
@@ -211,9 +212,22 @@ export function Admin({ me, onLogout }: { me: Me; onLogout: () => void }) {
           {detail ? (
             <>
               <h2>{detail.account.name}</h2>
-              <p>
-                @{detail.account.username} ·{" "}
-                {detail.account.email || "E-posta yok"}
+              <h3>Hesap ve giriş bilgileri</h3>
+              <dl className="admin-account-info">
+                <dt>Giriş kullanıcı adı</dt>
+                <dd>{detail.account.username}</dd>
+                <dt>Hesap ID</dt>
+                <dd>{detail.account.id}</dd>
+                <dt>Mevcut e-posta adresi</dt>
+                <dd>{detail.account.email || "Bu hesaba e-posta eklenmemiş."}</dd>
+                <dt>Kayıt tarihi</dt>
+                <dd>{new Date(detail.account.created_at).toLocaleString("tr-TR")}</dd>
+                <dt>Şifre</dt>
+                <dd>Gösterilemez. Şifreler tek yönlü doğrulama özeti olarak saklanır.</dd>
+              </dl>
+              <p className="caption">
+                E-posta sonradan değiştirilebilir; burada mevcut adres gösterilir.
+                İlk kayıt sırasında kullanılan e-posta geçmişi tutulmaz.
               </p>
               <h3>Kullanıcı kayıtları</h3>
               <p className="caption">
