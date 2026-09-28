@@ -12,7 +12,7 @@ from .contracts import StrictModel
 from .credentials import verify_password
 from .db import Base, utcnow
 from .errors import DomainError
-from .models import Athlete, AuthSession, EmailChallenge, RecoveryCode, SecurityAudit, User
+from .models import Administrator, Athlete, AuthSession, EmailChallenge, RecoveryCode, SecurityAudit, User
 from .mongo_db import retry_transaction
 
 
@@ -141,19 +141,26 @@ def erase(database, identity, data):
         athlete = db.get(Athlete, UUID(identity["athlete_id"]), with_for_update=True)
         user, _ = locked_account(db, identity)
         verify(user, data.password)
-        if user.email:
-            db.execute(delete(EmailChallenge).where(EmailChallenge.email == user.email.strip().casefold()))
-        for table in reversed(Base.metadata.sorted_tables):
-            if table.name in ("users", "athletes"):
-                continue
-            if "athlete_id" in table.c:
-                db.execute(table.delete().where(table.c.athlete_id == athlete.id))
-            elif "user_id" in table.c:
-                db.execute(table.delete().where(table.c.user_id == user.id))
-        db.delete(athlete)
-        db.flush()
-        db.delete(user)
+        if db.get(Administrator, user.id):
+            raise DomainError("admin_protected", "Yönetici hesabı bu ekrandan silinemez.", 409)
+        erase_records(db, user, athlete)
     return {
         "deleted": True,
         "retention": "Aktif veritabanından silindi. Daha önce indirdiğin dosyalar ve sağlayıcı yedekleri ayrıca kendi saklama sürelerine tabidir.",
     }
+
+
+def erase_records(db, user, athlete):
+    """Shared physical deletion inside an already authorized/locked transaction."""
+    if user.email:
+        db.execute(delete(EmailChallenge).where(EmailChallenge.email == user.email.strip().casefold()))
+    for table in reversed(Base.metadata.sorted_tables):
+        if table.name in ("users", "athletes"):
+            continue
+        if "athlete_id" in table.c:
+            db.execute(table.delete().where(table.c.athlete_id == athlete.id))
+        elif "user_id" in table.c:
+            db.execute(table.delete().where(table.c.user_id == user.id))
+    db.delete(athlete)
+    db.flush()
+    db.delete(user)

@@ -105,6 +105,7 @@ export const pullSchema = z.object({
   ),
 });
 export const meSchema = z.object({
+  is_admin: z.boolean().default(false),
   id: z.uuid(),
   athlete_id: z.uuid(),
   name: z.string(),

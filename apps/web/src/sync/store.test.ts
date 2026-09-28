@@ -6,6 +6,7 @@ import { mergeEntities, SyncStore } from "./store";
 import { selectedAfterTick, today } from "../time";
 const owner = "ab917ba1-34c8-4b1a-b187-7f0a38f03285";
 const me = {
+  is_admin: false,
   id: owner,
   athlete_id: owner,
   username: "test",

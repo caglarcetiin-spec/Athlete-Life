@@ -1,0 +1,11 @@
+{
+  "origin": "http://127.0.0.1:10005",
+  "ready": {
+    "status": "ready"
+  },
+  "served_assets": [
+    "/assets/index-BHHpf98f.js"
+  ],
+  "release_matches": true,
+  "authenticated_personal_data_read": false
+}

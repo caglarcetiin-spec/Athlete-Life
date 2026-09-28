@@ -1,3 +1,4 @@
+import { Admin } from "./features/Admin";
 import { AIChat } from "./features/AIChat";
 import { BrandLogo } from "./BrandLogo";
 import { ConflictComparison } from "./features/ConflictComparison";
@@ -752,7 +753,9 @@ export default function App() {
         Athlete Life açılıyor…
       </main>
     );
-  return me ? (
+  return me?.is_admin ? (
+    <Admin me={me} onLogout={() => setMe(null)} />
+  ) : me ? (
     <Workspace
       key={me.id + me.csrf}
       me={me}

@@ -285,8 +285,40 @@ def create_app(settings: Settings | None = None):
     @app.get("/api/v2/auth/me")
     def me(request: Request):
         result = who(request)
+        from .admin import is_admin
+        result["is_admin"] = is_admin(database, result["id"])
         result.pop("session_hash")
         return result
+
+    @app.get("/api/v2/admin/users")
+    def admin_users(request: Request, page: int = 0):
+        from . import admin
+        if not 0 <= page <= 100000:
+            raise DomainError("page", "Geçerli sayfa seç.")
+        return admin.users(database, who(request), page)
+
+    @app.get("/api/v2/admin/users/{target_id}")
+    def admin_detail(request: Request, target_id: UUID):
+        from . import admin
+        return admin.detail(database, who(request), target_id)
+
+    @app.post("/api/v2/admin/users/{target_id}/{operation}")
+    def admin_action(request: Request, target_id: UUID, operation: str, body: dict):
+        from . import admin
+        return admin.action(database, who(request, True), target_id, admin.Action.model_validate(body), operation)
+
+    @app.get("/api/v2/admin/users/{target_id}/media/{media_id}")
+    def admin_media(request: Request, target_id: UUID, media_id: UUID):
+        from fastapi.responses import Response
+
+        from . import admin
+        content, mime = admin.media(database, who(request), target_id, media_id)
+        return Response(content, media_type=mime, headers={"Content-Disposition": "inline" if mime == "image/jpeg" else "attachment; filename=model.glb"})
+
+    @app.get("/api/v2/admin/audit")
+    def admin_audit(request: Request):
+        from . import admin
+        return admin.audit(database, who(request))
 
     @app.get("/api/v2/integrations")
     def integration_status(request: Request):

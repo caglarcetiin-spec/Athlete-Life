@@ -312,6 +312,8 @@ def bootstrap(database, athlete_id):
     register_lifestyle()
     with database.snapshot() as db:
         athlete = db.get(Athlete, athlete_id)
+        if athlete is None:
+            raise DomainError("not_found", "Hesap bulunamadı.", 404)
         result = {
             "api_version": 2,
             "schema_version": 1,

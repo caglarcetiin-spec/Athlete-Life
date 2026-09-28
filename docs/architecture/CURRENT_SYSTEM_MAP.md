@@ -249,3 +249,7 @@ GuidedPlan bölge panelini her branşta açık gösterir; endurance geçişi/gö
 - account.erase mevcut sahiplik kapsamına ek olarak hesap e-postasının bekleyen doğrulamasını kaldırır. Profile üst düğmesi mevcut şifre/onay silme akışını açar.
 - `ai_chat.ChatRequest`: messages(role/text), isteğe bağlı image, consent; geçici istek. normalize_photo → sabit EVREN chat endpoint. Kayıt bootstrap'ı bağlama eklenmez; sohbet DB'ye yazılmaz. AIChat yalnız sayfa belleği; chatHistory sınırlı tam mesaj çiftlerini taşır. `/chat` Araçlar altında.
 - [Kurulum, güvenlik, göç ve rollback](../ACCOUNT_EMAIL_CHAT.md).
+
+## 2026-09-28 — Yönetici yetkisi ve ayrı panel
+
+`Administrator/administrators(user_id, created_at)` açık operatör grant'i; PostgreSQL b829admin001 / Mongo ek koleksiyon. `auth/me.is_admin` geçici UI bilgisi; admin.require her API'de rol+oturum kontrolünü tekrarlar. `/admin/users`, hedef detay/medya, delete/revoke, audit; hesap sırları allowlist dışında. `Admin` normal Workspace'i başlatmadan ayrı panel açar. account.erase_records ortak sahiplik silmesi; yönetici hesapları korunur. SecurityAudit admin_view/admin_media/admin_delete/admin_revoke hedef kimliğini saklar. [Yetki, provisioning, test ve rollback](../ADMIN_PANEL.md).

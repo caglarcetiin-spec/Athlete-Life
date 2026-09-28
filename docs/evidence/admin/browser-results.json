@@ -1,0 +1,13 @@
+{
+  "result": "PASS",
+  "errors": [],
+  "checks": [
+    "Admin-only layout",
+    "User detail and records",
+    "Wrong administrator password rejected",
+    "Confirmed target deletion",
+    "Audit visible and admin self-delete absent",
+    "Mobile/desktop Axe and overflow"
+  ],
+  "environment": "synthetic"
+}
