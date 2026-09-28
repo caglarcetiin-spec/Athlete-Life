@@ -180,3 +180,7 @@ GET `/api/v2/ai-planning-status` yalnız yapılandırma durumunu oturum sahibine
 ## 28 Eylül 2026 — EVREN yanıtı ve günlük hareket sözleşmesi
 
 `ai-planner-4` her gün için `allowed_movement_ids` üretir; bunlar kalıcı kullanıcı alanları değil, mevcut uygun hareket listesi ve `ALLOWED_FAMILIES` üzerinden hesaplanan AI bağlamıdır. Aynı sabit çıktı denetiminde kullanılır. EVREN parser yalnız tamamlanan, kanonik şemaya uyan yanıtı geçirir. Yanıt bütçesi/teşhis/geri dönüş etkisi: `docs/EVREN_RESPONSE_FIX.md`.
+
+## 28 Eylül 2026 — AI taslağı son düzenleme akışı
+
+`GuidedPlan.onUse → Programming.edit → SyncStore.saveDraft("program")` aynı dolu planı taşır. `Programming` açılışında hesaba özel mevcut `draft:program` kaydı yüklenir ve soru akışından önce düzenleyiciye geri alınır. AI/yönlendirmeli taslaklarda tekrar öneri formu gizlidir; dozlar özetlenir ve kullanıcı isterse dolu kontrolleri açar. Veri alanı veya şema değişikliği yok; kanıt ve geri dönüş: `docs/AI_PLAN_HANDOFF.md`.

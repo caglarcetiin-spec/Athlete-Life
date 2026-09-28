@@ -5,7 +5,7 @@ import { MovementAlternatives } from "./MovementAlternatives";
 import type { PlanningPrefs } from "./PlanningPreferences";
 import { ExercisePicker } from "./ExercisePicker";
 import { MovementHelp, MovementLibrary } from "./MovementGuide";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   CalendarDays,
   Plus,
@@ -104,6 +104,32 @@ export function Programming({ store }: { store: SyncStore }) {
     guidedChoice ??
     (Boolean(store.snapshot) && store.view("program").length === 0);
   const [draft, setDraft] = useState<PlanDraft | null>(null);
+  const [draftReady, setDraftReady] = useState(false);
+  const synced = Boolean(store.snapshot);
+  useEffect(() => {
+    if (!synced) return;
+    let current = true;
+    void store
+      .loadDraft("program")
+      .then((saved) => {
+        if (!current) return;
+        if (saved) {
+          setDraft(saved);
+          setGuided(false);
+        }
+        setDraftReady(true);
+      })
+      .catch(() => {
+        if (!current) return;
+        setError(
+          "Cihazındaki program taslağı açılamadı. Yeni bir plan oluşturmadan önce sayfayı yeniden aç.",
+        );
+      });
+    return () => {
+      current = false;
+    };
+  }, [store, synced]);
+  const prepared = Boolean(draft?.ai_origin || draft?.guided_choices);
   const [error, setError] = useState("");
   const [notes, setNotes] = useState<string[]>([]);
   const [objective, setObjective] = useState("hybrid");
@@ -222,7 +248,8 @@ export function Programming({ store }: { store: SyncStore }) {
           {error}
         </p>
       )}
-      {!guided && (
+      {!draftReady && <p role="status">Program taslağın açılıyor…</p>}
+      {draftReady && !guided && !draft && (
         <div className="actions">
           <button onClick={() => setGuided(true)}>
             <Sparkles size={18} />
@@ -240,7 +267,7 @@ export function Programming({ store }: { store: SyncStore }) {
           </button>
         </div>
       )}
-      {guided && (
+      {draftReady && guided && (
         <GuidedPlan
           store={store}
           onClose={() => setGuided(false)}
@@ -253,7 +280,26 @@ export function Programming({ store }: { store: SyncStore }) {
       )}
       {!guided && draft && (
         <section className="card builder">
-          <h2>1 · Nereye ulaşmak istiyorsun?</h2>
+          {prepared && (
+            <div className="notice" role="status">
+              <h2>Programın hazır · son rötuşlar</h2>
+              <p>
+                Günlerin, hareketlerin, setlerin ve hedeflerin otomatik
+                dolduruldu. İstersen hareketin üzerine tıklayıp düzenle; bu
+                haliyle de taslağı kaydedebilirsin.
+              </p>
+              <p>
+                Boş bırakılmış ek ağırlık gibi isteğe bağlı alanları şimdi
+                doldurman gerekmez. Gerçekte yaptığın değerleri antrenman
+                sırasında kaydedebilirsin.
+              </p>
+            </div>
+          )}
+          <h2>
+            {prepared
+              ? "1 · Dönem bilgilerin"
+              : "1 · Nereye ulaşmak istiyorsun?"}
+          </h2>
           <div className="form-grid">
             <label>
               Dönem adı
@@ -296,112 +342,126 @@ export function Programming({ store }: { store: SyncStore }) {
               />
             </label>
           </div>
-          <details open>
-            <summary>
-              Öneriyle başla · istersen aşağıda tamamen elle oluştur
-            </summary>
-            <div className="form-grid">
-              <label>
-                Önceliğim
-                <select
-                  aria-label="Önceliğim"
-                  value={objective}
-                  onChange={(e) => setObjective(e.target.value)}
-                >
-                  <option value="hybrid">Kuvvet ve dayanıklılık</option>
-                  <option value="strength">Kuvvet</option>
-                  <option value="hypertrophy">Kas gelişimi</option>
-                  <option value="endurance">Dayanıklılık</option>
-                  <option value="skill">Beceri</option>
-                </select>
-              </label>
-              <label>
-                Deneyimim
-                <select
-                  value={experience}
-                  onChange={(e) => setExperience(e.target.value)}
-                >
-                  <option value="new">Yeni başlıyorum</option>
-                  <option value="returning">Ara verdim, dönüyorum</option>
-                  <option value="regular">Düzenli çalışıyorum</option>
-                  <option value="advanced">İleri düzey</option>
-                </select>
-              </label>
-              <label>
-                Branş
-                <select
-                  value={sport}
-                  onChange={(e) => setSport(e.target.value)}
-                >
-                  <option value="strength">Kuvvet / fitness</option>
-                  <option value="calisthenics">Kalistenik</option>
-                  <option value="running">Koşu</option>
-                  <option value="walking">Yürüyüş</option>
-                  <option value="custom">Başka branş · elle planla</option>
-                </select>
-              </label>
-            </div>
-            <fieldset>
-              <legend>Hangi günler çalışmak istersin?</legend>
-              <div className="choices">
-                {weekdays.map((name, index) => (
-                  <label className="check" key={name}>
-                    <input
-                      type="checkbox"
-                      checked={days.includes(index)}
-                      onChange={(e) =>
-                        setDays(
-                          e.target.checked
-                            ? [...days, index].sort()
-                            : days.filter((d) => d !== index),
-                        )
-                      }
-                    />
-                    {name}
-                  </label>
-                ))}
+          {!prepared && (
+            <details open>
+              <summary>
+                Öneriyle başla · istersen aşağıda tamamen elle oluştur
+              </summary>
+              <div className="form-grid">
+                <label>
+                  Önceliğim
+                  <select
+                    aria-label="Önceliğim"
+                    value={objective}
+                    onChange={(e) => setObjective(e.target.value)}
+                  >
+                    <option value="hybrid">Kuvvet ve dayanıklılık</option>
+                    <option value="strength">Kuvvet</option>
+                    <option value="hypertrophy">Kas gelişimi</option>
+                    <option value="endurance">Dayanıklılık</option>
+                    <option value="skill">Beceri</option>
+                  </select>
+                </label>
+                <label>
+                  Deneyimim
+                  <select
+                    value={experience}
+                    onChange={(e) => setExperience(e.target.value)}
+                  >
+                    <option value="new">Yeni başlıyorum</option>
+                    <option value="returning">Ara verdim, dönüyorum</option>
+                    <option value="regular">Düzenli çalışıyorum</option>
+                    <option value="advanced">İleri düzey</option>
+                  </select>
+                </label>
+                <label>
+                  Branş
+                  <select
+                    value={sport}
+                    onChange={(e) => setSport(e.target.value)}
+                  >
+                    <option value="strength">Kuvvet / fitness</option>
+                    <option value="calisthenics">Kalistenik</option>
+                    <option value="running">Koşu</option>
+                    <option value="walking">Yürüyüş</option>
+                    <option value="custom">Başka branş · elle planla</option>
+                  </select>
+                </label>
               </div>
-            </fieldset>
-            <label className="check">
-              <input
-                type="checkbox"
-                checked={adult}
-                onChange={(e) => setAdult(e.target.checked)}
-              />
-              18 yaş veya üzerindeyim.
-            </label>
-            <label className="check">
-              <input
-                type="checkbox"
-                checked={symptoms}
-                onChange={(e) => setSymptoms(e.target.checked)}
-              />
-              Şu anda hastalık, yaralanma veya değerlendirilmesi gereken belirti
-              var.
-            </label>
-            <button
-              className="secondary"
-              disabled={!draft.goal}
-              onClick={() => void suggest()}
-            >
-              <Sparkles size={18} />
-              Bir başlangıç taslağı hazırla
-            </button>
-          </details>
+              <fieldset>
+                <legend>Hangi günler çalışmak istersin?</legend>
+                <div className="choices">
+                  {weekdays.map((name, index) => (
+                    <label className="check" key={name}>
+                      <input
+                        type="checkbox"
+                        checked={days.includes(index)}
+                        onChange={(e) =>
+                          setDays(
+                            e.target.checked
+                              ? [...days, index].sort()
+                              : days.filter((d) => d !== index),
+                          )
+                        }
+                      />
+                      {name}
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+              <label className="check">
+                <input
+                  type="checkbox"
+                  checked={adult}
+                  onChange={(e) => setAdult(e.target.checked)}
+                />
+                18 yaş veya üzerindeyim.
+              </label>
+              <label className="check">
+                <input
+                  type="checkbox"
+                  checked={symptoms}
+                  onChange={(e) => setSymptoms(e.target.checked)}
+                />
+                Şu anda hastalık, yaralanma veya değerlendirilmesi gereken
+                belirti var.
+              </label>
+              <button
+                className="secondary"
+                disabled={!draft.goal}
+                onClick={() => void suggest()}
+              >
+                <Sparkles size={18} />
+                Bir başlangıç taslağı hazırla
+              </button>
+            </details>
+          )}
           {notes.map((n) => (
             <p className="notice" key={n}>
               {n}
             </p>
           ))}
-          <h2>2 · Günlerini ve çalışmalarını düzenle</h2>
-          <p>
-            Her çalışmanın hafta aralığını seçebilirsin: örneğin 1–3. haftalar
-            normal çalışma, 4. hafta daha hafif bir çalışma. Aynı gün için
-            farklı haftalarda farklı hareket ve hedefler eklenebilir. Set bir
-            tekrar grubudur. Sabit tutuşta saniye, koşuda süre veya mesafe
-            kullan. RIR, set sonunda yapabileceğini düşündüğün ek tekrar
-            sayısıdır.
-          </p>
+          <h2>
+            {prepared
+              ? "2 · Hazır haftalık programın"
+              : "2 · Günlerini ve çalışmalarını düzenle"}
+          </h2>
+          {prepared ? (
+            <p>
+              Her günün hareketleri ve hedefleri hazır. Yalnız değiştirmek
+              istediğin hareketi aç; günün takvimini de isteğe bağlı
+              düzenleyebilirsin.
+            </p>
+          ) : (
+            <p>
+              Her çalışmanın hafta aralığını seçebilirsin: örneğin 1–3. haftalar
+              normal çalışma, 4. hafta daha hafif bir çalışma. Aynı gün için
+              farklı haftalarda farklı hareket ve hedefler eklenebilir. Set bir
+              tekrar grubudur. Sabit tutuşta saniye, koşuda süre veya mesafe
+              kullan. RIR, set sonunda yapabileceğini düşündüğün ek tekrar
+              sayısıdır.
+            </p>
+          )}
           {draft.days.map((day, index) => (
             <details
               className="plan-day"
@@ -415,113 +475,118 @@ export function Programming({ store }: { store: SyncStore }) {
                   ? "Dinlenme"
                   : `${day.exercises.length} hareket`}
               </summary>
-              <MoveDayPreview
-                start={draft.start_date}
-                weekday={day.weekday}
-                onApply={(to) =>
-                  edit({
-                    ...draft,
-                    days: draft.days.map((d) => ({
-                      ...d,
-                      weekday:
-                        d.weekday === day.weekday
-                          ? to
-                          : d.weekday === to
-                            ? day.weekday
-                            : d.weekday,
-                    })),
-                  })
-                }
-              />
-              <div className="form-grid">
-                <label>
-                  İlk uygulama haftası
-                  <select
-                    aria-label={weekdays[day.weekday] + " ilk hafta"}
-                    value={day.first_week || 1}
-                    onChange={(e) =>
-                      edit({
-                        ...draft,
-                        days: draft.days.map((d, i) =>
-                          i === index
-                            ? { ...d, first_week: Number(e.target.value) }
-                            : d,
-                        ),
-                      })
-                    }
-                  >
-                    {Array.from({ length: draft.weeks }, (_, i) => (
-                      <option key={i} value={i + 1}>
-                        {i + 1}. hafta
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <label>
-                  Son uygulama haftası
-                  <select
-                    aria-label={weekdays[day.weekday] + " son hafta"}
-                    value={day.last_week || draft.weeks}
-                    onChange={(e) =>
-                      edit({
-                        ...draft,
-                        days: draft.days.map((d, i) =>
-                          i === index
-                            ? { ...d, last_week: Number(e.target.value) }
-                            : d,
-                        ),
-                      })
-                    }
-                  >
-                    {Array.from({ length: draft.weeks }, (_, i) => (
-                      <option key={i} value={i + 1}>
-                        {i + 1}. hafta
-                      </option>
-                    ))}
-                  </select>
-                </label>
-                <label>
-                  Günün türü
-                  <select
-                    aria-label={weekdays[day.weekday] + " türü"}
-                    value={day.kind}
-                    onChange={(e) =>
-                      edit({
-                        ...draft,
-                        days: draft.days.map((d, i) =>
-                          i === index
-                            ? {
-                                ...d,
-                                kind: e.target.value as DayDraft["kind"],
-                                exercises:
-                                  e.target.value === "rest" ? [] : d.exercises,
-                              }
-                            : d,
-                        ),
-                      })
-                    }
-                  >
-                    <option value="rest">Dinlenme</option>
-                    <option value="training">Antrenman</option>
-                  </select>
-                </label>
-                {day.kind === "training" && (
+              <details open={!prepared}>
+                <summary>Bu günün takvimini ve adını düzenle</summary>
+                <MoveDayPreview
+                  start={draft.start_date}
+                  weekday={day.weekday}
+                  onApply={(to) =>
+                    edit({
+                      ...draft,
+                      days: draft.days.map((d) => ({
+                        ...d,
+                        weekday:
+                          d.weekday === day.weekday
+                            ? to
+                            : d.weekday === to
+                              ? day.weekday
+                              : d.weekday,
+                      })),
+                    })
+                  }
+                />
+                <div className="form-grid">
                   <label>
-                    Çalışma adı
-                    <input
-                      value={day.label}
+                    İlk uygulama haftası
+                    <select
+                      aria-label={weekdays[day.weekday] + " ilk hafta"}
+                      value={day.first_week || 1}
                       onChange={(e) =>
                         edit({
                           ...draft,
                           days: draft.days.map((d, i) =>
-                            i === index ? { ...d, label: e.target.value } : d,
+                            i === index
+                              ? { ...d, first_week: Number(e.target.value) }
+                              : d,
                           ),
                         })
                       }
-                    />
+                    >
+                      {Array.from({ length: draft.weeks }, (_, i) => (
+                        <option key={i} value={i + 1}>
+                          {i + 1}. hafta
+                        </option>
+                      ))}
+                    </select>
                   </label>
-                )}
-              </div>
+                  <label>
+                    Son uygulama haftası
+                    <select
+                      aria-label={weekdays[day.weekday] + " son hafta"}
+                      value={day.last_week || draft.weeks}
+                      onChange={(e) =>
+                        edit({
+                          ...draft,
+                          days: draft.days.map((d, i) =>
+                            i === index
+                              ? { ...d, last_week: Number(e.target.value) }
+                              : d,
+                          ),
+                        })
+                      }
+                    >
+                      {Array.from({ length: draft.weeks }, (_, i) => (
+                        <option key={i} value={i + 1}>
+                          {i + 1}. hafta
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <label>
+                    Günün türü
+                    <select
+                      aria-label={weekdays[day.weekday] + " türü"}
+                      value={day.kind}
+                      onChange={(e) =>
+                        edit({
+                          ...draft,
+                          days: draft.days.map((d, i) =>
+                            i === index
+                              ? {
+                                  ...d,
+                                  kind: e.target.value as DayDraft["kind"],
+                                  exercises:
+                                    e.target.value === "rest"
+                                      ? []
+                                      : d.exercises,
+                                }
+                              : d,
+                          ),
+                        })
+                      }
+                    >
+                      <option value="rest">Dinlenme</option>
+                      <option value="training">Antrenman</option>
+                    </select>
+                  </label>
+                  {day.kind === "training" && (
+                    <label>
+                      Çalışma adı
+                      <input
+                        value={day.label}
+                        onChange={(e) =>
+                          edit({
+                            ...draft,
+                            days: draft.days.map((d, i) =>
+                              i === index ? { ...d, label: e.target.value } : d,
+                            ),
+                          })
+                        }
+                      />
+                    </label>
+                  )}
+                </div>
+              </details>
               {day.kind === "training" && (
                 <>
                   <DurationPreview
@@ -547,40 +612,66 @@ export function Programming({ store }: { store: SyncStore }) {
                     const update = (key: string, value: unknown) =>
                       patch({ [key]: value });
                     return (
-                      <div className="exercise-editor" key={ei}>
-                        <MovementAlternatives
-                          store={store}
-                          movementId={exercise.movement_id}
-                          onSelect={(d) =>
-                            patch({
-                              movement_id: d.movement_id,
-                              name: d.name,
-                              catalog_version: d.catalog_version,
-                              equipment: d.equipment,
-                              modality: d.modality,
-                              load_kind: d.load_kind,
-                              external_kg: null,
-                              assistance_kg: null,
-                              bodyweight_kg: null,
-                              variant: "standard",
-                            })
-                          }
-                        />
-                        <ExercisePicker
-                          onSelect={(d) =>
-                            patch({
-                              movement_id: d.id,
-                              name: d.name,
-                              catalog_version: d.catalog_version,
-                              equipment: d.equipment.join(", "),
-                              load_kind: d.load_kind,
-                              modality: d.modality,
-                              external_kg: null,
-                              assistance_kg: null,
-                              bodyweight_kg: null,
-                            })
-                          }
-                        />
+                      <details
+                        className="exercise-editor"
+                        key={ei}
+                        open={!prepared || !exercise.name}
+                      >
+                        <summary>
+                          <strong>{exercise.name || "Yeni hareket"}</strong>
+                          <span>
+                            {" "}
+                            · {exercise.sets} set
+                            {exercise.reps != null &&
+                              ` × ${exercise.reps} tekrar`}
+                            {exercise.seconds != null &&
+                              ` × ${exercise.seconds} sn`}
+                            {exercise.distance_m != null &&
+                              ` × ${exercise.distance_m} m`}
+                            {exercise.rest_seconds != null &&
+                              ` · ${exercise.rest_seconds} sn dinlenme`}
+                            {exercise.rir != null && ` · RIR ${exercise.rir}`}
+                            {exercise.external_kg != null &&
+                              ` · ${exercise.external_kg} kg`}
+                          </span>
+                          <span> · Düzenle</span>
+                        </summary>
+                        <details open={!exercise.name}>
+                          <summary>Hareketi değiştir · isteğe bağlı</summary>
+                          <MovementAlternatives
+                            store={store}
+                            movementId={exercise.movement_id}
+                            onSelect={(d) =>
+                              patch({
+                                movement_id: d.movement_id,
+                                name: d.name,
+                                catalog_version: d.catalog_version,
+                                equipment: d.equipment,
+                                modality: d.modality,
+                                load_kind: d.load_kind,
+                                external_kg: null,
+                                assistance_kg: null,
+                                bodyweight_kg: null,
+                                variant: "standard",
+                              })
+                            }
+                          />
+                          <ExercisePicker
+                            onSelect={(d) =>
+                              patch({
+                                movement_id: d.id,
+                                name: d.name,
+                                catalog_version: d.catalog_version,
+                                equipment: d.equipment.join(", "),
+                                load_kind: d.load_kind,
+                                modality: d.modality,
+                                external_kg: null,
+                                assistance_kg: null,
+                                bodyweight_kg: null,
+                              })
+                            }
+                          />
+                        </details>
                         <MovementHelp
                           name={exercise.name}
                           variant={exercise.variant}
@@ -793,7 +884,7 @@ export function Programming({ store }: { store: SyncStore }) {
                           <Trash2 size={16} />
                           Hareketi kaldır
                         </button>
-                      </div>
+                      </details>
                     );
                   })}
                   <button
