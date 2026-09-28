@@ -1,0 +1,7 @@
+{
+  "model": "mimo-v2.6-pro",
+  "case": "control",
+  "result": "FAIL",
+  "error_type": "ValueError",
+  "elapsed_seconds": 82.88
+}

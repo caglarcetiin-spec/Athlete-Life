@@ -1,0 +1,13 @@
+{
+  "model": "glm-5.3",
+  "case": "control",
+  "result": "PASS",
+  "answer": {
+    "issues": [],
+    "summary": "Plan, bildirilen tüm kısıtlamalara uyuıyor: 6 kuvvet seti (12 sınırının altında), RIR 3 aralıkta, dinlenmeler 60s, seans içi tekrar yok, süre ~20 dakika (30 dk sınırının altında) ve hareket seçimi evde/vücut ağırlığı ile uyumlu. Somut kural ihlali bulunmadı."
+  },
+  "identified": 0,
+  "expected": 0,
+  "unexpected": [],
+  "elapsed_seconds": 6.5
+}

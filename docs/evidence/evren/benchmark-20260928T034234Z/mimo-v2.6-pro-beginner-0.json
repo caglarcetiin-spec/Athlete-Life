@@ -1,0 +1,597 @@
+{
+  "model": "mimo-v2.6-pro",
+  "case": "beginner",
+  "repeat": 0,
+  "result": "PASS",
+  "reasoning_effort": "low",
+  "review": {
+    "days": [
+      {
+        "weekday": 0,
+        "estimated_minutes": 34.0,
+        "working_sets": 10,
+        "missing_patterns": [
+          "horizontal_pull"
+        ],
+        "blocks": [
+          {
+            "movement_id": "bodyweight-squat",
+            "block": "main",
+            "family_label": "Diz baskın / çömelme",
+            "reason": "Quadriceps odağının ana kalı hareketi; teknik için kontrollü tempo ve yeterli dinlenme."
+          },
+          {
+            "movement_id": "bodyweight-split-squat",
+            "block": "main",
+            "family_label": "Diz baskın / çömelme",
+            "reason": "Quadriceps hacmini tek bacak kalı varyasyonuyla destekler; her bacak için ayrı set sayılır."
+          },
+          {
+            "movement_id": "glute-bridge",
+            "block": "main",
+            "family_label": "Kalça baskın / kaldırma",
+            "reason": "Günlük menteşe kalıbı zorunluluğunu karşılar; kalça çalışmasını sırt ekipmansız tamamlar."
+          },
+          {
+            "movement_id": "push-up",
+            "block": "main",
+            "family_label": "Yatay itiş",
+            "reason": "Yatay itme kalıbı zorunlu; seviyeyi bilmediğiniz için RIR 3 ile sınırlandırıldı."
+          },
+          {
+            "movement_id": "plank",
+            "block": "accessory",
+            "family_label": "Gövde",
+            "reason": "Gövde sabitleme için izometrik aksesuar; yeni başlayan için kısa tutuş ve düşük dinlenme."
+          },
+          {
+            "movement_id": "bodyweight-calf-raise",
+            "block": "accessory",
+            "family_label": "Baldır",
+            "reason": "Set bütçesini dolduran alt bacak aksesuarı; ana kalıpları yormadan bitirilir."
+          }
+        ]
+      },
+      {
+        "weekday": 2,
+        "estimated_minutes": 34.0,
+        "working_sets": 10,
+        "missing_patterns": [
+          "horizontal_pull"
+        ],
+        "blocks": [
+          {
+            "movement_id": "bodyweight-split-squat",
+            "block": "main",
+            "family_label": "Diz baskın / çömelme",
+            "reason": "Çarşamba gününde quadriceps için öncelikli kalı varyasyonu; teknik pratiği başta yapılır."
+          },
+          {
+            "movement_id": "bodyweight-squat",
+            "block": "main",
+            "family_label": "Diz baskın / çömelme",
+            "reason": "İkinci kalıda varyasyon quadriceps hacmini tamamlar; dinlenme ana hareket için uzun tutuldu."
+          },
+          {
+            "movement_id": "glute-bridge",
+            "block": "main",
+            "family_label": "Kalça baskın / kaldırma",
+            "reason": "Menteşe kalıbı için tekrar eden ana çalışma; denge ve kalça kontrolünü destekler."
+          },
+          {
+            "movement_id": "push-up",
+            "block": "main",
+            "family_label": "Yatay itiş",
+            "reason": "Yatay itme zorunluluğu; set aralarında teknik formu korumak için uzunca dinlenme."
+          },
+          {
+            "movement_id": "plank",
+            "block": "accessory",
+            "family_label": "Gövde",
+            "reason": "Gövde sabitliğine izometrik destek; tutuş süresi başlangıç seviyesinde kısa bırakıldı."
+          },
+          {
+            "movement_id": "bodyweight-calf-raise",
+            "block": "accessory",
+            "family_label": "Baldır",
+            "reason": "Düşük yorucu aksesuar ile alt bacak hacmi ekler; toplam set sınırını aşmaz."
+          }
+        ]
+      },
+      {
+        "weekday": 4,
+        "estimated_minutes": 34.0,
+        "working_sets": 10,
+        "missing_patterns": [
+          "horizontal_pull"
+        ],
+        "blocks": [
+          {
+            "movement_id": "bodyweight-squat",
+            "block": "main",
+            "family_label": "Diz baskın / çömelme",
+            "reason": "Cuma günü quadriceps odağı için ana kalı; haftalık kalıp tekrarının temel hareketi."
+          },
+          {
+            "movement_id": "bodyweight-split-squat",
+            "block": "main",
+            "family_label": "Diz baskın / çömelme",
+            "reason": "Tek bacak varyasyonu quadriceps yükünü dağıtır; ana kalıplar aksesuardan önce gelir."
+          },
+          {
+            "movement_id": "glute-bridge",
+            "block": "main",
+            "family_label": "Kalça baskın / kaldırma",
+            "reason": "Menteşe kalıbı zorunlu; kalça çalışması uyluğun önünü fazladan yormaz."
+          },
+          {
+            "movement_id": "push-up",
+            "block": "main",
+            "family_label": "Yatay itiş",
+            "reason": "Yatay itme kalıbını karşılar; kalan enerjiye göre RIR 3 hedefi korunur."
+          },
+          {
+            "movement_id": "plank",
+            "block": "accessory",
+            "family_label": "Gövde",
+            "reason": "Gövde sabitleme aksesuarı; haftanın üçüncü izometrik dozu kısa tutulur."
+          },
+          {
+            "movement_id": "bodyweight-calf-raise",
+            "block": "accessory",
+            "family_label": "Baldır",
+            "reason": "Set bütçesini tamamlayan aksesuar; antrenman sonuna düşük riskli bir hareket."
+          }
+        ]
+      }
+    ],
+    "muscle_sets": {
+      "chest": 6,
+      "back": 0,
+      "shoulders": 3.3,
+      "arms": 4.2,
+      "core": 3.7,
+      "quads": 12,
+      "posterior": 14.6,
+      "calves": 7.9
+    },
+    "missing_focus": [
+      "back"
+    ],
+    "version": "ai-planner-3",
+    "excluded": [
+      {
+        "movement_id": "barbell-squat",
+        "reason": "Seçilen yöntemlere ait değil"
+      },
+      {
+        "movement_id": "dumbbell-goblet-squat",
+        "reason": "Seçilen yöntemlere ait değil"
+      },
+      {
+        "movement_id": "dumbbell-rdl",
+        "reason": "Seçilen yöntemlere ait değil"
+      },
+      {
+        "movement_id": "ez-bar-rdl",
+        "reason": "Seçilen yöntemlere ait değil"
+      },
+      {
+        "movement_id": "barbell-deadlift",
+        "reason": "Seçilen yöntemlere ait değil"
+      },
+      {
+        "movement_id": "incline-push-up",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "ring-push-up",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "barbell-bench-press",
+        "reason": "Seçilen yöntemlere ait değil"
+      },
+      {
+        "movement_id": "ring-row",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "feet-elevated-ring-row",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "ez-bar-row",
+        "reason": "Seçilen yöntemlere ait değil"
+      },
+      {
+        "movement_id": "dumbbell-row",
+        "reason": "Seçilen yöntemlere ait değil"
+      },
+      {
+        "movement_id": "barbell-row",
+        "reason": "Seçilen yöntemlere ait değil"
+      },
+      {
+        "movement_id": "pull-up",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "chin-up",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "ring-pull-up",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "ring-chin-up",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "weighted-pull-up",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "dumbbell-overhead-press",
+        "reason": "Seçilen yöntemlere ait değil"
+      },
+      {
+        "movement_id": "ez-bar-overhead-press",
+        "reason": "Seçilen yöntemlere ait değil"
+      },
+      {
+        "movement_id": "ring-dip",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "weighted-ring-dip",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "ez-bar-curl",
+        "reason": "Seçilen yöntemlere ait değil"
+      },
+      {
+        "movement_id": "db-hammer-curl",
+        "reason": "Seçilen yöntemlere ait değil"
+      },
+      {
+        "movement_id": "ring-biceps-curl",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "ring-triceps-extension",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "ez-bar-triceps-extension",
+        "reason": "Seçilen yöntemlere ait değil"
+      },
+      {
+        "movement_id": "db-lateral-raise",
+        "reason": "Seçilen yöntemlere ait değil"
+      },
+      {
+        "movement_id": "ring-face-pull",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "ring-rear-delt-row",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "ring-hamstring-curl",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "ring-rollout",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "ring-body-saw",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "dragon-flag",
+        "reason": "Kontrollü yapabildiğini belirtmedin"
+      },
+      {
+        "movement_id": "muscle-up",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "ring-muscle-up",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "front-lever",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "tuck-front-lever",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "ring-front-lever",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "ring-tuck-front-lever",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "front-lever-pull-raise",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "ring-support-hold",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "ring-l-sit",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "full-planche",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "tuck-planche",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "planche-lean",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "walk",
+        "reason": "Seçilen yöntemlere ait değil"
+      },
+      {
+        "movement_id": "zone-2-run",
+        "reason": "Seçilen yöntemlere ait değil"
+      }
+    ],
+    "selected_methods": [
+      "calisthenics"
+    ],
+    "input_revision": 1,
+    "health_context": {
+      "status": "unknown",
+      "score": null,
+      "reasons": [
+        "Kayıtlar bir güvenli antrenman garantisi değildir."
+      ],
+      "self_report": null,
+      "sleep_hours_in_recorded_intervals": null,
+      "sleep_source_ids": [],
+      "pain": [],
+      "episode_ids": [],
+      "cycle_multiplier": null
+    },
+    "meaning": "Haftalık kuvvet setlerinin katalog katsayılarıyla dağılımı. Teknik tutuş ve kondisyon bu toplama katılmaz; büyüme/hasar ölçümü değildir.",
+    "duration_assumptions": "5–8 dk hazırlık + tekrar başına 4 sn veya hedef tutuş süresi + belirtilen dinlenmeler + hareket başına 60 sn geçiş. Gerçek süre değişebilir.",
+    "skill_sets": 0,
+    "isometric_seconds": 150,
+    "conditioning_seconds": 0,
+    "status": "needs_review"
+  },
+  "notes": [
+    "3 gün tüm vücut: her seansta çömelme kalıbı, kalça menteşesi ve yatay itme yer alır. Quadriceps odağı 3 günde iki kalıda varyasyonla; sırt hareketi uygun listede olmadığı için eklenmedi. Her hareket 2 set, toplam 12 set; her sette 2-3 tekrar bırakacak (RIR 3) tempoyla çalışın.",
+    "AI taslağıdır; doğrulama biyolojik uygunluk garantisi değildir. Ana plana almak için inceleyip onayla.",
+    "Eksik kapsam: Yatay çekiş",
+    "Eksik kapsam: Yatay çekiş",
+    "Eksik kapsam: Yatay çekiş",
+    "Önceliğin karşılanamadı: back",
+    "Uygun listede sırt (yatay/dikey çekme) hareketi bulunmadığı için sırt odağı karşılanamadı.",
+    "Quadriceps odağı, iki kalıda varyasyonu ve baldır desteğiyle yaklaşıklandı; kalça köprüsü öncelikli menteşe hareketidir.",
+    "conditioning_enabled=false olduğu için 5 dakikalık koşullanma süresi programa dahil edilmedi.",
+    "Referans taslak antrenman geçmişi değil, düzenlenebilir başlangıç varsayımıdır.",
+    "Yetkinlik raporlanmadığı için tekrar ve tutuşlar genel başlangıç aralığında tutuldu.",
+    "8 hafta boyunca kalıp haftalık tekrar eder; otomatik yüklenme veya progresyon tanımlanmadı.",
+    "Ağrı, sakatlık veya tanı bilgisi verilmediği için bunlara yönelik uyarlama yapılmadı.",
+    "Toplam süre sınırına yakın planlandı; yavaş tempo gerekirse setlerin biri kısaltılabilir."
+  ],
+  "elapsed_seconds": 59.07,
+  "transport": {
+    "finish_reason": "stop",
+    "usage": {
+      "prompt_tokens": 2921,
+      "completion_tokens": 3094,
+      "total_tokens": 6015
+    }
+  },
+  "synthetic_plan": {
+    "summary": "3 gün tüm vücut: her seansta çömelme kalıbı, kalça menteşesi ve yatay itme yer alır. Quadriceps odağı 3 günde iki kalıda varyasyonla; sırt hareketi uygun listede olmadığı için eklenmedi. Her hareket 2 set, toplam 12 set; her sette 2-3 tekrar bırakacak (RIR 3) tempoyla çalışın.",
+    "limitations": [
+      "Uygun listede sırt (yatay/dikey çekme) hareketi bulunmadığı için sırt odağı karşılanamadı.",
+      "Quadriceps odağı, iki kalıda varyasyonu ve baldır desteğiyle yaklaşıklandı; kalça köprüsü öncelikli menteşe hareketidir.",
+      "conditioning_enabled=false olduğu için 5 dakikalık koşullanma süresi programa dahil edilmedi.",
+      "Referans taslak antrenman geçmişi değil, düzenlenebilir başlangıç varsayımıdır.",
+      "Yetkinlik raporlanmadığı için tekrar ve tutuşlar genel başlangıç aralığında tutuldu.",
+      "8 hafta boyunca kalıp haftalık tekrar eder; otomatik yüklenme veya progresyon tanımlanmadı.",
+      "Ağrı, sakatlık veya tanı bilgisi verilmediği için bunlara yönelik uyarlama yapılmadı.",
+      "Toplam süre sınırına yakın planlandı; yavaş tempo gerekirse setlerin biri kısaltılabilir."
+    ],
+    "days": [
+      {
+        "weekday": 0,
+        "exercises": [
+          {
+            "movement_id": "bodyweight-squat",
+            "sets": 2,
+            "reps": 8,
+            "seconds": null,
+            "rest_seconds": 150,
+            "rir": 3,
+            "reason": "Quadriceps odağının ana kalı hareketi; teknik için kontrollü tempo ve yeterli dinlenme."
+          },
+          {
+            "movement_id": "bodyweight-split-squat",
+            "sets": 2,
+            "reps": 8,
+            "seconds": null,
+            "rest_seconds": 150,
+            "rir": 3,
+            "reason": "Quadriceps hacmini tek bacak kalı varyasyonuyla destekler; her bacak için ayrı set sayılır."
+          },
+          {
+            "movement_id": "glute-bridge",
+            "sets": 2,
+            "reps": 10,
+            "seconds": null,
+            "rest_seconds": 150,
+            "rir": 3,
+            "reason": "Günlük menteşe kalıbı zorunluluğunu karşılar; kalça çalışmasını sırt ekipmansız tamamlar."
+          },
+          {
+            "movement_id": "push-up",
+            "sets": 2,
+            "reps": 8,
+            "seconds": null,
+            "rest_seconds": 150,
+            "rir": 3,
+            "reason": "Yatay itme kalıbı zorunlu; seviyeyi bilmediğiniz için RIR 3 ile sınırlandırıldı."
+          },
+          {
+            "movement_id": "plank",
+            "sets": 2,
+            "reps": null,
+            "seconds": 25,
+            "rest_seconds": 90,
+            "rir": null,
+            "reason": "Gövde sabitleme için izometrik aksesuar; yeni başlayan için kısa tutuş ve düşük dinlenme."
+          },
+          {
+            "movement_id": "bodyweight-calf-raise",
+            "sets": 2,
+            "reps": 12,
+            "seconds": null,
+            "rest_seconds": 90,
+            "rir": 3,
+            "reason": "Set bütçesini dolduran alt bacak aksesuarı; ana kalıpları yormadan bitirilir."
+          }
+        ]
+      },
+      {
+        "weekday": 2,
+        "exercises": [
+          {
+            "movement_id": "bodyweight-split-squat",
+            "sets": 2,
+            "reps": 8,
+            "seconds": null,
+            "rest_seconds": 150,
+            "rir": 3,
+            "reason": "Çarşamba gününde quadriceps için öncelikli kalı varyasyonu; teknik pratiği başta yapılır."
+          },
+          {
+            "movement_id": "bodyweight-squat",
+            "sets": 2,
+            "reps": 8,
+            "seconds": null,
+            "rest_seconds": 150,
+            "rir": 3,
+            "reason": "İkinci kalıda varyasyon quadriceps hacmini tamamlar; dinlenme ana hareket için uzun tutuldu."
+          },
+          {
+            "movement_id": "glute-bridge",
+            "sets": 2,
+            "reps": 10,
+            "seconds": null,
+            "rest_seconds": 150,
+            "rir": 3,
+            "reason": "Menteşe kalıbı için tekrar eden ana çalışma; denge ve kalça kontrolünü destekler."
+          },
+          {
+            "movement_id": "push-up",
+            "sets": 2,
+            "reps": 8,
+            "seconds": null,
+            "rest_seconds": 150,
+            "rir": 3,
+            "reason": "Yatay itme zorunluluğu; set aralarında teknik formu korumak için uzunca dinlenme."
+          },
+          {
+            "movement_id": "plank",
+            "sets": 2,
+            "reps": null,
+            "seconds": 25,
+            "rest_seconds": 90,
+            "rir": null,
+            "reason": "Gövde sabitliğine izometrik destek; tutuş süresi başlangıç seviyesinde kısa bırakıldı."
+          },
+          {
+            "movement_id": "bodyweight-calf-raise",
+            "sets": 2,
+            "reps": 12,
+            "seconds": null,
+            "rest_seconds": 90,
+            "rir": 3,
+            "reason": "Düşük yorucu aksesuar ile alt bacak hacmi ekler; toplam set sınırını aşmaz."
+          }
+        ]
+      },
+      {
+        "weekday": 4,
+        "exercises": [
+          {
+            "movement_id": "bodyweight-squat",
+            "sets": 2,
+            "reps": 8,
+            "seconds": null,
+            "rest_seconds": 150,
+            "rir": 3,
+            "reason": "Cuma günü quadriceps odağı için ana kalı; haftalık kalıp tekrarının temel hareketi."
+          },
+          {
+            "movement_id": "bodyweight-split-squat",
+            "sets": 2,
+            "reps": 8,
+            "seconds": null,
+            "rest_seconds": 150,
+            "rir": 3,
+            "reason": "Tek bacak varyasyonu quadriceps yükünü dağıtır; ana kalıplar aksesuardan önce gelir."
+          },
+          {
+            "movement_id": "glute-bridge",
+            "sets": 2,
+            "reps": 10,
+            "seconds": null,
+            "rest_seconds": 150,
+            "rir": 3,
+            "reason": "Menteşe kalıbı zorunlu; kalça çalışması uyluğun önünü fazladan yormaz."
+          },
+          {
+            "movement_id": "push-up",
+            "sets": 2,
+            "reps": 8,
+            "seconds": null,
+            "rest_seconds": 150,
+            "rir": 3,
+            "reason": "Yatay itme kalıbını karşılar; kalan enerjiye göre RIR 3 hedefi korunur."
+          },
+          {
+            "movement_id": "plank",
+            "sets": 2,
+            "reps": null,
+            "seconds": 25,
+            "rest_seconds": 90,
+            "rir": null,
+            "reason": "Gövde sabitleme aksesuarı; haftanın üçüncü izometrik dozu kısa tutulur."
+          },
+          {
+            "movement_id": "bodyweight-calf-raise",
+            "sets": 2,
+            "reps": 12,
+            "seconds": null,
+            "rest_seconds": 90,
+            "rir": 3,
+            "reason": "Set bütçesini tamamlayan aksesuar; antrenman sonuna düşük riskli bir hareket."
+          }
+        ]
+      }
+    ]
+  }
+}

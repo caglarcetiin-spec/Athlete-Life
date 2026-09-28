@@ -1,0 +1,54 @@
+{
+  "model": "mimo-v2.6-pro",
+  "case": "flawed",
+  "result": "PASS",
+  "answer": {
+    "issues": [
+      {
+        "code": "equipment",
+        "evidence": "Barbell-deadlift halter gerektirir; profilde ekipman yalnızca zemin ve vücut ağırlığı, halter yok.",
+        "correction": "Barbell-deadlift yerine ekipmansız kalça köprüsü (hip-thrust varyantı) veya zemin üzerinde bacak köprüsü gibi vücut ağırlığıyla posterior zincir hareketi koy."
+      },
+      {
+        "code": "competency",
+        "evidence": "Front lever 5x30s tutuş isteniyor; kullanıcı yeni başlıyor ve front lever yetkinliği bildirilmemiş.",
+        "correction": "Front lever yerine tuck front lever veya ayakta/alçak plank (front lever progresyonu) gibi ölçülebilir ilerleme basamağını ekle; tutuş süresini RIR karşılığına uygun seviyeden başlat."
+      },
+      {
+        "code": "rir",
+        "evidence": "Barbell-deadlift 5x12 RIR0, push-up 5x20 RIR0 (iki kez) tanımlanmış; kurul kuvvet hareketlerinde RIR 2–5 gerektiriyor.",
+        "correction": "Bu hareketlerin RIR değerlerini 2–5 aralığına çek; örn. RIR 3 hedefleyerek set sonunu belirle."
+      },
+      {
+        "code": "duplicate",
+        "evidence": "Aynı seansta push-up iki kez (5x20 + 5x20) tekrarlanmış; kural aynı hareketin bir seansta tekrarlanamayacağını söylüyor.",
+        "correction": "İkinci push-up bloğunu kaldır veya farklı bir itiş varyantı (örn. elmas/diz üstü varyasyon değil, omuz odaklı pike push-up) ile değiştir; ancak ekipman/ yeterlilik kurallarını da gözet."
+      },
+      {
+        "code": "volume",
+        "evidence": "Seans başına kardiyo dışı set = 5+5+5+5 = 20 set; kural en fazla 12 set izin veriyor.",
+        "correction": "Toplam seti 12'ye indir (örn. 4 hareket × 3 set veya 3 hareket × 4 set) ve önceliği ön bacak hareketine ver."
+      },
+      {
+        "code": "duration",
+        "evidence": "Kurala göre süre: 8 dk hazırlık + 4 hareket × 60 sn geçiş + (5x12x4s + 4x180s) + (5x30s + 4x120s) + 2 × (5x20x4s + 4x120s) = 4070 saniye ≈ 67,8 dakika; hedef 30 dakika.",
+        "correction": "Set/tekrar ve dinlenmeyi düşürerek süreyi 30 dakikaya sığdır; örn. 3-4 hareket, 2-3 set, 8-12 tekrar ve 60 sn dinlenme; tutuş sürelerini 20-30 sn ile sınırla."
+      },
+      {
+        "code": "balance",
+        "evidence": "Hedef ön bacak (kuadriseps) odağı, ancak bacaktaki tek hareket barbell-deadlift (posterior zincir) ve ön bacak hareketi yok; ayrıca plan açıklaması 'tüm kas gruplarını dengeli geliştirir' diyor ve haftanın üç günü birebir aynı.",
+        "correction": "Ön bacak için split squat / bulgarian split squat / wall sit gibi ekipmansız hareket ekle; üç günü farklı hareket kombinasyonlarıyla çeşitlendir ve açıklama iddiasını plan içeriğiyle uyumlu hale getir."
+      },
+      {
+        "code": "unsupported_biology",
+        "evidence": "Açıklamada 'setlerden kas hasarın %40 olur', '24 saatte kesin %100 iyileşirsin', 'dört haftada %20 kas artışı garanti' ifadeleri var; bu yüzdeler ve kesinlikler ölçülmüş veriye değil, kanıtsız biyolojik iddialara dayanıyor.",
+        "correction": "Ölçülemeyen hasar/iyileşme/yüzde gelişim ifadelerini kaldır; yerine 'toparlanma kişiye göre değişir, ilerleme tekrar/tutuş kayıtlarıyla izlenir' gibi veriye dayalı, garanti vermeyen ifadeler kullan."
+      }
+    ],
+    "summary": "Plan ekipman (halter) ve yeterlilik (front lever) şartlarını karşılamıyor; RIR kuralına aykırı, aynı hareket seans içinde tekrarlanmış, set hacmi (20>12) ve süre (~68 dk > 30 dk) limitleri aşılmış, ön bacak odağı eksik ve doğrulanmamış biyolojik yüzdeler içeriyor."
+  },
+  "identified": 8,
+  "expected": 8,
+  "unexpected": [],
+  "elapsed_seconds": 20.64
+}

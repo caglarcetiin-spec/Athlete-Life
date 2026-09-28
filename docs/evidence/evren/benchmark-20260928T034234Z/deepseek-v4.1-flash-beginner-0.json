@@ -1,0 +1,499 @@
+{
+  "model": "deepseek-v4.1-flash",
+  "case": "beginner",
+  "repeat": 0,
+  "result": "PASS",
+  "reasoning_effort": "low",
+  "review": {
+    "days": [
+      {
+        "weekday": 0,
+        "estimated_minutes": 33.8,
+        "working_sets": 9,
+        "missing_patterns": [
+          "horizontal_pull"
+        ],
+        "blocks": [
+          {
+            "movement_id": "bodyweight-squat",
+            "block": "main",
+            "family_label": "Diz baskın / çömelme",
+            "reason": "Ana diz hareketi; 3x8, RIR 3 ve 150 sn dinlenme teknik kontrolü korur."
+          },
+          {
+            "movement_id": "glute-bridge",
+            "block": "main",
+            "family_label": "Kalça baskın / kaldırma",
+            "reason": "Kalça menteşesi paterni; 3x8 ve RIR 3 ile kontrollü kalça ekstansiyonu."
+          },
+          {
+            "movement_id": "push-up",
+            "block": "main",
+            "family_label": "Yatay itiş",
+            "reason": "Yatay itiş paterni; 3x8, RIR 3; gerekirse diz üstü uyarlanır."
+          },
+          {
+            "movement_id": "plank",
+            "block": "accessory",
+            "family_label": "Gövde",
+            "reason": "Gövde stabilitesi için izometrik; 2x30 sn, dinlenme 60 sn."
+          }
+        ]
+      },
+      {
+        "weekday": 2,
+        "estimated_minutes": 33.8,
+        "working_sets": 9,
+        "missing_patterns": [
+          "horizontal_pull"
+        ],
+        "blocks": [
+          {
+            "movement_id": "bodyweight-split-squat",
+            "block": "main",
+            "family_label": "Diz baskın / çömelme",
+            "reason": "Diz paterni varyasyonu; 3x8, RIR 3, denge ve kontrol odaklı."
+          },
+          {
+            "movement_id": "glute-bridge",
+            "block": "main",
+            "family_label": "Kalça baskın / kaldırma",
+            "reason": "Kalça menteşesi paterni; 3x8 ve RIR 3 ile kontrollü kalça ekstansiyonu."
+          },
+          {
+            "movement_id": "push-up",
+            "block": "main",
+            "family_label": "Yatay itiş",
+            "reason": "Yatay itiş paterni; 3x8, RIR 3; gerekirse diz üstü uyarlanır."
+          },
+          {
+            "movement_id": "plank",
+            "block": "accessory",
+            "family_label": "Gövde",
+            "reason": "Gövde stabilitesi için izometrik; 2x30 sn, dinlenme 60 sn."
+          }
+        ]
+      },
+      {
+        "weekday": 4,
+        "estimated_minutes": 34.4,
+        "working_sets": 11,
+        "missing_patterns": [
+          "horizontal_pull"
+        ],
+        "blocks": [
+          {
+            "movement_id": "bodyweight-squat",
+            "block": "main",
+            "family_label": "Diz baskın / çömelme",
+            "reason": "Ana diz hareketi; 3x8, RIR 3 ve 150 sn dinlenme teknik kontrolü korur."
+          },
+          {
+            "movement_id": "glute-bridge",
+            "block": "main",
+            "family_label": "Kalça baskın / kaldırma",
+            "reason": "Kalça menteşesi paterni; 3x8 ve RIR 3 ile kontrollü kalça ekstansiyonu."
+          },
+          {
+            "movement_id": "push-up",
+            "block": "main",
+            "family_label": "Yatay itiş",
+            "reason": "Yatay itiş paterni; 3x8, RIR 3; gerekirse diz üstü uyarlanır."
+          },
+          {
+            "movement_id": "bodyweight-calf-raise",
+            "block": "accessory",
+            "family_label": "Baldır",
+            "reason": "Baldır aksesuarı; 2x12, RIR 3, 60 sn dinlenme."
+          }
+        ]
+      }
+    ],
+    "muscle_sets": {
+      "chest": 9,
+      "back": 0,
+      "shoulders": 5.0,
+      "arms": 6.3,
+      "core": 3.9,
+      "quads": 9,
+      "posterior": 15.5,
+      "calves": 3.4
+    },
+    "missing_focus": [
+      "back"
+    ],
+    "version": "ai-planner-3",
+    "excluded": [
+      {
+        "movement_id": "barbell-squat",
+        "reason": "Seçilen yöntemlere ait değil"
+      },
+      {
+        "movement_id": "dumbbell-goblet-squat",
+        "reason": "Seçilen yöntemlere ait değil"
+      },
+      {
+        "movement_id": "dumbbell-rdl",
+        "reason": "Seçilen yöntemlere ait değil"
+      },
+      {
+        "movement_id": "ez-bar-rdl",
+        "reason": "Seçilen yöntemlere ait değil"
+      },
+      {
+        "movement_id": "barbell-deadlift",
+        "reason": "Seçilen yöntemlere ait değil"
+      },
+      {
+        "movement_id": "incline-push-up",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "ring-push-up",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "barbell-bench-press",
+        "reason": "Seçilen yöntemlere ait değil"
+      },
+      {
+        "movement_id": "ring-row",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "feet-elevated-ring-row",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "ez-bar-row",
+        "reason": "Seçilen yöntemlere ait değil"
+      },
+      {
+        "movement_id": "dumbbell-row",
+        "reason": "Seçilen yöntemlere ait değil"
+      },
+      {
+        "movement_id": "barbell-row",
+        "reason": "Seçilen yöntemlere ait değil"
+      },
+      {
+        "movement_id": "pull-up",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "chin-up",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "ring-pull-up",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "ring-chin-up",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "weighted-pull-up",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "dumbbell-overhead-press",
+        "reason": "Seçilen yöntemlere ait değil"
+      },
+      {
+        "movement_id": "ez-bar-overhead-press",
+        "reason": "Seçilen yöntemlere ait değil"
+      },
+      {
+        "movement_id": "ring-dip",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "weighted-ring-dip",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "ez-bar-curl",
+        "reason": "Seçilen yöntemlere ait değil"
+      },
+      {
+        "movement_id": "db-hammer-curl",
+        "reason": "Seçilen yöntemlere ait değil"
+      },
+      {
+        "movement_id": "ring-biceps-curl",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "ring-triceps-extension",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "ez-bar-triceps-extension",
+        "reason": "Seçilen yöntemlere ait değil"
+      },
+      {
+        "movement_id": "db-lateral-raise",
+        "reason": "Seçilen yöntemlere ait değil"
+      },
+      {
+        "movement_id": "ring-face-pull",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "ring-rear-delt-row",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "ring-hamstring-curl",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "ring-rollout",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "ring-body-saw",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "dragon-flag",
+        "reason": "Kontrollü yapabildiğini belirtmedin"
+      },
+      {
+        "movement_id": "muscle-up",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "ring-muscle-up",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "front-lever",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "tuck-front-lever",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "ring-front-lever",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "ring-tuck-front-lever",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "front-lever-pull-raise",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "ring-support-hold",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "ring-l-sit",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "full-planche",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "tuck-planche",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "planche-lean",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "walk",
+        "reason": "Seçilen yöntemlere ait değil"
+      },
+      {
+        "movement_id": "zone-2-run",
+        "reason": "Seçilen yöntemlere ait değil"
+      }
+    ],
+    "selected_methods": [
+      "calisthenics"
+    ],
+    "input_revision": 1,
+    "health_context": {
+      "status": "unknown",
+      "score": null,
+      "reasons": [
+        "Kayıtlar bir güvenli antrenman garantisi değildir."
+      ],
+      "self_report": null,
+      "sleep_hours_in_recorded_intervals": null,
+      "sleep_source_ids": [],
+      "pain": [],
+      "episode_ids": [],
+      "cycle_multiplier": null
+    },
+    "meaning": "Haftalık kuvvet setlerinin katalog katsayılarıyla dağılımı. Teknik tutuş ve kondisyon bu toplama katılmaz; büyüme/hasar ölçümü değildir.",
+    "duration_assumptions": "5–8 dk hazırlık + tekrar başına 4 sn veya hedef tutuş süresi + belirtilen dinlenmeler + hareket başına 60 sn geçiş. Gerçek süre değişebilir.",
+    "skill_sets": 0,
+    "isometric_seconds": 120,
+    "conditioning_seconds": 0,
+    "status": "needs_review"
+  },
+  "notes": [
+    "Evde ekipmansız, yeni başlangıç için 3 günlük tam vücut taslağı. Her gün 8 dk hazırlık; ana hareketler 3x8 ve RIR 3, plank 2x30 sn. Kondisyon kapalı olduğu için eklenmedi. Günlük 11 set, süre sınırına uygun. Bu düzenlenebilir koçluk varsayımıdır; tıbbi reçete değildir.",
+    "AI taslağıdır; doğrulama biyolojik uygunluk garantisi değildir. Ana plana almak için inceleyip onayla.",
+    "Eksik kapsam: Yatay çekiş",
+    "Eksik kapsam: Yatay çekiş",
+    "Eksik kapsam: Yatay çekiş",
+    "Önceliğin karşılanamadı: back",
+    "Zemin yoksa glute bridge, push-up ve plank uyarlanmalı veya çıkarılmalıdır.",
+    "Sırt hedefi için listede uygun yatay çekiş hareketi olmadığından çekiş eklenemedi.",
+    "Yük veya otomatik ilerleme kaydedilmedi; ağrı/rahatsızlıkta durulmalıdır.",
+    "8 haftalık artış varsayılmadı; hacim ve dinlenme kişiye göre düzenlenebilir."
+  ],
+  "elapsed_seconds": 75.34,
+  "transport": {
+    "finish_reason": "stop",
+    "usage": {
+      "prompt_tokens": 3005,
+      "completion_tokens": 4554,
+      "total_tokens": 7559
+    }
+  },
+  "synthetic_plan": {
+    "summary": "Evde ekipmansız, yeni başlangıç için 3 günlük tam vücut taslağı. Her gün 8 dk hazırlık; ana hareketler 3x8 ve RIR 3, plank 2x30 sn. Kondisyon kapalı olduğu için eklenmedi. Günlük 11 set, süre sınırına uygun. Bu düzenlenebilir koçluk varsayımıdır; tıbbi reçete değildir.",
+    "limitations": [
+      "Zemin yoksa glute bridge, push-up ve plank uyarlanmalı veya çıkarılmalıdır.",
+      "Sırt hedefi için listede uygun yatay çekiş hareketi olmadığından çekiş eklenemedi.",
+      "Yük veya otomatik ilerleme kaydedilmedi; ağrı/rahatsızlıkta durulmalıdır.",
+      "8 haftalık artış varsayılmadı; hacim ve dinlenme kişiye göre düzenlenebilir."
+    ],
+    "days": [
+      {
+        "weekday": 0,
+        "exercises": [
+          {
+            "movement_id": "bodyweight-squat",
+            "sets": 3,
+            "reps": 8,
+            "seconds": null,
+            "rest_seconds": 150,
+            "rir": 3,
+            "reason": "Ana diz hareketi; 3x8, RIR 3 ve 150 sn dinlenme teknik kontrolü korur."
+          },
+          {
+            "movement_id": "glute-bridge",
+            "sets": 3,
+            "reps": 8,
+            "seconds": null,
+            "rest_seconds": 150,
+            "rir": 3,
+            "reason": "Kalça menteşesi paterni; 3x8 ve RIR 3 ile kontrollü kalça ekstansiyonu."
+          },
+          {
+            "movement_id": "push-up",
+            "sets": 3,
+            "reps": 8,
+            "seconds": null,
+            "rest_seconds": 150,
+            "rir": 3,
+            "reason": "Yatay itiş paterni; 3x8, RIR 3; gerekirse diz üstü uyarlanır."
+          },
+          {
+            "movement_id": "plank",
+            "sets": 2,
+            "reps": null,
+            "seconds": 30,
+            "rest_seconds": 60,
+            "rir": null,
+            "reason": "Gövde stabilitesi için izometrik; 2x30 sn, dinlenme 60 sn."
+          }
+        ]
+      },
+      {
+        "weekday": 2,
+        "exercises": [
+          {
+            "movement_id": "bodyweight-split-squat",
+            "sets": 3,
+            "reps": 8,
+            "seconds": null,
+            "rest_seconds": 150,
+            "rir": 3,
+            "reason": "Diz paterni varyasyonu; 3x8, RIR 3, denge ve kontrol odaklı."
+          },
+          {
+            "movement_id": "glute-bridge",
+            "sets": 3,
+            "reps": 8,
+            "seconds": null,
+            "rest_seconds": 150,
+            "rir": 3,
+            "reason": "Kalça menteşesi paterni; 3x8 ve RIR 3 ile kontrollü kalça ekstansiyonu."
+          },
+          {
+            "movement_id": "push-up",
+            "sets": 3,
+            "reps": 8,
+            "seconds": null,
+            "rest_seconds": 150,
+            "rir": 3,
+            "reason": "Yatay itiş paterni; 3x8, RIR 3; gerekirse diz üstü uyarlanır."
+          },
+          {
+            "movement_id": "plank",
+            "sets": 2,
+            "reps": null,
+            "seconds": 30,
+            "rest_seconds": 60,
+            "rir": null,
+            "reason": "Gövde stabilitesi için izometrik; 2x30 sn, dinlenme 60 sn."
+          }
+        ]
+      },
+      {
+        "weekday": 4,
+        "exercises": [
+          {
+            "movement_id": "bodyweight-squat",
+            "sets": 3,
+            "reps": 8,
+            "seconds": null,
+            "rest_seconds": 150,
+            "rir": 3,
+            "reason": "Ana diz hareketi; 3x8, RIR 3 ve 150 sn dinlenme teknik kontrolü korur."
+          },
+          {
+            "movement_id": "glute-bridge",
+            "sets": 3,
+            "reps": 8,
+            "seconds": null,
+            "rest_seconds": 150,
+            "rir": 3,
+            "reason": "Kalça menteşesi paterni; 3x8 ve RIR 3 ile kontrollü kalça ekstansiyonu."
+          },
+          {
+            "movement_id": "push-up",
+            "sets": 3,
+            "reps": 8,
+            "seconds": null,
+            "rest_seconds": 150,
+            "rir": 3,
+            "reason": "Yatay itiş paterni; 3x8, RIR 3; gerekirse diz üstü uyarlanır."
+          },
+          {
+            "movement_id": "bodyweight-calf-raise",
+            "sets": 2,
+            "reps": 12,
+            "seconds": null,
+            "rest_seconds": 60,
+            "rir": 3,
+            "reason": "Baldır aksesuarı; 2x12, RIR 3, 60 sn dinlenme."
+          }
+        ]
+      }
+    ]
+  }
+}

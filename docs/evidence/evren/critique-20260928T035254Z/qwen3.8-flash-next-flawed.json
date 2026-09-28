@@ -1,0 +1,54 @@
+{
+  "model": "qwen3.8-flash-next",
+  "case": "flawed",
+  "result": "PASS",
+  "answer": {
+    "issues": [
+      {
+        "code": "equipment",
+        "evidence": "barbell-deadlift önerilmiş; profilde halter/bara erişim yok belirtilmiş.",
+        "correction": "Zemin/vücut ağırlığıyla öne-ayak odaklı alternatif (ör. split-squat, Bulgarian squat, single-leg glute bridge) kullanılmalı."
+      },
+      {
+        "code": "competency",
+        "evidence": "front-lever önerilmiş; yetkinlik bildirilmemiş, barfiks/halka yok, yeni başlayan profiliyle uyumsuz.",
+        "correction": "Yetkinlik doğrulanmadan kaldırılmalı; yerine plank veya hollow-body hold gibi erişilebilir gövde germe hareketi konmalı."
+      },
+      {
+        "code": "volume",
+        "evidence": "Seans toplamı 5+5+5+5 = 20 set; kural sınırı 12.",
+        "correction": "Toplam set sayısı ≤ 12 olacak şekilde hareket seçimi daraltılmalı veya set sayısı azaltılmalı."
+      },
+      {
+        "code": "rir",
+        "evidence": "Üç hareket de RIR 0 bildirilmiş; kural aralığı 2–5.",
+        "correction": "RIR değerleri 2–5 aralığına çekilmeli (ör. her sette 2–5 tekrar yedek bırakılacak ağırlık/süre seçilmeli)."
+      },
+      {
+        "code": "duplicate",
+        "evidence": "push-up aynı seansta iki kez (satır 3 ve 4) yer alıyor; kural aynı hareketin tekrarını yasaklıyor.",
+        "correction": "İkinci push-up bloğu farklı bir itiş varyasyonuyla (ör. pike push-up, diamond push-up) değiştirilmeli."
+      },
+      {
+        "code": "duration",
+        "evidence": "Formül: 480 (hazırlık) + 1020 (deadlift) + 690 (front-lever) + 940 (push-up×2) = 4130 sn ≈ 69 dk; hedef 30 dk.",
+        "correction": "Hareket sayısı ve set/tekrar/dinlenme değerleri toplam süreyi ≤ 30 dk'ya sığacak şekilde yeniden düzenlenmeli."
+      },
+      {
+        "code": "balance",
+        "evidence": "Hedef 'ön bacak odağı'; planda kuadriseps ağırlıklı hareket yok (deadlift arka zincir, push-up üst itiş, front-lever gövde).",
+        "correction": "Squat varyasyonu, lunge veya step-up gibi öne-ayak hareketi plana eklenmeli."
+      },
+      {
+        "code": "unsupported_biology",
+        "evidence": "'%40 kas hasarı, 24 saatte kesin %100 iyileşme, 4 haftada %20 kas artışı garantisi' ifadeleri ölçüm veya kanıt içermiyor.",
+        "correction": "Kesin yüzde/garanti ifadeleri çıkarılmalı; yerine 'bireysel yanıt değişir, ilerleme tutarlı antrenman ve beslenmeye bağlıdır' gibi nitel dil kullanılmalı."
+      }
+    ],
+    "summary": "Plan, ekipman kısıtına (halter yok), yetkinlik bildirimine (front-lever belirsiz), seans set üst sınırına (20>12), RIR aralığına (0<2), aynı harekete tekrara (push-up×2), süre bütçesine (≈69 dk > 30 dk) ve hedef dengeye (ön bacak eksik) aykırıdır. Açıklamadaki sayısal garantiler ölçüme dayanmamaktadır."
+  },
+  "identified": 8,
+  "expected": 8,
+  "unexpected": [],
+  "elapsed_seconds": 19.51
+}

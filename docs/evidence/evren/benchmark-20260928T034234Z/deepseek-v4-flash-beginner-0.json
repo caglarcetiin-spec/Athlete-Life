@@ -1,0 +1,18 @@
+{
+  "model": "deepseek-v4-flash",
+  "case": "beginner",
+  "repeat": 0,
+  "result": "FAIL",
+  "reasoning_effort": "low",
+  "code": "ai_invalid_response",
+  "message": "EVREN yanıtı tamamlanamadı veya plan biçimine uymadı. Planına alınmadı; tekrar deneyebilirsin.",
+  "elapsed_seconds": 45.41,
+  "transport": {
+    "finish_reason": "length",
+    "usage": {
+      "prompt_tokens": 2979,
+      "completion_tokens": 10000,
+      "total_tokens": 12979
+    }
+  }
+}

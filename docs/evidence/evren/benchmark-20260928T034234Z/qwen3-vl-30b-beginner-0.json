@@ -1,0 +1,18 @@
+{
+  "model": "qwen3-vl-30b",
+  "case": "beginner",
+  "repeat": 0,
+  "result": "FAIL",
+  "reasoning_effort": null,
+  "code": "ai_invalid_response",
+  "message": "EVREN yanıtı tamamlanamadı veya plan biçimine uymadı. Planına alınmadı; tekrar deneyebilirsin.",
+  "elapsed_seconds": 9.81,
+  "transport": {
+    "finish_reason": "stop",
+    "usage": {
+      "prompt_tokens": 2923,
+      "completion_tokens": 2177,
+      "total_tokens": 5100
+    }
+  }
+}

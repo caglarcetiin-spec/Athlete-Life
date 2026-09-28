@@ -1,0 +1,721 @@
+{
+  "model": "glm-5.3",
+  "case": "skill",
+  "repeat": 0,
+  "result": "PASS",
+  "reasoning_effort": "low",
+  "review": {
+    "days": [
+      {
+        "weekday": 0,
+        "estimated_minutes": 65.0,
+        "working_sets": 18,
+        "missing_patterns": [],
+        "blocks": [
+          {
+            "movement_id": "muscle-up",
+            "block": "skill",
+            "family_label": "Çekiş becerisi",
+            "reason": "Teknik pratisi ana hareketlerden önce; bildirilen 5 tekrarın %70'i altında tutuldu."
+          },
+          {
+            "movement_id": "front-lever",
+            "block": "skill",
+            "family_label": "Çekiş becerisi",
+            "reason": "İzometrik teknik koruması; 10 sn kapasitenin %60'ı olan 6 sn ile sınırlandı."
+          },
+          {
+            "movement_id": "push-up",
+            "block": "main",
+            "family_label": "Yatay itiş",
+            "reason": "Yatay itiş deseni için ana hacim; hedef hipertrofi için RIR 3."
+          },
+          {
+            "movement_id": "ez-bar-row",
+            "block": "main",
+            "family_label": "Yatay çekiş",
+            "reason": "Yatay çekme deseni; sırt odak 3 önceliğine uygun ağır ana hareket."
+          },
+          {
+            "movement_id": "ring-dip",
+            "block": "main",
+            "family_label": "Dikey itiş",
+            "reason": "Dikey itiş; 10 tekrar kapasitenin %70'i olan 7 ile sınırlı."
+          },
+          {
+            "movement_id": "pull-up",
+            "block": "main",
+            "family_label": "Dikey çekiş",
+            "reason": "Dikey çekme; 12 kapasitenin %70'i olan 8 tekrarla teknik korunur."
+          },
+          {
+            "movement_id": "ring-face-pull",
+            "block": "accessory",
+            "family_label": "Kürek kemiği çevresi",
+            "reason": "Omuz sağlığı ve arka omuz hacmi; kısa dinlenmeyle süre bütçesine sığdı."
+          },
+          {
+            "movement_id": "ez-bar-triceps-extension",
+            "block": "accessory",
+            "family_label": "Kol açma",
+            "reason": "İtiş hacmini tamamlayan dirsek uzatma aksesuarı."
+          },
+          {
+            "movement_id": "walk",
+            "block": "conditioning",
+            "family_label": "Kondisyon",
+            "reason": "Kısa kondisyon bloğu; gün sonunda toparlanıcı 8 dk yürüyüş."
+          }
+        ]
+      },
+      {
+        "weekday": 1,
+        "estimated_minutes": 52.3,
+        "working_sets": 12,
+        "missing_patterns": [],
+        "blocks": [
+          {
+            "movement_id": "bodyweight-squat",
+            "block": "main",
+            "family_label": "Diz baskın / çömelme",
+            "reason": "Diz deseni ana hareketi; teknik temiz kalacak şekilde RIR 3."
+          },
+          {
+            "movement_id": "ez-bar-rdl",
+            "block": "main",
+            "family_label": "Kalça baskın / kaldırma",
+            "reason": "Hinge deseni; arka zincir hacmi için EZ bar ile ana hareket."
+          },
+          {
+            "movement_id": "glute-bridge",
+            "block": "main",
+            "family_label": "Kalça baskın / kaldırma",
+            "reason": "Kalça hacmini artıran ek hinge hacmi; ileri seviyeye uygun ek set."
+          },
+          {
+            "movement_id": "plank",
+            "block": "accessory",
+            "family_label": "Gövde",
+            "reason": "Gövde stabilitesi izometriği; 60 sn sınırı içinde orta süre."
+          },
+          {
+            "movement_id": "bodyweight-calf-raise",
+            "block": "accessory",
+            "family_label": "Baldır",
+            "reason": "Baldır hacmi aksesuarı; kısa dinlenme ile sıkı çalışma."
+          },
+          {
+            "movement_id": "walk",
+            "block": "conditioning",
+            "family_label": "Kondisyon",
+            "reason": "8 dk kondisyon; alt vücut günü sonunda düşük etkili bitiş."
+          }
+        ]
+      },
+      {
+        "weekday": 3,
+        "estimated_minutes": 65.0,
+        "working_sets": 18,
+        "missing_patterns": [],
+        "blocks": [
+          {
+            "movement_id": "muscle-up",
+            "block": "skill",
+            "family_label": "Çekiş becerisi",
+            "reason": "Haftalık ikinci teknik pratiği; düşük tekrarla kalite öncelikli."
+          },
+          {
+            "movement_id": "front-lever",
+            "block": "skill",
+            "family_label": "Çekiş becerisi",
+            "reason": "Teknik koruma için izometrik tutuş; kapasiteye göre sınırlandı."
+          },
+          {
+            "movement_id": "push-up",
+            "block": "main",
+            "family_label": "Yatay itiş",
+            "reason": "Yatay itiş ana hacmi; Pazartesi ile aynı düzen haftalık tekrar sağlar."
+          },
+          {
+            "movement_id": "ez-bar-row",
+            "block": "main",
+            "family_label": "Yatay çekiş",
+            "reason": "Yatay çekme ana hareketi; sırt odaklı hacim korunur."
+          },
+          {
+            "movement_id": "ring-dip",
+            "block": "main",
+            "family_label": "Dikey itiş",
+            "reason": "Dikey itiş; kapasite sınırına uygun tekrar sayısı."
+          },
+          {
+            "movement_id": "pull-up",
+            "block": "main",
+            "family_label": "Dikey çekiş",
+            "reason": "Dikey çekme; muscle-up altyapısını da destekler."
+          },
+          {
+            "movement_id": "ring-rear-delt-row",
+            "block": "accessory",
+            "family_label": "Kürek kemiği çevresi",
+            "reason": "Arka omuz ve skapuler hacim; omuz odağına katkı."
+          },
+          {
+            "movement_id": "ez-bar-curl",
+            "block": "accessory",
+            "family_label": "Kol bükme",
+            "reason": "Dirsek bükme aksesuarı; çekme gününü dengeler."
+          },
+          {
+            "movement_id": "walk",
+            "block": "conditioning",
+            "family_label": "Kondisyon",
+            "reason": "Tutarlı 8 dk kondisyon; süre bütçesi içinde kalır."
+          }
+        ]
+      },
+      {
+        "weekday": 4,
+        "estimated_minutes": 51.9,
+        "working_sets": 12,
+        "missing_patterns": [],
+        "blocks": [
+          {
+            "movement_id": "bodyweight-split-squat",
+            "block": "main",
+            "family_label": "Diz baskın / çömelme",
+            "reason": "Tek taraflı diz deseni; Salıya çeşitlilik ve denge yüklemesi."
+          },
+          {
+            "movement_id": "ez-bar-rdl",
+            "block": "main",
+            "family_label": "Kalça baskın / kaldırma",
+            "reason": "Hinge ana hareketi; haftada iki kez arka zincir hacmi."
+          },
+          {
+            "movement_id": "glute-bridge",
+            "block": "main",
+            "family_label": "Kalça baskın / kaldırma",
+            "reason": "Ek kalça hacmi; ileri seviye toplam set bütçesi içinde."
+          },
+          {
+            "movement_id": "plank",
+            "block": "accessory",
+            "family_label": "Gövde",
+            "reason": "Gövde stabilitesi; Salı ile aynı izometrik doz."
+          },
+          {
+            "movement_id": "bodyweight-calf-raise",
+            "block": "accessory",
+            "family_label": "Baldır",
+            "reason": "Baldır aksesuarı; haftalık tekrar sıklığı korunur."
+          },
+          {
+            "movement_id": "walk",
+            "block": "conditioning",
+            "family_label": "Kondisyon",
+            "reason": "Haftayı tamamlayan 8 dk kondisyon bloğu."
+          }
+        ]
+      }
+    ],
+    "muscle_sets": {
+      "chest": 12,
+      "back": 20.9,
+      "shoulders": 17.6,
+      "arms": 27.9,
+      "core": 2.9,
+      "quads": 6,
+      "posterior": 16.3,
+      "calves": 7.0
+    },
+    "missing_focus": [],
+    "version": "ai-planner-3",
+    "excluded": [
+      {
+        "movement_id": "barbell-squat",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "dumbbell-goblet-squat",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "dumbbell-rdl",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "barbell-deadlift",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "incline-push-up",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "ring-push-up",
+        "reason": "Kontrollü yapabildiğini belirtmedin"
+      },
+      {
+        "movement_id": "barbell-bench-press",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "feet-elevated-ring-row",
+        "reason": "Kontrollü yapabildiğini belirtmedin"
+      },
+      {
+        "movement_id": "dumbbell-row",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "barbell-row",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "chin-up",
+        "reason": "Kontrollü yapabildiğini belirtmedin"
+      },
+      {
+        "movement_id": "ring-pull-up",
+        "reason": "Kontrollü yapabildiğini belirtmedin"
+      },
+      {
+        "movement_id": "ring-chin-up",
+        "reason": "Kontrollü yapabildiğini belirtmedin"
+      },
+      {
+        "movement_id": "weighted-pull-up",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "dumbbell-overhead-press",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "weighted-ring-dip",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "db-hammer-curl",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "ring-biceps-curl",
+        "reason": "Kontrollü yapabildiğini belirtmedin"
+      },
+      {
+        "movement_id": "ring-triceps-extension",
+        "reason": "Kontrollü yapabildiğini belirtmedin"
+      },
+      {
+        "movement_id": "db-lateral-raise",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "ring-hamstring-curl",
+        "reason": "Kontrollü yapabildiğini belirtmedin"
+      },
+      {
+        "movement_id": "ring-rollout",
+        "reason": "Kontrollü yapabildiğini belirtmedin"
+      },
+      {
+        "movement_id": "ring-body-saw",
+        "reason": "Kontrollü yapabildiğini belirtmedin"
+      },
+      {
+        "movement_id": "dragon-flag",
+        "reason": "Kontrollü yapabildiğini belirtmedin"
+      },
+      {
+        "movement_id": "ring-muscle-up",
+        "reason": "Kontrollü yapabildiğini belirtmedin"
+      },
+      {
+        "movement_id": "tuck-front-lever",
+        "reason": "Kontrollü yapabildiğini belirtmedin"
+      },
+      {
+        "movement_id": "ring-front-lever",
+        "reason": "Kontrollü yapabildiğini belirtmedin"
+      },
+      {
+        "movement_id": "ring-tuck-front-lever",
+        "reason": "Kontrollü yapabildiğini belirtmedin"
+      },
+      {
+        "movement_id": "front-lever-pull-raise",
+        "reason": "Kontrollü yapabildiğini belirtmedin"
+      },
+      {
+        "movement_id": "ring-support-hold",
+        "reason": "Kontrollü yapabildiğini belirtmedin"
+      },
+      {
+        "movement_id": "ring-l-sit",
+        "reason": "Kontrollü yapabildiğini belirtmedin"
+      },
+      {
+        "movement_id": "full-planche",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "tuck-planche",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "planche-lean",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "zone-2-run",
+        "reason": "Kontrollü yapabildiğini belirtmedin"
+      }
+    ],
+    "selected_methods": [
+      "weights",
+      "calisthenics",
+      "gymnastics",
+      "conditioning"
+    ],
+    "input_revision": 1,
+    "health_context": {
+      "status": "unknown",
+      "score": null,
+      "reasons": [
+        "Kayıtlar bir güvenli antrenman garantisi değildir."
+      ],
+      "self_report": null,
+      "sleep_hours_in_recorded_intervals": null,
+      "sleep_source_ids": [],
+      "pain": [],
+      "episode_ids": [],
+      "cycle_multiplier": null
+    },
+    "meaning": "Haftalık kuvvet setlerinin katalog katsayılarıyla dağılımı. Teknik tutuş ve kondisyon bu toplama katılmaz; büyüme/hasar ölçümü değildir.",
+    "duration_assumptions": "5–8 dk hazırlık + tekrar başına 4 sn veya hedef tutuş süresi + belirtilen dinlenmeler + hareket başına 60 sn geçiş. Gerçek süre değişebilir.",
+    "skill_sets": 8,
+    "isometric_seconds": 204,
+    "conditioning_seconds": 1920,
+    "status": "draft"
+  },
+  "notes": [
+    "İleri seviye upper/lower plan: Pazartesi ve Perşembe üst vücut (beceri bloğu: muscle-up + front lever, ardından çekme/itiş hacmi, omuz ve sırt odaklı), Salı ve Cuma alt vücut (diz + hinge). Her gün 8 dk yürüyüş kondisyonu ile biter. Tüm süreler 75 dk sınırı içinde; kilo yükleri belirlenmediğinden setler RIR 2-3 ile düzenlendi.",
+    "AI taslağıdır; doğrulama biyolojik uygunluk garantisi değildir. Ana plana almak için inceleyip onayla.",
+    "EZ bar ağırlıkları belirtilmediği için kilogram önerisi yapılmaz; yükler RIR 2-3 hissine göre ayarlanır.",
+    "Front lever ve muscle-up değerleri bildirilen kapasiteye göre sınırlandı; otomatik ilerleme içermez.",
+    "Bu plan koçluk varsayımlarıdır, klinik tavsiye değildir; ağrı durumunda uzmana danışın.",
+    "Kondisyon yalnızca yürüyüşle sınırlıdır, 8 dk sabittir."
+  ],
+  "elapsed_seconds": 47.02,
+  "transport": {
+    "finish_reason": "stop",
+    "usage": {
+      "prompt_tokens": 5070,
+      "completion_tokens": 2521,
+      "total_tokens": 7591
+    }
+  },
+  "synthetic_plan": {
+    "summary": "İleri seviye upper/lower plan: Pazartesi ve Perşembe üst vücut (beceri bloğu: muscle-up + front lever, ardından çekme/itiş hacmi, omuz ve sırt odaklı), Salı ve Cuma alt vücut (diz + hinge). Her gün 8 dk yürüyüş kondisyonu ile biter. Tüm süreler 75 dk sınırı içinde; kilo yükleri belirlenmediğinden setler RIR 2-3 ile düzenlendi.",
+    "limitations": [
+      "EZ bar ağırlıkları belirtilmediği için kilogram önerisi yapılmaz; yükler RIR 2-3 hissine göre ayarlanır.",
+      "Front lever ve muscle-up değerleri bildirilen kapasiteye göre sınırlandı; otomatik ilerleme içermez.",
+      "Bu plan koçluk varsayımlarıdır, klinik tavsiye değildir; ağrı durumunda uzmana danışın.",
+      "Kondisyon yalnızca yürüyüşle sınırlıdır, 8 dk sabittir."
+    ],
+    "days": [
+      {
+        "weekday": 0,
+        "exercises": [
+          {
+            "movement_id": "muscle-up",
+            "sets": 2,
+            "reps": 3,
+            "seconds": null,
+            "rest_seconds": 120,
+            "rir": null,
+            "reason": "Teknik pratisi ana hareketlerden önce; bildirilen 5 tekrarın %70'i altında tutuldu."
+          },
+          {
+            "movement_id": "front-lever",
+            "sets": 2,
+            "reps": null,
+            "seconds": 6,
+            "rest_seconds": 120,
+            "rir": null,
+            "reason": "İzometrik teknik koruması; 10 sn kapasitenin %60'ı olan 6 sn ile sınırlandı."
+          },
+          {
+            "movement_id": "push-up",
+            "sets": 3,
+            "reps": 10,
+            "seconds": null,
+            "rest_seconds": 150,
+            "rir": 3,
+            "reason": "Yatay itiş deseni için ana hacim; hedef hipertrofi için RIR 3."
+          },
+          {
+            "movement_id": "ez-bar-row",
+            "sets": 3,
+            "reps": 10,
+            "seconds": null,
+            "rest_seconds": 150,
+            "rir": 3,
+            "reason": "Yatay çekme deseni; sırt odak 3 önceliğine uygun ağır ana hareket."
+          },
+          {
+            "movement_id": "ring-dip",
+            "sets": 3,
+            "reps": 7,
+            "seconds": null,
+            "rest_seconds": 150,
+            "rir": 3,
+            "reason": "Dikey itiş; 10 tekrar kapasitenin %70'i olan 7 ile sınırlı."
+          },
+          {
+            "movement_id": "pull-up",
+            "sets": 3,
+            "reps": 8,
+            "seconds": null,
+            "rest_seconds": 150,
+            "rir": 3,
+            "reason": "Dikey çekme; 12 kapasitenin %70'i olan 8 tekrarla teknik korunur."
+          },
+          {
+            "movement_id": "ring-face-pull",
+            "sets": 3,
+            "reps": 12,
+            "seconds": null,
+            "rest_seconds": 60,
+            "rir": 3,
+            "reason": "Omuz sağlığı ve arka omuz hacmi; kısa dinlenmeyle süre bütçesine sığdı."
+          },
+          {
+            "movement_id": "ez-bar-triceps-extension",
+            "sets": 3,
+            "reps": 10,
+            "seconds": null,
+            "rest_seconds": 60,
+            "rir": 3,
+            "reason": "İtiş hacmini tamamlayan dirsek uzatma aksesuarı."
+          },
+          {
+            "movement_id": "walk",
+            "sets": 1,
+            "reps": null,
+            "seconds": 480,
+            "rest_seconds": 0,
+            "rir": null,
+            "reason": "Kısa kondisyon bloğu; gün sonunda toparlanıcı 8 dk yürüyüş."
+          }
+        ]
+      },
+      {
+        "weekday": 1,
+        "exercises": [
+          {
+            "movement_id": "bodyweight-squat",
+            "sets": 3,
+            "reps": 12,
+            "seconds": null,
+            "rest_seconds": 150,
+            "rir": 3,
+            "reason": "Diz deseni ana hareketi; teknik temiz kalacak şekilde RIR 3."
+          },
+          {
+            "movement_id": "ez-bar-rdl",
+            "sets": 3,
+            "reps": 10,
+            "seconds": null,
+            "rest_seconds": 150,
+            "rir": 3,
+            "reason": "Hinge deseni; arka zincir hacmi için EZ bar ile ana hareket."
+          },
+          {
+            "movement_id": "glute-bridge",
+            "sets": 3,
+            "reps": 12,
+            "seconds": null,
+            "rest_seconds": 120,
+            "rir": 3,
+            "reason": "Kalça hacmini artıran ek hinge hacmi; ileri seviyeye uygun ek set."
+          },
+          {
+            "movement_id": "plank",
+            "sets": 3,
+            "reps": null,
+            "seconds": 30,
+            "rest_seconds": 60,
+            "rir": null,
+            "reason": "Gövde stabilitesi izometriği; 60 sn sınırı içinde orta süre."
+          },
+          {
+            "movement_id": "bodyweight-calf-raise",
+            "sets": 3,
+            "reps": 15,
+            "seconds": null,
+            "rest_seconds": 90,
+            "rir": 3,
+            "reason": "Baldır hacmi aksesuarı; kısa dinlenme ile sıkı çalışma."
+          },
+          {
+            "movement_id": "walk",
+            "sets": 1,
+            "reps": null,
+            "seconds": 480,
+            "rest_seconds": 0,
+            "rir": null,
+            "reason": "8 dk kondisyon; alt vücut günü sonunda düşük etkili bitiş."
+          }
+        ]
+      },
+      {
+        "weekday": 3,
+        "exercises": [
+          {
+            "movement_id": "muscle-up",
+            "sets": 2,
+            "reps": 3,
+            "seconds": null,
+            "rest_seconds": 120,
+            "rir": null,
+            "reason": "Haftalık ikinci teknik pratiği; düşük tekrarla kalite öncelikli."
+          },
+          {
+            "movement_id": "front-lever",
+            "sets": 2,
+            "reps": null,
+            "seconds": 6,
+            "rest_seconds": 120,
+            "rir": null,
+            "reason": "Teknik koruma için izometrik tutuş; kapasiteye göre sınırlandı."
+          },
+          {
+            "movement_id": "push-up",
+            "sets": 3,
+            "reps": 10,
+            "seconds": null,
+            "rest_seconds": 150,
+            "rir": 3,
+            "reason": "Yatay itiş ana hacmi; Pazartesi ile aynı düzen haftalık tekrar sağlar."
+          },
+          {
+            "movement_id": "ez-bar-row",
+            "sets": 3,
+            "reps": 10,
+            "seconds": null,
+            "rest_seconds": 150,
+            "rir": 3,
+            "reason": "Yatay çekme ana hareketi; sırt odaklı hacim korunur."
+          },
+          {
+            "movement_id": "ring-dip",
+            "sets": 3,
+            "reps": 7,
+            "seconds": null,
+            "rest_seconds": 150,
+            "rir": 3,
+            "reason": "Dikey itiş; kapasite sınırına uygun tekrar sayısı."
+          },
+          {
+            "movement_id": "pull-up",
+            "sets": 3,
+            "reps": 8,
+            "seconds": null,
+            "rest_seconds": 150,
+            "rir": 3,
+            "reason": "Dikey çekme; muscle-up altyapısını da destekler."
+          },
+          {
+            "movement_id": "ring-rear-delt-row",
+            "sets": 3,
+            "reps": 12,
+            "seconds": null,
+            "rest_seconds": 60,
+            "rir": 3,
+            "reason": "Arka omuz ve skapuler hacim; omuz odağına katkı."
+          },
+          {
+            "movement_id": "ez-bar-curl",
+            "sets": 3,
+            "reps": 10,
+            "seconds": null,
+            "rest_seconds": 60,
+            "rir": 3,
+            "reason": "Dirsek bükme aksesuarı; çekme gününü dengeler."
+          },
+          {
+            "movement_id": "walk",
+            "sets": 1,
+            "reps": null,
+            "seconds": 480,
+            "rest_seconds": 0,
+            "rir": null,
+            "reason": "Tutarlı 8 dk kondisyon; süre bütçesi içinde kalır."
+          }
+        ]
+      },
+      {
+        "weekday": 4,
+        "exercises": [
+          {
+            "movement_id": "bodyweight-split-squat",
+            "sets": 3,
+            "reps": 10,
+            "seconds": null,
+            "rest_seconds": 150,
+            "rir": 3,
+            "reason": "Tek taraflı diz deseni; Salıya çeşitlilik ve denge yüklemesi."
+          },
+          {
+            "movement_id": "ez-bar-rdl",
+            "sets": 3,
+            "reps": 10,
+            "seconds": null,
+            "rest_seconds": 150,
+            "rir": 3,
+            "reason": "Hinge ana hareketi; haftada iki kez arka zincir hacmi."
+          },
+          {
+            "movement_id": "glute-bridge",
+            "sets": 3,
+            "reps": 12,
+            "seconds": null,
+            "rest_seconds": 120,
+            "rir": 3,
+            "reason": "Ek kalça hacmi; ileri seviye toplam set bütçesi içinde."
+          },
+          {
+            "movement_id": "plank",
+            "sets": 3,
+            "reps": null,
+            "seconds": 30,
+            "rest_seconds": 60,
+            "rir": null,
+            "reason": "Gövde stabilitesi; Salı ile aynı izometrik doz."
+          },
+          {
+            "movement_id": "bodyweight-calf-raise",
+            "sets": 3,
+            "reps": 15,
+            "seconds": null,
+            "rest_seconds": 90,
+            "rir": 3,
+            "reason": "Baldır aksesuarı; haftalık tekrar sıklığı korunur."
+          },
+          {
+            "movement_id": "walk",
+            "sets": 1,
+            "reps": null,
+            "seconds": 480,
+            "rest_seconds": 0,
+            "rir": null,
+            "reason": "Haftayı tamamlayan 8 dk kondisyon bloğu."
+          }
+        ]
+      }
+    ]
+  }
+}

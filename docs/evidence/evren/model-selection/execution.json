@@ -1,0 +1,29 @@
+{
+  "command": [
+    "PYTHON_DOTENV_DISABLED=1",
+    "STORAGE_BACKEND=sqlite",
+    "ACCOUNT_STORAGE_BACKEND=sqlite",
+    ".venv-v2/bin/python",
+    "tools/v2/benchmark_evren.py"
+  ],
+  "terminal_exit_code": 0,
+  "output_artifacts": "../benchmark-20260928T034234Z/*.json",
+  "stdout": "Per-request summaries and aggregate summary emitted; structured content retained in the output artifacts, not a raw terminal transcript.",
+  "preflight": "Before API execution: corrected synthetic fixture conditioning_minutes=0 to valid minimum5 and focus key legs to quads; all three forms then validated. No production validator was changed.",
+  "follow_up_runs": [
+    {
+      "call": "benchmark_evren.run(key, [mimo-v2.6-pro, qwen3.8-flash-next])",
+      "completed": true,
+      "output": "../benchmark-20260928T035015Z/"
+    },
+    {
+      "call": "critique_evren.run(key, [mimo-v2.6-pro, qwen3.8-flash-next, glm-5.3])",
+      "completed": true,
+      "output": "../critique-20260928T035254Z/"
+    }
+  ],
+  "selected_model": "qwen3.8-flash-next",
+  "reasoning_effort": "low",
+  "local_preview_health": "ready",
+  "production_deployed": false
+}

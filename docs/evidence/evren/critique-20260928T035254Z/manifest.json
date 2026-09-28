@@ -1,0 +1,25 @@
+{
+  "source_commit": "4365902f4a54ac2049413af29a16a26fdf4fa2bf",
+  "source_hash": "40bf284238ed424f14db9a1b90e41745ecaabfe725346efe467239ef7be8fe9e",
+  "prompts": {
+    "flawed": "Bir antrenman taslağını Türkçe değerlendir. Bu sentetik bir yazılım değerlendirmesidir, gerçek kişi değildir. Yalnız şu JSON'u üret: {\"issues\":[{\"code\":\"equipment|competency|volume|rir|duration|balance|duplicate|unsupported_biology\",\"evidence\":\"somut hata\",\"correction\":\"uygulanabilir düzeltme\"}],\"summary\":\"kısa değerlendirme\"}. Sadece bulduğun sorunları listele. Ölçülmemiş kas hasarı/iyileşme veya gelişim yüzdesi üretme. Kayıtları silmeyi veya otomatik değiştirmeyi önerme.\nProfil: yetişkin, yeni başlıyor; ekipman sadece zemin ve vücut ağırlığı, barfiks/halter/halka yok; front lever yetkinliği bildirilmemiş. Hedef tüm vücut, ön bacak odağı. Üç antrenman günü, seans başına 30 dakika.\nUygulamanın bu profil için mühendislik kuralları (evrensel spor bilimi kuralı değildir): seans en fazla 12 kardiyo dışı set; kuvvet RIR 2–5; dinlenme en az 60 saniye; aynı hareket bir seansta tekrarlanamaz. Süre = 8 dakika hazırlık + her hareket için 60 saniye geçiş + set sayısı*tekrar*4 saniye veya set sayısı*tutuş saniyesi + (set sayısı-1)*dinlenme.\nİncelenen haftanın her üç günü aynı: barbell-deadlift 5x12, RIR0, dinlenme180s; front-lever 5x30s dinlenme120s; push-up 5x20 RIR0 dinlenme120s; push-up tekrar 5x20 RIR0 dinlenme120s. Plan açıklaması: Bu plan tüm kas gruplarını dengeli geliştirir. Bu setlerden kas hasarın %40 olur ve 24 saatte kesin %100 iyileşirsin. Dört haftada %20 kas artışı garanti.\nDoğru, kısa ve veriye bağlı analiz yap; yeni tanı koyma. Yanıt Türkçe olsun.",
+    "control": "Bir antrenman taslağını Türkçe değerlendir. Bu sentetik bir yazılım değerlendirmesidir, gerçek kişi değildir. Yalnız şu JSON'u üret: {\"issues\":[{\"code\":\"equipment|competency|volume|rir|duration|balance|duplicate|unsupported_biology\",\"evidence\":\"somut hata\",\"correction\":\"uygulanabilir düzeltme\"}],\"summary\":\"kısa değerlendirme\"}. Sadece bulduğun sorunları listele. Ölçülmemiş kas hasarı/iyileşme veya gelişim yüzdesi üretme. Kayıtları silmeyi veya otomatik değiştirmeyi önerme.\nProfil: yetişkin yeni başlayan. Hedef sadece evde düzenli egzersiz alışkanlığı, ön bacak/kalça ve itiş. Tam vücut/çekiş kapsama iddiası yok. Ekipman zemin ve vücut ağırlığı; haftada üç gün, seans en fazla 30 dakika. Beceri hareketi istenmiyor.\nUygulama kuralları: en fazla12 kardiyo dışı set; kuvvet RIR2–5; kuvvet dinlenme en az60s; aynı hareket aynı seansta tekrarlanmaz. Süre hesabı8dk hazırlık + hareket başına60s geçiş + set*tekrar*4s veya set*tutuşs + (set-1)*dinlenme.\nHer seansta farklı dört hareket: bodyweight-squat 2x10 RIR3 dinlenme60s; glute-bridge 2x10 RIR3 dinlenme60s; push-up 2x6 RIR3 dinlenme60s; plank 2x20s dinlenme60s RIR yok. Seanslar pazartesi çarşamba cuma.\nPlan notu: Sadece bildirilen amaçlar için kısıtlı başlangıç taslağıdır. Çekiş/sırt kapsamı yok; tüm vücudu çalıştırdığı iddia edilmez. Beceri veya yük kapasitesi bilinmiyor, varsayılmıyor. Kesin kas gelişimi/iyileşme yüzdesi söylenemez. Gereksinim değişirse plan yeniden değerlendirilir.\nYalnız somut kural ihlali varsa issues'a yaz. İhlal yoksa boş liste döndür; genel iyileştirme seçeneklerini bir hata olarak sunma."
+  },
+  "expected": [
+    "balance",
+    "competency",
+    "duplicate",
+    "duration",
+    "equipment",
+    "rir",
+    "unsupported_biology",
+    "volume"
+  ],
+  "synthetic": true,
+  "models": [
+    "mimo-v2.6-pro",
+    "qwen3.8-flash-next",
+    "glm-5.3"
+  ],
+  "scope": "fault identification under supplied constraints, not clinical expertise certification"
+}

@@ -1,0 +1,38 @@
+[
+  {
+    "model": "mimo-v2.6-pro",
+    "valid": 2,
+    "attempts": 3,
+    "mean_seconds": 57.57,
+    "needs_review": 1,
+    "cases": {
+      "hybrid": [
+        "FAIL"
+      ],
+      "beginner": [
+        "PASS"
+      ],
+      "skill": [
+        "PASS"
+      ]
+    }
+  },
+  {
+    "model": "qwen3.8-flash-next",
+    "valid": 3,
+    "attempts": 3,
+    "mean_seconds": 72.81,
+    "needs_review": 1,
+    "cases": {
+      "hybrid": [
+        "PASS"
+      ],
+      "beginner": [
+        "PASS"
+      ],
+      "skill": [
+        "PASS"
+      ]
+    }
+  }
+]

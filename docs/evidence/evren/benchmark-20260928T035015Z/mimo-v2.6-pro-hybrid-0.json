@@ -1,0 +1,18 @@
+{
+  "model": "mimo-v2.6-pro",
+  "case": "hybrid",
+  "repeat": 0,
+  "result": "FAIL",
+  "reasoning_effort": "low",
+  "code": "ai_invalid_response",
+  "message": "EVREN yanıtı tamamlanamadı veya plan biçimine uymadı. Planına alınmadı; tekrar deneyebilirsin.",
+  "elapsed_seconds": 80.47,
+  "transport": {
+    "finish_reason": "stop",
+    "usage": {
+      "prompt_tokens": 4483,
+      "completion_tokens": 7235,
+      "total_tokens": 11718
+    }
+  }
+}

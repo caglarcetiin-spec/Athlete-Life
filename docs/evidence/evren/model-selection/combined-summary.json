@@ -1,0 +1,58 @@
+[
+  {
+    "model": "glm-5.3",
+    "valid": 2,
+    "n": 3,
+    "mean_seconds": 63.18,
+    "min_seconds": 47.02,
+    "max_seconds": 90.08
+  },
+  {
+    "model": "qwen3-vl-30b",
+    "valid": 1,
+    "n": 3,
+    "mean_seconds": 12.41,
+    "min_seconds": 9.81,
+    "max_seconds": 15.74
+  },
+  {
+    "model": "mimo-v2.6-pro",
+    "valid": 5,
+    "n": 6,
+    "mean_seconds": 58.92,
+    "min_seconds": 30.66,
+    "max_seconds": 80.47
+  },
+  {
+    "model": "gemma-4-31b",
+    "valid": 0,
+    "n": 3,
+    "mean_seconds": 90.11,
+    "min_seconds": 90.1,
+    "max_seconds": 90.11
+  },
+  {
+    "model": "deepseek-v4-flash",
+    "valid": 0,
+    "n": 3,
+    "mean_seconds": 38.72,
+    "min_seconds": 31.64,
+    "max_seconds": 45.41
+  },
+  {
+    "model": "deepseek-v4.1-flash",
+    "valid": 1,
+    "n": 3,
+    "mean_seconds": 85.18,
+    "min_seconds": 75.34,
+    "max_seconds": 90.11
+  },
+  {
+    "model": "qwen3.8-flash-next",
+    "valid": 6,
+    "n": 6,
+    "mean_seconds": 66.18,
+    "min_seconds": 35.95,
+    "max_seconds": 89.62
+  }
+]

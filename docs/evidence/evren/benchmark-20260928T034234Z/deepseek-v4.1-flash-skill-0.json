@@ -1,0 +1,11 @@
+{
+  "model": "deepseek-v4.1-flash",
+  "case": "skill",
+  "repeat": 0,
+  "result": "FAIL",
+  "reasoning_effort": "low",
+  "code": "ai_unavailable",
+  "message": "EVREN zamanında yanıt vermedi. Planın değiştirilmedi; tekrar deneyebilirsin.",
+  "elapsed_seconds": 90.11,
+  "transport": {}
+}

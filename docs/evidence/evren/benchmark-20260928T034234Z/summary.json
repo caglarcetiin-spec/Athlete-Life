@@ -1,0 +1,128 @@
+[
+  {
+    "model": "glm-5.3",
+    "valid": 2,
+    "attempts": 3,
+    "mean_seconds": 63.18,
+    "needs_review": 0,
+    "cases": {
+      "hybrid": [
+        "PASS"
+      ],
+      "beginner": [
+        "FAIL"
+      ],
+      "skill": [
+        "PASS"
+      ]
+    }
+  },
+  {
+    "model": "mimo-v2.6-pro",
+    "valid": 3,
+    "attempts": 3,
+    "mean_seconds": 60.27,
+    "needs_review": 1,
+    "cases": {
+      "hybrid": [
+        "PASS"
+      ],
+      "beginner": [
+        "PASS"
+      ],
+      "skill": [
+        "PASS"
+      ]
+    }
+  },
+  {
+    "model": "deepseek-v4.1-flash",
+    "valid": 1,
+    "attempts": 3,
+    "mean_seconds": 85.18,
+    "needs_review": 1,
+    "cases": {
+      "hybrid": [
+        "FAIL"
+      ],
+      "beginner": [
+        "PASS"
+      ],
+      "skill": [
+        "FAIL"
+      ]
+    }
+  },
+  {
+    "model": "deepseek-v4-flash",
+    "valid": 0,
+    "attempts": 3,
+    "mean_seconds": 38.72,
+    "needs_review": 0,
+    "cases": {
+      "hybrid": [
+        "FAIL"
+      ],
+      "beginner": [
+        "FAIL"
+      ],
+      "skill": [
+        "FAIL"
+      ]
+    }
+  },
+  {
+    "model": "qwen3.8-flash-next",
+    "valid": 3,
+    "attempts": 3,
+    "mean_seconds": 59.55,
+    "needs_review": 1,
+    "cases": {
+      "hybrid": [
+        "PASS"
+      ],
+      "beginner": [
+        "PASS"
+      ],
+      "skill": [
+        "PASS"
+      ]
+    }
+  },
+  {
+    "model": "gemma-4-31b",
+    "valid": 0,
+    "attempts": 3,
+    "mean_seconds": 90.11,
+    "needs_review": 0,
+    "cases": {
+      "hybrid": [
+        "FAIL"
+      ],
+      "beginner": [
+        "FAIL"
+      ],
+      "skill": [
+        "FAIL"
+      ]
+    }
+  },
+  {
+    "model": "qwen3-vl-30b",
+    "valid": 1,
+    "attempts": 3,
+    "mean_seconds": 12.41,
+    "needs_review": 0,
+    "cases": {
+      "hybrid": [
+        "FAIL"
+      ],
+      "beginner": [
+        "FAIL"
+      ],
+      "skill": [
+        "PASS"
+      ]
+    }
+  }
+]

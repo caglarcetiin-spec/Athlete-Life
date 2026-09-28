@@ -97,3 +97,7 @@ Kullanıcı talebi üzerine yerel aktif model ve `.env.example` EVREN `glm-5.3` 
 ```
 
 Anahtar yalnız çalışan önizleme sürecinin belleğinde; yeniden başlatma için güvenli sunucu ayarı gerekir. Render/GitHub yayını bu model seçimi sırasında yapılmadı.
+
+### 28 Eylül — karşılaştırma sonrası güncel seçim
+
+Kullanıcının EVREN modellerini karşılaştırıp en uygunu seçme talebiyle 7 model/33 sentetik çağrı değerlendirildi. Güncel yerel tercih `ALOS_V2_EVREN_MODEL=qwen3.8-flash-next`, `ALOS_V2_EVREN_REASONING_EFFORT=low`. Ayrıntılı yöntem, sonuçlar, hata analizi ve sınırlılıklar: `docs/EVREN_MODEL_COMPARISON.md`. GLM'den sessiz fallback yok; bu açık model seçimi sunucu ayarında yapıldı. Anahtar süreç belleğinde, Render yayını yok.

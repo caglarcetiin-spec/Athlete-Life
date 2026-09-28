@@ -1,0 +1,11 @@
+{
+  "model": "gemma-4-31b",
+  "case": "hybrid",
+  "repeat": 0,
+  "result": "FAIL",
+  "reasoning_effort": null,
+  "code": "ai_unavailable",
+  "message": "EVREN zamanında yanıt vermedi. Planın değiştirilmedi; tekrar deneyebilirsin.",
+  "elapsed_seconds": 90.1,
+  "transport": {}
+}

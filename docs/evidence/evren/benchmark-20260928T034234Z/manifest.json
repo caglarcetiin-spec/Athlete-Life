@@ -1,0 +1,145 @@
+{
+  "at": "20260928T034234Z",
+  "source_commit": "4365902f4a54ac2049413af29a16a26fdf4fa2bf",
+  "source_hashes": {
+    "tools/v2/benchmark_evren.py": "d6eafb26f23359a3dc7f7de9bb27ae356adf063266dfd0d407c40a6fca81ed9f",
+    "apps/api/alos/ai_planning.py": "ddbfac14e2ae7a7aa6f6e01f4c9868434fa363b6835e6c430a9930afda95bddd"
+  },
+  "synthetic": true,
+  "personal_records_read": false,
+  "database_connections": 0,
+  "concurrency": 3,
+  "repeats": 1,
+  "cases": [
+    "hybrid",
+    "beginner",
+    "skill"
+  ],
+  "models": [
+    {
+      "id": "deepseek-v4-flash",
+      "task": "chat",
+      "capabilities": {
+        "tools": true,
+        "thinking": true,
+        "reasoning_effort": true,
+        "reasoning_effort_values": null,
+        "reasoning_effort_aliases": null,
+        "vision": false,
+        "response_format": true,
+        "seed": true,
+        "top_k": true,
+        "stop": true
+      }
+    },
+    {
+      "id": "gemma-4-31b",
+      "task": "chat",
+      "capabilities": {
+        "tools": true,
+        "thinking": false,
+        "reasoning_effort": false,
+        "reasoning_effort_values": null,
+        "reasoning_effort_aliases": null,
+        "vision": true,
+        "response_format": true,
+        "seed": true,
+        "top_k": true,
+        "stop": true
+      }
+    },
+    {
+      "id": "qwen3-vl-30b",
+      "task": "vision_chat",
+      "capabilities": {
+        "tools": true,
+        "thinking": false,
+        "reasoning_effort": false,
+        "reasoning_effort_values": null,
+        "reasoning_effort_aliases": null,
+        "vision": true,
+        "response_format": true,
+        "seed": true,
+        "top_k": true,
+        "stop": true
+      }
+    },
+    {
+      "id": "mimo-v2.6-pro",
+      "task": "chat",
+      "capabilities": {
+        "tools": true,
+        "thinking": true,
+        "reasoning_effort": true,
+        "reasoning_effort_values": [
+          "none",
+          "minimal",
+          "low",
+          "medium",
+          "high",
+          "xhigh"
+        ],
+        "reasoning_effort_aliases": null,
+        "vision": true,
+        "response_format": true,
+        "seed": true,
+        "top_k": true,
+        "stop": true
+      }
+    },
+    {
+      "id": "deepseek-v4.1-flash",
+      "task": "chat",
+      "capabilities": {
+        "tools": true,
+        "thinking": true,
+        "reasoning_effort": true,
+        "reasoning_effort_values": null,
+        "reasoning_effort_aliases": {
+          "medium": "high",
+          "minimal": "low"
+        },
+        "vision": true,
+        "response_format": true,
+        "seed": true,
+        "top_k": true,
+        "stop": true
+      }
+    },
+    {
+      "id": "qwen3.8-flash-next",
+      "task": "chat",
+      "capabilities": {
+        "tools": true,
+        "thinking": true,
+        "reasoning_effort": true,
+        "reasoning_effort_values": null,
+        "reasoning_effort_aliases": {
+          "high": "xhigh"
+        },
+        "vision": true,
+        "response_format": true,
+        "seed": true,
+        "top_k": true,
+        "stop": true
+      }
+    },
+    {
+      "id": "glm-5.3",
+      "task": "chat",
+      "capabilities": {
+        "tools": true,
+        "thinking": true,
+        "reasoning_effort": true,
+        "reasoning_effort_values": null,
+        "reasoning_effort_aliases": null,
+        "vision": false,
+        "response_format": true,
+        "seed": true,
+        "top_k": true,
+        "stop": true
+      }
+    }
+  ],
+  "selection_rule": "Prefer plan-validation success across cases, then missing focus/method coverage and latency; not clinical validation."
+}

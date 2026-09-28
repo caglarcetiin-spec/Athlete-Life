@@ -1,0 +1,699 @@
+{
+  "model": "qwen3-vl-30b",
+  "case": "skill",
+  "repeat": 0,
+  "result": "PASS",
+  "reasoning_effort": null,
+  "review": {
+    "days": [
+      {
+        "weekday": 0,
+        "estimated_minutes": 66.6,
+        "working_sets": 18,
+        "missing_patterns": [],
+        "blocks": [
+          {
+            "movement_id": "muscle-up",
+            "block": "skill",
+            "family_label": "Çekiş becerisi",
+            "reason": "Becerilerdeki performansı korumak ve üst vücut kuvvetini artırmak için. Muscle-up, üst vücut kuvvetini ve teknik beceriyi hem aynı anda hem de yüksek düzeyde geliştirir. 3 rep limiti, kompetansı olan hareketlerde %70 kapasite sınırını korur."
+          },
+          {
+            "movement_id": "front-lever",
+            "block": "skill",
+            "family_label": "Çekiş becerisi",
+            "reason": "Front lever, teknik beceri ve çekme kuvvetini geliştirir. 6 saniye tutuş, kompetansı olan hareketlerde %60 kapasite sınırını korur. Beşer set, beceri gelişimini destekler."
+          },
+          {
+            "movement_id": "push-up",
+            "block": "main",
+            "family_label": "Yatay itiş",
+            "reason": "Horizontal push hareketi için temel güç hareketi. 10 rep, 3 set, 3 RIR ile hipertrofi hedeflenir. Üst vücut kuvveti gelişimi için kritik."
+          },
+          {
+            "movement_id": "ez-bar-row",
+            "block": "main",
+            "family_label": "Yatay çekiş",
+            "reason": "Horizontal pull hareketi için kritik güç hareketi. 10 rep, 3 set, 3 RIR ile sırt kaslarının hipertrofisi hedeflenir. Kompetansı olan hareketlerde %70 rep sınırı korunur."
+          },
+          {
+            "movement_id": "ring-dip",
+            "block": "main",
+            "family_label": "Dikey itiş",
+            "reason": "Vertical push hareketi için kritik güç hareketi. 7 rep, 3 set, 3 RIR ile göğüs ve triceps gelişimi hedeflenir. Kompetansı olan hareketlerde %70 rep sınırı korunur."
+          },
+          {
+            "movement_id": "pull-up",
+            "block": "main",
+            "family_label": "Dikey çekiş",
+            "reason": "Vertical pull hareketi için temel güç hareketi. 8 rep, 3 set, 3 RIR ile sırt ve kollar gelişimi hedeflenir. Kompetansı olan hareketlerde %70 rep sınırı korunur."
+          },
+          {
+            "movement_id": "ring-face-pull",
+            "block": "accessory",
+            "family_label": "Kürek kemiği çevresi",
+            "reason": "Omuz ve sırtın arka kısmını güçlendirir. 10 rep, 3 set, 3 RIR ile hipertrofi hedeflenir. Omuz sağlığı için kritik."
+          },
+          {
+            "movement_id": "ez-bar-triceps-extension",
+            "block": "accessory",
+            "family_label": "Kol açma",
+            "reason": "Triceps gelişimi için aksesuar hareket. 10 rep, 3 set, 3 RIR ile triceps hipertrofisi hedeflenir."
+          },
+          {
+            "movement_id": "walk",
+            "block": "conditioning",
+            "family_label": "Kondisyon",
+            "reason": "Kondisyon geliştirme için 8 dakikalık koşu. 480 saniye, 8 dakikayı tamamlar. Kondisyon hedefi için kritik."
+          }
+        ]
+      },
+      {
+        "weekday": 1,
+        "estimated_minutes": 44.0,
+        "working_sets": 9,
+        "missing_patterns": [],
+        "blocks": [
+          {
+            "movement_id": "bodyweight-squat",
+            "block": "main",
+            "family_label": "Diz baskın / çömelme",
+            "reason": "Knee hareketi için temel güç hareketi. 10 rep, 3 set, 3 RIR ile alt vücut hipertrofisi hedeflenir."
+          },
+          {
+            "movement_id": "ez-bar-rdl",
+            "block": "main",
+            "family_label": "Kalça baskın / kaldırma",
+            "reason": "Hinge hareketi için kritik güç hareketi. 10 rep, 3 set, 3 RIR ile sırt ve kalça kasları geliştirilir."
+          },
+          {
+            "movement_id": "plank",
+            "block": "accessory",
+            "family_label": "Gövde",
+            "reason": "Core dayanıklılığı için isometrik egzersiz. 20 saniye, 3 set, 30 saniye rest ile dayanıklılık geliştirilir."
+          },
+          {
+            "movement_id": "bodyweight-calf-raise",
+            "block": "accessory",
+            "family_label": "Baldır",
+            "reason": "Calf kaslarının güçlendirilmesi için aksesuar hareket. 10 rep, 3 set, 3 RIR ile hipertrofi hedeflenir."
+          },
+          {
+            "movement_id": "walk",
+            "block": "conditioning",
+            "family_label": "Kondisyon",
+            "reason": "Kondisyon geliştirme için 8 dakikalık koşu. 480 saniye, 8 dakikayı tamamlar. Kondisyon hedefi için kritik."
+          }
+        ]
+      },
+      {
+        "weekday": 3,
+        "estimated_minutes": 66.6,
+        "working_sets": 18,
+        "missing_patterns": [],
+        "blocks": [
+          {
+            "movement_id": "muscle-up",
+            "block": "skill",
+            "family_label": "Çekiş becerisi",
+            "reason": "Becerilerdeki performansı korumak ve üst vücut kuvvetini artırmak için. Muscle-up, üst vücut kuvvetini ve teknik beceriyi hem aynı anda hem de yüksek düzeyde geliştirir. 3 rep limiti, kompetansı olan hareketlerde %70 kapasite sınırını korur."
+          },
+          {
+            "movement_id": "front-lever",
+            "block": "skill",
+            "family_label": "Çekiş becerisi",
+            "reason": "Front lever, teknik beceri ve çekme kuvvetini geliştirir. 6 saniye tutuş, kompetansı olan hareketlerde %60 kapasite sınırını korur. Beşer set, beceri gelişimini destekler."
+          },
+          {
+            "movement_id": "push-up",
+            "block": "main",
+            "family_label": "Yatay itiş",
+            "reason": "Horizontal push hareketi için temel güç hareketi. 10 rep, 3 set, 3 RIR ile hipertrofi hedeflenir. Üst vücut kuvveti gelişimi için kritik."
+          },
+          {
+            "movement_id": "ez-bar-row",
+            "block": "main",
+            "family_label": "Yatay çekiş",
+            "reason": "Horizontal pull hareketi için kritik güç hareketi. 10 rep, 3 set, 3 RIR ile sırt kaslarının hipertrofisi hedeflenir. Kompetansı olan hareketlerde %70 rep sınırı korunur."
+          },
+          {
+            "movement_id": "ring-dip",
+            "block": "main",
+            "family_label": "Dikey itiş",
+            "reason": "Vertical push hareketi için kritik güç hareketi. 7 rep, 3 set, 3 RIR ile göğüs ve triceps gelişimi hedeflenir. Kompetansı olan hareketlerde %70 rep sınırı korunur."
+          },
+          {
+            "movement_id": "pull-up",
+            "block": "main",
+            "family_label": "Dikey çekiş",
+            "reason": "Vertical pull hareketi için temel güç hareketi. 8 rep, 3 set, 3 RIR ile sırt ve kollar gelişimi hedeflenir. Kompetansı olan hareketlerde %70 rep sınırı korunur."
+          },
+          {
+            "movement_id": "ring-rear-delt-row",
+            "block": "accessory",
+            "family_label": "Kürek kemiği çevresi",
+            "reason": "Omuz ve sırtın arka kısmını güçlendirir. 10 rep, 3 set, 3 RIR ile hipertrofi hedeflenir. Omuz sağlığı için kritik."
+          },
+          {
+            "movement_id": "ez-bar-curl",
+            "block": "accessory",
+            "family_label": "Kol bükme",
+            "reason": "Biceps gelişimi için aksesuar hareket. 10 rep, 3 set, 3 RIR ile biceps hipertrofisi hedeflenir."
+          },
+          {
+            "movement_id": "walk",
+            "block": "conditioning",
+            "family_label": "Kondisyon",
+            "reason": "Kondisyon geliştirme için 8 dakikalık koşu. 480 saniye, 8 dakikayı tamamlar. Kondisyon hedefi için kritik."
+          }
+        ]
+      },
+      {
+        "weekday": 4,
+        "estimated_minutes": 44.0,
+        "working_sets": 9,
+        "missing_patterns": [],
+        "blocks": [
+          {
+            "movement_id": "bodyweight-split-squat",
+            "block": "main",
+            "family_label": "Diz baskın / çömelme",
+            "reason": "Knee hareketi için temel güç hareketi. 10 rep, 3 set, 3 RIR ile alt vücut hipertrofisi hedeflenir."
+          },
+          {
+            "movement_id": "ez-bar-rdl",
+            "block": "main",
+            "family_label": "Kalça baskın / kaldırma",
+            "reason": "Hinge hareketi için kritik güç hareketi. 10 rep, 3 set, 3 RIR ile sırt ve kalça kasları geliştirilir."
+          },
+          {
+            "movement_id": "plank",
+            "block": "accessory",
+            "family_label": "Gövde",
+            "reason": "Core dayanıklılığı için isometrik egzersiz. 20 saniye, 3 set, 30 saniye rest ile dayanıklılık geliştirilir."
+          },
+          {
+            "movement_id": "bodyweight-calf-raise",
+            "block": "accessory",
+            "family_label": "Baldır",
+            "reason": "Calf kaslarının güçlendirilmesi için aksesuar hareket. 10 rep, 3 set, 3 RIR ile hipertrofi hedeflenir."
+          },
+          {
+            "movement_id": "walk",
+            "block": "conditioning",
+            "family_label": "Kondisyon",
+            "reason": "Kondisyon geliştirme için 8 dakikalık koşu. 480 saniye, 8 dakikayı tamamlar. Kondisyon hedefi için kritik."
+          }
+        ]
+      }
+    ],
+    "muscle_sets": {
+      "chest": 12,
+      "back": 20.9,
+      "shoulders": 17.6,
+      "arms": 27.9,
+      "core": 2.9,
+      "quads": 6,
+      "posterior": 10.3,
+      "calves": 7.0
+    },
+    "missing_focus": [],
+    "version": "ai-planner-3",
+    "excluded": [
+      {
+        "movement_id": "barbell-squat",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "dumbbell-goblet-squat",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "dumbbell-rdl",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "barbell-deadlift",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "incline-push-up",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "ring-push-up",
+        "reason": "Kontrollü yapabildiğini belirtmedin"
+      },
+      {
+        "movement_id": "barbell-bench-press",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "feet-elevated-ring-row",
+        "reason": "Kontrollü yapabildiğini belirtmedin"
+      },
+      {
+        "movement_id": "dumbbell-row",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "barbell-row",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "chin-up",
+        "reason": "Kontrollü yapabildiğini belirtmedin"
+      },
+      {
+        "movement_id": "ring-pull-up",
+        "reason": "Kontrollü yapabildiğini belirtmedin"
+      },
+      {
+        "movement_id": "ring-chin-up",
+        "reason": "Kontrollü yapabildiğini belirtmedin"
+      },
+      {
+        "movement_id": "weighted-pull-up",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "dumbbell-overhead-press",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "weighted-ring-dip",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "db-hammer-curl",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "ring-biceps-curl",
+        "reason": "Kontrollü yapabildiğini belirtmedin"
+      },
+      {
+        "movement_id": "ring-triceps-extension",
+        "reason": "Kontrollü yapabildiğini belirtmedin"
+      },
+      {
+        "movement_id": "db-lateral-raise",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "ring-hamstring-curl",
+        "reason": "Kontrollü yapabildiğini belirtmedin"
+      },
+      {
+        "movement_id": "ring-rollout",
+        "reason": "Kontrollü yapabildiğini belirtmedin"
+      },
+      {
+        "movement_id": "ring-body-saw",
+        "reason": "Kontrollü yapabildiğini belirtmedin"
+      },
+      {
+        "movement_id": "dragon-flag",
+        "reason": "Kontrollü yapabildiğini belirtmedin"
+      },
+      {
+        "movement_id": "ring-muscle-up",
+        "reason": "Kontrollü yapabildiğini belirtmedin"
+      },
+      {
+        "movement_id": "tuck-front-lever",
+        "reason": "Kontrollü yapabildiğini belirtmedin"
+      },
+      {
+        "movement_id": "ring-front-lever",
+        "reason": "Kontrollü yapabildiğini belirtmedin"
+      },
+      {
+        "movement_id": "ring-tuck-front-lever",
+        "reason": "Kontrollü yapabildiğini belirtmedin"
+      },
+      {
+        "movement_id": "front-lever-pull-raise",
+        "reason": "Kontrollü yapabildiğini belirtmedin"
+      },
+      {
+        "movement_id": "ring-support-hold",
+        "reason": "Kontrollü yapabildiğini belirtmedin"
+      },
+      {
+        "movement_id": "ring-l-sit",
+        "reason": "Kontrollü yapabildiğini belirtmedin"
+      },
+      {
+        "movement_id": "full-planche",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "tuck-planche",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "planche-lean",
+        "reason": "Gerekli ekipman seçilmedi"
+      },
+      {
+        "movement_id": "zone-2-run",
+        "reason": "Kontrollü yapabildiğini belirtmedin"
+      }
+    ],
+    "selected_methods": [
+      "weights",
+      "calisthenics",
+      "gymnastics",
+      "conditioning"
+    ],
+    "input_revision": 1,
+    "health_context": {
+      "status": "unknown",
+      "score": null,
+      "reasons": [
+        "Kayıtlar bir güvenli antrenman garantisi değildir."
+      ],
+      "self_report": null,
+      "sleep_hours_in_recorded_intervals": null,
+      "sleep_source_ids": [],
+      "pain": [],
+      "episode_ids": [],
+      "cycle_multiplier": null
+    },
+    "meaning": "Haftalık kuvvet setlerinin katalog katsayılarıyla dağılımı. Teknik tutuş ve kondisyon bu toplama katılmaz; büyüme/hasar ölçümü değildir.",
+    "duration_assumptions": "5–8 dk hazırlık + tekrar başına 4 sn veya hedef tutuş süresi + belirtilen dinlenmeler + hareket başına 60 sn geçiş. Gerçek süre değişebilir.",
+    "skill_sets": 8,
+    "isometric_seconds": 144,
+    "conditioning_seconds": 1920,
+    "status": "draft"
+  },
+  "notes": [
+    "İleri düzey hipertrofi hedefli, üst-alt split programı. Üst günlerde beceri (muscle-up, front lever) ve kuvvet hareketleri (pull-up, ring-dip, push-up, row) ile omuz ve sırt odaklı güçlendirme; alt günlerde kuvvet ve dayanıklılık (squat, RDL, calf raise) ile koşu kondisyonu. Her gün 75 dakika, 8 hafta süreyle devam eder. Teknolojik beceriler korunurken kas gelişimi ve kuvvet artışı sağlanması amaçlanır.",
+    "AI taslağıdır; doğrulama biyolojik uygunluk garantisi değildir. Ana plana almak için inceleyip onayla.",
+    "Becerilerdeki performans sınırlı; her hareketin maksimum kapasitesi ile sınırlıdır.",
+    "Bir gün içinde aynı hareketin tekrarı olmaz.",
+    "Kondisyon programı yalnızca koşu ile sağlanır.",
+    "Kuvvet hareketlerinde rep sayısı, kompetansı olan hareketlerde %70'ye kadar sınırlıdır.",
+    "Bir gün içinde en fazla 24 non-kardiyovasküler set yapılabilir.",
+    "Becerilerdeki setlerin toplam süresi 15 dakikayı geçemez.",
+    "Kısa sürenin geçilmesi için hazırlık süresi 8 dakika, geçiş süresi her egzersiz için 60 saniyedir.",
+    "Bir hareketin 12 setten fazla yapılması mümkün değildir."
+  ],
+  "elapsed_seconds": 15.74,
+  "transport": {
+    "finish_reason": "stop",
+    "usage": {
+      "prompt_tokens": 5210,
+      "completion_tokens": 3456,
+      "total_tokens": 8666
+    }
+  },
+  "synthetic_plan": {
+    "summary": "İleri düzey hipertrofi hedefli, üst-alt split programı. Üst günlerde beceri (muscle-up, front lever) ve kuvvet hareketleri (pull-up, ring-dip, push-up, row) ile omuz ve sırt odaklı güçlendirme; alt günlerde kuvvet ve dayanıklılık (squat, RDL, calf raise) ile koşu kondisyonu. Her gün 75 dakika, 8 hafta süreyle devam eder. Teknolojik beceriler korunurken kas gelişimi ve kuvvet artışı sağlanması amaçlanır.",
+    "limitations": [
+      "Becerilerdeki performans sınırlı; her hareketin maksimum kapasitesi ile sınırlıdır.",
+      "Bir gün içinde aynı hareketin tekrarı olmaz.",
+      "Kondisyon programı yalnızca koşu ile sağlanır.",
+      "Kuvvet hareketlerinde rep sayısı, kompetansı olan hareketlerde %70'ye kadar sınırlıdır.",
+      "Bir gün içinde en fazla 24 non-kardiyovasküler set yapılabilir.",
+      "Becerilerdeki setlerin toplam süresi 15 dakikayı geçemez.",
+      "Kısa sürenin geçilmesi için hazırlık süresi 8 dakika, geçiş süresi her egzersiz için 60 saniyedir.",
+      "Bir hareketin 12 setten fazla yapılması mümkün değildir."
+    ],
+    "days": [
+      {
+        "weekday": 0,
+        "exercises": [
+          {
+            "movement_id": "muscle-up",
+            "sets": 2,
+            "reps": 3,
+            "seconds": null,
+            "rest_seconds": 120,
+            "rir": null,
+            "reason": "Becerilerdeki performansı korumak ve üst vücut kuvvetini artırmak için. Muscle-up, üst vücut kuvvetini ve teknik beceriyi hem aynı anda hem de yüksek düzeyde geliştirir. 3 rep limiti, kompetansı olan hareketlerde %70 kapasite sınırını korur."
+          },
+          {
+            "movement_id": "front-lever",
+            "sets": 2,
+            "reps": null,
+            "seconds": 6,
+            "rest_seconds": 120,
+            "rir": null,
+            "reason": "Front lever, teknik beceri ve çekme kuvvetini geliştirir. 6 saniye tutuş, kompetansı olan hareketlerde %60 kapasite sınırını korur. Beşer set, beceri gelişimini destekler."
+          },
+          {
+            "movement_id": "push-up",
+            "sets": 3,
+            "reps": 10,
+            "seconds": null,
+            "rest_seconds": 150,
+            "rir": 3,
+            "reason": "Horizontal push hareketi için temel güç hareketi. 10 rep, 3 set, 3 RIR ile hipertrofi hedeflenir. Üst vücut kuvveti gelişimi için kritik."
+          },
+          {
+            "movement_id": "ez-bar-row",
+            "sets": 3,
+            "reps": 10,
+            "seconds": null,
+            "rest_seconds": 150,
+            "rir": 3,
+            "reason": "Horizontal pull hareketi için kritik güç hareketi. 10 rep, 3 set, 3 RIR ile sırt kaslarının hipertrofisi hedeflenir. Kompetansı olan hareketlerde %70 rep sınırı korunur."
+          },
+          {
+            "movement_id": "ring-dip",
+            "sets": 3,
+            "reps": 7,
+            "seconds": null,
+            "rest_seconds": 150,
+            "rir": 3,
+            "reason": "Vertical push hareketi için kritik güç hareketi. 7 rep, 3 set, 3 RIR ile göğüs ve triceps gelişimi hedeflenir. Kompetansı olan hareketlerde %70 rep sınırı korunur."
+          },
+          {
+            "movement_id": "pull-up",
+            "sets": 3,
+            "reps": 8,
+            "seconds": null,
+            "rest_seconds": 150,
+            "rir": 3,
+            "reason": "Vertical pull hareketi için temel güç hareketi. 8 rep, 3 set, 3 RIR ile sırt ve kollar gelişimi hedeflenir. Kompetansı olan hareketlerde %70 rep sınırı korunur."
+          },
+          {
+            "movement_id": "ring-face-pull",
+            "sets": 3,
+            "reps": 10,
+            "seconds": null,
+            "rest_seconds": 90,
+            "rir": 3,
+            "reason": "Omuz ve sırtın arka kısmını güçlendirir. 10 rep, 3 set, 3 RIR ile hipertrofi hedeflenir. Omuz sağlığı için kritik."
+          },
+          {
+            "movement_id": "ez-bar-triceps-extension",
+            "sets": 3,
+            "reps": 10,
+            "seconds": null,
+            "rest_seconds": 90,
+            "rir": 3,
+            "reason": "Triceps gelişimi için aksesuar hareket. 10 rep, 3 set, 3 RIR ile triceps hipertrofisi hedeflenir."
+          },
+          {
+            "movement_id": "walk",
+            "sets": 1,
+            "reps": null,
+            "seconds": 480,
+            "rest_seconds": 0,
+            "rir": null,
+            "reason": "Kondisyon geliştirme için 8 dakikalık koşu. 480 saniye, 8 dakikayı tamamlar. Kondisyon hedefi için kritik."
+          }
+        ]
+      },
+      {
+        "weekday": 1,
+        "exercises": [
+          {
+            "movement_id": "bodyweight-squat",
+            "sets": 3,
+            "reps": 10,
+            "seconds": null,
+            "rest_seconds": 150,
+            "rir": 3,
+            "reason": "Knee hareketi için temel güç hareketi. 10 rep, 3 set, 3 RIR ile alt vücut hipertrofisi hedeflenir."
+          },
+          {
+            "movement_id": "ez-bar-rdl",
+            "sets": 3,
+            "reps": 10,
+            "seconds": null,
+            "rest_seconds": 150,
+            "rir": 3,
+            "reason": "Hinge hareketi için kritik güç hareketi. 10 rep, 3 set, 3 RIR ile sırt ve kalça kasları geliştirilir."
+          },
+          {
+            "movement_id": "plank",
+            "sets": 3,
+            "reps": null,
+            "seconds": 20,
+            "rest_seconds": 90,
+            "rir": null,
+            "reason": "Core dayanıklılığı için isometrik egzersiz. 20 saniye, 3 set, 30 saniye rest ile dayanıklılık geliştirilir."
+          },
+          {
+            "movement_id": "bodyweight-calf-raise",
+            "sets": 3,
+            "reps": 10,
+            "seconds": null,
+            "rest_seconds": 90,
+            "rir": 3,
+            "reason": "Calf kaslarının güçlendirilmesi için aksesuar hareket. 10 rep, 3 set, 3 RIR ile hipertrofi hedeflenir."
+          },
+          {
+            "movement_id": "walk",
+            "sets": 1,
+            "reps": null,
+            "seconds": 480,
+            "rest_seconds": 0,
+            "rir": null,
+            "reason": "Kondisyon geliştirme için 8 dakikalık koşu. 480 saniye, 8 dakikayı tamamlar. Kondisyon hedefi için kritik."
+          }
+        ]
+      },
+      {
+        "weekday": 3,
+        "exercises": [
+          {
+            "movement_id": "muscle-up",
+            "sets": 2,
+            "reps": 3,
+            "seconds": null,
+            "rest_seconds": 120,
+            "rir": null,
+            "reason": "Becerilerdeki performansı korumak ve üst vücut kuvvetini artırmak için. Muscle-up, üst vücut kuvvetini ve teknik beceriyi hem aynı anda hem de yüksek düzeyde geliştirir. 3 rep limiti, kompetansı olan hareketlerde %70 kapasite sınırını korur."
+          },
+          {
+            "movement_id": "front-lever",
+            "sets": 2,
+            "reps": null,
+            "seconds": 6,
+            "rest_seconds": 120,
+            "rir": null,
+            "reason": "Front lever, teknik beceri ve çekme kuvvetini geliştirir. 6 saniye tutuş, kompetansı olan hareketlerde %60 kapasite sınırını korur. Beşer set, beceri gelişimini destekler."
+          },
+          {
+            "movement_id": "push-up",
+            "sets": 3,
+            "reps": 10,
+            "seconds": null,
+            "rest_seconds": 150,
+            "rir": 3,
+            "reason": "Horizontal push hareketi için temel güç hareketi. 10 rep, 3 set, 3 RIR ile hipertrofi hedeflenir. Üst vücut kuvveti gelişimi için kritik."
+          },
+          {
+            "movement_id": "ez-bar-row",
+            "sets": 3,
+            "reps": 10,
+            "seconds": null,
+            "rest_seconds": 150,
+            "rir": 3,
+            "reason": "Horizontal pull hareketi için kritik güç hareketi. 10 rep, 3 set, 3 RIR ile sırt kaslarının hipertrofisi hedeflenir. Kompetansı olan hareketlerde %70 rep sınırı korunur."
+          },
+          {
+            "movement_id": "ring-dip",
+            "sets": 3,
+            "reps": 7,
+            "seconds": null,
+            "rest_seconds": 150,
+            "rir": 3,
+            "reason": "Vertical push hareketi için kritik güç hareketi. 7 rep, 3 set, 3 RIR ile göğüs ve triceps gelişimi hedeflenir. Kompetansı olan hareketlerde %70 rep sınırı korunur."
+          },
+          {
+            "movement_id": "pull-up",
+            "sets": 3,
+            "reps": 8,
+            "seconds": null,
+            "rest_seconds": 150,
+            "rir": 3,
+            "reason": "Vertical pull hareketi için temel güç hareketi. 8 rep, 3 set, 3 RIR ile sırt ve kollar gelişimi hedeflenir. Kompetansı olan hareketlerde %70 rep sınırı korunur."
+          },
+          {
+            "movement_id": "ring-rear-delt-row",
+            "sets": 3,
+            "reps": 10,
+            "seconds": null,
+            "rest_seconds": 90,
+            "rir": 3,
+            "reason": "Omuz ve sırtın arka kısmını güçlendirir. 10 rep, 3 set, 3 RIR ile hipertrofi hedeflenir. Omuz sağlığı için kritik."
+          },
+          {
+            "movement_id": "ez-bar-curl",
+            "sets": 3,
+            "reps": 10,
+            "seconds": null,
+            "rest_seconds": 90,
+            "rir": 3,
+            "reason": "Biceps gelişimi için aksesuar hareket. 10 rep, 3 set, 3 RIR ile biceps hipertrofisi hedeflenir."
+          },
+          {
+            "movement_id": "walk",
+            "sets": 1,
+            "reps": null,
+            "seconds": 480,
+            "rest_seconds": 0,
+            "rir": null,
+            "reason": "Kondisyon geliştirme için 8 dakikalık koşu. 480 saniye, 8 dakikayı tamamlar. Kondisyon hedefi için kritik."
+          }
+        ]
+      },
+      {
+        "weekday": 4,
+        "exercises": [
+          {
+            "movement_id": "bodyweight-split-squat",
+            "sets": 3,
+            "reps": 10,
+            "seconds": null,
+            "rest_seconds": 150,
+            "rir": 3,
+            "reason": "Knee hareketi için temel güç hareketi. 10 rep, 3 set, 3 RIR ile alt vücut hipertrofisi hedeflenir."
+          },
+          {
+            "movement_id": "ez-bar-rdl",
+            "sets": 3,
+            "reps": 10,
+            "seconds": null,
+            "rest_seconds": 150,
+            "rir": 3,
+            "reason": "Hinge hareketi için kritik güç hareketi. 10 rep, 3 set, 3 RIR ile sırt ve kalça kasları geliştirilir."
+          },
+          {
+            "movement_id": "plank",
+            "sets": 3,
+            "reps": null,
+            "seconds": 20,
+            "rest_seconds": 90,
+            "rir": null,
+            "reason": "Core dayanıklılığı için isometrik egzersiz. 20 saniye, 3 set, 30 saniye rest ile dayanıklılık geliştirilir."
+          },
+          {
+            "movement_id": "bodyweight-calf-raise",
+            "sets": 3,
+            "reps": 10,
+            "seconds": null,
+            "rest_seconds": 90,
+            "rir": 3,
+            "reason": "Calf kaslarının güçlendirilmesi için aksesuar hareket. 10 rep, 3 set, 3 RIR ile hipertrofi hedeflenir."
+          },
+          {
+            "movement_id": "walk",
+            "sets": 1,
+            "reps": null,
+            "seconds": 480,
+            "rest_seconds": 0,
+            "rir": null,
+            "reason": "Kondisyon geliştirme için 8 dakikalık koşu. 480 saniye, 8 dakikayı tamamlar. Kondisyon hedefi için kritik."
+          }
+        ]
+      }
+    ]
+  }
+}

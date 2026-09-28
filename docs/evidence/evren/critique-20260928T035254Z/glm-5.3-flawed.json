@@ -1,0 +1,54 @@
+{
+  "model": "glm-5.3",
+  "case": "flawed",
+  "result": "PASS",
+  "answer": {
+    "issues": [
+      {
+        "code": "equipment",
+        "evidence": "Barbell-deadlift ve front lever, 'yalnızca zemin ve vücut ağırlığı, barfiks/halter/halka yok' profilinde gerekli ekipmana/yüzeye sahip değil.",
+        "correction": "Deadlift yerine vücut ağırlığı kalça menteşesi (ör. tek bacaklı hip hinge/glute bridge), front lever yerine zemin çekme (ör. masa altı satır veya süperman) kullan."
+      },
+      {
+        "code": "competency",
+        "evidence": "Front lever ileri seviye bir yetkinlik gerektirir; profilde front lever yetkinliği bildirilmemiş.",
+        "correction": "Front lever kaldırılıp profile uygun seviyelendirilmiş bir çekme hareketi seçilmeli."
+      },
+      {
+        "code": "volume",
+        "evidence": "Seans 4 hareket x 5 set = 20 kardiyo dışı set; kural sınırı 12 set.",
+        "correction": "Set sayısı hareket başına 3'e indirilerek toplam seti 12'nin altına çek."
+      },
+      {
+        "code": "rir",
+        "evidence": "Deadlift ve push-up RIR0 olarak verilmiş; kural kuvvet çalışması için RIR 2–5 gerektiriyor.",
+        "correction": "RIR değerlerini 2–5 aralığına yükselt."
+      },
+      {
+        "code": "balance",
+        "evidence": "Push-up aynı seansta iki kez tekrarlanıyor ve tüm setler itme/çekme/kalça ağırlıklı; ön bacak odağı için doğrudan squat/lunge tipi bacak çalışması yok. Push-up tekrarı aynı zamanda 'aynı hareket bir seansta tekrarlanamaz' kuralını ihlal ediyor.",
+        "correction": "Tekrarlanan push-up'ı kaldır, yerine squat/lunge gibi ön bacak odaklı bir hareket ekle; plan dengelenmeli."
+      },
+      {
+        "code": "duplicate",
+        "evidence": "Push-up iki ayrı kayıt olarak aynı seansta verilmiş.",
+        "correction": "İkinci push-up kaydını farklı bir hareketle değiştir."
+      },
+      {
+        "code": "duration",
+        "evidence": "Hesap: 8 dk hazırlık + 4 hareket x 60 sn geçiş + (5x12x4 sn deadlift=240) + (5x30 sn front lever=150) + (2 x 5x20x4 sn push-up=800) + (4 hareket x 4 x dinlenme ~120–180 sn ≈ 2000–3000 sn) ≈ 60+ dk; 30 dakikalık sınır büyük ölçüde aşılıyor.",
+        "correction": "Set, tekrar ve dinlenme süreleri azaltılarak seans 30 dakikaya indirilmeli (ör. 3 set, dinlenme 60–90 sn)."
+      },
+      {
+        "code": "unsupported_biology",
+        "evidence": "Açıklamada '%40 kas hasarı', '24 saatte kesin %100 iyileşme' ve 'dört haftada %20 kas artışı garantisi' gibi ölçülmemiş/desteklenmemiş biyolojik iddialar var.",
+        "correction": "Bu iddialar açıklamadan çıkarılmalı; yalnızca genel, ölçülmemiş ifadelerle antrenmanın amacı tanımlanmalı."
+      }
+    ],
+    "summary": "Plan profil ile uyumsuz: kullanılamayan ekipman (barbell, front lever yüzeyi) ve bildirilmemiş yetkinlik içeriyor; set sayısı (20) ve RIR0 değerleri kuralları ihlal ediyor; aynı hareket iki kez tekrarlanıyor; tahmini süre 30 dakika sınırını aşıyor; ön bacak odağı eksik; açıklamadaki kas hasarı, iyileşme ve garanti gelişim iddiaları desteklenmiyor. Kapsamlı revizyon gerekiyor."
+  },
+  "identified": 8,
+  "expected": 8,
+  "unexpected": [],
+  "elapsed_seconds": 40.82
+}

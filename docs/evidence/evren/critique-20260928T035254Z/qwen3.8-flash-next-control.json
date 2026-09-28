@@ -1,0 +1,13 @@
+{
+  "model": "qwen3.8-flash-next",
+  "case": "control",
+  "result": "PASS",
+  "answer": {
+    "issues": [],
+    "summary": "Plan tüm uygulama kurallarını karşılar: 8 set (≤12), tüm kuvvet hareketlerinde RIR3 (2–5 aralığında), dinlenme 60s (≥60s), aynı seansta tekrar yok, süre ≈20 dk (≤30 dk), ekipman ve hedef uyumu tam. Somut kural ihlali bulunmadı."
+  },
+  "identified": 0,
+  "expected": 0,
+  "unexpected": [],
+  "elapsed_seconds": 12.94
+}
