@@ -15,9 +15,17 @@ from .movements import BY_ID
 from .planner_catalog import FAMILY_LABELS, META, options
 from .programming import ProgramInput
 
-VERSION = "ai-planner-2"
+VERSION = "ai-planner-3"
 CONSENT = "planning-form-v1"
 EVREN_CONSENT = "planning-form-evren-v1"
+REQUIRED_PATTERNS = {
+    "full_body": {"knee", "hinge", "horizontal_push", "horizontal_pull"},
+    "upper": {"horizontal_push", "horizontal_pull", "vertical_push", "vertical_pull"},
+    "lower": {"knee", "hinge"},
+    "legs": {"knee", "hinge"},
+    "push": {"horizontal_push", "vertical_push"},
+    "pull": {"horizontal_pull", "vertical_pull"},
+}
 
 
 class AIRequest(GuidedRequest):
@@ -171,6 +179,11 @@ def prepare(data, snapshot, at):
         }
         for i, day in enumerate(sorted(data.weekdays))
     ]
+    available_families = {candidate["family"] for candidate in candidates}
+    for day in context["day_split"]:
+        expected = REQUIRED_PATTERNS[day["kind"]] if set(data.methods) != {"conditioning"} else set()
+        day["required_patterns"] = sorted(expected & available_families)
+        day["minimum_strength_sets"] = 6 if expected and data.minutes >= 30 else 0
     context["eligible_movements"] = candidates
     return baseline, context
 
@@ -453,14 +466,7 @@ def validate_plan(plan, data, baseline, context, at: datetime, model, provider="
                 else ["push", "pull", "legs"][index % 3]
             )
         )
-        expected = {
-            "full_body": {"knee", "hinge", "horizontal_push", "horizontal_pull"},
-            "upper": {"horizontal_push", "horizontal_pull", "vertical_push", "vertical_pull"},
-            "lower": {"knee", "hinge"},
-            "legs": {"knee", "hinge"},
-            "push": {"horizontal_push", "vertical_push"},
-            "pull": {"horizontal_pull", "vertical_pull"},
-        }[kind]
+        expected = REQUIRED_PATTERNS[kind]
         if set(data.methods) == {"conditioning"}:
             expected = set()
         allowed_families = {

@@ -1,5 +1,5 @@
 {
-  "at": "2026-09-28T03:35:39.429179+00:00",
+  "at": "2026-09-28T03:31:49.793583+00:00",
   "provider": "EVREN",
   "model": "glm-5.3",
   "reasoning_effort": "low",
@@ -8,7 +8,7 @@
   "generation_attempts": 1,
   "source_commit": "5a59a10782599662e1d99dabb705d924642f1c86",
   "source_hashes": {
-    "apps/api/alos/ai_planning.py": "ddbfac14e2ae7a7aa6f6e01f4c9868434fa363b6835e6c430a9930afda95bddd",
+    "apps/api/alos/ai_planning.py": "b45651e18a42a18e187c9ba29593fc9e091dc45de79d75331cdb21a92b724536",
     "tools/v2/verify_evren.py": "b599b91100f05b51ecbd8dd7141431072c400031bcce18fbf1d14e43f1ec9070"
   },
   "command": [
@@ -21,10 +21,9 @@
   ],
   "environment": "local Python; no database connection; manually entered in-memory secret",
   "terms_accepted": true,
-  "result": "PASS",
-  "days": 4,
-  "exercises": 22,
-  "validation_status": "draft",
-  "elapsed_seconds": 43.21,
-  "exit_code": 0
+  "result": "FAIL",
+  "code": "ai_plan_invalid",
+  "message": "AI taslağında temel hareket kapsamı veya çalışma hacmi eksik. Taslak kabul edilmedi; hedefini ve süreni gözden geçirerek tekrar dene.",
+  "elapsed_seconds": 56.6,
+  "exit_code": 1
 }

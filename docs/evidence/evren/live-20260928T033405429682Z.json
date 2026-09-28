@@ -1,5 +1,5 @@
 {
-  "at": "2026-09-28T03:35:39.429179+00:00",
+  "at": "2026-09-28T03:34:05.429682+00:00",
   "provider": "EVREN",
   "model": "glm-5.3",
   "reasoning_effort": "low",
@@ -21,10 +21,9 @@
   ],
   "environment": "local Python; no database connection; manually entered in-memory secret",
   "terms_accepted": true,
-  "result": "PASS",
-  "days": 4,
-  "exercises": 22,
-  "validation_status": "draft",
-  "elapsed_seconds": 43.21,
-  "exit_code": 0
+  "result": "FAIL",
+  "code": "ai_invalid_response",
+  "message": "EVREN yanıtı tamamlanamadı veya plan biçimine uymadı. Planına alınmadı; tekrar deneyebilirsin.",
+  "elapsed_seconds": 52.71,
+  "exit_code": 1
 }

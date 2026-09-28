@@ -35,3 +35,11 @@ Başarılı canlı deneme sırasında aynı son istem metni çalıştı; yalnız
 Son durum: `evren-final-api`: **55 PASS**, `evren-final-mongo`: **2 PASS**. Yeni reasoning ayarı, açık aday kuralları ve eski/yeni metadata kayıt akışı doğrulandı. Önceki browser kabulü frontend değişmediği için geçerli kapsamda; bu tur frontend değişmedi, tekrar paketlenmedi.
 
 Yerel 10005 önizlemesi aynı veri deposuyla `mimo-v2.6-pro` / `low` kullanacak şekilde yeniden başlatıldı; anahtar süreç belleğinde. Kullanıcı sayfayı yenileyip EVREN onayını işaretleyerek plan üretebilir. Bu sonuç belirli sentetik örneğe aittir; biyolojik doğruluk/evrensel model kalitesi veya her isteğin 62 saniyede biteceği garantisi değildir. Render yayını/şema/hesap/medya göçü yok.
+
+## Güncel model: kullanıcı talebiyle GLM‑5.3
+
+`live-20260928T033539429179Z.json` / `live-connection.json`: **PASS**, model `glm-5.3`, reasoning `low`, dört gün / 22 hareket girdisi, 43.21 saniye; kişisel veri okunmadı, veritabanına test yazımı yok. Önceki GLM denemelerinde hareket kapsamı ve yanıt biçimi hataları reddedildi, sonuçlar tarihli artefact'larda korunur. Reddedilen cevaplar gerçek kullanıcı kaydı olmadı. `ai-planner-3` günlük required_patterns/minimum_strength_sets bilgisini açık verir; validatörün kısıtları değişmedi. Son başarılı çağrıda completion stop, 4359 prompt / 2097 completion (402 reasoning) tokenı; ham sentetik yanıt sadece geçici yerel tanı dosyasında, repo'ya alınmadı.
+
+`stage-9/glm-api`: 55 PASS; `glm-mongo`: 2 PASS; `glm-lint`: PASS. Komutlar/kaynak hashleri/exit kodları yanlarındaki JSON/log dosyalarında. Modelin her girdide başarılı olacağı veya klinik uygunluk garantisi değildir.
+
+Yerel 10005 aynı veri deposuyla GLM‑5.3'e geçirildi. Yeni hesap/medya/şema göçü, kullanıcı kayıt değişimi veya Render/GitHub yayını yok. Rollback eski kayıtları silmeden sunucu model ayarı ve uyumlu prompt_version kabulüyle yapılır; otomatik başka modele yönlendirme yok.

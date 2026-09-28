@@ -193,6 +193,13 @@ def test_model_receives_explicit_unit_capacity_and_split_rules():
     assert by_id["pull-up"]["prescription_rules"]["seconds"] is None
     assert by_id["pull-up"]["prescription_rules"]["reps"]["max"] <= 20
     assert context["day_split"][0]["kind"] == "upper"
+    assert context["day_split"][0]["required_patterns"] == [
+        "horizontal_pull",
+        "horizontal_push",
+        "vertical_pull",
+        "vertical_push",
+    ]
+    assert context["day_split"][0]["minimum_strength_sets"] == 6
     assert context["day_split"][1]["kind"] == "lower"
     assert context["session_limits"]["max_non_cardio_sets"] == 24
     assert context["reference_draft"]

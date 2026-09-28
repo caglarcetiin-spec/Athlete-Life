@@ -87,3 +87,13 @@ PYTHON_DOTENV_DISABLED=1 STORAGE_BACKEND=sqlite ACCOUNT_STORAGE_BACKEND=sqlite .
 ```
 
 Anahtar yankısız terminal isteminde girilir. Araç veritabanı bağlantısı açmaz; yalnız sabit sentetik örneği gönderir. Sağlayıcı, komut, source commit/hash, süre ve exit-code içeren secretsiz artefact `docs/evidence/evren/live-*.json` altında tutulur.
+
+### Güncel kullanıcı seçimi: GLM‑5.3
+
+Kullanıcı talebi üzerine yerel aktif model ve `.env.example` EVREN `glm-5.3` / reasoning `low` olarak değiştirildi. MiMo artık aktif tercih değildir; sessiz model geçişi yoktur. 28 Eylül sentetik canlı kabul: dört gün, 22 hareket girdisi, 43.21 saniye, `draft` validasyonu PASS. Önceki iki GLM denemesi hareket kapsamı / yanıt biçimi nedeniyle reddedildi; bu tek başarı her çağrıda geçerli plan garantisi değildir. `ai-planner-3` gün bazında required_patterns ve minimum_strength_sets alanlarını aynı validatör sabitlerinden üretir. Çıktı bütçesi 10.000, timeout 90 s aynı kaldı. Başarılı tanı çağrısı 4.359 giriş, 2.097 çıkış tokenı kullandı (402 reasoning dahil); maliyet/kota kullanım sayısı garantisi değildir.
+
+```sh
+.venv-v2/bin/python tools/v2/verify_evren.py --model glm-5.3 --reasoning-effort low
+```
+
+Anahtar yalnız çalışan önizleme sürecinin belleğinde; yeniden başlatma için güvenli sunucu ayarı gerekir. Render/GitHub yayını bu model seçimi sırasında yapılmadı.

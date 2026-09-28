@@ -45,7 +45,7 @@ class DayInput(StrictModel):
 class AIOrigin(StrictModel):
     provider: Literal["OpenAI", "EVREN"]
     model: str = Field(min_length=1, max_length=100)
-    prompt_version: Literal["openai-planner-1", "ai-planner-2"]
+    prompt_version: Literal["openai-planner-1", "ai-planner-2", "ai-planner-3"]
     generated_at: datetime
     summary: str = Field(min_length=1, max_length=1500)
 
