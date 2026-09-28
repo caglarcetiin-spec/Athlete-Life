@@ -1,3 +1,5 @@
+import { QuantityInput } from "./QuantityInput";
+import { measureFor } from "./quantities";
 import { useState, useId, useEffect, type ReactNode } from "react";
 import { Plus, Trash2, Pencil, Check, X } from "lucide-react";
 import type { Entity } from "../api/contracts";
@@ -191,6 +193,20 @@ export function RecordForm({
             "aria-label": field.label,
             "aria-describedby": field.hint ? formId + field.key : undefined,
           };
+          if (measureFor(field.key))
+            return (
+              <QuantityInput
+                key={field.key}
+                name={field.key}
+                label={field.label.replace(/ \(saniye\)| \(sn\)| \(m\)/g, "")}
+                kind={measureFor(field.key)!}
+                defaultUnit={
+                  field.key === "duration_seconds" ? "min" : undefined
+                }
+                defaultValue={String(v)}
+                required={field.required}
+              />
+            );
           return (
             <label
               key={field.key}

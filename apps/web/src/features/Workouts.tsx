@@ -1,3 +1,10 @@
+import { QuantityInput } from "./QuantityInput";
+import {
+  formatQuantity,
+  formatRange,
+  measureFor,
+  primaryMetrics,
+} from "./quantities";
 import { RecordForm, choice, decimalField, note } from "./Records";
 import { plannedDays } from "./workoutProgress";
 import { previousComparable } from "./setHistory";
@@ -64,11 +71,17 @@ function describe(row: Entity) {
   } | null;
   return [
     range
-      ? `${range.minimum}–${range.maximum} ${{ reps: "tekrar", seconds: "sn", m: "m" }[range.unit] || range.unit} hedef aralığı`
+      ? (range.unit === "reps"
+          ? `${range.minimum}–${range.maximum} tekrar`
+          : formatRange(
+              range.minimum,
+              range.maximum,
+              range.unit === "seconds" ? "duration" : "distance",
+            )) + " hedef aralığı"
       : null,
     row.reps ? row.reps + " tekrar" : null,
-    row.seconds ? row.seconds + " sn" : null,
-    row.distance_m ? row.distance_m + " m" : null,
+    row.seconds ? formatQuantity(row.seconds, "duration") : null,
+    row.distance_m ? formatQuantity(row.distance_m, "distance") : null,
     row.external_kg != null ? row.external_kg + " kg ek yük" : null,
     row.rir != null ? row.rir + " RIR" : null,
   ]
@@ -215,11 +228,12 @@ function SetForm({
     }
   }
   const source = editing || slot;
-  const mainMetricKeys =
-    (source?.modality || formDraft.modality || "strength") === "strength" ||
-    (source?.modality || formDraft.modality) === "skill"
-      ? ["reps", "external_kg"]
-      : ["seconds", "distance_m"];
+  const mainMetricKeys = primaryMetrics(
+    String(source?.modality || formDraft.modality || "strength"),
+    String(source?.movement_id || formDraft.movement_id || ""),
+    source?.seconds,
+    source?.reps,
+  );
   const comparison: Entity = source || {
     id: "draft",
     version: 0,
@@ -371,25 +385,38 @@ function SetForm({
       <div className="form-grid">
         {metrics
           .filter(([key]) => mainMetricKeys.includes(key))
-          .map(([key, label]) => (
-            <label key={key}>
-              {label}
-              <input
+          .map(([key, label]) =>
+            measureFor(key) ? (
+              <QuantityInput
+                key={key}
                 name={key}
-                inputMode={key === "reps" ? "numeric" : "decimal"}
+                label={label.replace(/ \(.*\)$/, "")}
+                kind={measureFor(key)!}
                 value={
                   formDraft[key] ??
                   (editing?.[key] != null ? String(editing[key]) : "")
                 }
-                onChange={() => {}}
-                placeholder={
-                  slot?.[key] != null
-                    ? "Hedef: " + String(slot[key])
-                    : "Gerçek değer"
-                }
               />
-            </label>
-          ))}
+            ) : (
+              <label key={key}>
+                {label}
+                <input
+                  name={key}
+                  inputMode={key === "reps" ? "numeric" : "decimal"}
+                  value={
+                    formDraft[key] ??
+                    (editing?.[key] != null ? String(editing[key]) : "")
+                  }
+                  onChange={() => {}}
+                  placeholder={
+                    slot?.[key] != null
+                      ? "Hedef: " + String(slot[key])
+                      : "Gerçek değer"
+                  }
+                />
+              </label>
+            ),
+          )}
       </div>
       <details>
         <summary>Efor, set türü ve diğer ayrıntılar</summary>
@@ -430,25 +457,38 @@ function SetForm({
           </label>
           {metrics
             .filter(([key]) => !mainMetricKeys.includes(key))
-            .map(([key, label]) => (
-              <label key={key}>
-                {label}
-                <input
+            .map(([key, label]) =>
+              measureFor(key) ? (
+                <QuantityInput
+                  key={key}
                   name={key}
-                  inputMode={key === "reps" ? "numeric" : "decimal"}
+                  label={label.replace(/ \(.*\)$/, "")}
+                  kind={measureFor(key)!}
                   value={
                     formDraft[key] ??
                     (editing?.[key] != null ? String(editing[key]) : "")
                   }
-                  onChange={() => {}}
-                  placeholder={
-                    slot?.[key] != null
-                      ? "Hedef: " + String(slot[key])
-                      : "İsteğe bağlı"
-                  }
                 />
-              </label>
-            ))}
+              ) : (
+                <label key={key}>
+                  {label}
+                  <input
+                    name={key}
+                    inputMode={key === "reps" ? "numeric" : "decimal"}
+                    value={
+                      formDraft[key] ??
+                      (editing?.[key] != null ? String(editing[key]) : "")
+                    }
+                    onChange={() => {}}
+                    placeholder={
+                      slot?.[key] != null
+                        ? "Hedef: " + String(slot[key])
+                        : "İsteğe bağlı"
+                    }
+                  />
+                </label>
+              ),
+            )}
           {past && !editing && (
             <label>
               Gerçek saat (isteğe bağlı)
@@ -930,7 +970,7 @@ export function Workouts({
                   {
                     ...decimalField(
                       "duration_seconds",
-                      "Gerçek toplam seans süresi (saniye)",
+                      "Gerçek toplam seans süresi",
                     ),
                     min: 1,
                     max: 86400,

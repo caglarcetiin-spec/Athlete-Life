@@ -1,0 +1,47 @@
+İçeriğe geç
+Athlete Life
+ANTRENMANINI HAYATINA UYDUR
+Bugün
+Antrenman
+Sağlık
+Gelişim
+Araçlar
+D
+Deniz Test
+Kendi ritminde
+Sunucuya kaydedildi
+Açık
+D
+Deniz Test
+Seanslarım
+Planım
+Haftam
+SENİN HEDEFİN, SENİN PLANIN
+Antrenman planım
+
+Hedefini anlat, taslağı düzenle ve hazır olduğunda ana planına al.
+
+Birlikte program oluşturalım
+Dönem oluştur
+ONAY BEKLEYEN TASLAK
+Yeni antrenman dönemim
+
+Rahat 10 km koşusuna hazırlanmak
+
+28 Eylül · 8 hafta
+
+Ana planım yap
+Yeni sürümünü düzenle
+Hareket kütüphanesi
+1151 katalog hareketi · kas bölgeleri ve kayıt biçimleri
+Geri
+Bugün
+İleri
+file:///Users/caglarcetin/Documents/GitHub/Athlete-Life/tools/v2/metrics_browser.mjs:43
+ const state=await snapshot(),program=state.programs[0],exercise=program.days.find(d=>d.weekday===0).exercises[0];expect(exercise.seconds).toBe(1800);expect(exercise.distance_m).toBe(5000);expect(exercise.rest_seconds).toBe(90);
+                                                                              ^
+
+TypeError: Cannot read properties of undefined (reading 'find')
+    at file:///Users/caglarcetin/Documents/GitHub/Athlete-Life/tools/v2/metrics_browser.mjs:43:79
+
+Node.js v24.19.0

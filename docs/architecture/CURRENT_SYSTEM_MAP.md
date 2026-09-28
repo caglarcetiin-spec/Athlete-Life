@@ -226,3 +226,9 @@ GET `/api/v2/ai-planning-status` yalnız yapılandırma durumunu oturum sahibine
 - `guided_choices.sport_methods` yeni isteğe bağlı sport_id→branş yöntemi dizisi; varsayılan `{}`, eksik anahtar eski global davranışı, `[]` açıkça seçilmeyen branş yöntemini temsil eder. Tek yazım `program.decisions.guided_choices`; AI form allowlist'ine aynı harita eklenir.
 - `methods_for` aday uygunluğunu; `active_sports/days` gün dağılımını; `sport_program` ve `ai_planning` günlük yöntem/teknik kapsamını paylaşır. Başka branşın seçili yöntemi bu güne zorunlu tutulmaz.
 - `guided-sports-6`, `ai-planner-9`; eski sürüm okuma korunur. DB şema/hesap/medya göçü yok. [Kapsam, yayın, test ve rollback](../BRANCH_METHOD_SELECTION.md).
+
+## 2026-09-28 — Birimli süre ve mesafe girişi
+
+- `quantities` / `QuantityInput`: görünür saniye/dakika/saat ve metre/km → mevcut seconds, duration_seconds, rest_seconds, distance_m kanonik alanları. GuidedPlan, Programming, Records/Workouts, DurationPreview aynı dönüşümü kullanır; Reports okunabilir birimleri gösterir. Yeni antrenman veri alanı yoktur.
+- `lifestyle.CapabilityInput.unit=h` → `capability_series` saniye normalizasyonu (×3600); özgün ölçüm birimi/değeri saklanır. Yeni tablo veya veri göçü yoktur.
+- [Kapsam, test, yayın ve geri alma](../METRIC_UNITS.md).

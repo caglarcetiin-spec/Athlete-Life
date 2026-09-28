@@ -1,0 +1,33 @@
+........................................................................ [ 27%]
+........................................................................ [ 55%]
+.......................................................F................ [ 83%]
+..........................................                               [100%]
+=================================== FAILURES ===================================
+____ test_hours_minutes_seconds_share_series_and_original_unit_is_preserved ____
+
+client = <starlette.testclient.TestClient object at 0x10d340500>
+
+    def test_hours_minutes_seconds_share_series_and_original_unit_is_preserved(client):
+        for value,unit in [(1800,'seconds'),(30,'min'),(0.5,'h')]:
+            write(client,cmd('capability.save',local_date='2026-09-15',definition_id='custom:run-duration',protocol_version='synthetic-1',variant='easy',value=value,unit=unit))
+        series=client.get('/api/v2/capability-series').json()['series']
+        assert len(series)==1 and series[0]['unit']=='seconds'
+        assert [p['value'] for p in series[0]['points']]==[1800]*3
+>       rows=client.get('/api/v2/bootstrap').json()['capabilities']
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'capabilities'
+
+tests/v2/test_metric_units.py:23: KeyError
+=============================== warnings summary ===============================
+.venv-v2/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+.venv-v2/lib/python3.12/site-packages/starlette/testclient.py:53
+  /Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/v2/test_metric_units.py::test_hours_minutes_seconds_share_series_and_original_unit_is_preserved
+1 failed, 257 passed, 2 warnings in 16.38s

@@ -1,3 +1,4 @@
+import { formatQuantity, measureFor } from "./quantities";
 import { AIProgress } from "./AIProgress";
 import { ReportExport } from "./ReportExport";
 import { useEffect, useState, lazy, Suspense } from "react";
@@ -805,15 +806,23 @@ export function Reports({
                                 {
                                   sets: "Set",
                                   reps: "Tekrar",
-                                  seconds: "Saniye",
+                                  seconds: "Süre",
                                   external_kg: "Ek yük (kg)",
                                   rir: "Yedekte tekrar (RIR)",
-                                  rest_seconds: "Dinlenme (sn)",
+                                  rest_seconds: "Dinlenme",
                                 } as Record<string, string>
                               )[k] || k}
                             </td>
-                            <td>{shown(r.before[k])}</td>
-                            <td>{shown(r.after[k])}</td>
+                            <td>
+                              {measureFor(k)
+                                ? formatQuantity(r.before[k], measureFor(k)!)
+                                : shown(r.before[k])}
+                            </td>
+                            <td>
+                              {measureFor(k)
+                                ? formatQuantity(r.after[k], measureFor(k)!)
+                                : shown(r.after[k])}
+                            </td>
                           </tr>
                         ))}
                       </tbody>

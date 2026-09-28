@@ -1,0 +1,8 @@
+{
+  "url": "http://127.0.0.1:10005",
+  "health_status": 200,
+  "served_asset": "/assets/index-MF73JNp7.js",
+  "release_asset": "/assets/index-MF73JNp7.js",
+  "matches": true,
+  "scope": "Unauthenticated readiness and static asset only; no personal records inspected."
+}

@@ -1,0 +1,139 @@
+İçeriğe geç
+Athlete Life
+ANTRENMANINI HAYATINA UYDUR
+Bugün
+Antrenman
+Sağlık
+Gelişim
+Araçlar
+D
+Deniz Test
+Kendi ritminde
+Sunucuya kaydedildi
+Açık
+D
+Deniz Test
+Seanslarım
+Planım
+Haftam
+SENİN HEDEFİN, SENİN PLANIN
+Antrenman planım
+
+Hedefini anlat, taslağı düzenle ve hazır olduğunda ana planına al.
+
+Programın hazır · son rötuşlar
+
+Günlerin, hareketlerin, setlerin ve hedeflerin otomatik dolduruldu. İstersen hareketin üzerine tıklayıp düzenle; bu haliyle de taslağı kaydedebilirsin.
+
+Boş bırakılmış ek ağırlık gibi isteğe bağlı alanları şimdi doldurman gerekmez. Gerçekte yaptığın değerleri antrenman sırasında kaydedebilirsin.
+
+1 · Dönem bilgilerin
+Dönem adı
+Başlangıç tarihi
+Hafta sayısı
+4 hafta
+8 hafta
+12 hafta
+16 hafta
+24 hafta
+Dönem sonunda neyi geliştirmek istiyorsun?
+
+Sentetik branş planı; gerçek sağlayıcı çağrısı yapılmadı.
+
+AI taslağıdır; doğrulama biyolojik uygunluk garantisi değildir. Ana plana almak için inceleyip onayla.
+
+Temel teknik kataloğu; eğitmenle düzenlenir.
+
+2 · Hazır haftalık programın
+
+Her günün hareketleri ve hedefleri hazır. Yalnız değiştirmek istediğin hareketi aç; günün takvimini de isteğe bağlı düzenleyebilirsin.
+
+Pazartesi · 1–8. hafta · 1 hareket
+Bu günün takvimini ve adını düzenle
+Süre bütçesi ve değişiklik önizlemesi
+Kolay tempoda koşu · 1 set × 10 dk · 0 sn dinlenme · Düzenle
+Hareketi değiştir · isteğe bağlı
+ Hareket görseli ve uygulama rehberi
+Set türü
+Belirtilmemiş
+Çalışma
+Isınma
+Süperset grubu
+Grup içi sıra
+Hareket adı
+Çalışma türü
+Hareket / tekrar
+Sabit tutuş
+Süre / mesafe
+Teknik deneme
+Tur / istasyon
+Varyasyon / koşul
+Tek değer yerine hedef aralığı belirle
+Set / tur
+Tekrar
+Süre
+Süre birimi
+Saniye
+Dakika
+Saat
+Mesafe
+Mesafe birimi
+Metre
+Kilometre
+Ek ağırlık (kg)
+Yedekte tekrar (RIR)
+Dinlenme
+Dinlenme birimi
+Saniye
+Dakika
+Saat
+Hareketi kaldır
+Hareket / set / interval ekleBu günün farklı haftaları için çalışma ekleBu çalışma gününü kaldır
+Salı · 1–8. hafta · Dinlenme
+Çarşamba · 1–8. hafta · 1 hareket
+Bu günün takvimini ve adını düzenle
+Süre bütçesi ve değişiklik önizlemesi
+Kolay tempoda koşu · 1 set × 10 dk · 0 sn dinlenme · Düzenle
+Hareket / set / interval ekleBu günün farklı haftaları için çalışma ekleBu çalışma gününü kaldır
+Perşembe · 1–8. hafta · Dinlenme
+Cuma · 1–8. hafta · 1 hareket
+Bu günün takvimini ve adını düzenle
+Süre bütçesi ve değişiklik önizlemesi
+Uzun ve rahat koşu · 1 set × 10 dk · 0 sn dinlenme · Düzenle
+Hareket / set / interval ekleBu günün farklı haftaları için çalışma ekleBu çalışma gününü kaldır
+Cumartesi · 1–8. hafta · Dinlenme
+Pazar · 1–8. hafta · Dinlenme
+3 · İncele ve kaydet
+
+Taslağı kaydetmek ana programını değiştirmez. Kayıt kartından “Ana planım yap” ile onaylayabilirsin.
+
+Taslağı kaydet
+Taslağı cihazda tut, kapat
+Hareket kütüphanesi
+1151 katalog hareketi · kas bölgeleri ve kayıt biçimleri
+Geri
+Bugün
+İleri
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+locator.fill: Error: Element is not an <input>, <textarea>, <select> or [contenteditable] and does not have a role allowing [aria-readonly]
+Call log:
+[2m  - waiting for getByLabel('Süre', { exact: true }).first()[22m
+[2m    - locator resolved to <div role="group" aria-label="Süre">…</div>[22m
+[2m    - fill("30")[22m
+[2m  - attempting fill action[22m
+[2m    - waiting for element to be visible, enabled and editable[22m
+
+    at /Users/caglarcetin/Documents/GitHub/Athlete-Life/tools/v2/metrics_browser.mjs:37:216 {
+  log: [
+    "  - waiting for getByLabel('Süre', { exact: true }).first()",
+    '    - locator resolved to <div role="group" aria-label="Süre">…</div>',
+    '    - fill("30")',
+    '  - attempting fill action',
+    '    - waiting for element to be visible, enabled and editable'
+  ]
+}
+
+Node.js v24.19.0

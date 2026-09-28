@@ -1,0 +1,9 @@
+{
+  "result": "PASS",
+  "checks": [
+    "30 min / 0.5 hour → 1800 seconds; 5 km → 5000 m; 1.5 min rest → 90s; wizard, editor, actual set, feedback and reload; session load 30min*4=120; mobile/desktop Axe"
+  ],
+  "errors": [],
+  "browser": "154.0.8037.57",
+  "provider": "synthetic"
+}

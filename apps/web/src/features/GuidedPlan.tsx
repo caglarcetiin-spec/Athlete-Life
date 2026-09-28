@@ -1,3 +1,5 @@
+import { QuantityInput } from "./QuantityInput";
+import { formatQuantity } from "./quantities";
 import { BranchMethods } from "./BranchMethods";
 import {
   addBranch,
@@ -989,52 +991,83 @@ export function GuidedPlan({
                         />
                         {o.name}
                       </label>
-                      {selected && (
-                        <label>
-                          {o.run_form === "interval"
-                            ? "Tek koşu aralığının süresi (sn, isteğe bağlı)"
-                            : o.sport_id
-                              ? "Bir turdaki kontrollü çalışma süren (sn, isteğe bağlı)"
-                              : o.block === "conditioning"
-                                ? "Kesintisiz çalışma süresi (sn)"
-                                : o.metric === "seconds"
-                                  ? "Kontrollü tutuş / süre (sn)"
-                                  : "Kontrollü tekrar sayısı"}
-                          <input
-                            aria-label={o.name + " kapasitesi"}
-                            type="number"
-                            min={o.metric === "seconds" ? 0.01 : 1}
-                            max={capacityMaximum(o)}
-                            step={o.metric === "seconds" ? "any" : 1}
-                            inputMode="numeric"
-                            value={
-                              (o.metric === "seconds"
-                                ? selected.seconds
-                                : selected.reps) ?? ""
+                      {selected &&
+                        (o.metric === "seconds" ? (
+                          <QuantityInput
+                            label={
+                              o.run_form === "interval"
+                                ? "Tek çalışma aralığının süresi"
+                                : o.sport_id
+                                  ? "Bir turdaki kontrollü çalışma süren"
+                                  : "Kesintisiz çalışma süren"
                             }
-                            onChange={(e) =>
+                            inputLabel={o.name + " kapasitesi"}
+                            kind="duration"
+                            defaultUnit={
+                              o.block === "conditioning" ? "min" : undefined
+                            }
+                            value={selected.seconds ?? null}
+                            onChange={(v) =>
                               update({
                                 competencies: answers.competencies.map((c) =>
                                   c.movement_id === o.movement_id
                                     ? {
                                         movement_id: c.movement_id,
-                                        ...(e.target.value
-                                          ? {
-                                              [o.metric === "seconds"
-                                                ? "seconds"
-                                                : "reps"]: Number(
-                                                e.target.value,
-                                              ),
-                                            }
-                                          : {}),
+                                        ...(v === null
+                                          ? {}
+                                          : { seconds: Number(v) }),
                                       }
                                     : c,
                                 ),
                               })
                             }
                           />
-                        </label>
-                      )}
+                        ) : (
+                          <label>
+                            {o.run_form === "interval"
+                              ? "Tek koşu aralığının süresi (sn, isteğe bağlı)"
+                              : o.sport_id
+                                ? "Bir turdaki kontrollü çalışma süren (sn, isteğe bağlı)"
+                                : o.block === "conditioning"
+                                  ? "Kesintisiz çalışma süresi (sn)"
+                                  : o.metric === "seconds"
+                                    ? "Kontrollü tutuş / süre (sn)"
+                                    : "Kontrollü tekrar sayısı"}
+                            <input
+                              aria-label={o.name + " kapasitesi"}
+                              type="number"
+                              min={o.metric === "seconds" ? 0.01 : 1}
+                              max={capacityMaximum(o)}
+                              step={o.metric === "seconds" ? "any" : 1}
+                              inputMode="numeric"
+                              value={
+                                (o.metric === "seconds"
+                                  ? selected.seconds
+                                  : selected.reps) ?? ""
+                              }
+                              onChange={(e) =>
+                                update({
+                                  competencies: answers.competencies.map((c) =>
+                                    c.movement_id === o.movement_id
+                                      ? {
+                                          movement_id: c.movement_id,
+                                          ...(e.target.value
+                                            ? {
+                                                [o.metric === "seconds"
+                                                  ? "seconds"
+                                                  : "reps"]: Number(
+                                                  e.target.value,
+                                                ),
+                                              }
+                                            : {}),
+                                        }
+                                      : c,
+                                  ),
+                                })
+                              }
+                            />
+                          </label>
+                        ))}
                     </div>
                   );
                 })}
@@ -1603,9 +1636,9 @@ export function GuidedPlan({
                       <p>
                         {e.sets} set ×{" "}
                         {e.seconds != null
-                          ? `${e.seconds} saniye`
+                          ? formatQuantity(e.seconds, "duration")
                           : `${e.reps} tekrar`}{" "}
-                        · {e.rest_seconds} sn dinlenme
+                        · {formatQuantity(e.rest_seconds, "duration")} dinlenme
                         {e.rir != null ? ` · ${e.rir} tekrar yedek` : ""}
                       </p>
                       <details>

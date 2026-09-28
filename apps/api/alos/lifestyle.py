@@ -153,7 +153,7 @@ class CapabilityInput(DailyInput):
     side: Literal["left", "right", "both", "unknown"] = "unknown"
     equipment: str = Field(default="", max_length=150)
     value: NonNegative | None = None
-    unit: Literal["kg", "reps", "seconds", "sec", "min", "m", "cm", "km", "deg", "percent", "%"]
+    unit: Literal["kg", "reps", "seconds", "sec", "min", "h", "m", "cm", "km", "deg", "percent", "%"]
     attempt: int = Field(default=1, ge=1, le=100)
     selection: Literal["single", "best", "last", "mean"] = "single"
     components: dict[str, NonNegative] = Field(default_factory=dict, max_length=20)
@@ -171,6 +171,7 @@ class CapabilityInput(DailyInput):
             "seconds": "time",
             "sec": "time",
             "min": "time",
+            "h": "time",
             "m": "distance",
             "cm": "distance",
             "km": "distance",
@@ -533,6 +534,7 @@ def capability_series(rows):
         "sec": ("seconds", 1),
         "seconds": ("seconds", 1),
         "min": ("seconds", 60),
+        "h": ("seconds", 3600),
         "cm": ("m", 0.01),
         "m": ("m", 1),
         "km": ("m", 1000),

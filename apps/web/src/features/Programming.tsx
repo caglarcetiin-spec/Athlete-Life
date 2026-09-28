@@ -1,3 +1,5 @@
+import { QuantityInput } from "./QuantityInput";
+import { formatQuantity, measureFor } from "./quantities";
 import { GuidedPlan } from "./GuidedPlan";
 import { MoveDayPreview } from "./MoveDayPreview";
 import { DurationPreview } from "./DurationPreview";
@@ -625,11 +627,11 @@ export function Programming({ store }: { store: SyncStore }) {
                             {exercise.reps != null &&
                               ` × ${exercise.reps} tekrar`}
                             {exercise.seconds != null &&
-                              ` × ${exercise.seconds} sn`}
+                              ` × ${formatQuantity(exercise.seconds, "duration")}`}
                             {exercise.distance_m != null &&
-                              ` × ${exercise.distance_m} m`}
+                              ` × ${formatQuantity(exercise.distance_m, "distance")}`}
                             {exercise.rest_seconds != null &&
-                              ` · ${exercise.rest_seconds} sn dinlenme`}
+                              ` · ${formatQuantity(exercise.rest_seconds, "duration")} dinlenme`}
                             {exercise.rir != null && ` · RIR ${exercise.rir}`}
                             {exercise.external_kg != null &&
                               ` · ${exercise.external_kg} kg`}
@@ -783,47 +785,87 @@ export function Programming({ store }: { store: SyncStore }) {
                           {exercise.target_range && (
                             <>
                               <label>
-                                Aralık birimi
+                                Aralık ölçümü
                                 <select
                                   value={exercise.target_range.unit}
                                   onChange={(e) =>
                                     update("target_range", {
                                       ...exercise.target_range,
                                       unit: e.target.value,
+                                      minimum: "",
+                                      maximum: "",
                                     })
                                   }
                                 >
                                   <option value="reps">Tekrar</option>
-                                  <option value="seconds">Saniye</option>
-                                  <option value="m">Metre</option>
+                                  <option value="seconds">Süre</option>
+                                  <option value="m">Mesafe</option>
                                 </select>
                               </label>
-                              <label>
-                                Alt hedef
-                                <input
-                                  inputMode="decimal"
+                              {exercise.target_range.unit !== "reps" ? (
+                                <QuantityInput
+                                  label="Alt hedef"
+                                  kind={
+                                    exercise.target_range.unit === "seconds"
+                                      ? "duration"
+                                      : "distance"
+                                  }
                                   value={exercise.target_range.minimum}
-                                  onChange={(e) =>
+                                  onChange={(v) =>
                                     update("target_range", {
                                       ...exercise.target_range,
-                                      minimum: e.target.value,
+                                      minimum: v ?? "",
                                     })
                                   }
                                 />
-                              </label>
-                              <label>
-                                Üst hedef
-                                <input
-                                  inputMode="decimal"
+                              ) : (
+                                <label>
+                                  Alt hedef
+                                  <input
+                                    inputMode="decimal"
+                                    value={exercise.target_range.minimum}
+                                    onChange={(e) =>
+                                      update("target_range", {
+                                        ...exercise.target_range,
+                                        minimum: e.target.value,
+                                      })
+                                    }
+                                  />
+                                </label>
+                              )}
+
+                              {exercise.target_range.unit !== "reps" ? (
+                                <QuantityInput
+                                  label="Üst hedef"
+                                  kind={
+                                    exercise.target_range.unit === "seconds"
+                                      ? "duration"
+                                      : "distance"
+                                  }
                                   value={exercise.target_range.maximum}
-                                  onChange={(e) =>
+                                  onChange={(v) =>
                                     update("target_range", {
                                       ...exercise.target_range,
-                                      maximum: e.target.value,
+                                      maximum: v ?? "",
                                     })
                                   }
                                 />
-                              </label>
+                              ) : (
+                                <label>
+                                  Üst hedef
+                                  <input
+                                    inputMode="decimal"
+                                    value={exercise.target_range.maximum}
+                                    onChange={(e) =>
+                                      update("target_range", {
+                                        ...exercise.target_range,
+                                        maximum: e.target.value,
+                                      })
+                                    }
+                                  />
+                                </label>
+                              )}
+
                               <p>
                                 Runner bu aralığı hedef olarak gösterir.
                                 Gerçekte yaptığın sayı ayrıca girilir.
@@ -847,21 +889,34 @@ export function Programming({ store }: { store: SyncStore }) {
                             ["external_kg", "Ek ağırlık (kg)"],
                             ["rir", "Yedekte tekrar (RIR)"],
                             ["rest_seconds", "Dinlenme (sn)"],
-                          ].map(([key, label]) => (
-                            <label key={key}>
-                              {label}
-                              <input
-                                inputMode="decimal"
-                                value={String(
-                                  exercise[key as keyof ExerciseDraft] ?? "",
-                                )}
-                                onChange={(e) => {
-                                  const value = e.target.value;
-                                  update(key, value === "" ? null : value);
-                                }}
+                          ].map(([key, label]) =>
+                            measureFor(key) ? (
+                              <QuantityInput
+                                key={key}
+                                label={label.replace(/ \(.*\)$/, "")}
+                                kind={measureFor(key)!}
+                                value={
+                                  exercise[key as keyof ExerciseDraft] as
+                                    number | string | null
+                                }
+                                onChange={(v) => update(key, v)}
                               />
-                            </label>
-                          ))}
+                            ) : (
+                              <label key={key}>
+                                {label}
+                                <input
+                                  inputMode="decimal"
+                                  value={String(
+                                    exercise[key as keyof ExerciseDraft] ?? "",
+                                  )}
+                                  onChange={(e) => {
+                                    const value = e.target.value;
+                                    update(key, value === "" ? null : value);
+                                  }}
+                                />
+                              </label>
+                            ),
+                          )}
                         </div>
                         <button
                           className="text-button"

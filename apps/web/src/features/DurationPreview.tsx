@@ -1,3 +1,4 @@
+import { QuantityInput } from "./QuantityInput";
 import { useState } from "react";
 import { api } from "../api/contracts";
 import type { SyncStore } from "../sync/store";
@@ -64,22 +65,18 @@ export function DurationPreview({
             onChange={(e) => setBudget(e.target.value)}
           />
         </label>
-        <label>
-          Tekrarla ölçülen setin tahmini süresi (sn)
-          <input
-            inputMode="decimal"
-            value={execution}
-            onChange={(e) => setExecution(e.target.value)}
-          />
-        </label>
-        <label>
-          Hareketler arası geçiş (sn)
-          <input
-            inputMode="decimal"
-            value={transition}
-            onChange={(e) => setTransition(e.target.value)}
-          />
-        </label>
+        <QuantityInput
+          label="Tekrarla ölçülen setin tahmini süresi"
+          kind="duration"
+          value={execution}
+          onChange={(v) => setExecution(String(v ?? ""))}
+        />
+        <QuantityInput
+          label="Hareketler arası geçiş"
+          kind="duration"
+          value={transition}
+          onChange={(v) => setTransition(String(v ?? ""))}
+        />
       </div>
       <button
         type="button"

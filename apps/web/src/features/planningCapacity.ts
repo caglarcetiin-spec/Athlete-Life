@@ -8,7 +8,12 @@ type Option = {
 
 export function capacityMaximum(option: Pick<Option, "metric" | "block">) {
   return option.metric === "seconds"
-    ? option.block === "conditioning"
+    ? [
+        "conditioning",
+        "sport_technique",
+        "sport_practice",
+        "sport_tactics",
+      ].includes(option.block)
       ? 86400
       : 600
     : 100;
