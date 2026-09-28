@@ -2,5 +2,12 @@
   "name": "Athlete Life",
   "tagline": "Antrenmanını hayatına uydur",
   "logo": "activity",
-  "theme": {"text": "#172B4D", "background": "#F6F8FB", "card": "#FFFFFF", "primary": "#006B63", "warning": "#8A4B00", "error": "#B42318"}
+  "theme": {
+    "text": "#17251B",
+    "background": "#F2F5ED",
+    "card": "#FFFFFF",
+    "primary": "#315A16",
+    "warning": "#8A4B00",
+    "error": "#B42318"
+  }
 }

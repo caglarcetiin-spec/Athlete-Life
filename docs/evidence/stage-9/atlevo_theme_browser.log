@@ -1,0 +1,684 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+ExpectError: expect(received).toEqual(expected) // deep equality
+
+- Expected  -   1
++ Received  + 262
+
+- Array []
++ Array [
++   Object {
++     "id": "color-contrast",
++     "nodes": Array [
++       Array [
++         ".sync-pill > span",
++       ],
++       Array [
++         ".theme-label",
++       ],
++       Array [
++         "button[aria-label=\"Geri git\"] > span",
++       ],
++       Array [
++         "button[aria-label=\"Ana sayfaya dön\"] > span",
++       ],
++       Array [
++         "button[aria-label=\"İleri git\"] > span",
++       ],
++     ],
++     "route": "today",
++     "theme": "light",
++     "viewport": Object {
++       "height": 844,
++       "width": 390,
++     },
++   },
++   Object {
++     "id": "color-contrast",
++     "nodes": Array [
++       Array [
++         ".sync-pill > span",
++       ],
++       Array [
++         ".theme-label",
++       ],
++       Array [
++         "button[aria-label=\"Geri git\"] > span",
++       ],
++       Array [
++         "button[aria-label=\"Ana sayfaya dön\"] > span",
++       ],
++       Array [
++         "button[aria-label=\"İleri git\"] > span",
++       ],
++     ],
++     "route": "program",
++     "theme": "light",
++     "viewport": Object {
++       "height": 844,
++       "width": 390,
++     },
++   },
++   Object {
++     "id": "color-contrast",
++     "nodes": Array [
++       Array [
++         ".sync-pill > span",
++       ],
++       Array [
++         ".theme-label",
++       ],
++       Array [
++         "button[aria-label=\"Geri git\"] > span",
++       ],
++       Array [
++         "button[aria-label=\"Ana sayfaya dön\"] > span",
++       ],
++       Array [
++         "button[aria-label=\"İleri git\"] > span",
++       ],
++     ],
++     "route": "health",
++     "theme": "light",
++     "viewport": Object {
++       "height": 844,
++       "width": 390,
++     },
++   },
++   Object {
++     "id": "color-contrast",
++     "nodes": Array [
++       Array [
++         ".sync-pill > span",
++       ],
++       Array [
++         ".theme-label",
++       ],
++       Array [
++         "button[aria-label=\"Geri git\"] > span",
++       ],
++       Array [
++         "button[aria-label=\"Ana sayfaya dön\"] > span",
++       ],
++       Array [
++         "button[aria-label=\"İleri git\"] > span",
++       ],
++     ],
++     "route": "reports",
++     "theme": "light",
++     "viewport": Object {
++       "height": 844,
++       "width": 390,
++     },
++   },
++   Object {
++     "id": "color-contrast",
++     "nodes": Array [
++       Array [
++         ".sync-pill > span",
++       ],
++       Array [
++         ".theme-label",
++       ],
++       Array [
++         "button[aria-label=\"Geri git\"] > span",
++       ],
++       Array [
++         "button[aria-label=\"Ana sayfaya dön\"] > span",
++       ],
++       Array [
++         "button[aria-label=\"İleri git\"] > span",
++       ],
++     ],
++     "route": "profile",
++     "theme": "light",
++     "viewport": Object {
++       "height": 844,
++       "width": 390,
++     },
++   },
++   Object {
++     "id": "color-contrast",
++     "nodes": Array [
++       Array [
++         ".sync-pill > span",
++       ],
++       Array [
++         ".theme-label",
++       ],
++       Array [
++         "button[aria-label=\"Geri git\"] > span",
++       ],
++       Array [
++         "button[aria-label=\"Ana sayfaya dön\"] > span",
++       ],
++       Array [
++         "button[aria-label=\"İleri git\"] > span",
++       ],
++     ],
++     "route": "today",
++     "theme": "light",
++     "viewport": Object {
++       "height": 1000,
++       "width": 1440,
++     },
++   },
++   Object {
++     "id": "color-contrast",
++     "nodes": Array [
++       Array [
++         ".sync-pill > span",
++       ],
++       Array [
++         ".theme-label",
++       ],
++       Array [
++         "button[aria-label=\"Geri git\"] > span",
++       ],
++       Array [
++         "button[aria-label=\"Ana sayfaya dön\"] > span",
++       ],
++       Array [
++         "button[aria-label=\"İleri git\"] > span",
++       ],
++     ],
++     "route": "program",
++     "theme": "light",
++     "viewport": Object {
++       "height": 1000,
++       "width": 1440,
++     },
++   },
++   Object {
++     "id": "color-contrast",
++     "nodes": Array [
++       Array [
++         ".sync-pill > span",
++       ],
++       Array [
++         ".theme-label",
++       ],
++       Array [
++         "button[aria-label=\"Geri git\"] > span",
++       ],
++       Array [
++         "button[aria-label=\"Ana sayfaya dön\"] > span",
++       ],
++       Array [
++         "button[aria-label=\"İleri git\"] > span",
++       ],
++     ],
++     "route": "health",
++     "theme": "light",
++     "viewport": Object {
++       "height": 1000,
++       "width": 1440,
++     },
++   },
++   Object {
++     "id": "color-contrast",
++     "nodes": Array [
++       Array [
++         ".sync-pill > span",
++       ],
++       Array [
++         ".theme-label",
++       ],
++       Array [
++         "button[aria-label=\"Geri git\"] > span",
++       ],
++       Array [
++         "button[aria-label=\"Ana sayfaya dön\"] > span",
++       ],
++       Array [
++         "button[aria-label=\"İleri git\"] > span",
++       ],
++     ],
++     "route": "reports",
++     "theme": "light",
++     "viewport": Object {
++       "height": 1000,
++       "width": 1440,
++     },
++   },
++   Object {
++     "id": "color-contrast",
++     "nodes": Array [
++       Array [
++         ".sync-pill > span",
++       ],
++       Array [
++         ".theme-label",
++       ],
++       Array [
++         "button[aria-label=\"Geri git\"] > span",
++       ],
++       Array [
++         "button[aria-label=\"Ana sayfaya dön\"] > span",
++       ],
++       Array [
++         "button[aria-label=\"İleri git\"] > span",
++       ],
++     ],
++     "route": "profile",
++     "theme": "light",
++     "viewport": Object {
++       "height": 1000,
++       "width": 1440,
++     },
++   },
++ ]
+    at captureRawStack (/Users/caglarcetin/Documents/GitHub/Athlete-Life/apps/web/node_modules/playwright-core/lib/coreBundle.js:8588:17)
+    at callMatcherAsStep (/Users/caglarcetin/Documents/GitHub/Athlete-Life/apps/web/node_modules/playwright/lib/matchers/expect.js:13310:57)
+    at Object.toEqual (/Users/caglarcetin/Documents/GitHub/Athlete-Life/apps/web/node_modules/playwright/lib/matchers/expect.js:13302:23)
+    at /Users/caglarcetin/Documents/GitHub/Athlete-Life/tools/v2/atlevo_theme_browser.mjs:26:304 {
+  matcherResult: {
+    actual: [
+      {
+        route: 'today',
+        theme: 'light',
+        viewport: { width: 390, height: 844 },
+        id: 'color-contrast',
+        nodes: [
+          [ '.sync-pill > span' ],
+          [ '.theme-label' ],
+          [ 'button[aria-label="Geri git"] > span' ],
+          [ 'button[aria-label="Ana sayfaya dön"] > span' ],
+          [ 'button[aria-label="İleri git"] > span' ]
+        ]
+      },
+      {
+        route: 'program',
+        theme: 'light',
+        viewport: { width: 390, height: 844 },
+        id: 'color-contrast',
+        nodes: [
+          [ '.sync-pill > span' ],
+          [ '.theme-label' ],
+          [ 'button[aria-label="Geri git"] > span' ],
+          [ 'button[aria-label="Ana sayfaya dön"] > span' ],
+          [ 'button[aria-label="İleri git"] > span' ]
+        ]
+      },
+      {
+        route: 'health',
+        theme: 'light',
+        viewport: { width: 390, height: 844 },
+        id: 'color-contrast',
+        nodes: [
+          [ '.sync-pill > span' ],
+          [ '.theme-label' ],
+          [ 'button[aria-label="Geri git"] > span' ],
+          [ 'button[aria-label="Ana sayfaya dön"] > span' ],
+          [ 'button[aria-label="İleri git"] > span' ]
+        ]
+      },
+      {
+        route: 'reports',
+        theme: 'light',
+        viewport: { width: 390, height: 844 },
+        id: 'color-contrast',
+        nodes: [
+          [ '.sync-pill > span' ],
+          [ '.theme-label' ],
+          [ 'button[aria-label="Geri git"] > span' ],
+          [ 'button[aria-label="Ana sayfaya dön"] > span' ],
+          [ 'button[aria-label="İleri git"] > span' ]
+        ]
+      },
+      {
+        route: 'profile',
+        theme: 'light',
+        viewport: { width: 390, height: 844 },
+        id: 'color-contrast',
+        nodes: [
+          [ '.sync-pill > span' ],
+          [ '.theme-label' ],
+          [ 'button[aria-label="Geri git"] > span' ],
+          [ 'button[aria-label="Ana sayfaya dön"] > span' ],
+          [ 'button[aria-label="İleri git"] > span' ]
+        ]
+      },
+      {
+        route: 'today',
+        theme: 'light',
+        viewport: { width: 1440, height: 1000 },
+        id: 'color-contrast',
+        nodes: [
+          [ '.sync-pill > span' ],
+          [ '.theme-label' ],
+          [ 'button[aria-label="Geri git"] > span' ],
+          [ 'button[aria-label="Ana sayfaya dön"] > span' ],
+          [ 'button[aria-label="İleri git"] > span' ]
+        ]
+      },
+      {
+        route: 'program',
+        theme: 'light',
+        viewport: { width: 1440, height: 1000 },
+        id: 'color-contrast',
+        nodes: [
+          [ '.sync-pill > span' ],
+          [ '.theme-label' ],
+          [ 'button[aria-label="Geri git"] > span' ],
+          [ 'button[aria-label="Ana sayfaya dön"] > span' ],
+          [ 'button[aria-label="İleri git"] > span' ]
+        ]
+      },
+      {
+        route: 'health',
+        theme: 'light',
+        viewport: { width: 1440, height: 1000 },
+        id: 'color-contrast',
+        nodes: [
+          [ '.sync-pill > span' ],
+          [ '.theme-label' ],
+          [ 'button[aria-label="Geri git"] > span' ],
+          [ 'button[aria-label="Ana sayfaya dön"] > span' ],
+          [ 'button[aria-label="İleri git"] > span' ]
+        ]
+      },
+      {
+        route: 'reports',
+        theme: 'light',
+        viewport: { width: 1440, height: 1000 },
+        id: 'color-contrast',
+        nodes: [
+          [ '.sync-pill > span' ],
+          [ '.theme-label' ],
+          [ 'button[aria-label="Geri git"] > span' ],
+          [ 'button[aria-label="Ana sayfaya dön"] > span' ],
+          [ 'button[aria-label="İleri git"] > span' ]
+        ]
+      },
+      {
+        route: 'profile',
+        theme: 'light',
+        viewport: { width: 1440, height: 1000 },
+        id: 'color-contrast',
+        nodes: [
+          [ '.sync-pill > span' ],
+          [ '.theme-label' ],
+          [ 'button[aria-label="Geri git"] > span' ],
+          [ 'button[aria-label="Ana sayfaya dön"] > span' ],
+          [ 'button[aria-label="İleri git"] > span' ]
+        ]
+      }
+    ],
+    expected: [],
+    message: 'expect(received).toEqual(expected) // deep equality\n' +
+      '\n' +
+      '- Expected  -   1\n' +
+      '+ Received  + 262\n' +
+      '\n' +
+      '- Array []\n' +
+      '+ Array [\n' +
+      '+   Object {\n' +
+      '+     "id": "color-contrast",\n' +
+      '+     "nodes": Array [\n' +
+      '+       Array [\n' +
+      '+         ".sync-pill > span",\n' +
+      '+       ],\n' +
+      '+       Array [\n' +
+      '+         ".theme-label",\n' +
+      '+       ],\n' +
+      '+       Array [\n' +
+      '+         "button[aria-label=\\"Geri git\\"] > span",\n' +
+      '+       ],\n' +
+      '+       Array [\n' +
+      '+         "button[aria-label=\\"Ana sayfaya dön\\"] > span",\n' +
+      '+       ],\n' +
+      '+       Array [\n' +
+      '+         "button[aria-label=\\"İleri git\\"] > span",\n' +
+      '+       ],\n' +
+      '+     ],\n' +
+      '+     "route": "today",\n' +
+      '+     "theme": "light",\n' +
+      '+     "viewport": Object {\n' +
+      '+       "height": 844,\n' +
+      '+       "width": 390,\n' +
+      '+     },\n' +
+      '+   },\n' +
+      '+   Object {\n' +
+      '+     "id": "color-contrast",\n' +
+      '+     "nodes": Array [\n' +
+      '+       Array [\n' +
+      '+         ".sync-pill > span",\n' +
+      '+       ],\n' +
+      '+       Array [\n' +
+      '+         ".theme-label",\n' +
+      '+       ],\n' +
+      '+       Array [\n' +
+      '+         "button[aria-label=\\"Geri git\\"] > span",\n' +
+      '+       ],\n' +
+      '+       Array [\n' +
+      '+         "button[aria-label=\\"Ana sayfaya dön\\"] > span",\n' +
+      '+       ],\n' +
+      '+       Array [\n' +
+      '+         "button[aria-label=\\"İleri git\\"] > span",\n' +
+      '+       ],\n' +
+      '+     ],\n' +
+      '+     "route": "program",\n' +
+      '+     "theme": "light",\n' +
+      '+     "viewport": Object {\n' +
+      '+       "height": 844,\n' +
+      '+       "width": 390,\n' +
+      '+     },\n' +
+      '+   },\n' +
+      '+   Object {\n' +
+      '+     "id": "color-contrast",\n' +
+      '+     "nodes": Array [\n' +
+      '+       Array [\n' +
+      '+         ".sync-pill > span",\n' +
+      '+       ],\n' +
+      '+       Array [\n' +
+      '+         ".theme-label",\n' +
+      '+       ],\n' +
+      '+       Array [\n' +
+      '+         "button[aria-label=\\"Geri git\\"] > span",\n' +
+      '+       ],\n' +
+      '+       Array [\n' +
+      '+         "button[aria-label=\\"Ana sayfaya dön\\"] > span",\n' +
+      '+       ],\n' +
+      '+       Array [\n' +
+      '+         "button[aria-label=\\"İleri git\\"] > span",\n' +
+      '+       ],\n' +
+      '+     ],\n' +
+      '+     "route": "health",\n' +
+      '+     "theme": "light",\n' +
+      '+     "viewport": Object {\n' +
+      '+       "height": 844,\n' +
+      '+       "width": 390,\n' +
+      '+     },\n' +
+      '+   },\n' +
+      '+   Object {\n' +
+      '+     "id": "color-contrast",\n' +
+      '+     "nodes": Array [\n' +
+      '+       Array [\n' +
+      '+         ".sync-pill > span",\n' +
+      '+       ],\n' +
+      '+       Array [\n' +
+      '+         ".theme-label",\n' +
+      '+       ],\n' +
+      '+       Array [\n' +
+      '+         "button[aria-label=\\"Geri git\\"] > span",\n' +
+      '+       ],\n' +
+      '+       Array [\n' +
+      '+         "button[aria-label=\\"Ana sayfaya dön\\"] > span",\n' +
+      '+       ],\n' +
+      '+       Array [\n' +
+      '+         "button[aria-label=\\"İleri git\\"] > span",\n' +
+      '+       ],\n' +
+      '+     ],\n' +
+      '+     "route": "reports",\n' +
+      '+     "theme": "light",\n' +
+      '+     "viewport": Object {\n' +
+      '+       "height": 844,\n' +
+      '+       "width": 390,\n' +
+      '+     },\n' +
+      '+   },\n' +
+      '+   Object {\n' +
+      '+     "id": "color-contrast",\n' +
+      '+     "nodes": Array [\n' +
+      '+       Array [\n' +
+      '+         ".sync-pill > span",\n' +
+      '+       ],\n' +
+      '+       Array [\n' +
+      '+         ".theme-label",\n' +
+      '+       ],\n' +
+      '+       Array [\n' +
+      '+         "button[aria-label=\\"Geri git\\"] > span",\n' +
+      '+       ],\n' +
+      '+       Array [\n' +
+      '+         "button[aria-label=\\"Ana sayfaya dön\\"] > span",\n' +
+      '+       ],\n' +
+      '+       Array [\n' +
+      '+         "button[aria-label=\\"İleri git\\"] > span",\n' +
+      '+       ],\n' +
+      '+     ],\n' +
+      '+     "route": "profile",\n' +
+      '+     "theme": "light",\n' +
+      '+     "viewport": Object {\n' +
+      '+       "height": 844,\n' +
+      '+       "width": 390,\n' +
+      '+     },\n' +
+      '+   },\n' +
+      '+   Object {\n' +
+      '+     "id": "color-contrast",\n' +
+      '+     "nodes": Array [\n' +
+      '+       Array [\n' +
+      '+         ".sync-pill > span",\n' +
+      '+       ],\n' +
+      '+       Array [\n' +
+      '+         ".theme-label",\n' +
+      '+       ],\n' +
+      '+       Array [\n' +
+      '+         "button[aria-label=\\"Geri git\\"] > span",\n' +
+      '+       ],\n' +
+      '+       Array [\n' +
+      '+         "button[aria-label=\\"Ana sayfaya dön\\"] > span",\n' +
+      '+       ],\n' +
+      '+       Array [\n' +
+      '+         "button[aria-label=\\"İleri git\\"] > span",\n' +
+      '+       ],\n' +
+      '+     ],\n' +
+      '+     "route": "today",\n' +
+      '+     "theme": "light",\n' +
+      '+     "viewport": Object {\n' +
+      '+       "height": 1000,\n' +
+      '+       "width": 1440,\n' +
+      '+     },\n' +
+      '+   },\n' +
+      '+   Object {\n' +
+      '+     "id": "color-contrast",\n' +
+      '+     "nodes": Array [\n' +
+      '+       Array [\n' +
+      '+         ".sync-pill > span",\n' +
+      '+       ],\n' +
+      '+       Array [\n' +
+      '+         ".theme-label",\n' +
+      '+       ],\n' +
+      '+       Array [\n' +
+      '+         "button[aria-label=\\"Geri git\\"] > span",\n' +
+      '+       ],\n' +
+      '+       Array [\n' +
+      '+         "button[aria-label=\\"Ana sayfaya dön\\"] > span",\n' +
+      '+       ],\n' +
+      '+       Array [\n' +
+      '+         "button[aria-label=\\"İleri git\\"] > span",\n' +
+      '+       ],\n' +
+      '+     ],\n' +
+      '+     "route": "program",\n' +
+      '+     "theme": "light",\n' +
+      '+     "viewport": Object {\n' +
+      '+       "height": 1000,\n' +
+      '+       "width": 1440,\n' +
+      '+     },\n' +
+      '+   },\n' +
+      '+   Object {\n' +
+      '+     "id": "color-contrast",\n' +
+      '+     "nodes": Array [\n' +
+      '+       Array [\n' +
+      '+         ".sync-pill > span",\n' +
+      '+       ],\n' +
+      '+       Array [\n' +
+      '+         ".theme-label",\n' +
+      '+       ],\n' +
+      '+       Array [\n' +
+      '+         "button[aria-label=\\"Geri git\\"] > span",\n' +
+      '+       ],\n' +
+      '+       Array [\n' +
+      '+         "button[aria-label=\\"Ana sayfaya dön\\"] > span",\n' +
+      '+       ],\n' +
+      '+       Array [\n' +
+      '+         "button[aria-label=\\"İleri git\\"] > span",\n' +
+      '+       ],\n' +
+      '+     ],\n' +
+      '+     "route": "health",\n' +
+      '+     "theme": "light",\n' +
+      '+     "viewport": Object {\n' +
+      '+       "height": 1000,\n' +
+      '+       "width": 1440,\n' +
+      '+     },\n' +
+      '+   },\n' +
+      '+   Object {\n' +
+      '+     "id": "color-contrast",\n' +
+      '+     "nodes": Array [\n' +
+      '+       Array [\n' +
+      '+         ".sync-pill > span",\n' +
+      '+       ],\n' +
+      '+       Array [\n' +
+      '+         ".theme-label",\n' +
+      '+       ],\n' +
+      '+       Array [\n' +
+      '+         "button[aria-label=\\"Geri git\\"] > span",\n' +
+      '+       ],\n' +
+      '+       Array [\n' +
+      '+         "button[aria-label=\\"Ana sayfaya dön\\"] > span",\n' +
+      '+       ],\n' +
+      '+       Array [\n' +
+      '+         "button[aria-label=\\"İleri git\\"] > span",\n' +
+      '+       ],\n' +
+      '+     ],\n' +
+      '+     "route": "reports",\n' +
+      '+     "theme": "light",\n' +
+      '+     "viewport": Object {\n' +
+      '+       "height": 1000,\n' +
+      '+       "width": 1440,\n' +
+      '+     },\n' +
+      '+   },\n' +
+      '+   Object {\n' +
+      '+     "id": "color-contrast",\n' +
+      '+     "nodes": Array [\n' +
+      '+       Array [\n' +
+      '+         ".sync-pill > span",\n' +
+      '+       ],\n' +
+      '+       Array [\n' +
+      '+         ".theme-label",\n' +
+      '+       ],\n' +
+      '+       Array [\n' +
+      '+         "button[aria-label=\\"Geri git\\"] > span",\n' +
+      '+       ],\n' +
+      '+       Array [\n' +
+      '+         "button[aria-label=\\"Ana sayfaya dön\\"] > span",\n' +
+      '+       ],\n' +
+      '+       Array [\n' +
+      '+         "button[aria-label=\\"İleri git\\"] > span",\n' +
+      '+       ],\n' +
+      '+     ],\n' +
+      '+     "route": "profile",\n' +
+      '+     "theme": "light",\n' +
+      '+     "viewport": Object {\n' +
+      '+       "height": 1000,\n' +
+      '+       "width": 1440,\n' +
+      '+     },\n' +
+      '+   },\n' +
+      '+ ]',
+    name: 'toEqual',
+    pass: false
+  }
+}
+
+Node.js v24.19.0

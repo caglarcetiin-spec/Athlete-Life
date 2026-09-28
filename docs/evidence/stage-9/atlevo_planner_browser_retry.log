@@ -1,0 +1,68 @@
+İçeriğe geç
+Sunucuya kaydedildi
+Açık
+D
+Deniz Test
+Seanslarım
+Planım
+Haftam
+SENİN HEDEFİN, SENİN PLANIN
+Antrenman planım
+
+Hedefini anlat, taslağı düzenle ve hazır olduğunda ana planına al.
+
+SANA GÖRE BİR BAŞLANGIÇ · 4/10
+Daha sonra
+Neyi geliştirmek istiyorsun?
+Patlayıcı güç
+Bildiğin sıçrama/atış teknikleriyle hız ve teknik kalite; yöntemlerde patlayıcı gücü de seç.
+Dayanıklılık
+Koşu veya yüzmede süre ve düzenli katılım hedefi.
+Tekniğimi geliştirmek
+Bildiğin becerileri kontrollü çalışmak; yeni teknikler için eğitmen desteği.
+Kas geliştirmek
+Kas gelişimine yönelik başlangıç taslağı.
+Güçlenmek
+Kuvvet odağı ve daha uzun dinlenmeler.
+İkisi birlikte
+Kuvvet ve kas gelişimini birlikte takip et.
+Somut hedefin ne?
+Dönem boyunca nasıl ilerleyelim?
+AI taslağında uyum, gelişim ve hafif hafta
+Aynı haftalık hedefleri koru
+Kuvvet setlerinin sonunda kaç tekrar yedekte kalsın (RIR)?
+2 tekrar yedek
+3 tekrar yedek
+4 tekrar yedek
+5 tekrar yedek
+
+RIR, set bittiğinde düzgün formla yapabileceğini düşündüğün ek tekrar sayısıdır. Dönemleme kuvvet çalışma setlerine uygulanır. Artış kararı gerçekleşen kayıtlar ve RIR ile değerlendirilir; otomatik kilogram artışı yapılmaz.
+
+Ölçülebilir hedeflerini Gelişim bölümünden takip edebilirsin. Hedefin, gerçekleşmiş performans veya gelişim garantisi değildir.
+
+Geri
+Devam
+Geri
+Bugün
+İleri
+Bugün
+Antrenman
+Sağlık
+Gelişim
+Araçlar
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+locator.selectOption: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for getByLabel('Dönem boyunca nasıl ilerleyelim?', { exact: true })[22m
+
+    at /Users/caglarcetin/Documents/GitHub/Athlete-Life/tools/v2/atlevo_planner_browser.mjs:18:73 {
+  log: [
+    "  - waiting for getByLabel('Dönem boyunca nasıl ilerleyelim?', { exact: true })"
+  ],
+  name: 'TimeoutError'
+}
+
+Node.js v24.19.0

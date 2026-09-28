@@ -113,6 +113,8 @@ type Answers = {
   minutes: number;
   split: string;
   focus: Record<string, number>;
+  progression_mode: "repeat" | "phased";
+  target_rir: number;
   goal: string;
   name: string;
   weeks: number;
@@ -186,6 +188,8 @@ export function GuidedPlan({
     minutes: 45,
     split: "full_body",
     focus: {},
+    progression_mode: "phased",
+    target_rir: 3,
     goal: "",
     name: "Yeni antrenman dönemim",
     weeks: 8,
@@ -1152,6 +1156,20 @@ export function GuidedPlan({
                 onChange={(e) => update({ goal: e.target.value })}
               />
             </label>
+            <label>
+              Dönem boyunca nasıl ilerleyelim?
+              <select aria-label="Dönem boyunca nasıl ilerleyelim?" value={answers.progression_mode} onChange={(e) => update({ progression_mode: e.target.value as "repeat" | "phased" })}>
+                <option value="phased">AI taslağında uyum, gelişim ve hafif hafta</option>
+                <option value="repeat">Aynı haftalık hedefleri koru</option>
+              </select>
+            </label>
+            {showMuscles && <label>
+              Kuvvet setlerinin sonunda kaç tekrar yedekte kalsın (RIR)?
+              <select aria-label="Kuvvet setlerinin sonunda kaç tekrar yedekte kalsın (RIR)?" value={answers.target_rir} onChange={(e) => update({ target_rir: Number(e.target.value) })}>
+                {[2,3,4,5].map((n) => <option key={n} value={n}>{n} tekrar yedek</option>)}
+              </select>
+            </label>}
+            <p className="caption">RIR, set bittiğinde düzgün formla yapabileceğini düşündüğün ek tekrar sayısıdır. Dönemleme kuvvet çalışma setlerine uygulanır. Artış kararı gerçekleşen kayıtlar ve RIR ile değerlendirilir; otomatik kilogram artışı yapılmaz.</p>
             <p>
               Ölçülebilir hedeflerini Gelişim bölümünden takip edebilirsin.
               Hedefin, gerçekleşmiş performans veya gelişim garantisi değildir.
@@ -1605,9 +1623,12 @@ export function GuidedPlan({
               {answers.weeks} hafta · haftada {answers.weekdays.length} gün ·{" "}
               {answers.goal}
             </p>
+            <details><summary>Dönem yapısı ve ilerleme koşulları</summary>
+              {preview.notes.filter((n) => n.includes("hafta") || n.includes("İlerleme koşulu") || n.includes("RIR") || n.includes("dozları")).map((n,i) => <p key={i}>{n}</p>)}
+            </details>
             {preview.program.days.map((day) => (
               <details
-                key={day.weekday}
+                key={`${day.weekday}-${day.first_week ?? 1}`}
                 className="plan-day"
                 open={
                   day.weekday ===
@@ -1616,6 +1637,7 @@ export function GuidedPlan({
                 }
               >
                 <summary>
+                  {day.first_week != null && `${day.first_week}–${day.last_week ?? answers.weeks}. hafta · `}
                   {names[day.weekday]} ·{" "}
                   {day.kind === "rest"
                     ? "Dinlenme"

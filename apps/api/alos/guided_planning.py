@@ -87,6 +87,8 @@ class RunningProfile(StrictModel):
 
 
 class GuidedChoices(StrictModel):
+    progression_mode: Literal["repeat", "phased"] = "repeat"
+    target_rir: int = Field(default=3, ge=2, le=5)
     sport_methods: dict[str, list[Literal["sport_technique", "sport_practice", "sport_tactics"]]] = Field(
         default_factory=dict, max_length=20
     )

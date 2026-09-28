@@ -1,13 +1,14 @@
 :root {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  color: #203d36;
-  background: #f4f3ef;
-  --bg: #f4f3ef;
-  --panel: #fffefa;
-  --ink: #203d36;
-  --muted: #64716b;
+  color: var(--ink);
+  background: var(--bg);
+  --bg: #F2F5ED;
+  --panel: #FFFFFF;
+  --ink: #17251B;
+  --muted: #52614F;
   --line: #dcded6;
-  --accent: #1f5847;
+  --accent: #315A16;
+  --on-accent: #FFFFFF;
   --tint: #e9eee6;
   --shadow: 0 18px 55px #223e3510;
   font-synthesis: none;
@@ -42,7 +43,7 @@ button {
   border: 1px solid transparent;
   border-radius: 12px;
   background: var(--accent);
-  color: #fff;
+  color: var(--on-accent);
   cursor: pointer;
   font-weight: 600;
   transition:
@@ -656,12 +657,13 @@ pre {
   max-width: 330px;
 }
 [data-theme="dark"] {
-  --bg: #111e1a;
-  --panel: #1b2a24;
-  --ink: #e5eadf;
-  --muted: #afbcaf;
+  --bg: #111713;
+  --panel: #1C261F;
+  --ink: #F3F7F1;
+  --muted: #B5C2B7;
   --line: #3b4d42;
-  --accent: #41765b;
+  --accent: #C7F464;
+  --on-accent: #111713;
   --tint: #2b4033;
   --shadow: 0 18px 55px #0002;
   color: var(--ink);
@@ -1745,3 +1747,12 @@ button.secondary { transition: transform 0.18s; }
 .admin-account-info dt { font-weight: 600; margin-top: 10px; }
 .admin-account-info dd { margin: 0; overflow-wrap: anywhere; }
 .admin-users small { overflow-wrap: anywhere; }
+
+/* Athlete Life identity, ATLEVO palette. Semantic alerts keep their own colors. */
+.link-button:not(.secondary) { color: var(--on-accent); }
+button.secondary, .link-button.secondary { color: var(--ink); }
+[data-theme="dark"] .hero-card { background: #1C261F; border-color: #43503E; }
+[data-theme="dark"] .hero-card .eyebrow { color: #C7F464; }
+.login-story { background: #111713; color: #F3F7F1; }
+.login-story .eyebrow, .login-story small { color: #C7F464; }
+.recovery-meter { width: 100%; height: 20px; accent-color: var(--accent); }

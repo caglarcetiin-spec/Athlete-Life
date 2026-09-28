@@ -79,7 +79,7 @@ export default function BodyModel({
   const focusSurface = useRef<() => void>(() => {});
   const selectedSurface = surfaces.find((s) => s.id === surfaceId);
   const [selected, setSelected] = useState("lats");
-  const [mode, setMode] = useState("distribution");
+  const [mode, setMode] = useState("load");
   const [channel, setChannel] = useState("strength");
   const [axis, setAxis] = useState(initial.axis || "auto");
   const [flipped, setFlipped] = useState(initial.flipped || false);
@@ -491,10 +491,10 @@ export default function BodyModel({
   }, [attempt, revision, source]);
   return (
     <section className="card">
-      <h2>3B kas dağılımı ve kayıt endeksi</h2>
+      <h2>3B kas yorgunluğu ve toparlanma</h2>
       <p>
         Modelde bir bölgeye dokun veya kas listesinden seç. Çalışma dağılımını
-        ve zamanla azalan kayıt endeksini ayrı görünümlerde incele.
+        ve zamana göre değişen tahmini yorgunluğu ayrı görünümlerde incele.
       </p>
       <div className="actions">
         <span>
@@ -538,7 +538,7 @@ export default function BodyModel({
             onChange={(e) => setMode(e.target.value)}
           >
             <option value="distribution">Yapılan çalışmaların dağılımı</option>
-            <option value="load">Kayıt yükü endeksi</option>
+            <option value="load">Tahmini yorgunluk (%)</option>
             <option value="original">Orijinal model</option>
           </select>
         </label>
@@ -566,7 +566,7 @@ export default function BodyModel({
         </>
       ) : (
         <p className="caption">
-          Yeşil: düşük kayıtlı yük · sarı: orta · kırmızı: yüksek · gri: yüzde
+          Yeşil: düşük tahmini yorgunluk · sarı: orta · kırmızı: yüksek · gri: yüzde
           hesabı için veri yok. Sağ ve sol taraf birlikte değerlendirilir.
         </p>
       )}
@@ -772,16 +772,17 @@ export default function BodyModel({
             <>
               <div className="report-controls">
                 <div>
-                  <span>Zamanla azalan kayıt endeksi</span>
+                  <span>Tahmini yorgunluk</span>
                   <h3>{rangeText(detail.fatigue)}</h3>
+                  <meter className="recovery-meter" aria-label="Tahmini yorgunluk" min={0} max={100} value={(detail.fatigue.low + detail.fatigue.high) / 2} />
                 </div>
                 <div>
-                  <span>Endeksin 100’e tamamlayanı</span>
+                  <span>Tahmini toparlanma göstergesi</span>
                   <h3>{rangeText(detail.reserve)}</h3>
                 </div>
               </div>
               <p>
-                Son kayıtlı yükten beri azalma:{" "}
+                Son antrenmandan beri tahmini yorgunluk azalması:{" "}
                 {detail.released_since_last_load.low.toFixed(1)}–
                 {detail.released_since_last_load.high.toFixed(1)} yüzde puanı.
               </p>
@@ -790,7 +791,7 @@ export default function BodyModel({
                 {detail.forecast
                   .map(
                     (f) =>
-                      `${f.hours} saat sonra kayıt endeksi ${rangeText(f.fatigue)}`,
+                      `${f.hours} saat sonra tahmini yorgunluk ${rangeText(f.fatigue)}`,
                   )
                   .join(" · ")}
               </p>
@@ -826,6 +827,7 @@ export default function BodyModel({
               iyileştiği anlamına gelmez.
             </p>
           ))}
+        <details><summary>Teknik yük ayrıntıları</summary>
         {mode !== "distribution" &&
           Object.entries(exposure?.[activeRegion] || {}).map(([key, value]) => (
             <p key={key}>
@@ -833,6 +835,7 @@ export default function BodyModel({
               kalan kayıtlı yük
             </p>
           ))}
+        </details>
         <p className="caption">
           {mode === "distribution"
             ? "Renkler seçili dönemin kayıtlarını karşılaştırır; kas büyümesi veya hasar yüzdesi değildir."

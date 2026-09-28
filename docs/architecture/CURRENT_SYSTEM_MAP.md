@@ -253,3 +253,9 @@ GuidedPlan bölge panelini her branşta açık gösterir; endurance geçişi/gö
 ## 2026-09-28 — Yönetici yetkisi ve ayrı panel
 
 `Administrator/administrators(user_id, created_at)` açık operatör grant'i; PostgreSQL b829admin001 / Mongo ek koleksiyon. `auth/me.is_admin` geçici UI bilgisi; admin.require her API'de rol+oturum kontrolünü tekrarlar. `/admin/users`, hedef detay/medya, delete/revoke, audit; hesap sırları allowlist dışında. `Admin` normal Workspace'i başlatmadan ayrı panel açar. account.erase_records ortak sahiplik silmesi; yönetici hesapları korunur. SecurityAudit admin_view/admin_media/admin_delete/admin_revoke hedef kimliğini saklar. [Yetki, provisioning, test ve rollback](../ADMIN_PANEL.md).
+
+## 2026-09-28 Athlete Life / ATLEVO renkleri ve dönemleme
+
+`catalogs/brand.json` açık tema runtime kaynağı, `styles/app.css` koyu tema ve ortak tokenlar. İsim değişmedi. `MuscleReportPanel` canlı hesabı tarih seçiminden bağımsız çalıştırır; `BodyModel` yüzde görünümünü varsayılan açar. Hesap `domain/recovery.py` kalibre edilmemiş kuvvet kayıt modelidir.
+
+Yeni `GuidedChoices.progression_mode` (repeat/phased, eski veri default repeat) ve `target_rir` (2–5, default3), `Program.decisions.guided_choices` içinde korunur. Form yeni taslakta phased seçer. AI allowlist ve `periodization_policy` üzerinden sağlayıcıya ulaşır. `periodization.py` geçerli AI temel haftasını mevcut first_week/last_week aralıklarıyla çoğaltır; teknik/kardiyo için kuvvet dönüşümü yapmaz. `ai-planner-10` eski sürümlerle birlikte kabul edilir. SQL/medya göçü yok. Ayrıntılar `docs/ATLEVO_TRAINING_UPDATE.md`.

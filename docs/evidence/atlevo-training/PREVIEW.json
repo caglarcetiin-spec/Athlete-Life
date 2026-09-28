@@ -1,0 +1,8 @@
+{
+  "origin": "http://127.0.0.1:10005",
+  "ready": {
+    "status": "ready"
+  },
+  "assets_match": true,
+  "authenticated_records_read": false
+}

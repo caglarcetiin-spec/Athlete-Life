@@ -29,18 +29,23 @@ export function MuscleReportPanel({
     [error, setError] = useState(""),
     [pending, setPending] = useState(false),
     [refresh, setRefresh] = useState(0),
-    [days, setDays] = useState(7);
+    [days, setDays] = useState(7),
+    [live, setLive] = useState(true);
   const cursor = store.snapshot?.cursor;
   useEffect(() => {
     const timer = setInterval(() => {
       if (document.visibilityState === "visible") setRefresh((n) => n + 1);
     }, 60000);
-    return () => clearInterval(timer);
+    const refreshVisible = () => {
+      if (document.visibilityState === "visible") setRefresh((n) => n + 1);
+    };
+    document.addEventListener("visibilitychange", refreshVisible);
+    return () => { clearInterval(timer); document.removeEventListener("visibilitychange", refreshVisible); };
   }, []);
   useEffect(() => {
     let active = true;
     setPending(true);
-    void api(`analysis?on=${selected}&window_days=${days}&knowledge=recomputed`)
+    void api(`analysis?${live ? "" : `on=${selected}&`}window_days=${live ? 366 : days}&knowledge=recomputed`)
       .then((value) => {
         if (active) {
           setReport(value as Analysis);
@@ -56,7 +61,7 @@ export function MuscleReportPanel({
     return () => {
       active = false;
     };
-  }, [selected, days, refresh, cursor]);
+  }, [selected, days, refresh, cursor, live]);
   return (
     <section>
       <h2>Kas çalışmalarım</h2>
@@ -64,7 +69,12 @@ export function MuscleReportPanel({
         Gerçek setlerin, tutuşların ve kondisyon kayıtların aynı analizden
         okunur. Henüz yapmadığın plan hedefleri bu hesaba girmez.
       </p>
-      <label>
+      <label className="check">
+        <input type="checkbox" checked={live} onChange={(e) => setLive(e.target.checked)} />
+        Şu anki toparlanmayı göster (geçmiş tarih seçiminden bağımsız)
+      </label>
+      <p className="caption">{live ? "Son 366 günlük kayıtlar bugünün saatiyle hesaplanır. Yeni antrenman yükü artırır; geçen zaman modelde yükü azaltır." : "Seçili tarihin sonundaki geçmiş hesap gösterilir."}</p>
+      {!live && <label>
         İncelenen dönem
         <select
           aria-label="Kas raporu dönemi"
@@ -77,7 +87,7 @@ export function MuscleReportPanel({
             </option>
           ))}
         </select>
-      </label>
+      </label>}
       {report && (
         <p>
           {report.coverage.analyzed_sets} / {report.coverage.total_sets} gerçek
@@ -92,10 +102,11 @@ export function MuscleReportPanel({
           exposure={error ? undefined : report?.muscles}
           asOf={report?.as_of}
           context={report?.readiness.reasons}
-          frozen={selected !== today()}
+          frozen={!live && selected !== today()}
           pending={pending}
           error={error}
           onNow={() => {
+            setLive(true);
             onDate(today());
             setRefresh((n) => n + 1);
           }}

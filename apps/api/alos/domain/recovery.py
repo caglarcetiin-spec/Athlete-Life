@@ -58,7 +58,7 @@ def summarize(entries, as_of):
         "version": VERSION,
         "scale": SCALE,
         "groups": result,
-        "meaning": "Gösterilen değerler zamanla azalan kayıt endeksidir; yorgunluk, iyileşme, doku hasarı veya gerçek kuvvet kapasitesi ölçümü değildir.",
+        "meaning": "Yorgunluk ve toparlanma yüzdeleri, set/RIR ve zamana dayalı kalibre edilmemiş model tahminidir. Doku hasarı, biyolojik iyileşme veya gerçek kuvvet kapasitesi ölçümü değildir. Uyku, beslenme ve sağlık kayıtları bağlam olarak gösterilir; doğrulanmamış sayısal iyileşme katsayısına çevrilmez.",
         "forecast_assumption": "Yeni antrenman eklenmezse; sabit model varsayımlarıyla.",
         "calibrated": False,
     }
