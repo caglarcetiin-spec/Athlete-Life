@@ -3,7 +3,7 @@ from typing import Literal
 from urllib.parse import urlsplit
 from uuid import UUID
 
-from pydantic import Field, field_validator, model_validator
+from pydantic import Field, SecretStr, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -11,6 +11,11 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_prefix="ALOS_V2_", env_file=None, extra="ignore", hide_input_in_errors=True
     )
+
+    openai_api_key: SecretStr | None = Field(default=None, repr=False)
+    openai_model: str = Field(default="", max_length=100, pattern=r"^[A-Za-z0-9._:-]*$")
+    ai_user_limit: int = Field(default=3, ge=1, le=20)
+    ai_global_limit: int = Field(default=20, ge=1, le=1000)
 
     body_model_path: Path | None = None
     body_model_owner_id: UUID | None = None

@@ -1,4 +1,4 @@
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 from typing import Literal
 from uuid import UUID, uuid4, uuid5
 
@@ -42,7 +42,16 @@ class DayInput(StrictModel):
     exercises: list[ExerciseInput] = Field(default_factory=list, max_length=30)
 
 
+class AIOrigin(StrictModel):
+    provider: Literal["OpenAI"]
+    model: str = Field(min_length=1, max_length=100)
+    prompt_version: Literal["openai-planner-1"]
+    generated_at: datetime
+    summary: str = Field(min_length=1, max_length=1500)
+
+
 class ProgramInput(StrictModel):
+    ai_origin: AIOrigin | None = None
     name: str = Field(min_length=1, max_length=150)
     goal: str = Field(min_length=1, max_length=1000)
     start_date: date
@@ -119,6 +128,8 @@ def apply_program(db, athlete, command):
             from .planner_catalog import VERSION
 
             analysis["guided_model_version"] = VERSION
+        if data.ai_origin is not None:
+            analysis["ai_origin"] = data.ai_origin.model_dump(mode="json")
         row = Program(
             id=command.entity_id,
             athlete_id=athlete.id,

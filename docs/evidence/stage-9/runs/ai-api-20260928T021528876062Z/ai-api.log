@@ -1,0 +1,80 @@
+F.......................................................                 [100%]
+=================================== FAILURES ===================================
+____________________ test_payload_allowlist_and_health_gate ____________________
+
+    def test_payload_allowlist_and_health_gate():
+        snapshot = snap()
+        snapshot.update(
+            athlete_id="private-id",
+            labs=[{"result": "private-lab"}],
+            meals=[{"note": "private-food", "local_date": "2026-09-14"}],
+        )
+>       _baseline, context = ai.prepare(data(), snapshot, AT)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/v2/test_ai_planning.py:69: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+apps/api/alos/ai_planning.py:61: in prepare
+    baseline = generate(data, snapshot, at)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+apps/api/alos/guided_planning.py:103: in generate
+    baseline = draft_with_context(
+apps/api/alos/programming.py:416: in draft_with_context
+    analysis = compute(snapshot, as_of)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+apps/api/alos/domain/science.py:464: in compute
+    n = nutrition_summary(snapshot, current)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+snapshot = {'timezone': 'Europe/Istanbul', 'cursor': 1, 'sets': [], 'athlete_id': 'private-id', ...}
+on = '2026-09-14'
+
+    def nutrition_summary(snapshot, on):
+        meals = [r for r in snapshot.get("meals", []) if r["local_date"] == on and not r.get("deleted_at")]
+        status = next(
+            (
+                r["status"]
+                for r in snapshot.get("nutrition_days", [])
+                if r["local_date"] == on and not r.get("deleted_at")
+            ),
+            None,
+        )
+        state = "complete" if status == "complete" else "partial" if meals else "not_logged"
+        return {
+            "status": state,
+            "entries": len(meals),
+            "totals": {
+                k: sum(r[k] for r in meals if r.get(k) is not None)
+                if any(r.get(k) is not None for r in meals)
+                else None
+                for k in NUTRIENTS
+            },
+            "missing_counts": {k: sum(r.get(k) is None for r in meals) for k in NUTRIENTS},
+            "known_counts": {k: sum(r.get(k) is not None for r in meals) for k in NUTRIENTS},
+            "meaning": "Kaydedilen bilinen toplam; tam günlük alım veya beslenme yeterliliği değildir.",
+            "water_ml": sum(
+                r["ml"]
+                for r in snapshot.get("hydrations", [])
+                if r["local_date"] == on and not r.get("deleted_at")
+            )
+            or None,
+>           "source_ids": [r["id"] for r in meals],
+                           ^^^^^^^
+        }
+E       KeyError: 'id'
+
+apps/api/alos/lifestyle.py:526: KeyError
+=============================== warnings summary ===============================
+.venv-v2/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+.venv-v2/lib/python3.12/site-packages/starlette/testclient.py:53
+  /Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/v2/test_ai_planning.py::test_payload_allowlist_and_health_gate
+1 failed, 55 passed, 2 warnings in 8.50s

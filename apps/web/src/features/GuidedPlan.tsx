@@ -143,9 +143,34 @@ export function GuidedPlan({
   const [options, setOptions] = useState<PlannerOption[]>([]);
   const [optionsError, setOptionsError] = useState("");
   const [capabilitySearch, setCapabilitySearch] = useState("");
+  const synced = Boolean(store.snapshot);
+  const [engine, setEngine] = useState<"ai" | "standard">("ai");
+  const [consent, setConsent] = useState(false);
+  const [aiStatus, setAiStatus] = useState<{
+    available: boolean;
+    message: string;
+  } | null>(null);
+  useEffect(() => {
+    if (!synced) return;
+    let active = true;
+    void api("ai-planning-status")
+      .then((value) => {
+        if (active)
+          setAiStatus(value as { available: boolean; message: string });
+      })
+      .catch(() => {
+        if (active)
+          setAiStatus({
+            available: false,
+            message: "AI bağlantı durumu okunamadı. Yenileyerek tekrar dene.",
+          });
+      });
+    return () => {
+      active = false;
+    };
+  }, [synced]);
   const [preview, setPreview] = useState<Preview | null>(null);
   const heading = useRef<HTMLHeadingElement>(null);
-  const synced = Boolean(store.snapshot);
   // Old eight-step drafts retain answers but restart so new questions are not skipped.
   const phase = step === 0 ? 0 : step >= 3 ? step - 2 : -1;
   useEffect(() => {
@@ -217,6 +242,7 @@ export function GuidedPlan({
   function update(patch: Partial<Answers>) {
     const next = { ...answers, ...patch };
     setAnswers(next);
+    setConsent(false);
     setPreview(null);
     void store
       .saveDraft("guided-plan", { answers: next, step, form_version: 2 })
@@ -257,14 +283,26 @@ export function GuidedPlan({
               ? answers.methods.length > 0
               : true;
   async function generate() {
+    if (
+      engine === "ai" &&
+      (!aiStatus?.available || !consent || !answers.adult || answers.symptoms)
+    )
+      return;
     setBusy(true);
     setError("");
     try {
-      const result = (await api("guided-program-drafts", {
-        method: "POST",
-        headers: { "X-CSRF-Token": store.me.csrf },
-        body: JSON.stringify(answers),
-      })) as Preview;
+      const result = (await api(
+        engine === "ai" ? "ai-program-drafts" : "guided-program-drafts",
+        {
+          method: "POST",
+          headers: { "X-CSRF-Token": store.me.csrf },
+          body: JSON.stringify(
+            engine === "ai"
+              ? { ...answers, consent: "planning-form-v1" }
+              : answers,
+          ),
+        },
+      )) as Preview;
       setPreview(result);
       go(9);
     } catch (e) {
@@ -305,7 +343,7 @@ export function GuidedPlan({
     >
       <div className="guided-top">
         <span className="eyebrow">Sana göre bir başlangıç · {step + 1}/10</span>
-        <button className="text-button" onClick={onClose}>
+        <button className="text-button" disabled={busy} onClick={onClose}>
           Daha sonra
         </button>
       </div>
@@ -317,561 +355,643 @@ export function GuidedPlan({
       <h2 ref={heading} tabIndex={-1}>
         {titles[step]}
       </h2>
-      {phase === 0 && (
-        <>
-          {choices("experience", [
-            [
-              "new",
-              "Yeni başlıyorum",
-              "Hareketleri ve düzenli çalışmayı öğreniyorum.",
-            ],
-            [
-              "returning",
-              "Ara verdim, geri dönüyorum",
-              "Önce ritmimi tekrar kurmak istiyorum.",
-            ],
-            ["regular", "Düzenli çalışıyorum", "Temel hareketleri biliyorum."],
-            [
-              "advanced",
-              "İleri düzeyim",
-              "Planımı ayrıntılı düzenlemek istiyorum.",
-            ],
-          ])}
-          <p>
-            Bu seçim yalnız bu taslağı etkiler; mevcut profilini veya geçmişini
-            değiştirmez.
-          </p>
-        </>
-      )}
-      {step === 1 && (
-        <>
-          <p>
-            Birden fazla yöntem seçebilirsin. Hibrit, bu yöntemlerin tek haftada
-            birlikte planlanmasıdır.
-          </p>
-          <div className="guided-options">
-            {[
+      <fieldset className="guided-fields" disabled={busy}>
+        {phase === 0 && (
+          <>
+            {choices("experience", [
               [
-                "weights",
-                "Ağırlık çalışması",
-                "Bar, EZ bar, dambıl; squat, kaldırış ve itiş/çekiş.",
+                "new",
+                "Yeni başlıyorum",
+                "Hareketleri ve düzenli çalışmayı öğreniyorum.",
               ],
               [
-                "calisthenics",
-                "Kalistenik",
-                "Vücut ağırlığı, barfiks, halka ve yük eklenmiş çalışmalar.",
+                "returning",
+                "Ara verdim, geri dönüyorum",
+                "Önce ritmimi tekrar kurmak istiyorum.",
               ],
               [
-                "gymnastics",
-                "Jimnastik becerileri",
-                "Front lever, muscle-up ve kontrollü tutuşları teknik blokta çalış.",
+                "regular",
+                "Düzenli çalışıyorum",
+                "Temel hareketleri biliyorum.",
               ],
               [
-                "conditioning",
-                "Kondisyon",
-                "Yürüyüş veya yetkinliğini belirttiğin kolay tempoda koşu.",
+                "advanced",
+                "İleri düzeyim",
+                "Planımı ayrıntılı düzenlemek istiyorum.",
               ],
-            ].map(([key, label, text]) => (
-              <button
-                key={key}
-                className="guided-option secondary"
-                aria-pressed={answers.methods.includes(key)}
-                onClick={() =>
-                  update({
-                    methods: answers.methods.includes(key)
-                      ? answers.methods.filter((m) => m !== key)
-                      : [...answers.methods, key],
-                  })
-                }
-              >
-                <strong>{label}</strong>
-                <span>{text}</span>
-              </button>
-            ))}
-          </div>
-          <p>
-            Diğer branşlar için mevcut manuel planlayıcı korunur; desteklenmeyen
-            bir branş için otomatik uzman programı üretilmez.
-          </p>
-        </>
-      )}
-      {step === 2 && (
-        <>
-          <p>
-            Yalnız tekniğini bildiğin ve kontrollü yapabildiğin hareketleri seç.
-            İleri düzey seçmek, front lever veya muscle-up yapabildiğin anlamına
-            gelmez. Sayılar isteğe bağlı, kendi bildirdiğin güncel kapasitedir.
-          </p>
-          {optionsError && <p role="alert">{optionsError}</p>}
-          <label>
-            Hareket ara
-            <input
-              type="search"
-              value={capabilitySearch}
-              onChange={(e) => setCapabilitySearch(e.target.value)}
-              placeholder="Örneğin front lever, barfiks, squat"
-            />
-          </label>
-          <p>
-            {answers.competencies.length} hareket seçildi. Arama seçimlerini
-            değiştirmez.
-          </p>
-          <div className="capability-options">
-            {options
-              .filter(
-                (o) =>
-                  o.methods.some((m) => answers.methods.includes(m)) &&
-                  `${o.name} ${o.movement_id}`
-                    .toLocaleLowerCase("tr")
-                    .includes(capabilitySearch.toLocaleLowerCase("tr")),
-              )
-              .map((o) => {
-                const selected = answers.competencies.find(
-                  (c) => c.movement_id === o.movement_id,
-                );
-                return (
-                  <div className="capability-choice" key={o.movement_id}>
-                    <label className="check">
-                      <input
-                        type="checkbox"
-                        checked={!!selected}
-                        onChange={(e) =>
-                          update({
-                            competencies: e.target.checked
-                              ? [
-                                  ...answers.competencies,
-                                  { movement_id: o.movement_id },
-                                ]
-                              : answers.competencies.filter(
-                                  (c) => c.movement_id !== o.movement_id,
-                                ),
-                          })
-                        }
-                      />
-                      {o.name}
-                    </label>
-                    {selected && (
-                      <label>
-                        {o.metric === "seconds"
-                          ? "Kontrollü tutuş / süre (sn)"
-                          : "Kontrollü tekrar sayısı"}
-                        <input
-                          aria-label={o.name + " kapasitesi"}
-                          type="number"
-                          min={1}
-                          max={o.metric === "seconds" ? 600 : 100}
-                          inputMode="numeric"
-                          value={
-                            (o.metric === "seconds"
-                              ? selected.seconds
-                              : selected.reps) ?? ""
-                          }
-                          onChange={(e) =>
-                            update({
-                              competencies: answers.competencies.map((c) =>
-                                c.movement_id === o.movement_id
-                                  ? {
-                                      movement_id: c.movement_id,
-                                      ...(e.target.value
-                                        ? {
-                                            [o.metric === "seconds"
-                                              ? "seconds"
-                                              : "reps"]: Number(e.target.value),
-                                          }
-                                        : {}),
-                                    }
-                                  : c,
-                              ),
-                            })
-                          }
-                        />
-                      </label>
-                    )}
-                  </div>
-                );
-              })}
-          </div>
-          <p>
-            Boş bıraktığın kapasiteye test sonucu uydurulmaz. Seçmediğin ileri
-            beceriler programa konulmaz.
-          </p>
-        </>
-      )}
-      {phase === 1 && (
-        <>
-          {choices("objective", [
-            [
-              "hypertrophy",
-              "Kas geliştirmek",
-              "Kas gelişimine yönelik başlangıç taslağı.",
-            ],
-            ["strength", "Güçlenmek", "Kuvvet odağı ve daha uzun dinlenmeler."],
-            [
-              "strength_hypertrophy",
-              "İkisi birlikte",
-              "Kuvvet ve kas gelişimini birlikte takip et.",
-            ],
-          ])}
-          <label>
-            Somut hedefin ne?
-            <textarea
-              maxLength={1000}
-              placeholder="Örneğin 8 haftada düzen kurmak ve şınav sayımı takip etmek"
-              value={answers.goal}
-              onChange={(e) => update({ goal: e.target.value })}
-            />
-          </label>
-          <p>
-            Kas büyümesine yüzde garantisi vermeyiz. Ölçülebilir hedeflerini
-            Durumum bölümünden takip edebilirsin.
-          </p>
-        </>
-      )}
-      {phase === 2 && (
-        <>
-          <p>
-            Yalnız gerçekten kullanabildiklerini seç. Hiçbiri seçili değilse
-            vücut ağırlığı ve zemin kullanılır.
-          </p>
-          <div className="guided-options">
-            {equipmentOptions.map((item, i) => (
-              <button
-                className="guided-option secondary"
-                aria-pressed={answers.equipment.includes(item)}
-                key={item}
-                onClick={() =>
-                  update({
-                    equipment: answers.equipment.includes(item)
-                      ? answers.equipment.filter((e) => e !== item)
-                      : [...answers.equipment, item],
-                  })
-                }
-              >
-                {equipmentNames[i]}
-                {answers.equipment.includes(item) && <Check size={18} />}
-              </button>
-            ))}
-          </div>
-        </>
-      )}
-      {phase === 3 && (
-        <>
-          <fieldset>
-            <legend>Çalışabileceğin günler · en fazla 6</legend>
+            ])}
+            <p>
+              Bu seçim yalnız bu taslağı etkiler; mevcut profilini veya
+              geçmişini değiştirmez.
+            </p>
+          </>
+        )}
+        {step === 1 && (
+          <>
+            <p>
+              Birden fazla yöntem seçebilirsin. Hibrit, bu yöntemlerin tek
+              haftada birlikte planlanmasıdır.
+            </p>
             <div className="guided-options">
-              {names.map((name, index) => (
+              {[
+                [
+                  "weights",
+                  "Ağırlık çalışması",
+                  "Bar, EZ bar, dambıl; squat, kaldırış ve itiş/çekiş.",
+                ],
+                [
+                  "calisthenics",
+                  "Kalistenik",
+                  "Vücut ağırlığı, barfiks, halka ve yük eklenmiş çalışmalar.",
+                ],
+                [
+                  "gymnastics",
+                  "Jimnastik becerileri",
+                  "Front lever, muscle-up ve kontrollü tutuşları teknik blokta çalış.",
+                ],
+                [
+                  "conditioning",
+                  "Kondisyon",
+                  "Yürüyüş veya yetkinliğini belirttiğin kolay tempoda koşu.",
+                ],
+              ].map(([key, label, text]) => (
                 <button
-                  type="button"
+                  key={key}
                   className="guided-option secondary"
-                  aria-pressed={answers.weekdays.includes(index)}
-                  key={name}
-                  disabled={
-                    !answers.weekdays.includes(index) &&
-                    answers.weekdays.length === 6
-                  }
+                  aria-pressed={answers.methods.includes(key)}
                   onClick={() =>
                     update({
-                      weekdays: answers.weekdays.includes(index)
-                        ? answers.weekdays.filter((d) => d !== index)
-                        : [...answers.weekdays, index].sort(),
+                      methods: answers.methods.includes(key)
+                        ? answers.methods.filter((m) => m !== key)
+                        : [...answers.methods, key],
                     })
                   }
                 >
-                  {name}
+                  <strong>{label}</strong>
+                  <span>{text}</span>
                 </button>
               ))}
             </div>
-          </fieldset>
-          <label>
-            Bir seansa ayırabileceğin süre
-            <select
-              aria-label="Bir seansa ayırabileceğin süre"
-              value={answers.minutes}
-              onChange={(e) => update({ minutes: Number(e.target.value) })}
-            >
-              {[15, 20, 30, 45, 60, 75, 90, 120, 180].map((m) => (
-                <option key={m} value={m}>
-                  {m} dakika
-                </option>
-              ))}
-            </select>
-          </label>
-          {answers.methods.includes("conditioning") && (
+            <p>
+              Diğer branşlar için mevcut manuel planlayıcı korunur;
+              desteklenmeyen bir branş için otomatik uzman programı üretilmez.
+            </p>
+          </>
+        )}
+        {step === 2 && (
+          <>
+            <p>
+              Yalnız tekniğini bildiğin ve kontrollü yapabildiğin hareketleri
+              seç. İleri düzey seçmek, front lever veya muscle-up yapabildiğin
+              anlamına gelmez. Sayılar isteğe bağlı, kendi bildirdiğin güncel
+              kapasitedir.
+            </p>
+            {optionsError && <p role="alert">{optionsError}</p>}
             <label>
-              Bir seanstaki kondisyon süresi
+              Hareket ara
+              <input
+                type="search"
+                value={capabilitySearch}
+                onChange={(e) => setCapabilitySearch(e.target.value)}
+                placeholder="Örneğin front lever, barfiks, squat"
+              />
+            </label>
+            <p>
+              {answers.competencies.length} hareket seçildi. Arama seçimlerini
+              değiştirmez.
+            </p>
+            <div className="capability-options">
+              {options
+                .filter(
+                  (o) =>
+                    o.methods.some((m) => answers.methods.includes(m)) &&
+                    `${o.name} ${o.movement_id}`
+                      .toLocaleLowerCase("tr")
+                      .includes(capabilitySearch.toLocaleLowerCase("tr")),
+                )
+                .map((o) => {
+                  const selected = answers.competencies.find(
+                    (c) => c.movement_id === o.movement_id,
+                  );
+                  return (
+                    <div className="capability-choice" key={o.movement_id}>
+                      <label className="check">
+                        <input
+                          type="checkbox"
+                          checked={!!selected}
+                          onChange={(e) =>
+                            update({
+                              competencies: e.target.checked
+                                ? [
+                                    ...answers.competencies,
+                                    { movement_id: o.movement_id },
+                                  ]
+                                : answers.competencies.filter(
+                                    (c) => c.movement_id !== o.movement_id,
+                                  ),
+                            })
+                          }
+                        />
+                        {o.name}
+                      </label>
+                      {selected && (
+                        <label>
+                          {o.metric === "seconds"
+                            ? "Kontrollü tutuş / süre (sn)"
+                            : "Kontrollü tekrar sayısı"}
+                          <input
+                            aria-label={o.name + " kapasitesi"}
+                            type="number"
+                            min={1}
+                            max={o.metric === "seconds" ? 600 : 100}
+                            inputMode="numeric"
+                            value={
+                              (o.metric === "seconds"
+                                ? selected.seconds
+                                : selected.reps) ?? ""
+                            }
+                            onChange={(e) =>
+                              update({
+                                competencies: answers.competencies.map((c) =>
+                                  c.movement_id === o.movement_id
+                                    ? {
+                                        movement_id: c.movement_id,
+                                        ...(e.target.value
+                                          ? {
+                                              [o.metric === "seconds"
+                                                ? "seconds"
+                                                : "reps"]: Number(
+                                                e.target.value,
+                                              ),
+                                            }
+                                          : {}),
+                                      }
+                                    : c,
+                                ),
+                              })
+                            }
+                          />
+                        </label>
+                      )}
+                    </div>
+                  );
+                })}
+            </div>
+            <p>
+              Boş bıraktığın kapasiteye test sonucu uydurulmaz. Seçmediğin ileri
+              beceriler programa konulmaz.
+            </p>
+          </>
+        )}
+        {phase === 1 && (
+          <>
+            {choices("objective", [
+              [
+                "hypertrophy",
+                "Kas geliştirmek",
+                "Kas gelişimine yönelik başlangıç taslağı.",
+              ],
+              [
+                "strength",
+                "Güçlenmek",
+                "Kuvvet odağı ve daha uzun dinlenmeler.",
+              ],
+              [
+                "strength_hypertrophy",
+                "İkisi birlikte",
+                "Kuvvet ve kas gelişimini birlikte takip et.",
+              ],
+            ])}
+            <label>
+              Somut hedefin ne?
+              <textarea
+                maxLength={1000}
+                placeholder="Örneğin 8 haftada düzen kurmak ve şınav sayımı takip etmek"
+                value={answers.goal}
+                onChange={(e) => update({ goal: e.target.value })}
+              />
+            </label>
+            <p>
+              Kas büyümesine yüzde garantisi vermeyiz. Ölçülebilir hedeflerini
+              Durumum bölümünden takip edebilirsin.
+            </p>
+          </>
+        )}
+        {phase === 2 && (
+          <>
+            <p>
+              Yalnız gerçekten kullanabildiklerini seç. Hiçbiri seçili değilse
+              vücut ağırlığı ve zemin kullanılır.
+            </p>
+            <div className="guided-options">
+              {equipmentOptions.map((item, i) => (
+                <button
+                  className="guided-option secondary"
+                  aria-pressed={answers.equipment.includes(item)}
+                  key={item}
+                  onClick={() =>
+                    update({
+                      equipment: answers.equipment.includes(item)
+                        ? answers.equipment.filter((e) => e !== item)
+                        : [...answers.equipment, item],
+                    })
+                  }
+                >
+                  {equipmentNames[i]}
+                  {answers.equipment.includes(item) && <Check size={18} />}
+                </button>
+              ))}
+            </div>
+          </>
+        )}
+        {phase === 3 && (
+          <>
+            <fieldset>
+              <legend>Çalışabileceğin günler · en fazla 6</legend>
+              <div className="guided-options">
+                {names.map((name, index) => (
+                  <button
+                    type="button"
+                    className="guided-option secondary"
+                    aria-pressed={answers.weekdays.includes(index)}
+                    key={name}
+                    disabled={
+                      !answers.weekdays.includes(index) &&
+                      answers.weekdays.length === 6
+                    }
+                    onClick={() =>
+                      update({
+                        weekdays: answers.weekdays.includes(index)
+                          ? answers.weekdays.filter((d) => d !== index)
+                          : [...answers.weekdays, index].sort(),
+                      })
+                    }
+                  >
+                    {name}
+                  </button>
+                ))}
+              </div>
+            </fieldset>
+            <label>
+              Bir seansa ayırabileceğin süre
               <select
-                aria-label="Bir seanstaki kondisyon süresi"
-                value={answers.conditioning_minutes}
-                onChange={(e) =>
-                  update({ conditioning_minutes: Number(e.target.value) })
-                }
+                aria-label="Bir seansa ayırabileceğin süre"
+                value={answers.minutes}
+                onChange={(e) => update({ minutes: Number(e.target.value) })}
               >
-                {[5, 10, 15, 20, 30, 45].map((n) => (
-                  <option key={n} value={n}>
-                    {n} dakika
+                {[15, 20, 30, 45, 60, 75, 90, 120, 180].map((m) => (
+                  <option key={m} value={m}>
+                    {m} dakika
                   </option>
                 ))}
               </select>
             </label>
-          )}
-          <p>
-            Haftada {answers.weekdays.length * answers.minutes} dakika ·
-            seçmediğin günler dinlenme.
-          </p>
-        </>
-      )}
-      {phase === 4 && (
-        <>
-          <p>
-            İstersen toplam 5 öncelik puanını dağıt. Hepsini kullanmak zorunda
-            değilsin. Bu puanlar büyüme yüzdesi değildir.
-          </p>
-          <FocusMap focus={answers.focus} />
-          <strong role="status">{total} / 5 puan kullanıldı</strong>
-          <div className="guided-muscles">
-            {Object.entries(groups).map(([id, name]) => (
-              <div className="guided-muscle" key={id}>
-                <span>{name}</span>
-                <div>
-                  <button
-                    className="secondary small"
-                    aria-label={name + " önceliğini azalt"}
-                    disabled={!answers.focus[id]}
-                    onClick={() =>
-                      update({
-                        focus: {
-                          ...answers.focus,
-                          [id]: (answers.focus[id] || 0) - 1,
-                        },
-                      })
-                    }
-                  >
-                    −
-                  </button>
-                  <output aria-label={name + " öncelik puanı"}>
-                    {answers.focus[id] || 0}
-                  </output>
-                  <button
-                    className="secondary small"
-                    aria-label={name + " önceliğini artır"}
-                    disabled={total >= 5}
-                    onClick={() =>
-                      update({
-                        focus: {
-                          ...answers.focus,
-                          [id]: (answers.focus[id] || 0) + 1,
-                        },
-                      })
-                    }
-                  >
-                    +
-                  </button>
+            {answers.methods.includes("conditioning") && (
+              <label>
+                Bir seanstaki kondisyon süresi
+                <select
+                  aria-label="Bir seanstaki kondisyon süresi"
+                  value={answers.conditioning_minutes}
+                  onChange={(e) =>
+                    update({ conditioning_minutes: Number(e.target.value) })
+                  }
+                >
+                  {[5, 10, 15, 20, 30, 45].map((n) => (
+                    <option key={n} value={n}>
+                      {n} dakika
+                    </option>
+                  ))}
+                </select>
+              </label>
+            )}
+            <p>
+              Haftada {answers.weekdays.length * answers.minutes} dakika ·
+              seçmediğin günler dinlenme.
+            </p>
+          </>
+        )}
+        {phase === 4 && (
+          <>
+            <p>
+              İstersen toplam 5 öncelik puanını dağıt. Hepsini kullanmak zorunda
+              değilsin. Bu puanlar büyüme yüzdesi değildir.
+            </p>
+            <FocusMap focus={answers.focus} />
+            <strong role="status">{total} / 5 puan kullanıldı</strong>
+            <div className="guided-muscles">
+              {Object.entries(groups).map(([id, name]) => (
+                <div className="guided-muscle" key={id}>
+                  <span>{name}</span>
+                  <div>
+                    <button
+                      className="secondary small"
+                      aria-label={name + " önceliğini azalt"}
+                      disabled={!answers.focus[id]}
+                      onClick={() =>
+                        update({
+                          focus: {
+                            ...answers.focus,
+                            [id]: (answers.focus[id] || 0) - 1,
+                          },
+                        })
+                      }
+                    >
+                      −
+                    </button>
+                    <output aria-label={name + " öncelik puanı"}>
+                      {answers.focus[id] || 0}
+                    </output>
+                    <button
+                      className="secondary small"
+                      aria-label={name + " önceliğini artır"}
+                      disabled={total >= 5}
+                      onClick={() =>
+                        update({
+                          focus: {
+                            ...answers.focus,
+                            [id]: (answers.focus[id] || 0) + 1,
+                          },
+                        })
+                      }
+                    >
+                      +
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        </>
-      )}
-      {phase === 5 && (
-        <>
-          {choices("split", [
-            [
-              "full_body",
-              "Tüm vücut",
-              "Her çalışma gününde farklı ana hareketleri bir arada yap.",
-            ],
-            [
-              "upper_lower",
-              "Üst / alt vücut",
-              "Üst ve alt vücut günleri dönüşümlü; en az 2 gün.",
-            ],
-            [
-              "push_pull_legs",
-              "İtiş / çekiş / bacak",
-              "Çalışma günlerini üç gruba ayır; en az 3 gün.",
-            ],
-          ])}
-          {!valid && (
-            <p role="alert">
-              Bu düzen için en az {minDays} çalışma günü seç veya düzeni
-              değiştir.
-            </p>
-          )}
-          <label>
-            Dönem uzunluğu
-            <select
-              aria-label="Dönem uzunluğu"
-              value={answers.weeks}
-              onChange={(e) => update({ weeks: Number(e.target.value) })}
-            >
-              {[4, 8, 12].map((w) => (
-                <option key={w} value={w}>
-                  {w} hafta
-                </option>
               ))}
-            </select>
-          </label>
-          <p>
-            Haftalık plan tekrar eder. Otomatik ağırlık artırılmaz;
-            değişiklikleri yeni plan sürümüyle onaylarsın.
-          </p>
-        </>
-      )}
-      {phase === 6 && (
-        <>
-          <label>
-            Program adı
-            <input
-              maxLength={150}
-              value={answers.name}
-              onChange={(e) => update({ name: e.target.value })}
-            />
-          </label>
-          <label>
-            Başlangıç tarihi
-            <input
-              type="date"
-              value={answers.start_date}
-              onChange={(e) => update({ start_date: e.target.value })}
-            />
-          </label>
-          <label className="check">
-            <input
-              type="checkbox"
-              checked={answers.adult}
-              onChange={(e) => update({ adult: e.target.checked })}
-            />
-            18 yaş veya üzerindeyim.
-          </label>
-          <label className="check">
-            <input
-              type="checkbox"
-              checked={answers.symptoms}
-              onChange={(e) => update({ symptoms: e.target.checked })}
-            />
-            Şu anda hastalık, yaralanma veya değerlendirilmesi gereken belirti
-            var.
-          </label>
-          <p>
-            Yetişkin onayı yoksa veya belirtiler varsa otomatik hareket dozu
-            yerine düzenleyebileceğin gün planı hazırlanır. Kayıtlı sağlık
-            uyarıları da dikkate alınır.
-          </p>
-        </>
-      )}
-      {phase === 7 && preview && (
-        <>
-          <h3>{preview.program.name}</h3>
-          {preview.review.status === "needs_review" && (
-            <p className="notice" role="status">
-              Bazı günler veya hedefler eksik kaldı. Aşağıdaki uyarıları gözden
-              geçir; süreyi, ekipmanı veya yetkinliklerini değiştirebilirsin.
+            </div>
+          </>
+        )}
+        {phase === 5 && (
+          <>
+            {choices("split", [
+              [
+                "full_body",
+                "Tüm vücut",
+                "Her çalışma gününde farklı ana hareketleri bir arada yap.",
+              ],
+              [
+                "upper_lower",
+                "Üst / alt vücut",
+                "Üst ve alt vücut günleri dönüşümlü; en az 2 gün.",
+              ],
+              [
+                "push_pull_legs",
+                "İtiş / çekiş / bacak",
+                "Çalışma günlerini üç gruba ayır; en az 3 gün.",
+              ],
+            ])}
+            {!valid && (
+              <p role="alert">
+                Bu düzen için en az {minDays} çalışma günü seç veya düzeni
+                değiştir.
+              </p>
+            )}
+            <label>
+              Dönem uzunluğu
+              <select
+                aria-label="Dönem uzunluğu"
+                value={answers.weeks}
+                onChange={(e) => update({ weeks: Number(e.target.value) })}
+              >
+                {[4, 8, 12].map((w) => (
+                  <option key={w} value={w}>
+                    {w} hafta
+                  </option>
+                ))}
+              </select>
+            </label>
+            <p>
+              Haftalık plan tekrar eder. Otomatik ağırlık artırılmaz;
+              değişiklikleri yeni plan sürümüyle onaylarsın.
             </p>
-          )}
-          <div className="notice">
-            {preview.notes
-              .filter(
-                (n) =>
-                  n.includes("eksik") ||
-                  n.includes("karşılan") ||
-                  n.includes("kondisyon isteği"),
-              )
-              .map((n) => (
+          </>
+        )}
+        {phase === 6 && (
+          <>
+            <div className="card">
+              <h3>Planı nasıl hazırlayalım?</h3>
+              <div className="actions">
+                <button
+                  type="button"
+                  className="secondary"
+                  aria-pressed={engine === "ai"}
+                  onClick={() => {
+                    setEngine("ai");
+                    setConsent(false);
+                  }}
+                >
+                  AI ile hazırla
+                </button>
+                <button
+                  type="button"
+                  className="secondary"
+                  aria-pressed={engine === "standard"}
+                  onClick={() => setEngine("standard")}
+                >
+                  Standart taslak
+                </button>
+              </div>
+              {engine === "ai" && (
+                <>
+                  <p role="status">
+                    {aiStatus?.message || "AI bağlantısı kontrol ediliyor…"}
+                  </p>
+                  <p>
+                    AI; hedefini, ekipmanını, yöntemlerini, deneyimini,
+                    bildirdiğin hareket kapasitesini, gün/süre ve bölge
+                    önceliklerini OpenAI üzerinden değerlendirir. API kullanımı
+                    uygulama sahibine ayrıca ücretlenir.
+                  </p>
+                  <p>
+                    Hesap kimliğin, şifren ve kayıtlı sağlık geçmişin
+                    gönderilmez. Serbest hedef alanına yazdıkların gönderilir;
+                    buraya kimlik veya özel sağlık bilgisi yazma.
+                  </p>
+                  <label className="check">
+                    <input
+                      type="checkbox"
+                      checked={consent}
+                      disabled={!aiStatus?.available}
+                      onChange={(e) => setConsent(e.target.checked)}
+                    />
+                    Bu formdaki planlama bilgilerimin AI taslağı için OpenAI'ye
+                    gönderilmesini kabul ediyorum.
+                  </label>
+                  <p>
+                    AI taslağı ekipman, süre ve kayıt kurallarından geçer. Son
+                    düzenlemeyi ve ana plana alma kararını sen verirsin.
+                  </p>
+                </>
+              )}
+            </div>
+            <label>
+              Program adı
+              <input
+                maxLength={150}
+                value={answers.name}
+                onChange={(e) => update({ name: e.target.value })}
+              />
+            </label>
+            <label>
+              Başlangıç tarihi
+              <input
+                type="date"
+                value={answers.start_date}
+                onChange={(e) => update({ start_date: e.target.value })}
+              />
+            </label>
+            <label className="check">
+              <input
+                type="checkbox"
+                checked={answers.adult}
+                onChange={(e) => update({ adult: e.target.checked })}
+              />
+              18 yaş veya üzerindeyim.
+            </label>
+            <label className="check">
+              <input
+                type="checkbox"
+                checked={answers.symptoms}
+                onChange={(e) => update({ symptoms: e.target.checked })}
+              />
+              Şu anda hastalık, yaralanma veya değerlendirilmesi gereken belirti
+              var.
+            </label>
+            <p>
+              Yetişkin onayı yoksa veya belirtiler varsa AI çağrısı yapılmaz.
+              Standart taslakta otomatik hareket dozu yerine düzenleyebileceğin
+              gün planı hazırlanır. Kayıtlı sağlık uyarıları da dikkate alınır.
+            </p>
+          </>
+        )}
+        {phase === 7 && preview && (
+          <>
+            <h3>{preview.program.name}</h3>
+            {preview.program.ai_origin && (
+              <div className="notice">
+                <strong>AI ile hazırlanan taslak</strong>
+                <p>{preview.program.ai_origin.summary}</p>
+                <p>
+                  Model: {preview.program.ai_origin.model} · Düzenleyip
+                  onayladıktan sonra planına alınır.
+                </p>
+              </div>
+            )}
+            {preview.review.status === "needs_review" && (
+              <p className="notice" role="status">
+                Bazı günler veya hedefler eksik kaldı. Aşağıdaki uyarıları
+                gözden geçir; süreyi, ekipmanı veya yetkinliklerini
+                değiştirebilirsin.
+              </p>
+            )}
+            <div className="notice">
+              {preview.notes
+                .filter(
+                  (n) =>
+                    n.includes("eksik") ||
+                    n.includes("karşılan") ||
+                    n.includes("kondisyon isteği"),
+                )
+                .map((n) => (
+                  <p key={n}>{n}</p>
+                ))}
+            </div>
+            <p>
+              {answers.weeks} hafta · haftada {answers.weekdays.length} gün ·{" "}
+              {answers.goal}
+            </p>
+            {preview.program.days.map((day) => (
+              <details
+                key={day.weekday}
+                className="plan-day"
+                open={
+                  day.weekday ===
+                  preview.program.days.find((d) => d.kind === "training")
+                    ?.weekday
+                }
+              >
+                <summary>
+                  {names[day.weekday]} ·{" "}
+                  {day.kind === "rest"
+                    ? "Dinlenme"
+                    : `${day.label} · ${day.exercises.length} hareket · ${preview.review.days.find((d) => d.weekday === day.weekday)?.estimated_minutes ?? "—"} dk`}
+                </summary>
+                {day.exercises.map((e, i) => {
+                  const info = preview.review.days
+                    .find((d) => d.weekday === day.weekday)
+                    ?.blocks?.find((b) => b.movement_id === e.movement_id);
+                  const blocks: Record<string, string> = {
+                    skill: "Teknik / beceri",
+                    main: "Ana çalışma",
+                    accessory: "Tamamlayıcı",
+                    conditioning: "Kondisyon",
+                  };
+                  return (
+                    <div className="plan-exercise-summary" key={i}>
+                      <span className="eyebrow">
+                        {info ? blocks[info.block] : "Çalışma"}
+                      </span>
+                      <p>
+                        <strong>{e.name}</strong>
+                      </p>
+                      <p>
+                        {e.sets} set ×{" "}
+                        {e.seconds != null
+                          ? `${e.seconds} saniye`
+                          : `${e.reps} tekrar`}{" "}
+                        · {e.rest_seconds} sn dinlenme
+                        {e.rir != null ? ` · ${e.rir} tekrar yedek` : ""}
+                      </p>
+                      <details>
+                        <summary>Neden bu hareket?</summary>
+                        <p>{info?.reason || "Seçimlerinle oluşturuldu."}</p>
+                      </details>
+                    </div>
+                  );
+                })}
+                {day.kind === "training" && (
+                  <p>
+                    Tahmini{" "}
+                    {preview.review.days.find((d) => d.weekday === day.weekday)
+                      ?.estimated_minutes ?? "—"}{" "}
+                    dakika
+                  </p>
+                )}
+              </details>
+            ))}
+            <details>
+              <summary>Kas dağılımı ve seçim gerekçeleri</summary>
+              <p>{preview.review.meaning}</p>
+              {Object.entries(preview.review.muscle_sets).map(([id, n]) => (
+                <p key={id}>
+                  {groups[id]}: {n} ağırlıklandırılmış set / hafta
+                </p>
+              ))}
+              <p>
+                Teknik blok: {preview.review.skill_sets} set · toplam tutuş:{" "}
+                {preview.review.isometric_seconds} sn · kondisyon:{" "}
+                {Math.round(preview.review.conditioning_seconds / 60)} dk /
+                hafta
+              </p>
+              <p>{preview.review.duration_assumptions}</p>
+              {preview.notes.map((n) => (
                 <p key={n}>{n}</p>
               ))}
-          </div>
-          <p>
-            {answers.weeks} hafta · haftada {answers.weekdays.length} gün ·{" "}
-            {answers.goal}
-          </p>
-          {preview.program.days.map((day) => (
-            <details
-              key={day.weekday}
-              className="plan-day"
-              open={
-                day.weekday ===
-                preview.program.days.find((d) => d.kind === "training")?.weekday
-              }
-            >
-              <summary>
-                {names[day.weekday]} ·{" "}
-                {day.kind === "rest"
-                  ? "Dinlenme"
-                  : `${day.label} · ${day.exercises.length} hareket · ${preview.review.days.find((d) => d.weekday === day.weekday)?.estimated_minutes ?? "—"} dk`}
-              </summary>
-              {day.exercises.map((e, i) => {
-                const info = preview.review.days
-                  .find((d) => d.weekday === day.weekday)
-                  ?.blocks?.find((b) => b.movement_id === e.movement_id);
-                const blocks: Record<string, string> = {
-                  skill: "Teknik / beceri",
-                  main: "Ana çalışma",
-                  accessory: "Tamamlayıcı",
-                  conditioning: "Kondisyon",
-                };
-                return (
-                  <div className="plan-exercise-summary" key={i}>
-                    <span className="eyebrow">
-                      {info ? blocks[info.block] : "Çalışma"}
-                    </span>
-                    <p>
-                      <strong>{e.name}</strong>
-                    </p>
-                    <p>
-                      {e.sets} set ×{" "}
-                      {e.seconds != null
-                        ? `${e.seconds} saniye`
-                        : `${e.reps} tekrar`}{" "}
-                      · {e.rest_seconds} sn dinlenme
-                      {e.rir != null ? ` · ${e.rir} tekrar yedek` : ""}
-                    </p>
-                    <details>
-                      <summary>Neden bu hareket?</summary>
-                      <p>{info?.reason || "Seçimlerinle oluşturuldu."}</p>
-                    </details>
-                  </div>
-                );
-              })}
-              {day.kind === "training" && (
-                <p>
-                  Tahmini{" "}
-                  {preview.review.days.find((d) => d.weekday === day.weekday)
-                    ?.estimated_minutes ?? "—"}{" "}
-                  dakika
-                </p>
-              )}
             </details>
-          ))}
-          <details>
-            <summary>Kas dağılımı ve seçim gerekçeleri</summary>
-            <p>{preview.review.meaning}</p>
-            {Object.entries(preview.review.muscle_sets).map(([id, n]) => (
-              <p key={id}>
-                {groups[id]}: {n} ağırlıklandırılmış set / hafta
-              </p>
-            ))}
             <p>
-              Teknik blok: {preview.review.skill_sets} set · toplam tutuş:{" "}
-              {preview.review.isometric_seconds} sn · kondisyon:{" "}
-              {Math.round(preview.review.conditioning_seconds / 60)} dk / hafta
+              Hedefler gerçek antrenman kaydı değildir. Sonraki ekranda
+              hareketleri değiştirebilir, taslağı kaydedip ana planın olarak
+              seçebilirsin.
             </p>
-            <p>{preview.review.duration_assumptions}</p>
-            {preview.notes.map((n) => (
-              <p key={n}>{n}</p>
-            ))}
-          </details>
-          <p>
-            Hedefler gerçek antrenman kaydı değildir. Sonraki ekranda
-            hareketleri değiştirebilir, taslağı kaydedip ana planın olarak
-            seçebilirsin.
+          </>
+        )}
+        {error && (
+          <p className="error" role="alert">
+            {error}
           </p>
-        </>
-      )}
-      {error && (
-        <p className="error" role="alert">
-          {error}
-        </p>
-      )}
+        )}
+      </fieldset>
       <div className="guided-footer">
         <button
           className="secondary"
@@ -887,9 +1007,24 @@ export function GuidedPlan({
             <ArrowRight size={18} />
           </button>
         ) : phase === 6 ? (
-          <button disabled={!valid || busy} onClick={() => void generate()}>
+          <button
+            disabled={
+              !valid ||
+              busy ||
+              (engine === "ai" &&
+                (!aiStatus?.available ||
+                  !consent ||
+                  !answers.adult ||
+                  answers.symptoms))
+            }
+            onClick={() => void generate()}
+          >
             <Sparkles size={18} />
-            {busy ? "Taslak hazırlanıyor…" : "Programımı hazırla"}
+            {busy
+              ? "Taslak hazırlanıyor…"
+              : engine === "ai"
+                ? "AI ile programımı hazırla"
+                : "Programımı hazırla"}
           </button>
         ) : (
           <button

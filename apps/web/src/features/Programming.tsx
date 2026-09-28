@@ -53,6 +53,13 @@ type DayDraft = {
   pinned?: boolean;
 };
 export type PlanDraft = {
+  ai_origin?: {
+    provider: string;
+    model: string;
+    prompt_version: string;
+    generated_at: string;
+    summary: string;
+  };
   guided_choices?: Record<string, unknown>;
   name: string;
   goal: string;

@@ -1,0 +1,11 @@
+Revision browser failed: expect(locator).toBeVisible() failed
+
+Locator: getByText('Front lever tutuş', { exact: true }).first()
+Expected: visible
+Timeout: 5000ms
+Error: element(s) not found
+
+Call log:
+  - Expect "toBeVisible" getByText('Front lever tutuş', { exact: true }).first() with timeout 5000ms
+  - waiting for getByText('Front lever tutuş', { exact: true }).first()
+

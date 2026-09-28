@@ -168,3 +168,7 @@ MongoDB/hesap/medya göçü yok. Geri dönüş eski kaynak/paket commit'i; yeni 
 ### Hibrit plan ve ortak kas raporu (27 Eylül 2026)
 
 `planner_catalog.py` 54 adayın yöntem/örüntü/yetkinlik metadata'sını sağlar; GET `guided-planning-options` aynı seçenekleri arayüze taşır. `GuidedPlan` on adım → `guided_planning.generate` (`guided-hybrid-2`) → mevcut plan/reçete/set hattı. Seçenekler karar JSON'unda saklanır. Teknik tekrar `skill`, tutuş `isometric`, kuvvet `strength`, kondisyon `cardio`; birimler karıştırılmaz. `BodyModel` varsayılan dağılımı `recorded_distribution` alanından okur; eski azalan endeks ayrı görünüm. `MuscleReportPanel` aynı API ve 3B bileşeni Sağlık'ta kullanır; yeni ana veri deposu yok. Kapsam/doz varsayımları, şema ve rollback: `docs/HYBRID_PLANNER.md`.
+
+### AI planlayıcı entegrasyonu (28 Eylül 2026)
+
+GET `/api/v2/ai-planning-status` yalnız yapılandırma durumunu oturum sahibine verir. CSRF korumalı POST `/api/v2/ai-program-drafts`: açık gönderim onayı → sunucuda sağlık/yaş kapısı → uygun kanonik adaylar → izinli alanlarla OpenAI Responses → katı şema + süre/ekipman/yetkinlik/split kontrolü → salt okunur önizleme. `ai_planning.py` sabit dış hedef, güvenli hata, süre/çıktı/istek sınırı sağlar. Yeni tablo yok; `programming.py` isteğe bağlı `ai_origin` bilgisini karar JSON'unda tutar. Anahtar/model yokken UI açıkça devre dışıdır; sentetik testi gerçek AI üretimi diye sunmaz. Kurulum, veri haritası ve rollback: `docs/AI_PLANNER_SETUP.md`.

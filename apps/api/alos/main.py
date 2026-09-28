@@ -638,6 +638,32 @@ def create_app(settings: Settings | None = None):
         snapshot = service.bootstrap(database, UUID(identity["athlete_id"]))
         return generate(GuidedRequest.model_validate(await request.json()), snapshot, utcnow())
 
+    @app.get("/api/v2/ai-planning-status")
+    def ai_planning_status(request: Request):
+        from .ai_planning import status
+
+        who(request)
+        return status(settings)
+
+    @app.post("/api/v2/ai-program-drafts")
+    async def ai_program_draft(request: Request):
+        from starlette.concurrency import run_in_threadpool
+
+        from .ai_planning import AIRequest, call_openai, prepare, status, validate_plan
+        from .db import utcnow
+
+        identity = who(request, True)
+        data = AIRequest.model_validate(await request.json())
+        if not status(settings)["available"]:
+            raise DomainError("ai_not_configured", status(settings)["message"], 503)
+        snapshot = service.bootstrap(database, UUID(identity["athlete_id"]))
+        at = utcnow()
+        baseline, context = prepare(data, snapshot, at)
+        auth.rate_limit(database, "ai-user:" + identity["athlete_id"], settings.ai_user_limit)
+        auth.rate_limit(database, "ai-global", settings.ai_global_limit)
+        result = await run_in_threadpool(call_openai, settings, context)
+        return validate_plan(result, data, baseline, context, at, settings.openai_model)
+
     @app.get("/api/v2/movement-alternatives")
     def movement_alternatives(request: Request, movement_id: str):
         from .planning_context import alternatives, profile_context

@@ -1694,3 +1694,5 @@ button.secondary { transition: transform 0.18s; }
 .capability-choice:has(input:checked) { border-color: var(--accent); }
 .capability-choice > label + label { display: grid; gap: .35rem; margin-top: .6rem; }
 .plan-exercise-summary { padding-block: .65rem; border-bottom: 1px solid var(--line); }
+
+.guided-fields { border: 0; padding: 0; margin: 0; min-width: 0; }

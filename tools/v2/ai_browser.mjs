@@ -2,7 +2,7 @@ import {chromium,expect} from '../../apps/web/node_modules/@playwright/test/inde
 import {spawn,execFileSync} from 'node:child_process';
 import {writeFileSync} from 'node:fs';
 import {randomBytes} from 'node:crypto';
-const root=process.cwd(),python=root+'/.venv-v2/bin/python',base='http://127.0.0.1:10007',name='alos_test_hybrid_'+Date.now();
+const root=process.cwd(),python=root+'/.venv-v2/bin/python',base='http://127.0.0.1:10008',name='alos_test_ai_'+Date.now();
 let server,browser,page;const results=[],errors=[];
 const secret=randomBytes(24).toString('base64url');
 async function synced(){await expect(page.getByRole('button',{name:'Sunucuya kaydedildi',exact:true})).toBeVisible({timeout:20000});}
@@ -10,7 +10,7 @@ async function api(path,body){return page.evaluate(async({path,body})=>{const me
 try{
  execFileSync(python,['tools/v2/test_database.py','create',name],{cwd:root,stdio:'pipe'});
  execFileSync(python,['-c',`import sys,json;sys.path.insert(0,'apps/api');from alos.db import Database;from alos.auth import create_user;v=json.load(sys.stdin);d=Database('postgresql+psycopg://localhost:15432/'+v['name']);\nwith d.sessions.begin() as s:create_user(s,'revision','Sentetik Revizyon',v['secret'])\nd.engine.dispose()`],{cwd:root,input:JSON.stringify({name,secret}),stdio:['pipe','pipe','pipe']});
- server=spawn(python,['-m','uvicorn','alos.main:create_app','--factory','--host','127.0.0.1','--port','10007','--no-access-log'],{cwd:root,env:{...process.env,PYTHONPATH:root+'/apps/api',ALOS_V2_ENABLED:'1',ALOS_V2_ENVIRONMENT:'test',ALOS_V2_PUBLIC_ORIGIN:base,ALOS_V2_DATABASE_URL:'postgresql://localhost:15432/'+name},stdio:'ignore'});
+ server=spawn(python,['-m','uvicorn','alos.main:create_app','--factory','--host','127.0.0.1','--port','10008','--no-access-log'],{cwd:root,env:{...process.env,PYTHONPATH:root+'/apps/api',ALOS_V2_ENABLED:'1',ALOS_V2_ENVIRONMENT:'test',ALOS_V2_PUBLIC_ORIGIN:base,ALOS_V2_DATABASE_URL:'postgresql://localhost:15432/'+name},stdio:'ignore'});
  for(let i=0;i<100;i++){try{if((await fetch(base+'/health/ready')).ok)break}catch{}await new Promise(r=>setTimeout(r,100));}
  browser=await chromium.launch({executablePath:'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',headless:true});const context=await browser.newContext({viewport:{width:390,height:844}});page=await context.newPage();page.on('pageerror',e=>errors.push(e.message));
  await page.goto(base);await page.getByLabel('Kullanıcı adı',{exact:true}).fill('revision');await page.getByLabel('Şifre',{exact:true}).fill(secret);await page.getByRole('button',{name:'Giriş yap',exact:true}).click();await synced();
@@ -40,7 +40,7 @@ try{
  for(let i=0;i<3;i++)await page.getByRole('button',{name:'Sırt önceliğini artır',exact:true}).click();
  for(let i=0;i<2;i++)await page.getByRole('button',{name:'Göğüs önceliğini artır',exact:true}).click();
  await expect(page.getByRole('button',{name:'Kol önceliğini artır',exact:true})).toBeDisabled();
- await page.screenshot({path:root+'/docs/evidence/hybrid-planning/focus-mobile.png',fullPage:true});
+ await page.screenshot({path:root+'/docs/evidence/ai-planning/focus-mobile.png',fullPage:true});
  await page.reload();await synced();await expect(page.getByRole('heading',{name:'Hangi bölgeler önceliğin?',exact:true})).toBeVisible();
  await expect(page.getByRole('status').filter({hasText:'5 / 5 puan'})).toBeVisible();
  results.push('Questionnaire survives reload; five-point limit enforced');
@@ -48,8 +48,31 @@ try{
  await page.getByRole('button',{name:'Üst / alt vücut',exact:false}).click();
  await page.getByRole('button',{name:'Devam',exact:true}).click();
  await page.getByLabel('18 yaş veya üzerindeyim.',{exact:true}).check();
- await page.getByRole('button',{name:'Standart taslak',exact:true}).click();
- await page.getByRole('button',{name:'Programımı hazırla',exact:true}).click();
+ await expect(page.getByRole('button',{name:'AI ile programımı hazırla',exact:true})).toBeDisabled();
+ await expect(page.getByText('AI kurulumu bekleniyor:',{exact:false})).toBeVisible();
+ await page.route('**/api/v2/ai-planning-status', route => route.fulfill({json:{available:true,message:'Sentetik test sağlayıcısı hazır.',model:'synthetic-model'}}));
+ await page.reload();await synced();
+ await page.getByLabel('18 yaş veya üzerindeyim.',{exact:true}).check();
+ await expect(page.getByRole('button',{name:'AI ile programımı hazırla',exact:true})).toBeDisabled();
+ await page.getByRole('checkbox',{name:"Bu formdaki planlama bilgilerimin AI taslağı için OpenAI'ye gönderilmesini kabul ediyorum.",exact:true}).check();
+ let aiCalls=0;
+ await page.route('**/api/v2/ai-program-drafts',async route=>{
+   aiCalls++;
+   const body=route.request().postDataJSON();expect(body.consent).toBe('planning-form-v1');expect(body.adult).toBe(true);
+   if(aiCalls===1){await route.fulfill({status:503,json:{error:{code:'ai_unavailable',message:'Sentetik AI bağlantı hatası; planın değiştirilmedi.',details:{}}}});return;}
+   const {consent,...choices}=body;
+   const response=await page.request.post(base+'/api/v2/guided-program-drafts',{headers:{'Origin':base,'X-CSRF-Token':route.request().headers()['x-csrf-token']},data:choices});
+   expect(response.ok()).toBe(true);const draft=await response.json();
+   draft.program.ai_origin={provider:'OpenAI',model:'synthetic-model',prompt_version:'openai-planner-1',generated_at:new Date().toISOString(),summary:'Sentetik AI arayüz denemesi; gerçek model çıktısı değildir.'};
+   await route.fulfill({json:draft});
+ });
+ await page.getByRole('button',{name:'AI ile programımı hazırla',exact:true}).click();
+ await expect(page.getByRole('alert').filter({hasText:'Sentetik AI bağlantı hatası'})).toBeVisible();
+ expect((await api('bootstrap')).programs).toHaveLength(0);
+ await page.getByRole('button',{name:'AI ile programımı hazırla',exact:true}).click();
+ await expect(page.getByText('AI ile hazırlanan taslak',{exact:true})).toBeVisible();
+ expect(aiCalls).toBe(2);
+ results.push('Unconfigured AI disabled; consent required; provider error does not save or fall back; mock AI preview labeled');
  await expect(page.getByRole('heading',{name:'Planına göz at',exact:true})).toBeVisible();
  expect((await api('bootstrap')).programs).toHaveLength(0);
  results.push('Preview creates no program or actual set');
@@ -58,14 +81,15 @@ try{
  expect(await page.locator('main').innerText()).not.toContain('Dambıl ile');
  for(const width of [360,390,768,1280]){await page.setViewportSize({width,height:844});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);}
  await page.setViewportSize({width:390,height:844});
- await page.screenshot({path:root+'/docs/evidence/hybrid-planning/preview.png',fullPage:true});
+ await page.screenshot({path:root+'/docs/evidence/ai-planning/preview.png',fullPage:true});
  const {default:AxeBuilder}=await import('../../apps/web/node_modules/@axe-core/playwright/dist/index.mjs');
  const violations=(await new AxeBuilder({page}).analyze()).violations;
- writeFileSync(root+'/docs/evidence/hybrid-planning/a11y.json',JSON.stringify(violations,null,2));expect(violations).toEqual([]);
+ writeFileSync(root+'/docs/evidence/ai-planning/a11y.json',JSON.stringify(violations,null,2));expect(violations).toEqual([]);
  await page.getByRole('button',{name:'Düzenle ve kaydet',exact:true}).click();
  await page.getByRole('button',{name:'Taslağı kaydet',exact:true}).click();await synced();
  let state=await api('bootstrap');expect(state.programs).toHaveLength(1);expect(state.programs[0].status).toBe('draft');
  expect(state.programs[0].decisions.guided_choices.focus.back).toBe(3);
+ expect(state.programs[0].decisions.ai_origin.model).toBe('synthetic-model');
  expect(state.sets).toHaveLength(0);
  await page.getByRole('button',{name:'Ana planım yap',exact:true}).click();await synced();
  state=await api('bootstrap');expect(state.programs[0].status).toBe('active');
@@ -78,5 +102,5 @@ try{
  await expect(page.getByRole('link',{name:'Beslenmemi kaydet',exact:true})).toBeVisible();
  await expect(page.getByText('Yapılan çalışmaların dağılımı',{exact:true})).toHaveCount(1);
  results.push('Health exposes the shared muscle report and existing nutrition entry');
- expect(errors).toEqual([]);writeFileSync(root+'/docs/evidence/hybrid-planning/browser.json',JSON.stringify({result:'PASS',checks:results,browser:browser.version(),errors},null,2));console.log(JSON.stringify({result:'PASS',checks:results}));
-}catch(error){if(page&&!page.isClosed())await page.screenshot({path:root+'/docs/evidence/hybrid-planning/browser-failure.png',fullPage:true});console.error('Revision browser failed:',error.message);process.exitCode=1;}finally{if(browser)await browser.close();if(server){server.kill('SIGKILL');await new Promise(r=>server.once('exit',r));}execFileSync(python,['tools/v2/test_database.py','drop',name],{cwd:root,stdio:'pipe'});}
+ expect(errors).toEqual([]);writeFileSync(root+'/docs/evidence/ai-planning/browser.json',JSON.stringify({result:'PASS',checks:results,browser:browser.version(),errors},null,2));console.log(JSON.stringify({result:'PASS',checks:results}));
+}catch(error){if(page&&!page.isClosed())await page.screenshot({path:root+'/docs/evidence/ai-planning/browser-failure.png',fullPage:true});console.error('Revision browser failed:',error.message);process.exitCode=1;}finally{if(browser)await browser.close();if(server){server.kill('SIGKILL');await new Promise(r=>server.once('exit',r));}execFileSync(python,['tools/v2/test_database.py','drop',name],{cwd:root,stdio:'pipe'});}
