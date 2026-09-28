@@ -1,0 +1,58 @@
+........................................................................ [ 32%]
+........................................................................ [ 64%]
+........................................................F............... [ 96%]
+.........                                                                [100%]
+=================================== FAILURES ===================================
+___ test_evren_wire_payload_and_returned_plan_preserve_focus[plan_request1] ____
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10c3d4800>
+plan_request = AIRequest(sport_methods={}, running_profile=None, performance_focus=[], sport_readiness=[], sport_ids=[], sport_experi...entetik dönem', weeks=8, start_date=datetime.date(2026, 9, 14), adult=True, symptoms=False, consent='planning-form-v1')
+
+    @pytest.mark.parametrize("plan_request", [runner(focus=FOCUS), data(methods=["swimming"], equipment=["Pool"], competencies=[], split="endurance_days", objective="endurance", focus=FOCUS), data(focus=FOCUS)])
+    def test_evren_wire_payload_and_returned_plan_preserve_focus(monkeypatch, plan_request):
+        request = plan_request
+>       baseline, context = ai.prepare(request, snap(), AT)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/v2/test_all_sport_focus.py:38: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+data = AIRequest(sport_methods={}, running_profile=None, performance_focus=[], sport_readiness=[], sport_ids=[], sport_experi...entetik dönem', weeks=8, start_date=datetime.date(2026, 9, 14), adult=True, symptoms=False, consent='planning-form-v1')
+snapshot = {'timezone': 'Europe/Istanbul', 'cursor': 1, 'sets': []}
+at = datetime.datetime(2026, 9, 15, 12, 0, tzinfo=datetime.timezone.utc)
+
+    def prepare(data, snapshot, at):
+        baseline = generate(data, snapshot, at)
+        if baseline["review"].get("health_blocked"):
+            reasons = baseline["review"].get("eligibility_reasons", [])
+            raise DomainError(
+                "ai_health_gate",
+                "Otomatik planlama durduruldu: "
+                + " ".join(reasons)
+                + " Profil/sağlık kayıtlarını gözden geçir. AI sağlayıcısına veri gönderilmedi.",
+                details={"reasons": reasons, "section": "health"},
+            )
+        if not any(d["exercises"] for d in baseline["program"]["days"]):
+>           raise DomainError(
+                "ai_no_candidates",
+                "Seçili branş için uygun teknik veya ortam bulunamadı. Branş yetkinliklerini, tesis, eğitmen ve partner seçimlerini kontrol et."
+                if sport_mode(data)
+                else "Seçimlerine uygun çalışma bulunamadı. Çalışma ortamını ve kontrollü yapabildiğin hareketleri seç; koşuya yeni başlıyorsan koşu-yürüyüş seçeneğini kullan.",
+                details={"section": "competencies" if sport_mode(data) else "equipment"},
+            )
+E           alos.errors.DomainError: Seçimlerine uygun çalışma bulunamadı. Çalışma ortamını ve kontrollü yapabildiğin hareketleri seç; koşuya yeni başlıyorsan koşu-yürüyüş seçeneğini kullan.
+
+apps/api/alos/ai_planning.py:166: DomainError
+=============================== warnings summary ===============================
+.venv-v2/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+.venv-v2/lib/python3.12/site-packages/starlette/testclient.py:53
+  /Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/v2/test_all_sport_focus.py::test_evren_wire_payload_and_returned_plan_preserve_focus[plan_request1]
+1 failed, 224 passed, 2 warnings in 7.32s

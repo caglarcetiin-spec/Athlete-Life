@@ -238,3 +238,7 @@ GET `/api/v2/ai-planning-status` yalnız yapılandırma durumunu oturum sahibine
 - `ai_planning.generate_validated`: aynı onaylı bağlam + geçici validation_feedback ile en fazla bir düzeltme, her sonuç aynı validate_plan hattında. Yeni saklanan program alanı yok.
 - `auth.rate_limit` rezervasyon pencere zamanını döndürür; `release_rate_slot` yalnız aynı pencerenin kotasını iade eder. `ai_rate_limit` geçici `retry_after_seconds` döndürür; GuidedPlan geri sayım gösterir. Global çağrı ve ayrı kullanıcı deneme sınırı korunur.
 - [Kapsam, test, tüketim, yayın ve geri alma](../AI_DRAFT_REPAIR.md).
+
+## 2026-09-28 — Tüm branşlarda kas bölgesi öncelikleri
+
+GuidedPlan bölge panelini her branşta açık gösterir; endurance geçişi/gönderimi focus'u silmez. Aynı mevcut focus alanı guided_choices üzerinden saklanır. ai_planning.prepare geçici body_region_priorities (region/priority_points/muscle_ids) açıklamasını mevcut focus ve GROUPS kataloğundan üretir; EVREN sistem talimatı bölge tercihlerini branş, doz ve ekipman sınırları içinde ele alır. Yeni kalıcı alan/DB göçü yok. [Test, kapsam ve rollback](../ALL_SPORT_REGION_FOCUS.md).

@@ -425,9 +425,7 @@ export function GuidedPlan({
       performance_focus: (answers.performance_focus || []).filter((id) =>
         priorityIds.includes(id),
       ),
-      ...(enduranceOnly(next.methods)
-        ? { focus: {}, objective: "endurance" }
-        : {}),
+      ...(enduranceOnly(next.methods) ? { objective: "endurance" } : {}),
       sport_methods:
         key === "running" &&
         next.methods.includes("running") &&
@@ -453,7 +451,7 @@ export function GuidedPlan({
     update({
       ...next,
       ...(enduranceOnly(next.methods)
-        ? { objective: "endurance", focus: {} }
+        ? { objective: "endurance" }
         : next.methods.some((m) => branchMethods.includes(m))
           ? { objective: "technique" }
           : {}),
@@ -507,16 +505,12 @@ export function GuidedPlan({
             engine === "ai"
               ? {
                   ...answers,
-                  ...(isEndurance
-                    ? { split: "endurance_days", focus: {} }
-                    : {}),
+                  ...(isEndurance ? { split: "endurance_days" } : {}),
                   consent: aiStatus?.consent_version ?? "planning-form-v1",
                 }
               : {
                   ...answers,
-                  ...(isEndurance
-                    ? { split: "endurance_days", focus: {} }
-                    : {}),
+                  ...(isEndurance ? { split: "endurance_days" } : {}),
                 },
           ),
         },
@@ -1271,63 +1265,60 @@ export function GuidedPlan({
                 onChange={(performance_focus) => update({ performance_focus })}
               />
             )}
-            {showMuscles && (
-              <details open={!showPerformance}>
-                <summary>
-                  {showPerformance
-                    ? "Ek kuvvet çalışması için kas öncelikleri (isteğe bağlı)"
-                    : "Kas bölgesi öncelikleri"}
-                </summary>
-                <p>
-                  İstersen toplam 5 öncelik puanını dağıt. Hepsini kullanmak
-                  zorunda değilsin. Bu puanlar büyüme yüzdesi değildir.
-                </p>
-                <FocusMap focus={answers.focus} />
-                <strong role="status">{total} / 5 puan kullanıldı</strong>
-                <div className="guided-muscles">
-                  {Object.entries(groups).map(([id, name]) => (
-                    <div className="guided-muscle" key={id}>
-                      <span>{name}</span>
-                      <div>
-                        <button
-                          className="secondary small"
-                          aria-label={name + " önceliğini azalt"}
-                          disabled={!answers.focus[id]}
-                          onClick={() =>
-                            update({
-                              focus: {
-                                ...answers.focus,
-                                [id]: (answers.focus[id] || 0) - 1,
-                              },
-                            })
-                          }
-                        >
-                          −
-                        </button>
-                        <output aria-label={name + " öncelik puanı"}>
-                          {answers.focus[id] || 0}
-                        </output>
-                        <button
-                          className="secondary small"
-                          aria-label={name + " önceliğini artır"}
-                          disabled={total >= 5}
-                          onClick={() =>
-                            update({
-                              focus: {
-                                ...answers.focus,
-                                [id]: (answers.focus[id] || 0) + 1,
-                              },
-                            })
-                          }
-                        >
-                          +
-                        </button>
-                      </div>
+            <section aria-label="Kas bölgesi öncelikleri">
+              <h3>Hangi bölgeler önceliğin?</h3>
+              <p>
+                İstersen toplam 5 öncelik puanını dağıt. Hepsini kullanmak
+                zorunda değilsin. Beş farklı bölge seçebilir veya bir bölgeye
+                daha fazla puan verebilirsin. Bu puanlar büyüme yüzdesi
+                değildir. Branşına uygun hareketlerde dikkate alınır; bölge
+                seçmek çalışma yöntemini değiştirmez.
+              </p>
+              <FocusMap focus={answers.focus} />
+              <strong role="status">{total} / 5 puan kullanıldı</strong>
+              <div className="guided-muscles">
+                {Object.entries(groups).map(([id, name]) => (
+                  <div className="guided-muscle" key={id}>
+                    <span>{name}</span>
+                    <div>
+                      <button
+                        className="secondary small"
+                        aria-label={name + " önceliğini azalt"}
+                        disabled={!answers.focus[id]}
+                        onClick={() =>
+                          update({
+                            focus: {
+                              ...answers.focus,
+                              [id]: (answers.focus[id] || 0) - 1,
+                            },
+                          })
+                        }
+                      >
+                        −
+                      </button>
+                      <output aria-label={name + " öncelik puanı"}>
+                        {answers.focus[id] || 0}
+                      </output>
+                      <button
+                        className="secondary small"
+                        aria-label={name + " önceliğini artır"}
+                        disabled={total >= 5}
+                        onClick={() =>
+                          update({
+                            focus: {
+                              ...answers.focus,
+                              [id]: (answers.focus[id] || 0) + 1,
+                            },
+                          })
+                        }
+                      >
+                        +
+                      </button>
                     </div>
-                  ))}
-                </div>
-              </details>
-            )}
+                  </div>
+                ))}
+              </div>
+            </section>
           </>
         )}
         {phase === 5 && (
