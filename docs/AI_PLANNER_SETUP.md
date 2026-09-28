@@ -73,3 +73,17 @@ ALOS_V2_EVREN_MODEL=<hesabında erişilebilir metin modeli>
 - Resmî sayfa 1 Kasım 2026'ya kadar ücretsiz entegrasyon dönemi belirtir; bu kalıcı ücretsiz kullanım garantisi veya üretim hizmet seviyesi taahhüdü değildir.
 
 Şema ve hesap/medya göçü yok. Render yayını ve kalıcı sunucu sırrı kurulumu bu yerel bağlantı çalışmasının parçası olarak yapılmadı. `AI_PROVIDER=openai` ile sağlayıcı geri alınabilir; uygun OpenAI key/model ve yeniden kullanıcı onayı gerekir. Kayıtları silmeyin.
+
+### Doğrulanmış yerel bağlantı
+
+28 Eylül 2026: kullanım koşulları kullanıcı tarafından kabul edildikten sonra `mimo-v2.6-pro` + `ALOS_V2_EVREN_REASONING_EFFORT=low` ile dört günlük sentetik hibrit taslak ~62 saniyede üretildi ve ortak validatörden geçti. Tek örnek bütün hedef/ekipman kombinasyonlarının kalite garantisi değildir. GLM ve Gemma ilk uzun isteklerde 90 saniye sınırına takıldı; MiMo reasoning=none ilk denemelerde hatalı plan üretti ve reddedildi. Hatalar sessizce düzeltilmedi veya kaydedilmedi. EVREN modeli ancak hesabın `/v1/models` yanıtında desteklenen reasoning değerleriyle yapılandırılmalı.
+
+İstem `ai-planner-2`, her adayın ölçü/set kurallarını, günlük süre/set bütçesini ve formdan türetilen başlangıç taslağını açıkça iletir. LLM bunu düzenler ve açıklar; çıktı aynı kurallardan geçmeden kabul edilmez. Gerçek geçmiş antrenman verisi gönderilmez.
+
+Yeniden üretim (manuel gerçek API çağrısı; otomatik test değildir):
+
+```sh
+PYTHON_DOTENV_DISABLED=1 STORAGE_BACKEND=sqlite ACCOUNT_STORAGE_BACKEND=sqlite .venv-v2/bin/python tools/v2/verify_evren.py --model mimo-v2.6-pro --reasoning-effort low
+```
+
+Anahtar yankısız terminal isteminde girilir. Araç veritabanı bağlantısı açmaz; yalnız sabit sentetik örneği gönderir. Sağlayıcı, komut, source commit/hash, süre ve exit-code içeren secretsiz artefact `docs/evidence/evren/live-*.json` altında tutulur.

@@ -1,14 +1,14 @@
 {
-  "at": "2026-09-28T03:23:48.362334+00:00",
+  "at": "2026-09-28T03:22:57.026721+00:00",
   "provider": "EVREN",
   "model": "mimo-v2.6-pro",
-  "reasoning_effort": "low",
+  "reasoning_effort": "none",
   "synthetic": true,
   "personal_records_read": false,
   "generation_attempts": 1,
   "source_commit": "8357ce7ec4700bbc58fa256ab96bf3731beeeeac",
   "source_hashes": {
-    "apps/api/alos/ai_planning.py": "541c4bd9fc5ce44c0279f91353d41344b71e2ef25e4e7735c9abe32434216ff7",
+    "apps/api/alos/ai_planning.py": "2534f637526faf77718d580e4f7a8509108d5a88f3626d72c415a37e4d637a11",
     "tools/v2/verify_evren.py": "b599b91100f05b51ecbd8dd7141431072c400031bcce18fbf1d14e43f1ec9070"
   },
   "command": [
@@ -17,14 +17,13 @@
     "--model",
     "mimo-v2.6-pro",
     "--reasoning-effort",
-    "low"
+    "none"
   ],
   "environment": "local Python; no database connection; manually entered in-memory secret",
   "terms_accepted": true,
-  "result": "PASS",
-  "days": 4,
-  "exercises": 26,
-  "validation_status": "draft",
-  "elapsed_seconds": 61.83,
-  "exit_code": 0
+  "result": "FAIL",
+  "code": "ai_plan_invalid",
+  "message": "AI süre veya çalışma hacmi sınırını aştı; taslak kabul edilmedi.",
+  "elapsed_seconds": 13.17,
+  "exit_code": 1
 }

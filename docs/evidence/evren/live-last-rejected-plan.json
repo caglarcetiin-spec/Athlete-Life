@@ -1,0 +1,12 @@
+{
+  "at": "2026-09-28T03:20:56.334850+00:00",
+  "provider": "EVREN",
+  "model": "mimo-v2.6-pro",
+  "synthetic": true,
+  "personal_records_read": false,
+  "generation_attempts": 1,
+  "terms_accepted": true,
+  "result": "FAIL",
+  "code": "ai_plan_invalid",
+  "message": "AI tekrar, tutuş, dinlenme veya kapasite sınırlarını karşılamadı; taslak kabul edilmedi."
+}

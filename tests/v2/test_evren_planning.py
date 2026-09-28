@@ -83,12 +83,15 @@ def test_evren_transport_and_canonical_validation(monkeypatch):
             )
 
     monkeypatch.setattr(ai, "build_opener", lambda *_: Opener())
-    result = ai.call_provider(evren_settings(), {"goal": "synthetic"})
+    config = evren_settings()
+    config.evren_reasoning_effort = "none"
+    result = ai.call_provider(config, {"goal": "synthetic"})
     assert result == plan
     assert captured["url"] == "https://evren-llmapi.ssyz.org.tr/v1/chat/completions"
     assert captured["headers"]["Authorization"] == "Bearer synthetic-evren-key"
     assert "synthetic-not-a-real-key" not in json.dumps(captured)
     assert "tools" not in captured["body"]
+    assert captured["body"]["reasoning_effort"] == "none"
     baseline, context = ai.prepare(request, snap(), AT)
     canonical = ai.validate_plan(
         result, request, baseline, context, AT, "synthetic-model", "EVREN"
@@ -180,3 +183,17 @@ def test_evren_api_consent_and_persistence(client, app, monkeypatch):
     assert created["entity"]["status"] == "draft"
     assert created["entity"]["decisions"]["ai_origin"]["provider"] == "EVREN"
     assert len(calls) == 1
+
+
+def test_model_receives_explicit_unit_capacity_and_split_rules():
+    request = data(consent=ai.EVREN_CONSENT)
+    _, context = ai.prepare(request, snap(), AT)
+    by_id = {row["movement_id"]: row for row in context["eligible_movements"]}
+    assert by_id["pull-up"]["prescription_rules"]["rir"] == {"min": 2, "max": 5}
+    assert by_id["pull-up"]["prescription_rules"]["seconds"] is None
+    assert by_id["pull-up"]["prescription_rules"]["reps"]["max"] <= 20
+    assert context["day_split"][0]["kind"] == "upper"
+    assert context["day_split"][1]["kind"] == "lower"
+    assert context["session_limits"]["max_non_cardio_sets"] == 24
+    assert context["reference_draft"]
+    assert "name" not in context["reference_draft"][0]

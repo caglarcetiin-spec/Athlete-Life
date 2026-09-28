@@ -1,0 +1,12 @@
+{
+  "at": "2026-09-28T03:15:28.331956+00:00",
+  "provider": "EVREN",
+  "model": "glm-5.3",
+  "synthetic": true,
+  "personal_records_read": false,
+  "generation_attempts": 1,
+  "terms_accepted": true,
+  "result": "FAIL",
+  "code": "ai_unavailable",
+  "message": "EVREN zamanında yanıt vermedi. Planın değiştirilmedi; tekrar deneyebilirsin."
+}

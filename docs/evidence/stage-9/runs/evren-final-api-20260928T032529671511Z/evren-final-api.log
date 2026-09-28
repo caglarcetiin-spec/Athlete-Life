@@ -1,0 +1,696 @@
+.....F..............F..F...............FF..............                  [100%]
+=================================== FAILURES ===================================
+________________ test_evren_transport_and_canonical_validation _________________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10996f5f0>
+
+    def test_evren_transport_and_canonical_validation(monkeypatch):
+        request = data(consent=ai.EVREN_CONSENT)
+        plan = reply(request)
+        captured = {}
+    
+        class Opener:
+            def open(self, request, timeout):
+                captured.update(
+                    url=request.full_url,
+                    headers=request.headers,
+                    body=json.loads(request.data),
+                    timeout=timeout,
+                )
+                return io.BytesIO(
+                    json.dumps(
+                        {
+                            "choices": [
+                                {
+                                    "finish_reason": "stop",
+                                    "message": {
+                                        "content": "```json\n"
+                                        + plan.model_dump_json()
+                                        + "\n```"
+                                    },
+                                }
+                            ]
+                        }
+                    ).encode()
+                )
+    
+        monkeypatch.setattr(ai, "build_opener", lambda *_: Opener())
+        config = evren_settings()
+        config.evren_reasoning_effort = "none"
+        result = ai.call_provider(config, {"goal": "synthetic"})
+        assert result == plan
+        assert captured["url"] == "https://evren-llmapi.ssyz.org.tr/v1/chat/completions"
+        assert captured["headers"]["Authorization"] == "Bearer synthetic-evren-key"
+        assert "synthetic-not-a-real-key" not in json.dumps(captured)
+        assert "tools" not in captured["body"]
+        assert captured["body"]["reasoning_effort"] == "none"
+        baseline, context = ai.prepare(request, snap(), AT)
+>       canonical = ai.validate_plan(
+            result, request, baseline, context, AT, "synthetic-model", "EVREN"
+        )
+
+tests/v2/test_evren_planning.py:96: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+plan = AIPlan(summary='Sentetik karma çalışma taslağı', limitations=['Sentetik yanıt; biyolojik ölçüm değildir.'], days=[AIDa...ise(movement_id='walk', sets=1, reps=None, seconds=600, rest_seconds=0, rir=None, reason='Ekipman ve hedef uyumu.')])])
+data = AIRequest(experience='advanced', objective='hypertrophy', equipment=['EZ Bar', 'Pull-Up Bar', 'Outdoor', 'Rings'], wee...k dönem', weeks=8, start_date=datetime.date(2026, 9, 14), adult=True, symptoms=False, consent='planning-form-evren-v1')
+baseline = {'program': {'name': 'Sentetik dönem', 'goal': 'Düzenli kuvvet çalışmak', 'start_date': '2026-09-14', 'weeks': 8, ...}...est': 12, 'back': 18.2, 'shoulders': 14.6, 'arms': 30.1, ...}, 'missing_focus': [], 'version': 'guided-hybrid-2', ...}}
+context = {'experience': 'advanced', 'objective': 'hypertrophy', 'equipment': ['EZ Bar', 'Pull-Up Bar', 'Outdoor', 'Rings'], 'weekdays': [0, 1, 3, 4], ...}
+at = datetime.datetime(2026, 9, 15, 12, 0, tzinfo=datetime.timezone.utc)
+model = 'synthetic-model', provider = 'EVREN'
+
+    def validate_plan(plan, data, baseline, context, at: datetime, model, provider="OpenAI"):
+        candidates = {o["movement_id"]: o for o in context["eligible_movements"]}
+        if sorted(d.weekday for d in plan.days) != sorted(data.weekdays):
+            raise DomainError(
+                "ai_plan_invalid", "AI çalışma günlerini doğru oluşturmadı; taslak kabul edilmedi.", 502
+            )
+        capacities = {c.movement_id: c for c in data.competencies}
+        issues, infos, all_rows = [], [], []
+        output_days = []
+        planned_days = {d.weekday: d for d in plan.days}
+        for old in baseline["program"]["days"]:
+            day = {**old, "exercises": []}
+            output_days.append(day)
+            if old["kind"] == "rest":
+                continue
+            used = 300 if data.minutes < 30 else 480
+            seen, families, blocks = set(), set(), []
+            sets, skill_cost, skills, working = 0, 0, 0, 0
+            non_skill_started = False
+            for item in planned_days[old["weekday"]].exercises:
+                key = item.movement_id
+                if key not in candidates or key in seen:
+                    raise DomainError(
+                        "ai_plan_invalid",
+                        "AI uygun olmayan veya yinelenen hareket seçti; taslak kabul edilmedi.",
+                        502,
+                    )
+                seen.add(key)
+                meta, definition = META[key], BY_ID[key]
+                block = meta["block"]
+                modality = (
+                    "skill"
+                    if block == "skill" and definition["modality"] != "isometric"
+                    else definition["modality"]
+                )
+                capacity = capacities.get(key)
+                if modality in {"isometric", "cardio"}:
+                    valid = item.seconds is not None and item.reps is None and item.rir is None
+                    if modality == "isometric":
+                        valid = valid and item.seconds <= 60 and item.rest_seconds >= 30
+                        if capacity and capacity.seconds:
+                            valid = valid and item.seconds <= max(1, int(capacity.seconds * 0.6))
+                    else:
+                        valid = (
+                            valid
+                            and item.sets == 1
+                            and item.rest_seconds == 0
+                            and item.seconds <= data.conditioning_minutes * 60
+                        )
+                else:
+                    valid = item.reps is not None and item.seconds is None and item.rest_seconds >= 60
+                    valid = valid and (
+                        item.rir is None and item.reps <= 8 if modality == "skill" else item.rir is not None
+                    )
+                    if capacity and capacity.reps:
+                        valid = valid and item.reps <= max(1, int(capacity.reps * 0.7))
+                if not valid:
+                    raise DomainError(
+                        "ai_plan_invalid",
+                        "AI tekrar, tutuş, dinlenme veya kapasite sınırlarını karşılamadı; taslak kabul edilmedi.",
+                        502,
+                    )
+                cost = (
+                    item.sets * (item.seconds if item.seconds is not None else item.reps * 4)
+                    + (item.sets - 1) * item.rest_seconds
+                    + 60
+                )
+                used += cost
+                if modality != "cardio":
+                    sets += item.sets
+                if block == "skill":
+                    skills += 1
+                    skill_cost += cost
+                    if non_skill_started:
+                        raise DomainError(
+                            "ai_plan_invalid",
+                            "AI teknik çalışma sırasını karşılamadı; taslak kabul edilmedi.",
+                            502,
+                        )
+                else:
+                    non_skill_started = True
+                    families.add(meta["family"])
+                if modality == "strength":
+                    working += item.sets
+                row = {
+                    "movement_id": key,
+                    "name": definition.get("displayNameTR", definition["name"]),
+                    "catalog_version": definition["catalog_version"],
+                    "modality": modality,
+                    "load_kind": definition["load_kind"],
+                    "equipment": ", ".join(definition["equipment"]),
+                    "sets": item.sets,
+                    "reps": item.reps,
+                    "seconds": item.seconds,
+                    "rir": item.rir,
+                    "rest_seconds": item.rest_seconds,
+                    "set_kind": "working",
+                }
+                day["exercises"].append(row)
+                blocks.append(
+                    {
+                        "movement_id": key,
+                        "block": block,
+                        "family_label": FAMILY_LABELS[meta["family"]],
+                        "reason": item.reason,
+                    }
+                )
+            cap = {"new": 12, "returning": 12, "regular": 20, "advanced": 24}[data.experience]
+            if (
+                used > data.minutes * 60
+                or sets > cap
+                or skills > 2
+                or skill_cost > min(900, data.minutes * 60 * 0.2)
+            ):
+                raise DomainError(
+                    "ai_plan_invalid", "AI süre veya çalışma hacmi sınırını aştı; taslak kabul edilmedi.", 502
+                )
+            index = sorted(data.weekdays).index(old["weekday"])
+            kind = (
+                "full_body"
+                if data.split == "full_body"
+                else (
+                    ["upper", "lower"][index % 2]
+                    if data.split == "upper_lower"
+                    else ["push", "pull", "legs"][index % 3]
+                )
+            )
+            expected = {
+                "full_body": {"knee", "hinge", "horizontal_push", "horizontal_pull"},
+                "upper": {"horizontal_push", "horizontal_pull", "vertical_push", "vertical_pull"},
+                "lower": {"knee", "hinge"},
+                "legs": {"knee", "hinge"},
+                "push": {"horizontal_push", "vertical_push"},
+                "pull": {"horizontal_pull", "vertical_pull"},
+            }[kind]
+            if set(data.methods) == {"conditioning"}:
+                expected = set()
+            allowed_families = {
+                "upper": {
+                    "horizontal_push",
+                    "horizontal_pull",
+                    "vertical_push",
+                    "vertical_pull",
+                    "elbow_flexion",
+                    "elbow_extension",
+                    "shoulder",
+                    "scapular",
+                    "core",
+                    "skill_pull",
+                    "skill_push",
+                    "skill_core",
+                    "conditioning",
+                },
+                "lower": {"knee", "hinge", "knee_flexion", "calf", "core", "conditioning"},
+                "legs": {"knee", "hinge", "knee_flexion", "calf", "core", "conditioning"},
+                "push": {
+                    "horizontal_push",
+                    "vertical_push",
+                    "elbow_extension",
+                    "shoulder",
+                    "core",
+                    "skill_push",
+                    "skill_core",
+                    "conditioning",
+                },
+                "pull": {
+                    "horizontal_pull",
+                    "vertical_pull",
+                    "elbow_flexion",
+                    "scapular",
+                    "core",
+                    "skill_pull",
+                    "skill_core",
+                    "conditioning",
+                },
+            }
+            if kind in allowed_families and any(
+                META[e["movement_id"]]["family"] not in allowed_families[kind] for e in day["exercises"]
+            ):
+                raise DomainError(
+                    "ai_plan_invalid", "AI seçtiğin gün dağılımına uymadı; taslak kabul edilmedi.", 502
+                )
+            possible = {o["family"] for o in candidates.values()}
+            if (expected & possible) - families or (data.minutes >= 30 and expected and working < 6):
+                raise DomainError(
+                    "ai_plan_invalid",
+                    "AI taslağında temel hareket kapsamı veya çalışma hacmi eksik. Taslak kabul edilmedi; hedefini ve süreni gözden geçirerek tekrar dene.",
+                    502,
+                )
+            missing = sorted(expected - families)
+            if missing:
+                issues.append("Eksik kapsam: " + ", ".join(FAMILY_LABELS[f] for f in missing))
+            infos.append(
+                {
+                    "weekday": old["weekday"],
+                    "estimated_minutes": round(used / 60, 1),
+                    "working_sets": working,
+                    "missing_patterns": missing,
+                    "blocks": blocks,
+                }
+            )
+            all_rows.extend(day["exercises"])
+        muscles = {
+            g: round(
+                sum(
+                    e["sets"]
+                    * max((BY_ID[e["movement_id"]].get("muscles", {}).get(m, 0) for m in members), default=0)
+                    for e in all_rows
+                    if e["modality"] == "strength"
+                ),
+                1,
+            )
+            for g, members in GROUPS.items()
+        }
+        missing_focus = [
+            g
+            for g, priority in data.focus.items()
+            if priority
+            and not any(
+                e["modality"] == "strength"
+                and max((BY_ID[e["movement_id"]].get("muscles", {}).get(m, 0) for m in GROUPS[g]), default=0)
+                >= 0.5
+                for e in all_rows
+            )
+        ]
+        for group in missing_focus:
+            issues.append("Önceliğin karşılanamadı: " + group)
+        represented = {m for e in all_rows for m in META[e["movement_id"]]["methods"]}
+        if set(data.methods) - represented:
+            issues.append("Karşılanamayan yöntem: " + ", ".join(sorted(set(data.methods) - represented)))
+        program = {
+            **baseline["program"],
+            "days": output_days,
+            "ai_origin": {
+                "provider": provider,
+                "model": model,
+                "prompt_version": VERSION,
+                "generated_at": at.isoformat(),
+                "summary": plan.summary,
+            },
+        }
+>       ProgramInput.model_validate(program)
+E       pydantic_core._pydantic_core.ValidationError: 1 validation error for ProgramInput
+E       ai_origin.prompt_version
+E         Input should be 'openai-planner-1' [type=literal_error, input_value='ai-planner-2', input_type=str]
+E           For further information visit https://errors.pydantic.dev/2.13/v/literal_error
+
+apps/api/alos/ai_planning.py:570: ValidationError
+____________________ test_evren_api_consent_and_persistence ____________________
+
+client = <starlette.testclient.TestClient object at 0x10ab5c170>
+app = <fastapi.applications.FastAPI object at 0x10a5c2e40>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x109ca5be0>
+
+    def test_evren_api_consent_and_persistence(client, app, monkeypatch):
+        config = app.state.settings
+        config.ai_provider = "evren"
+        config.evren_api_key = SecretStr("synthetic-key")
+        config.evren_model = "synthetic-model"
+        calls = []
+    
+        def fake(_config, context):
+            calls.append(context)
+            return reply(data())
+    
+        monkeypatch.setattr(ai, "call_evren", fake)
+        payload = data().model_dump(mode="json")
+        assert client.post("/api/v2/ai-program-drafts", json=payload).status_code == 422
+        assert not calls
+        response = client.post(
+            "/api/v2/ai-program-drafts", json=payload | {"consent": ai.EVREN_CONSENT}
+        )
+>       assert response.status_code == 200, response.text
+E       AssertionError: {"error":{"code":"validation","message":"Girdi biçimini kontrol et.","details":{"fields":["ai_origin.prompt_version"]}}}
+E       assert 422 == 200
+E        +  where 422 = <Response [422 Unprocessable Entity]>.status_code
+
+tests/v2/test_evren_planning.py:180: AssertionError
+__________ test_valid_ai_plan_uses_canonical_ids_and_preview_is_pure ___________
+
+    def test_valid_ai_plan_uses_canonical_ids_and_preview_is_pure():
+        request = data()
+        snapshot = snap()
+        before = deepcopy(snapshot)
+        baseline, context = ai.prepare(request, snapshot, AT)
+>       result = ai.validate_plan(
+            reply(request), request, baseline, context, AT, "synthetic-model"
+        )
+
+tests/v2/test_ai_planning.py:103: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+plan = AIPlan(summary='Sentetik karma çalışma taslağı', limitations=['Sentetik yanıt; biyolojik ölçüm değildir.'], days=[AIDa...ise(movement_id='walk', sets=1, reps=None, seconds=600, rest_seconds=0, rir=None, reason='Ekipman ve hedef uyumu.')])])
+data = AIRequest(experience='advanced', objective='hypertrophy', equipment=['EZ Bar', 'Pull-Up Bar', 'Outdoor', 'Rings'], wee...entetik dönem', weeks=8, start_date=datetime.date(2026, 9, 14), adult=True, symptoms=False, consent='planning-form-v1')
+baseline = {'program': {'name': 'Sentetik dönem', 'goal': 'Düzenli kuvvet çalışmak', 'start_date': '2026-09-14', 'weeks': 8, ...}...est': 12, 'back': 18.2, 'shoulders': 14.6, 'arms': 30.1, ...}, 'missing_focus': [], 'version': 'guided-hybrid-2', ...}}
+context = {'experience': 'advanced', 'objective': 'hypertrophy', 'equipment': ['EZ Bar', 'Pull-Up Bar', 'Outdoor', 'Rings'], 'weekdays': [0, 1, 3, 4], ...}
+at = datetime.datetime(2026, 9, 15, 12, 0, tzinfo=datetime.timezone.utc)
+model = 'synthetic-model', provider = 'OpenAI'
+
+    def validate_plan(plan, data, baseline, context, at: datetime, model, provider="OpenAI"):
+        candidates = {o["movement_id"]: o for o in context["eligible_movements"]}
+        if sorted(d.weekday for d in plan.days) != sorted(data.weekdays):
+            raise DomainError(
+                "ai_plan_invalid", "AI çalışma günlerini doğru oluşturmadı; taslak kabul edilmedi.", 502
+            )
+        capacities = {c.movement_id: c for c in data.competencies}
+        issues, infos, all_rows = [], [], []
+        output_days = []
+        planned_days = {d.weekday: d for d in plan.days}
+        for old in baseline["program"]["days"]:
+            day = {**old, "exercises": []}
+            output_days.append(day)
+            if old["kind"] == "rest":
+                continue
+            used = 300 if data.minutes < 30 else 480
+            seen, families, blocks = set(), set(), []
+            sets, skill_cost, skills, working = 0, 0, 0, 0
+            non_skill_started = False
+            for item in planned_days[old["weekday"]].exercises:
+                key = item.movement_id
+                if key not in candidates or key in seen:
+                    raise DomainError(
+                        "ai_plan_invalid",
+                        "AI uygun olmayan veya yinelenen hareket seçti; taslak kabul edilmedi.",
+                        502,
+                    )
+                seen.add(key)
+                meta, definition = META[key], BY_ID[key]
+                block = meta["block"]
+                modality = (
+                    "skill"
+                    if block == "skill" and definition["modality"] != "isometric"
+                    else definition["modality"]
+                )
+                capacity = capacities.get(key)
+                if modality in {"isometric", "cardio"}:
+                    valid = item.seconds is not None and item.reps is None and item.rir is None
+                    if modality == "isometric":
+                        valid = valid and item.seconds <= 60 and item.rest_seconds >= 30
+                        if capacity and capacity.seconds:
+                            valid = valid and item.seconds <= max(1, int(capacity.seconds * 0.6))
+                    else:
+                        valid = (
+                            valid
+                            and item.sets == 1
+                            and item.rest_seconds == 0
+                            and item.seconds <= data.conditioning_minutes * 60
+                        )
+                else:
+                    valid = item.reps is not None and item.seconds is None and item.rest_seconds >= 60
+                    valid = valid and (
+                        item.rir is None and item.reps <= 8 if modality == "skill" else item.rir is not None
+                    )
+                    if capacity and capacity.reps:
+                        valid = valid and item.reps <= max(1, int(capacity.reps * 0.7))
+                if not valid:
+                    raise DomainError(
+                        "ai_plan_invalid",
+                        "AI tekrar, tutuş, dinlenme veya kapasite sınırlarını karşılamadı; taslak kabul edilmedi.",
+                        502,
+                    )
+                cost = (
+                    item.sets * (item.seconds if item.seconds is not None else item.reps * 4)
+                    + (item.sets - 1) * item.rest_seconds
+                    + 60
+                )
+                used += cost
+                if modality != "cardio":
+                    sets += item.sets
+                if block == "skill":
+                    skills += 1
+                    skill_cost += cost
+                    if non_skill_started:
+                        raise DomainError(
+                            "ai_plan_invalid",
+                            "AI teknik çalışma sırasını karşılamadı; taslak kabul edilmedi.",
+                            502,
+                        )
+                else:
+                    non_skill_started = True
+                    families.add(meta["family"])
+                if modality == "strength":
+                    working += item.sets
+                row = {
+                    "movement_id": key,
+                    "name": definition.get("displayNameTR", definition["name"]),
+                    "catalog_version": definition["catalog_version"],
+                    "modality": modality,
+                    "load_kind": definition["load_kind"],
+                    "equipment": ", ".join(definition["equipment"]),
+                    "sets": item.sets,
+                    "reps": item.reps,
+                    "seconds": item.seconds,
+                    "rir": item.rir,
+                    "rest_seconds": item.rest_seconds,
+                    "set_kind": "working",
+                }
+                day["exercises"].append(row)
+                blocks.append(
+                    {
+                        "movement_id": key,
+                        "block": block,
+                        "family_label": FAMILY_LABELS[meta["family"]],
+                        "reason": item.reason,
+                    }
+                )
+            cap = {"new": 12, "returning": 12, "regular": 20, "advanced": 24}[data.experience]
+            if (
+                used > data.minutes * 60
+                or sets > cap
+                or skills > 2
+                or skill_cost > min(900, data.minutes * 60 * 0.2)
+            ):
+                raise DomainError(
+                    "ai_plan_invalid", "AI süre veya çalışma hacmi sınırını aştı; taslak kabul edilmedi.", 502
+                )
+            index = sorted(data.weekdays).index(old["weekday"])
+            kind = (
+                "full_body"
+                if data.split == "full_body"
+                else (
+                    ["upper", "lower"][index % 2]
+                    if data.split == "upper_lower"
+                    else ["push", "pull", "legs"][index % 3]
+                )
+            )
+            expected = {
+                "full_body": {"knee", "hinge", "horizontal_push", "horizontal_pull"},
+                "upper": {"horizontal_push", "horizontal_pull", "vertical_push", "vertical_pull"},
+                "lower": {"knee", "hinge"},
+                "legs": {"knee", "hinge"},
+                "push": {"horizontal_push", "vertical_push"},
+                "pull": {"horizontal_pull", "vertical_pull"},
+            }[kind]
+            if set(data.methods) == {"conditioning"}:
+                expected = set()
+            allowed_families = {
+                "upper": {
+                    "horizontal_push",
+                    "horizontal_pull",
+                    "vertical_push",
+                    "vertical_pull",
+                    "elbow_flexion",
+                    "elbow_extension",
+                    "shoulder",
+                    "scapular",
+                    "core",
+                    "skill_pull",
+                    "skill_push",
+                    "skill_core",
+                    "conditioning",
+                },
+                "lower": {"knee", "hinge", "knee_flexion", "calf", "core", "conditioning"},
+                "legs": {"knee", "hinge", "knee_flexion", "calf", "core", "conditioning"},
+                "push": {
+                    "horizontal_push",
+                    "vertical_push",
+                    "elbow_extension",
+                    "shoulder",
+                    "core",
+                    "skill_push",
+                    "skill_core",
+                    "conditioning",
+                },
+                "pull": {
+                    "horizontal_pull",
+                    "vertical_pull",
+                    "elbow_flexion",
+                    "scapular",
+                    "core",
+                    "skill_pull",
+                    "skill_core",
+                    "conditioning",
+                },
+            }
+            if kind in allowed_families and any(
+                META[e["movement_id"]]["family"] not in allowed_families[kind] for e in day["exercises"]
+            ):
+                raise DomainError(
+                    "ai_plan_invalid", "AI seçtiğin gün dağılımına uymadı; taslak kabul edilmedi.", 502
+                )
+            possible = {o["family"] for o in candidates.values()}
+            if (expected & possible) - families or (data.minutes >= 30 and expected and working < 6):
+                raise DomainError(
+                    "ai_plan_invalid",
+                    "AI taslağında temel hareket kapsamı veya çalışma hacmi eksik. Taslak kabul edilmedi; hedefini ve süreni gözden geçirerek tekrar dene.",
+                    502,
+                )
+            missing = sorted(expected - families)
+            if missing:
+                issues.append("Eksik kapsam: " + ", ".join(FAMILY_LABELS[f] for f in missing))
+            infos.append(
+                {
+                    "weekday": old["weekday"],
+                    "estimated_minutes": round(used / 60, 1),
+                    "working_sets": working,
+                    "missing_patterns": missing,
+                    "blocks": blocks,
+                }
+            )
+            all_rows.extend(day["exercises"])
+        muscles = {
+            g: round(
+                sum(
+                    e["sets"]
+                    * max((BY_ID[e["movement_id"]].get("muscles", {}).get(m, 0) for m in members), default=0)
+                    for e in all_rows
+                    if e["modality"] == "strength"
+                ),
+                1,
+            )
+            for g, members in GROUPS.items()
+        }
+        missing_focus = [
+            g
+            for g, priority in data.focus.items()
+            if priority
+            and not any(
+                e["modality"] == "strength"
+                and max((BY_ID[e["movement_id"]].get("muscles", {}).get(m, 0) for m in GROUPS[g]), default=0)
+                >= 0.5
+                for e in all_rows
+            )
+        ]
+        for group in missing_focus:
+            issues.append("Önceliğin karşılanamadı: " + group)
+        represented = {m for e in all_rows for m in META[e["movement_id"]]["methods"]}
+        if set(data.methods) - represented:
+            issues.append("Karşılanamayan yöntem: " + ", ".join(sorted(set(data.methods) - represented)))
+        program = {
+            **baseline["program"],
+            "days": output_days,
+            "ai_origin": {
+                "provider": provider,
+                "model": model,
+                "prompt_version": VERSION,
+                "generated_at": at.isoformat(),
+                "summary": plan.summary,
+            },
+        }
+>       ProgramInput.model_validate(program)
+E       pydantic_core._pydantic_core.ValidationError: 1 validation error for ProgramInput
+E       ai_origin.prompt_version
+E         Input should be 'openai-planner-1' [type=literal_error, input_value='ai-planner-2', input_type=str]
+E           For further information visit https://errors.pydantic.dev/2.13/v/literal_error
+
+apps/api/alos/ai_planning.py:570: ValidationError
+_____ test_ai_endpoint_auth_disabled_consent_health_quota_and_persistence ______
+
+client = <starlette.testclient.TestClient object at 0x10b010770>
+app = <fastapi.applications.FastAPI object at 0x10b02d4c0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10b0104a0>
+
+    def test_ai_endpoint_auth_disabled_consent_health_quota_and_persistence(
+        client, app, monkeypatch
+    ):
+        configuration = app.state.settings
+        configuration.openai_api_key = None
+        assert client.get("/api/v2/ai-planning-status").json()["available"] is False
+        payload = data().model_dump(mode="json")
+        assert client.post("/api/v2/ai-program-drafts", json=payload).status_code == 503
+        configuration.openai_api_key = SecretStr("synthetic-key")
+        configuration.openai_model = "synthetic-model"
+        calls = []
+    
+        def fake_call(_settings, context):
+            calls.append(context)
+            return reply(data())
+    
+        monkeypatch.setattr(ai, "call_openai", fake_call)
+        denied = login(app)
+        del denied.headers["X-CSRF-Token"]
+        assert denied.post("/api/v2/ai-program-drafts", json=payload).status_code == 403
+        assert (
+            client.post(
+                "/api/v2/ai-program-drafts", json=hybrid().model_dump(mode="json")
+            ).status_code
+            == 422
+        )
+        assert (
+            client.post(
+                "/api/v2/ai-program-drafts", json=payload | {"symptoms": True}
+            ).status_code
+            == 422
+        )
+        assert not calls
+        response = client.post("/api/v2/ai-program-drafts", json=payload)
+>       assert response.status_code == 200, response.text
+E       AssertionError: {"error":{"code":"validation","message":"Girdi biçimini kontrol et.","details":{"fields":["ai_origin.prompt_version"]}}}
+E       assert 422 == 200
+E        +  where 422 = <Response [422 Unprocessable Entity]>.status_code
+
+tests/v2/test_ai_planning.py:260: AssertionError
+_______________ test_global_ai_limit_is_shared_between_accounts ________________
+
+client = <starlette.testclient.TestClient object at 0x10b1ed8e0>
+app = <fastapi.applications.FastAPI object at 0x10b246cf0>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10b010290>
+
+    def test_global_ai_limit_is_shared_between_accounts(client, app, monkeypatch):
+        app.state.settings.openai_api_key = SecretStr("synthetic-key")
+        app.state.settings.openai_model = "synthetic-model"
+        app.state.settings.ai_global_limit = 1
+        calls = []
+    
+        def fake_call(_settings, _context):
+            calls.append(1)
+            return reply(data())
+    
+        monkeypatch.setattr(ai, "call_openai", fake_call)
+        payload = data().model_dump(mode="json")
+>       assert client.post("/api/v2/ai-program-drafts", json=payload).status_code == 200
+E       AssertionError: assert 422 == 200
+E        +  where 422 = <Response [422 Unprocessable Entity]>.status_code
+E        +    where <Response [422 Unprocessable Entity]> = post('/api/v2/ai-program-drafts', json={'experience': 'advanced', 'objective': 'hypertrophy', 'equipment': ['EZ Bar', 'Pull-Up Bar', 'Outdoor', 'Rings'], 'weekdays': [0, 1, 3, 4], ...})
+E        +      where post = <starlette.testclient.TestClient object at 0x10b1ed8e0>.post
+
+tests/v2/test_ai_planning.py:283: AssertionError
+=============================== warnings summary ===============================
+.venv-v2/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+.venv-v2/lib/python3.12/site-packages/starlette/testclient.py:53
+  /Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/v2/test_evren_planning.py::test_evren_transport_and_canonical_validation
+FAILED tests/v2/test_evren_planning.py::test_evren_api_consent_and_persistence
+FAILED tests/v2/test_ai_planning.py::test_valid_ai_plan_uses_canonical_ids_and_preview_is_pure
+FAILED tests/v2/test_ai_planning.py::test_ai_endpoint_auth_disabled_consent_health_quota_and_persistence
+FAILED tests/v2/test_ai_planning.py::test_global_ai_limit_is_shared_between_accounts
+5 failed, 50 passed, 2 warnings in 2.20s

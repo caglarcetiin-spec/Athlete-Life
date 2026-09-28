@@ -25,3 +25,13 @@ Kullanıcı tarafından sağlanan EVREN anahtarı yalnız geçici yerel sunucu s
 ## Veri, yayın ve geri dönüş
 
 SQL/Mongo şema göçü, gerçek hesap/medya geçişi veya veri testi yok. Yeni kaynaklar ve public release frontend yerelde; Render/GitHub yayını yapılmadı. Yeni EVREN provider metadata'sıyla oluşturulmuş planları eski kod düzenlerken reddedebilir; rollback provider kabulünü korumalı. Onay yenilemeden OpenAI'ye geri yönlendirme yok.
+
+## Koşul onayından sonra yeniden doğrulama — güncel sonuç
+
+**Canlı sentetik üretim PASS.** `live-20260928T032348362334Z.json` / `live-connection.json`: terms accepted, `mimo-v2.6-pro`, reasoning `low`, 61.83 saniye, dört gün / 26 hareket girdisi, validatör sonucu `draft`. Gerçek kullanıcı verisi okunmadı; program/seans/actual set yazılmadı. Önceki BLOCKED_TERMS, iki timeout ve reddedilen planlar tarihli dosyalarda korunur. Aradaki AttributeError, uzun yaşayan yerel tanı sürecinin yeni Settings alanını henüz yüklememesi nedeniyle oluştu; üretim isteğine ulaşmadı. Bu kayıtta generation_attempts=1 çağrıya giriş sayısıdır, sağlayıcının tamamladığı istek sayısı değildir.
+
+Başarılı canlı deneme sırasında aynı son istem metni çalıştı; yalnız prompt sürüm etiketi daha sonra `ai-planner-2` olarak kayda eklendi. İlk regression bu yeni etiketin ProgramInput literal listesine eklenmemiş olmasını yakaladı (5 fail); validator eski+yeniyi kabul edecek şekilde düzeltildi, test beklentileri gevşetilmedi. Başarısız test kanıtı stage-9/runs altında korunur.
+
+Son durum: `evren-final-api`: **55 PASS**, `evren-final-mongo`: **2 PASS**. Yeni reasoning ayarı, açık aday kuralları ve eski/yeni metadata kayıt akışı doğrulandı. Önceki browser kabulü frontend değişmediği için geçerli kapsamda; bu tur frontend değişmedi, tekrar paketlenmedi.
+
+Yerel 10005 önizlemesi aynı veri deposuyla `mimo-v2.6-pro` / `low` kullanacak şekilde yeniden başlatıldı; anahtar süreç belleğinde. Kullanıcı sayfayı yenileyip EVREN onayını işaretleyerek plan üretebilir. Bu sonuç belirli sentetik örneğe aittir; biyolojik doğruluk/evrensel model kalitesi veya her isteğin 62 saniyede biteceği garantisi değildir. Render yayını/şema/hesap/medya göçü yok.

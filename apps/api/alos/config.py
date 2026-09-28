@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     ai_provider: Literal["openai", "evren"] = "openai"
     evren_api_key: SecretStr | None = Field(default=None, repr=False)
     evren_model: str = Field(default="", max_length=100, pattern=r"^[A-Za-z0-9._:/-]*$")
+    evren_reasoning_effort: Literal["none", "minimal", "low", "medium", "high", "xhigh"] | None = None
     openai_api_key: SecretStr | None = Field(default=None, repr=False)
     openai_model: str = Field(default="", max_length=100, pattern=r"^[A-Za-z0-9._:-]*$")
     ai_user_limit: int = Field(default=3, ge=1, le=20)
