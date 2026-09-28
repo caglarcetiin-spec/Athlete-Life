@@ -212,3 +212,10 @@ GET `/api/v2/ai-planning-status` yalnız yapılandırma durumunu oturum sahibine
 - `ai_origin.prompt_version=ai-planner-7`; önceki sürümler okunur. `sport-<sport>-<key>` kimliği `slot` ve gerçek `set` içine aynen taşınır; tur/saniye circuit kanalıdır, güç çalışması skill/tekrar kanalıdır. Yeni tekniklerde kas dağılımı UNKNOWN.
 - `science.branch_practice` kayıtlı tur, bilinen süre, eksik süre sayısı ve kaynak setlerini branş/yöntem bazında toplar. `Reports` bu özeti gösterir. `ai_progress.performance` olgularına `sport_id`, `training_method`, `physical` eklenir; tahmin değil katalog bağlamıdır.
 - [Kapsam, kaynaklar, test ve rollback sınırları](../SPORT_TRAINING_CATALOG.md). DB şema/hesap/medya göçü yok; kişisel verilerle test veya üretim yayını yok.
+
+## 2026-09-28 — Koşu akışı ve bağımsız plan uygunluğu
+
+- `programming.draft_with_context.automatic_eligibility` yaş/sağlık nedenlerini başlangıç taslağındaki hareket sayısından ayırır. `ai_planning.prepare` sağlık ve aday/ortam eksikliğini ayrı kod/nedenle döndürür; sağlık engelinde sağlayıcı çağrılmaz.
+- `running.py` → 15 koşu türü, yedi yeni kanonik kimlik, aday ortamı ve deneyim, tek yoğun gün, interval/tek süre, kapasite ve haftalık süre sınırları. `running_program.py` saf koşu haftası; karma planda `guided_planning` aynı aday/doz kurallarını paylaşır. `run_form` katalog arayüz metadata alanıdır.
+- `guided_choices.running_profile.{target_distance_km,continuous_minutes,weekly_minutes}` nullable; `performance_focus[]` varsayılan boş; `split=endurance_days`; `ai_origin.prompt_version=ai-planner-8`. Tek yazım mevcut `program.decisions.guided_choices`; eski alanlar ve sürümler desteklenir.
+- `planningJourney` / `PerformanceFocus` / `GuidedPlan`: yönteme göre sorular, koşu/dövüş/yüzme ekipmanı ve performans öncelikleri. [Kapsam, kaynak, göç ve geri alma](../RUNNING_PLANNER.md).

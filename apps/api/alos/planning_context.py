@@ -69,6 +69,15 @@ def profile_context(profile):
     }
 
 
+def available_equipment(equipment):
+    available = {normalize(e) for e in equipment} | {"floor", "bodyweight"}
+    if available & {"road", "track", "park", "trail", "hill"}:
+        available.add("outdoor")
+    if "inclinetreadmill" in available:
+        available.add("treadmill")
+    return available
+
+
 def equipment_matches(definition, available):
     required = {normalize(e) for e in definition.get("equipment", [])}
     # RUN catalog's Outdoor/Treadmill list denotes two locations, not a

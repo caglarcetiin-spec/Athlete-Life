@@ -5,6 +5,8 @@ import re
 import unicodedata
 from pathlib import Path
 
+from .running import DEFINITIONS as RUNNING_DEFINITIONS
+from .running import RUNS
 from .sport_training import DEFINITIONS as SPORT_DEFINITIONS
 
 VERSION = "movement-catalog-2"
@@ -17,7 +19,10 @@ def normalize(value):
     return re.sub(r"[^a-z0-9]", "", value)
 
 
-DEFINITIONS.update({d["id"]: d for d in SPORT_DEFINITIONS})
+DEFINITIONS.update({d["id"]: d for d in SPORT_DEFINITIONS + RUNNING_DEFINITIONS})
+for definition in DEFINITIONS.values():
+    if definition["id"] in RUNS:
+        definition["displayNameTR"] = RUNS[definition["id"]][0]
 
 BY_ID = {d["id"]: d for d in DEFINITIONS.values()}
 ALIASES = {}

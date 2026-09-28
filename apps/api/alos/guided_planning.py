@@ -80,7 +80,32 @@ class SportReadiness(StrictModel):
     partner_available: bool = False
 
 
+class RunningProfile(StrictModel):
+    target_distance_km: float | None = Field(default=None, gt=0, le=200)
+    continuous_minutes: float | None = Field(default=None, gt=0, le=240)
+    weekly_minutes: float | None = Field(default=None, ge=0, le=3000)
+
+
 class GuidedChoices(StrictModel):
+    running_profile: RunningProfile | None = None
+    performance_focus: list[
+        Literal[
+            "aerobic_base",
+            "distance",
+            "pace",
+            "speed",
+            "hills",
+            "consistency",
+            "footwork",
+            "defence",
+            "combinations",
+            "round_endurance",
+            "technique_quality",
+            "tactics",
+            "coordination",
+            "mobility",
+        ]
+    ] = Field(default_factory=list, max_length=3)
     sport_readiness: list[SportReadiness] = Field(default_factory=list, max_length=20)
     sport_ids: list[str] = Field(default_factory=list, max_length=20)
     sport_experience: list[SportExperience] = Field(default_factory=list, max_length=20)
@@ -90,7 +115,7 @@ class GuidedChoices(StrictModel):
     equipment: list[str] = Field(max_length=50)
     weekdays: list[int] = Field(min_length=1, max_length=6)
     minutes: int = Field(ge=15, le=180)
-    split: Literal["full_body", "upper_lower", "push_pull_legs", "sport_days"]
+    split: Literal["full_body", "upper_lower", "push_pull_legs", "sport_days", "endurance_days"]
     focus: dict[str, int] = Field(default_factory=dict)
     goal: str = Field(min_length=1, max_length=1000)
     methods: list[
@@ -113,6 +138,13 @@ class GuidedChoices(StrictModel):
     @model_validator(mode="after")
     def validate_choices(self):
         from .sport_training import sport_mode
+
+        if len(self.performance_focus) != len(set(self.performance_focus)):
+            raise ValueError("Performans öncelikleri tekil olmalı.")
+        if self.split == "endurance_days" and (
+            not set(self.methods) <= ENDURANCE_METHODS or not set(self.methods) & {"running", "swimming"}
+        ):
+            raise ValueError("Dayanıklılık günleri için koşu/yüzme yöntemlerini seç.")
 
         readiness_ids = [s.sport_id for s in self.sport_readiness]
         if len(set(readiness_ids)) != len(readiness_ids) or set(readiness_ids) - set(self.sport_ids):
@@ -144,7 +176,13 @@ class GuidedChoices(StrictModel):
             {c.movement_id for c in self.competencies}
         ) != len(self.competencies):
             raise ValueError("Yöntem ve yetkinlikler tekil olmalı.")
-        minimum = {"full_body": 1, "upper_lower": 2, "push_pull_legs": 3, "sport_days": 1}[self.split]
+        minimum = {
+            "full_body": 1,
+            "upper_lower": 2,
+            "push_pull_legs": 3,
+            "sport_days": 1,
+            "endurance_days": 1,
+        }[self.split]
         if len(self.weekdays) < minimum:
             raise ValueError("Seçtiğin çalışma düzeni için yeterli gün yok.")
         return self
@@ -178,8 +216,13 @@ def generate(data, snapshot, as_of):
         as_of,
     )
     choices = GuidedChoices.model_validate(data.model_dump(include=set(GuidedChoices.model_fields)))
-    allowed = any(d["exercises"] for d in baseline["program"]["days"])
-    available = {normalize(e) for e in data.equipment} | {"floor", "bodyweight"}
+    allowed = baseline["automatic_eligibility"]["allowed"]
+    from .planning_context import available_equipment
+    from .running import RUNS, allowed_on_day, pure_running
+    from .running import exclusion as running_exclusion
+    from .running import rules as running_rules
+
+    available = available_equipment(data.equipment)
     profiles = [p for p in snapshot.get("profiles", []) if not p.get("deleted_at")]
     dislikes = (
         (profiles[0].get("planning_preferences") or {}).get("disliked_movements", []) if profiles else []
@@ -188,16 +231,20 @@ def generate(data, snapshot, as_of):
     excluded = []
     pool = []
     for key, meta in META.items():
-        reason = exclusion(data, key) or (
-            "Tercihlerin dışında"
-            if key in dislikes
-            else "Seçilen yöntemlere ait değil"
-            if not set(meta["methods"]) & set(data.methods)
-            else "Gerekli ekipman seçilmedi"
-            if not equipment_matches(BY_ID[key], available)
-            else "Kontrollü yapabildiğini belirtmedin"
-            if meta["competency_required"] and key not in competencies
-            else None
+        reason = (
+            exclusion(data, key)
+            or running_exclusion(data, key, available)
+            or (
+                "Tercihlerin dışında"
+                if key in dislikes
+                else "Seçilen yöntemlere ait değil"
+                if not set(meta["methods"]) & set(data.methods)
+                else "Gerekli ekipman seçilmedi"
+                if not equipment_matches(BY_ID[key], available)
+                else "Kontrollü yapabildiğini belirtmedin"
+                if meta["competency_required"] and key not in competencies
+                else None
+            )
         )
         if reason:
             excluded.append({"movement_id": key, "reason": reason})
@@ -207,6 +254,10 @@ def generate(data, snapshot, as_of):
         from .sport_program import generate_sport_program
 
         return generate_sport_program(data, baseline, choices, pool, excluded, allowed, snapshot, as_of)
+    if pure_running(data):
+        from .running_program import generate_running_program
+
+        return generate_running_program(data, baseline, choices, pool, excluded, allowed, snapshot)
     notes = [
         "Seçilen branşlar: " + ", ".join(BY_SPORT[s]["name"] for s in data.sport_ids),
         "Branş hedefi AI bağlamına aktarılır. Otomatik hareket kapsamı seçili yöntemler ve yetkinlik kataloğuyla sınırlıdır; diğer branşların özel tekniklerini manuel ekleyebilirsin.",
@@ -249,7 +300,7 @@ def generate(data, snapshot, as_of):
         index = training_days.index(day["weekday"])
         kind = (
             "full_body"
-            if data.split == "full_body"
+            if data.split in ("full_body", "endurance_days")
             else (
                 ["upper", "lower"][index % 2]
                 if data.split == "upper_lower"
@@ -290,8 +341,23 @@ def generate(data, snapshot, as_of):
         selected = []
         decisions = []
         selected_sets = 0
-        cardio = next((key for key in sorted(pool, key=rank) if META[key]["block"] == "conditioning"), None)
+        cardio = next(
+            (
+                key
+                for key in sorted(pool, key=rank)
+                if META[key]["block"] == "conditioning" and allowed_on_day(data, key, day["weekday"])
+            ),
+            None,
+        )
         cardio_seconds = min(data.conditioning_minutes * 60, max(0, limit - used - 60))
+        cardio_rest = 0
+        if cardio in RUNS:
+            rule = running_rules(data, cardio, competencies.get(cardio))
+            cardio_seconds = min(cardio_seconds, rule["seconds"]["max"])
+            cardio_rest = rule["rest_min"]
+            weekly = data.running_profile.weekly_minutes if data.running_profile else None
+            if weekly and weekly > 0:
+                cardio_seconds = min(cardio_seconds, int(weekly * 60 / len(training_days)))
         reserve = (
             (cardio_seconds + 60)
             if cardio and bool(set(data.methods) & ENDURANCE_METHODS) and cardio_seconds
@@ -417,7 +483,7 @@ def generate(data, snapshot, as_of):
                     "equipment": ", ".join(e for e in definition["equipment"] if normalize(e) in available),
                     "sets": 1,
                     "seconds": cardio_seconds,
-                    "rest_seconds": 0,
+                    "rest_seconds": cardio_rest,
                     "set_kind": "working",
                 }
             )
@@ -516,6 +582,8 @@ def generate(data, snapshot, as_of):
             "selected_methods": data.methods,
             "input_revision": snapshot["cursor"],
             "health_context": baseline["health_context"],
+            "health_blocked": not allowed,
+            "eligibility_reasons": baseline["automatic_eligibility"]["reasons"],
             "meaning": "Haftalık kuvvet setlerinin katalog katsayılarıyla dağılımı. Teknik tutuş ve kondisyon bu toplama katılmaz; büyüme/hasar ölçümü değildir.",
             "duration_assumptions": "5–8 dk hazırlık + tekrar başına 4 sn veya hedef tutuş süresi + belirtilen dinlenmeler + hareket başına 60 sn geçiş. Gerçek süre değişebilir.",
             "skill_sets": sum(

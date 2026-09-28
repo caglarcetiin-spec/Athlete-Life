@@ -1,0 +1,8 @@
+{
+  "checked_at": "2026-09-28T09:15:58.499331+00:00",
+  "origin": "http://127.0.0.1:10005",
+  "ready_status": 200,
+  "asset": "/assets/index-B-v0gnbf.js",
+  "matches_packaged_asset": true,
+  "scope": "Unauthenticated readiness and static asset only; no personal account records read"
+}

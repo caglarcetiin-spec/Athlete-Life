@@ -1,3 +1,12 @@
+import { PerformanceFocus } from "./PerformanceFocus";
+import {
+  enduranceOnly,
+  nextMethods,
+  focusOptions,
+  runningEquipment,
+  combatEquipment,
+  swimmingEquipment,
+} from "./planningJourney";
 import {
   SportTrainingFields,
   branchMethods,
@@ -9,7 +18,7 @@ import { SportOptions, type SportOption } from "./SportOptions";
 import { FocusMap } from "./FocusMap";
 import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight, Check, Sparkles } from "lucide-react";
-import { api } from "../api/contracts";
+import { api, ApiError } from "../api/contracts";
 import type { SyncStore } from "../sync/store";
 import type { PlanDraft } from "./Programming";
 import { today } from "../time";
@@ -54,6 +63,7 @@ const equipmentNames = [
 ];
 type Competency = { movement_id: string; reps?: number; seconds?: number };
 type PlannerOption = {
+  run_form?: "continuous" | "interval" | null;
   sport_id?: string | null;
   movement_id: string;
   name: string;
@@ -73,6 +83,12 @@ type SportExperience = {
   known_skills: string;
 };
 type Answers = {
+  performance_focus: string[];
+  running_profile: {
+    target_distance_km: number | null;
+    continuous_minutes: number | null;
+    weekly_minutes: number | null;
+  } | null;
   sport_readiness: SportReadiness[];
   sport_experience: SportExperience[];
   sport_ids: string[];
@@ -143,6 +159,8 @@ export function GuidedPlan({
 }) {
   const profile = store.view("profile")[0];
   const [answers, setAnswers] = useState<Answers>({
+    performance_focus: [],
+    running_profile: null,
     sport_readiness: [],
     sport_ids: (profile?.sport_ids as string[]) || [],
     training_history: "",
@@ -333,6 +351,19 @@ export function GuidedPlan({
       .catch(() => setError("Taslak cihazda saklanamadı."));
   }
   const total = Object.values(answers.focus).reduce((a, b) => a + b, 0);
+  const isEndurance = enduranceOnly(answers.methods);
+  const isRunning = answers.methods.includes("running");
+  const combat = answers.sport_ids.some(
+    (id) => sports.find((s) => s.id === id)?.category === "combat",
+  );
+  const showPerformance =
+    isRunning ||
+    isEndurance ||
+    answers.methods.some((m) => branchMethods.includes(m)) ||
+    combat;
+  const showMuscles = answers.methods.some((m) =>
+    ["weights", "calisthenics", "gymnastics"].includes(m),
+  );
   const branchMode = answers.methods.some((m) => branchMethods.includes(m));
   const selectedProfiles = sportTraining.filter((p) =>
     answers.sport_ids.includes(p.sport_id),
@@ -357,6 +388,40 @@ export function GuidedPlan({
               ? answers.methods.length > 0 &&
                 (!branchMode || answers.sport_ids.length > 0)
               : true;
+  const environmentOptions = Array.from(
+    new Map([
+      ...(isRunning ? runningEquipment : []),
+      ...(combat ? combatEquipment : []),
+      ...(answers.methods.includes("swimming") ? swimmingEquipment : []),
+      ...(showMuscles ||
+      (!isRunning && !combat && !answers.methods.includes("swimming"))
+        ? equipmentOptions.map(
+            (e, i) => [e, equipmentNames[i]] as [string, string],
+          )
+        : []),
+    ]).entries(),
+  );
+  function toggleMethod(key: string) {
+    const next = nextMethods(answers.methods, key);
+    const priorityIds = focusOptions(next.methods, combat).map(([id]) => id);
+    update({
+      ...next,
+      performance_focus: (answers.performance_focus || []).filter((id) =>
+        priorityIds.includes(id),
+      ),
+      ...(enduranceOnly(next.methods)
+        ? { focus: {}, objective: "endurance" }
+        : {}),
+      sport_ids:
+        key === "running" &&
+        next.methods.includes("running") &&
+        !answers.sport_ids.some((id) =>
+          ["running", "trail-running", "track-running"].includes(id),
+        )
+          ? [...answers.sport_ids, "running"]
+          : answers.sport_ids,
+    });
+  }
   const capacityIssue = capacityError(answers.competencies, options);
   async function generate() {
     if (busy) return;
@@ -402,15 +467,26 @@ export function GuidedPlan({
             engine === "ai"
               ? {
                   ...answers,
+                  ...(isEndurance
+                    ? { split: "endurance_days", focus: {} }
+                    : {}),
                   consent: aiStatus?.consent_version ?? "planning-form-v1",
                 }
-              : answers,
+              : {
+                  ...answers,
+                  ...(isEndurance
+                    ? { split: "endurance_days", focus: {} }
+                    : {}),
+                },
           ),
         },
       )) as Preview;
       setPreview(result);
       go(9);
     } catch (e) {
+      if (e instanceof ApiError && e.code === "ai_no_candidates") {
+        go(e.details.section === "competencies" ? 2 : 4);
+      }
       setError(
         (e as Error).name === "TimeoutError"
           ? "AI yanıtı bekleme süresini aştı. Form seçimlerin korundu; biraz sonra yeniden deneyebilirsin."
@@ -462,7 +538,13 @@ export function GuidedPlan({
         aria-label="Program oluşturma ilerlemesi"
       />
       <h2 ref={heading} tabIndex={-1}>
-        {titles[step]}
+        {step === 2 && isRunning
+          ? "Hangi koşu türlerini daha önce yaptın?"
+          : step === 6 && showPerformance
+            ? "Hangi performans hedefleri önceliğin?"
+            : step === 7 && isEndurance
+              ? "Dayanıklılık haftanı nasıl düzenleyelim?"
+              : titles[step]}
       </h2>
       <fieldset className="guided-fields" disabled={busy}>
         {phase === 0 && (
@@ -653,19 +735,7 @@ export function GuidedPlan({
                     className="guided-option secondary"
                     key={m.id}
                     aria-pressed={answers.methods.includes(m.id)}
-                    onClick={() => {
-                      const methods = answers.methods.includes(m.id)
-                        ? answers.methods.filter((x) => x !== m.id)
-                        : [...answers.methods, m.id];
-                      update({
-                        methods,
-                        split: methods.some((x) => branchMethods.includes(x))
-                          ? "sport_days"
-                          : answers.split === "sport_days"
-                            ? "full_body"
-                            : answers.split,
-                      });
-                    }}
+                    onClick={() => toggleMethod(m.id)}
                   >
                     <strong>{m.label}</strong>
                     <span>{m.description}</span>
@@ -710,13 +780,7 @@ export function GuidedPlan({
                   key={key}
                   className="guided-option secondary"
                   aria-pressed={answers.methods.includes(key)}
-                  onClick={() =>
-                    update({
-                      methods: answers.methods.includes(key)
-                        ? answers.methods.filter((m) => m !== key)
-                        : [...answers.methods, key],
-                    })
-                  }
+                  onClick={() => toggleMethod(key)}
                 >
                   <strong>{label}</strong>
                   <span>{text}</span>
@@ -732,6 +796,54 @@ export function GuidedPlan({
         )}
         {step === 2 && (
           <>
+            {isRunning && (
+              <fieldset>
+                <legend>Koşu geçmişin ve hedefin</legend>
+                <p>
+                  Değerleri bilmiyorsan boş bırak. Hedef mesafe ölçülmüş
+                  kapasite sayılmaz; pace veya nabız eşiği uydurulmaz.
+                </p>
+                {(
+                  [
+                    [
+                      "continuous_minutes",
+                      "Şu an rahatça kesintisiz koşabildiğin dakika",
+                      240,
+                    ],
+                    [
+                      "weekly_minutes",
+                      "Son haftalarda haftalık koşu süren (dakika)",
+                      3000,
+                    ],
+                    ["target_distance_km", "Hedef koşu mesafen (km)", 200],
+                  ] as const
+                ).map(([key, label, max]) => (
+                  <label key={key}>
+                    {label}
+                    <input
+                      type="number"
+                      min={key === "weekly_minutes" ? 0 : 0.1}
+                      max={max}
+                      step="any"
+                      value={answers.running_profile?.[key] ?? ""}
+                      onChange={(e) =>
+                        update({
+                          running_profile: {
+                            target_distance_km: null,
+                            continuous_minutes: null,
+                            weekly_minutes: null,
+                            ...answers.running_profile,
+                            [key]: e.target.value
+                              ? Number(e.target.value)
+                              : null,
+                          },
+                        })
+                      }
+                    />
+                  </label>
+                ))}
+              </fieldset>
+            )}
             {branchMode && (
               <SportTrainingFields
                 profiles={selectedProfiles}
@@ -860,9 +972,11 @@ export function GuidedPlan({
                 value={capabilitySearch}
                 onChange={(e) => setCapabilitySearch(e.target.value)}
                 placeholder={
-                  branchMode
-                    ? "Örneğin jab, kata, geçiş tekniği"
-                    : "Örneğin front lever, barfiks, squat"
+                  isRunning
+                    ? "Örneğin tempo, interval, uzun koşu"
+                    : branchMode
+                      ? "Örneğin jab, kata, geçiş tekniği"
+                      : "Örneğin front lever, barfiks, squat"
                 }
               />
             </label>
@@ -907,13 +1021,15 @@ export function GuidedPlan({
                       </label>
                       {selected && (
                         <label>
-                          {o.sport_id
-                            ? "Bir turdaki kontrollü çalışma süren (sn, isteğe bağlı)"
-                            : o.block === "conditioning"
-                              ? "Kesintisiz çalışma süresi (sn)"
-                              : o.metric === "seconds"
-                                ? "Kontrollü tutuş / süre (sn)"
-                                : "Kontrollü tekrar sayısı"}
+                          {o.run_form === "interval"
+                            ? "Tek koşu aralığının süresi (sn, isteğe bağlı)"
+                            : o.sport_id
+                              ? "Bir turdaki kontrollü çalışma süren (sn, isteğe bağlı)"
+                              : o.block === "conditioning"
+                                ? "Kesintisiz çalışma süresi (sn)"
+                                : o.metric === "seconds"
+                                  ? "Kontrollü tutuş / süre (sn)"
+                                  : "Kontrollü tekrar sayısı"}
                           <input
                             aria-label={o.name + " kapasitesi"}
                             type="number"
@@ -961,61 +1077,84 @@ export function GuidedPlan({
         )}
         {phase === 1 && (
           <>
-            {choices("objective", [
-              [
-                "power",
-                "Patlayıcı güç",
-                "Bildiğin sıçrama/atış teknikleriyle hız ve teknik kalite; yöntemlerde patlayıcı gücü de seç.",
-              ],
-              [
-                "endurance",
-                "Dayanıklılık",
-                "Koşu veya yüzmede süre ve düzenli katılım hedefi.",
-              ],
-              [
-                "technique",
-                "Tekniğimi geliştirmek",
-                "Bildiğin becerileri kontrollü çalışmak; yeni teknikler için eğitmen desteği.",
-              ],
-              [
-                "hypertrophy",
-                "Kas geliştirmek",
-                "Kas gelişimine yönelik başlangıç taslağı.",
-              ],
-              [
-                "strength",
-                "Güçlenmek",
-                "Kuvvet odağı ve daha uzun dinlenmeler.",
-              ],
-              [
-                "strength_hypertrophy",
-                "İkisi birlikte",
-                "Kuvvet ve kas gelişimini birlikte takip et.",
-              ],
-            ])}
+            {choices(
+              "objective",
+              isEndurance
+                ? [
+                    [
+                      "endurance",
+                      "Dayanıklılık ve mesafe",
+                      "Rahat sürdürülebilen süre ve düzenli çalışma.",
+                    ],
+                    [
+                      "technique",
+                      "Teknik ve tempo kontrolü",
+                      "Bildiğin koşu/yüzme çalışmalarında kontrollü uygulama.",
+                    ],
+                  ]
+                : [
+                    [
+                      "power",
+                      "Patlayıcı güç",
+                      "Bildiğin sıçrama/atış teknikleriyle hız ve teknik kalite; yöntemlerde patlayıcı gücü de seç.",
+                    ],
+                    [
+                      "endurance",
+                      "Dayanıklılık",
+                      "Koşu veya yüzmede süre ve düzenli katılım hedefi.",
+                    ],
+                    [
+                      "technique",
+                      "Tekniğimi geliştirmek",
+                      "Bildiğin becerileri kontrollü çalışmak; yeni teknikler için eğitmen desteği.",
+                    ],
+                    [
+                      "hypertrophy",
+                      "Kas geliştirmek",
+                      "Kas gelişimine yönelik başlangıç taslağı.",
+                    ],
+                    [
+                      "strength",
+                      "Güçlenmek",
+                      "Kuvvet odağı ve daha uzun dinlenmeler.",
+                    ],
+                    [
+                      "strength_hypertrophy",
+                      "İkisi birlikte",
+                      "Kuvvet ve kas gelişimini birlikte takip et.",
+                    ],
+                  ],
+            )}
             <label>
               Somut hedefin ne?
               <textarea
                 maxLength={1000}
-                placeholder="Örneğin 8 haftada düzen kurmak ve şınav sayımı takip etmek"
+                placeholder={
+                  isRunning
+                    ? "Örneğin 8 haftada düzenli koşmak ve rahat 5 km tamamlamak"
+                    : combat
+                      ? "Örneğin ayak çalışması ve raunt dayanıklılığımı geliştirmek"
+                      : "Örneğin 8 haftada düzen kurmak ve şınav sayımı takip etmek"
+                }
                 value={answers.goal}
                 onChange={(e) => update({ goal: e.target.value })}
               />
             </label>
             <p>
-              Kas büyümesine yüzde garantisi vermeyiz. Ölçülebilir hedeflerini
-              Durumum bölümünden takip edebilirsin.
+              Ölçülebilir hedeflerini Gelişim bölümünden takip edebilirsin.
+              Hedefin, gerçekleşmiş performans veya gelişim garantisi değildir.
             </p>
           </>
         )}
         {phase === 2 && (
           <>
             <p>
-              Yalnız gerçekten kullanabildiklerini seç. Hiçbiri seçili değilse
-              vücut ağırlığı ve zemin kullanılır.
+              {isRunning
+                ? "Koşabileceğin ortamı seç. Pist, yol, park, patika ve yokuş farklı seçeneklerdir; saat veya nabız sensörü zorunlu değildir."
+                : "Yalnız gerçekten kullanabildiğin ekipmanları seç. Partner ve eğitmen bilgisi ayrıca değerlendirilir."}
             </p>
             <div className="guided-options">
-              {equipmentOptions.map((item, i) => (
+              {environmentOptions.map(([item, label]) => (
                 <button
                   className="guided-option secondary"
                   aria-pressed={answers.equipment.includes(item)}
@@ -1028,7 +1167,7 @@ export function GuidedPlan({
                     })
                   }
                 >
-                  {equipmentNames[i]}
+                  {label}
                   {answers.equipment.includes(item) && <Check size={18} />}
                 </button>
               ))}
@@ -1077,26 +1216,27 @@ export function GuidedPlan({
                 ))}
               </select>
             </label>
-            {answers.methods.some((m) =>
-              ["conditioning", "running", "swimming"].includes(m),
-            ) && (
-              <label>
-                Bir seanstaki kondisyon süresi
-                <select
-                  aria-label="Bir seanstaki kondisyon süresi"
-                  value={answers.conditioning_minutes}
-                  onChange={(e) =>
-                    update({ conditioning_minutes: Number(e.target.value) })
-                  }
-                >
-                  {[5, 10, 15, 20, 30, 45].map((n) => (
-                    <option key={n} value={n}>
-                      {n} dakika
-                    </option>
-                  ))}
-                </select>
-              </label>
-            )}
+            {!isEndurance &&
+              answers.methods.some((m) =>
+                ["conditioning", "running", "swimming"].includes(m),
+              ) && (
+                <label>
+                  Bir seanstaki kondisyon süresi
+                  <select
+                    aria-label="Bir seanstaki kondisyon süresi"
+                    value={answers.conditioning_minutes}
+                    onChange={(e) =>
+                      update({ conditioning_minutes: Number(e.target.value) })
+                    }
+                  >
+                    {[5, 10, 15, 20, 30, 45].map((n) => (
+                      <option key={n} value={n}>
+                        {n} dakika
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              )}
             <p>
               Haftada {answers.weekdays.length * answers.minutes} dakika ·
               seçmediğin günler dinlenme.
@@ -1105,85 +1245,110 @@ export function GuidedPlan({
         )}
         {phase === 4 && (
           <>
-            <p>
-              İstersen toplam 5 öncelik puanını dağıt. Hepsini kullanmak zorunda
-              değilsin. Bu puanlar büyüme yüzdesi değildir.
-            </p>
-            <FocusMap focus={answers.focus} />
-            <strong role="status">{total} / 5 puan kullanıldı</strong>
-            <div className="guided-muscles">
-              {Object.entries(groups).map(([id, name]) => (
-                <div className="guided-muscle" key={id}>
-                  <span>{name}</span>
-                  <div>
-                    <button
-                      className="secondary small"
-                      aria-label={name + " önceliğini azalt"}
-                      disabled={!answers.focus[id]}
-                      onClick={() =>
-                        update({
-                          focus: {
-                            ...answers.focus,
-                            [id]: (answers.focus[id] || 0) - 1,
-                          },
-                        })
-                      }
-                    >
-                      −
-                    </button>
-                    <output aria-label={name + " öncelik puanı"}>
-                      {answers.focus[id] || 0}
-                    </output>
-                    <button
-                      className="secondary small"
-                      aria-label={name + " önceliğini artır"}
-                      disabled={total >= 5}
-                      onClick={() =>
-                        update({
-                          focus: {
-                            ...answers.focus,
-                            [id]: (answers.focus[id] || 0) + 1,
-                          },
-                        })
-                      }
-                    >
-                      +
-                    </button>
-                  </div>
+            {showPerformance && (
+              <PerformanceFocus
+                methods={answers.methods}
+                combat={combat}
+                value={answers.performance_focus || []}
+                onChange={(performance_focus) => update({ performance_focus })}
+              />
+            )}
+            {showMuscles && (
+              <details open={!showPerformance}>
+                <summary>
+                  {showPerformance
+                    ? "Ek kuvvet çalışması için kas öncelikleri (isteğe bağlı)"
+                    : "Kas bölgesi öncelikleri"}
+                </summary>
+                <p>
+                  İstersen toplam 5 öncelik puanını dağıt. Hepsini kullanmak
+                  zorunda değilsin. Bu puanlar büyüme yüzdesi değildir.
+                </p>
+                <FocusMap focus={answers.focus} />
+                <strong role="status">{total} / 5 puan kullanıldı</strong>
+                <div className="guided-muscles">
+                  {Object.entries(groups).map(([id, name]) => (
+                    <div className="guided-muscle" key={id}>
+                      <span>{name}</span>
+                      <div>
+                        <button
+                          className="secondary small"
+                          aria-label={name + " önceliğini azalt"}
+                          disabled={!answers.focus[id]}
+                          onClick={() =>
+                            update({
+                              focus: {
+                                ...answers.focus,
+                                [id]: (answers.focus[id] || 0) - 1,
+                              },
+                            })
+                          }
+                        >
+                          −
+                        </button>
+                        <output aria-label={name + " öncelik puanı"}>
+                          {answers.focus[id] || 0}
+                        </output>
+                        <button
+                          className="secondary small"
+                          aria-label={name + " önceliğini artır"}
+                          disabled={total >= 5}
+                          onClick={() =>
+                            update({
+                              focus: {
+                                ...answers.focus,
+                                [id]: (answers.focus[id] || 0) + 1,
+                              },
+                            })
+                          }
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
+              </details>
+            )}
           </>
         )}
         {phase === 5 && (
           <>
             {choices(
               "split",
-              branchMode
+              isEndurance
                 ? [
                     [
-                      "sport_days",
-                      "Branş günleri",
-                      "Her güne bir branş; seçtiğin sırayla dönüşümlü. Teknik, uygulama ve destek aynı seansta.",
+                      "endurance_days",
+                      "Dayanıklılık günleri",
+                      "Koşu/yüzme çalışmaları süre ve günlere göre düzenlenir. Koşuda kolay günler temel, yoğun çalışma ayrı gündür.",
                     ],
                   ]
-                : [
-                    [
-                      "full_body",
-                      "Tüm vücut",
-                      "Her çalışma gününde farklı ana hareketleri bir arada yap.",
+                : branchMode
+                  ? [
+                      [
+                        "sport_days",
+                        "Branş günleri",
+                        "Her güne bir branş; seçtiğin sırayla dönüşümlü. Teknik, uygulama ve destek aynı seansta.",
+                      ],
+                    ]
+                  : [
+                      [
+                        "full_body",
+                        "Tüm vücut",
+                        "Her çalışma gününde farklı ana hareketleri bir arada yap.",
+                      ],
+                      [
+                        "upper_lower",
+                        "Üst / alt vücut",
+                        "Üst ve alt vücut günleri dönüşümlü; en az 2 gün.",
+                      ],
+                      [
+                        "push_pull_legs",
+                        "İtiş / çekiş / bacak",
+                        "Çalışma günlerini üç gruba ayır; en az 3 gün.",
+                      ],
                     ],
-                    [
-                      "upper_lower",
-                      "Üst / alt vücut",
-                      "Üst ve alt vücut günleri dönüşümlü; en az 2 gün.",
-                    ],
-                    [
-                      "push_pull_legs",
-                      "İtiş / çekiş / bacak",
-                      "Çalışma günlerini üç gruba ayır; en az 3 gün.",
-                    ],
-                  ],
             )}
             {!valid && (
               <p role="alert">
@@ -1360,7 +1525,7 @@ export function GuidedPlan({
                   </button>
                   <p>
                     AI; hedefini, ekipmanını, yöntemlerini, deneyimini,
-                    bildirdiğin hareket kapasitesini, gün/süre ve bölge
+                    bildirdiğin hareket kapasitesini, gün/süre ve performans
                     önceliklerini {aiStatus?.provider ?? "AI sağlayıcısı"}{" "}
                     üzerinden değerlendirir. Sağlayıcının kota ve ücretlendirme
                     koşulları geçerlidir.
@@ -1489,13 +1654,18 @@ export function GuidedPlan({
               </details>
             ))}
             <details>
-              <summary>Kas dağılımı ve seçim gerekçeleri</summary>
+              <summary>
+                {showMuscles
+                  ? "Kas dağılımı ve seçim gerekçeleri"
+                  : "Çalışma süresi ve seçim gerekçeleri"}
+              </summary>
               <p>{preview.review.meaning}</p>
-              {Object.entries(preview.review.muscle_sets).map(([id, n]) => (
-                <p key={id}>
-                  {groups[id]}: {n} ağırlıklandırılmış set / hafta
-                </p>
-              ))}
+              {showMuscles &&
+                Object.entries(preview.review.muscle_sets).map(([id, n]) => (
+                  <p key={id}>
+                    {groups[id]}: {n} ağırlıklandırılmış set / hafta
+                  </p>
+                ))}
               <p>
                 Teknik tekrar setleri: {preview.review.skill_sets} set · toplam
                 tutuş: {preview.review.isometric_seconds} sn · kondisyon:{" "}

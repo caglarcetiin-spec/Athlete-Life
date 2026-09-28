@@ -1,0 +1,9 @@
+{
+  "result": "PASS",
+  "checks": [
+    "running-only method; all running choices; saved target and weekly minutes; contextual equipment; distance priorities; endurance split; real validation with synthetic provider; prefilled editor; mobile/desktop Axe"
+  ],
+  "errors": [],
+  "browser": "154.0.8037.57",
+  "provider": "synthetic"
+}

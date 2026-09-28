@@ -156,6 +156,7 @@ def generate_sport_program(data, baseline, choices, pool, excluded, allowed, sna
             "input_revision": snapshot["cursor"],
             "health_context": baseline["health_context"],
             "health_blocked": not allowed,
+            "eligibility_reasons": baseline["automatic_eligibility"]["reasons"],
             "meaning": "Branş tekniği süre ve tur olarak; kuvvet ayrı set olarak takip edilir. Haritasız tekniklerin kas etkisi UNKNOWN.",
             "duration_assumptions": "5–8 dk hazırlık + tur başına çalışma + turlar arası dinlenme + blok başına 60 sn geçiş. Bu süreler eğitmenle düzenlenebilir.",
             "skill_sets": sum(r["sets"] for r in all_rows if r["modality"] == "skill"),

@@ -53,6 +53,7 @@ class AIOrigin(StrictModel):
         "ai-planner-5",
         "ai-planner-6",
         "ai-planner-7",
+        "ai-planner-8",
     ]
     generated_at: datetime
     summary: str = Field(min_length=1, max_length=1500)
@@ -427,7 +428,26 @@ def draft_with_context(data: DraftRequest, snapshot, as_of):
         reasons.append(
             "Güncel sağlık kayıtlarında dikkat gerektiren durum var. Bildirilen belirti/toparlanma durumu doz önerisini sınırlar; mevcut ana programın değiştirilmedi."
         )
-    result = draft_program(data.model_copy(update=changes))
+    effective = data.model_copy(update=changes)
+    result = draft_program(effective)
+    eligibility_reasons = []
+    if not effective.adult:
+        eligibility_reasons.append(
+            "Profilindeki doğum tarihi 18 yaş altında görünüyor; Profilim bölümünden doğruluğunu kontrol et."
+            if changes.get("adult") is False and data.adult
+            else "Son adımda 18 yaş veya üzeri olduğunu onayla."
+        )
+    if data.symptoms:
+        eligibility_reasons.append(
+            "Formda mevcut belirti bildirdin; otomatik doz önerisi bu nedenle durduruldu."
+        )
+    elif effective.symptoms:
+        eligibility_reasons.extend(analysis["readiness"]["reasons"])
+    result["automatic_eligibility"] = {
+        "allowed": effective.adult and not effective.symptoms,
+        "reasons": eligibility_reasons,
+    }
+
     context = profile_context(profile)
     result["planning_context"] = context
     result["notes"].extend(context["missing"])

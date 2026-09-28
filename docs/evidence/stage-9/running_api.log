@@ -1,0 +1,55 @@
+........................................................................ [ 17%]
+........................................................................ [ 34%]
+........................................................................ [ 51%]
+........................................................................ [ 69%]
+........................................................................ [ 86%]
+................................F.F.....................                 [100%]
+=================================== FAILURES ===================================
+_______ test_required_resources_fail_before_provider[environment_ready] ________
+
+field = 'environment_ready'
+
+    @pytest.mark.parametrize(
+        "field", ["environment_ready", "coach_present", "partner_available"]
+    )
+    def test_required_resources_fail_before_provider(field):
+        request = branch("wrestling")
+        setattr(request.sport_readiness[0], field, False)
+>       with pytest.raises(DomainError, match="branş|Branş"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'branş|Branş'
+E         Actual message: 'Seçimlerine uygun çalışma bulunamadı. Çalışma ortamını ve kontrollü yapabildiğin hareketleri seç; koşuya yeni başlıyorsan koşu-yürüyüş seçeneğini kullan. Bu bir yaş/sağlık engeli değil.'
+
+tests/v2/test_sport_training.py:99: AssertionError
+_______ test_required_resources_fail_before_provider[partner_available] ________
+
+field = 'partner_available'
+
+    @pytest.mark.parametrize(
+        "field", ["environment_ready", "coach_present", "partner_available"]
+    )
+    def test_required_resources_fail_before_provider(field):
+        request = branch("wrestling")
+        setattr(request.sport_readiness[0], field, False)
+>       with pytest.raises(DomainError, match="branş|Branş"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'branş|Branş'
+E         Actual message: 'Seçimlerine uygun çalışma bulunamadı. Çalışma ortamını ve kontrollü yapabildiğin hareketleri seç; koşuya yeni başlıyorsan koşu-yürüyüş seçeneğini kullan. Bu bir yaş/sağlık engeli değil.'
+
+tests/v2/test_sport_training.py:99: AssertionError
+=============================== warnings summary ===============================
+.venv-v2/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+.venv-v2/lib/python3.12/site-packages/starlette/testclient.py:53
+  /Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/v2/test_sport_training.py::test_required_resources_fail_before_provider[environment_ready]
+FAILED tests/v2/test_sport_training.py::test_required_resources_fail_before_provider[partner_available]
+2 failed, 414 passed, 2 warnings in 57.32s

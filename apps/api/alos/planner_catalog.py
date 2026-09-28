@@ -1,8 +1,9 @@
 """Explicit movement families and prerequisites for editable planning, not clinical rules."""
 
 from .movements import BY_ID
+from .running import RUNS
 
-VERSION = "guided-sports-4"
+VERSION = "guided-sports-5"
 # id, movement family, eligible methods, self-reported competency required, block
 ROWS = [
     ("bodyweight-squat", "knee", "weights calisthenics", False, "main"),
@@ -60,6 +61,10 @@ ROWS = [
     ("walk", "conditioning", "conditioning", False, "conditioning"),
     ("zone-2-run", "conditioning", "conditioning running", True, "conditioning"),
 ]
+for key in RUNS:
+    if key != "zone-2-run":
+        ROWS.append((key, "conditioning", "running", key != "run-walk", "conditioning"))
+
 for stroke in ("freestyle", "backstroke", "breaststroke", "butterfly"):
     ROWS.append(("swim-" + stroke, "conditioning", "swimming", True, "conditioning"))
 from .sport_training import DEFINITIONS as SPORT_DEFINITIONS
@@ -116,6 +121,7 @@ def options():
             "competency_required": value["competency_required"],
             "block": value["block"],
             "sport_id": BY_ID[key].get("sport_id"),
+            "run_form": RUNS[key][1] if key in RUNS else None,
             "note": BY_ID[key].get("note", ""),
         }
         for key, value in META.items()
