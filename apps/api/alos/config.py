@@ -12,6 +12,9 @@ class Settings(BaseSettings):
         env_prefix="ALOS_V2_", env_file=None, extra="ignore", hide_input_in_errors=True
     )
 
+    ai_provider: Literal["openai", "evren"] = "openai"
+    evren_api_key: SecretStr | None = Field(default=None, repr=False)
+    evren_model: str = Field(default="", max_length=100, pattern=r"^[A-Za-z0-9._:/-]*$")
     openai_api_key: SecretStr | None = Field(default=None, repr=False)
     openai_model: str = Field(default="", max_length=100, pattern=r"^[A-Za-z0-9._:-]*$")
     ai_user_limit: int = Field(default=3, ge=1, le=20)

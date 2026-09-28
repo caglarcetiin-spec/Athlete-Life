@@ -151,15 +151,28 @@ export function GuidedPlan({
   const [aiStatus, setAiStatus] = useState<{
     available: boolean;
     message: string;
+    provider?: "OpenAI" | "EVREN";
+    consent_version?: string;
   } | null>(null);
+  const consentScope = useRef("");
   useEffect(() => {
     if (!synced) return;
     let active = true;
     setAiStatus(null);
     void api("ai-planning-status")
       .then((value) => {
-        if (active)
-          setAiStatus(value as { available: boolean; message: string });
+        if (active) {
+          const result = value as {
+            available: boolean;
+            message: string;
+            provider: "OpenAI" | "EVREN";
+            consent_version: string;
+          };
+          const scope = `${result.provider}:${result.consent_version}`;
+          if (consentScope.current !== scope) setConsent(false);
+          consentScope.current = scope;
+          setAiStatus(result);
+        }
       })
       .catch(() => {
         if (active)
@@ -303,7 +316,7 @@ export function GuidedPlan({
         setSetupOpen(true);
         setError(
           aiStatus
-            ? "GPT bağlantısı henüz hazır değil. Aşağıdaki AI kurulumu adımlarını tamamlayıp bağlantıyı yeniden kontrol et. Onay kutusu tek başına API bağlantısını açmaz."
+            ? "AI bağlantısı henüz hazır değil. Aşağıdaki AI kurulumu adımlarını tamamlayıp bağlantıyı yeniden kontrol et. Onay kutusu tek başına API bağlantısını açmaz."
             : "Bağlantı durumu kontrol ediliyor. Birazdan tekrar dene.",
         );
         return;
@@ -329,7 +342,10 @@ export function GuidedPlan({
           headers: { "X-CSRF-Token": store.me.csrf },
           body: JSON.stringify(
             engine === "ai"
-              ? { ...answers, consent: "planning-form-v1" }
+              ? {
+                  ...answers,
+                  consent: aiStatus?.consent_version ?? "planning-form-v1",
+                }
               : answers,
           ),
         },
@@ -876,12 +892,10 @@ export function GuidedPlan({
                   </p>
                   {!aiStatus?.available && (
                     <div className="notice">
-                      <strong>
-                        Gerçek GPT üretimi için bağlantı kurulmalı
-                      </strong>
+                      <strong>AI üretimi için bağlantı kurulmalı</strong>
                       <p>
                         Seçimini ve onayını verebilirsin. Program üretmek için
-                        uygulama sahibinin OpenAI API hesabını ve sunucu
+                        uygulama sahibinin AI sağlayıcı hesabını ve sunucu
                         bağlantısını tamamlaması gerekiyor.
                       </p>
                       <button
@@ -896,11 +910,16 @@ export function GuidedPlan({
                         <ol>
                           <li>
                             <a
-                              href="https://developers.openai.com/api/docs/quickstart"
+                              href={
+                                aiStatus?.provider === "EVREN"
+                                  ? "https://evren.ssyz.org.tr/llm/models"
+                                  : "https://developers.openai.com/api/docs/quickstart"
+                              }
                               target="_blank"
                               rel="noopener noreferrer"
                             >
-                              OpenAI API hesabını ve proje anahtarını oluştur.
+                              {aiStatus?.provider ?? "OpenAI"} API hesabını ve
+                              anahtarını oluştur.
                             </a>
                           </li>
                           <li>
@@ -930,8 +949,9 @@ export function GuidedPlan({
                   <p>
                     AI; hedefini, ekipmanını, yöntemlerini, deneyimini,
                     bildirdiğin hareket kapasitesini, gün/süre ve bölge
-                    önceliklerini OpenAI üzerinden değerlendirir. API kullanımı
-                    uygulama sahibine ayrıca ücretlenir.
+                    önceliklerini {aiStatus?.provider ?? "AI sağlayıcısı"}{" "}
+                    üzerinden değerlendirir. Sağlayıcının kota ve ücretlendirme
+                    koşulları geçerlidir.
                   </p>
                   <p>
                     Hesap kimliğin, şifren ve kayıtlı sağlık geçmişin
@@ -947,7 +967,8 @@ export function GuidedPlan({
                         setError("");
                       }}
                     />
-                    Bu formdaki planlama bilgilerimin AI taslağı için OpenAI'ye
+                    Bu formdaki planlama bilgilerimin AI taslağı için{" "}
+                    {aiStatus?.provider === "EVREN" ? "EVREN’e" : "OpenAI'ye"}{" "}
                     gönderilmesini kabul ediyorum.
                   </label>
                   <p>

@@ -144,3 +144,7 @@ Tam alan/varsayılan/kaynak ve geri alma sözleşmesi: `docs/migration/REVISION_
 ## AI plan metadata'sı (28 Eylül 2026)
 
 İsteğe bağlı `ProgramInput.ai_origin` → `Program.decisions.ai_origin`: `provider` (OpenAI), `model`, `prompt_version` (openai-planner-1), `generated_at` (ISO zaman), `summary`. İstemci tarafından taşınan ve düzenlenebilir planın köken açıklamasıdır, güvenlik yetkisi veya doğrulanmış üretim imzası değildir. Eski programlarda yokluğu kabul edilir. Dış istek onayı `AIRequest.consent=planning-form-v1` her istekte doğrulanır; ham sağlık/hesap verisi gönderilmez, ham istek/yanıt kayıt tablosu oluşturulmaz. Ücretli istek limitleri mevcut LoginAttempt deposunda hashlenmiş ayrı ai-user/ai-global anahtarlarıyla tutulur. Şema/hesap/medya göçü yok.
+
+## EVREN sağlayıcısı (28 Eylül 2026)
+
+`Program.decisions.ai_origin.provider` artık `OpenAI | EVREN` kabul eder. Yeni tablo/koleksiyon veya mevcut belge yazımı yok. `AIRequest.consent=planning-form-evren-v1` yalnız EVREN için geçerli; OpenAI'nın `planning-form-v1` onayı EVREN'e gönderimi açmaz. Onay tokenı sağlayıcıdan bağımsızlaştırılmaz. `ALOS_V2_AI_PROVIDER`, `ALOS_V2_EVREN_MODEL` sunucu ayarları; `ALOS_V2_EVREN_API_KEY` yalnız sunucu sırrı, export/plan verisi değildir. Eski OpenAI kayıtları korunur. Kod geri alınırsa yeni EVREN köken metadata'sını kabul etmeyen eski program düzenleme validatörü hata verebilir; geri dönüşte provider uyumluluğunu koruyun, metadata veya kayıt silmeyin.

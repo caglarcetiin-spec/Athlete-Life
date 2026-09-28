@@ -40,14 +40,14 @@ try{
  for(let i=0;i<3;i++)await page.getByRole('button',{name:'Sırt önceliğini artır',exact:true}).click();
  for(let i=0;i<2;i++)await page.getByRole('button',{name:'Göğüs önceliğini artır',exact:true}).click();
  await expect(page.getByRole('button',{name:'Kol önceliğini artır',exact:true})).toBeDisabled();
- await page.screenshot({path:root+'/docs/evidence/ai-controls/focus-mobile.png',fullPage:true});
+ await page.screenshot({path:root+'/docs/evidence/evren/focus-mobile.png',fullPage:true});
  await page.reload();await synced();await expect(page.getByRole('heading',{name:'Hangi bölgeler önceliğin?',exact:true})).toBeVisible();
  await expect(page.getByRole('status').filter({hasText:'5 / 5 puan'})).toBeVisible();
  results.push('Questionnaire survives reload; five-point limit enforced');
  await page.getByRole('button',{name:'Devam',exact:true}).click();
  await page.getByRole('button',{name:'Üst / alt vücut',exact:false}).click();
  await page.getByRole('button',{name:'Devam',exact:true}).click();
- const consentBox=page.getByRole('checkbox',{name:"Bu formdaki planlama bilgilerimin AI taslağı için OpenAI'ye gönderilmesini kabul ediyorum.",exact:true});
+ let consentBox=page.getByRole('checkbox',{name:"Bu formdaki planlama bilgilerimin AI taslağı için OpenAI'ye gönderilmesini kabul ediyorum.",exact:true});
  let networkCalls=0;page.on('request',r=>{if(r.url().endsWith('/api/v2/ai-program-drafts'))networkCalls++;});
  await page.getByRole('radio',{name:'Standart taslak',exact:true}).check();
  await expect(page.getByRole('radio',{name:'Standart taslak',exact:true})).toBeChecked();
@@ -61,7 +61,7 @@ try{
  await expect(page.getByRole('alert').filter({hasText:'AI bağlantısı henüz hazır değil'})).toBeVisible();
  await expect(page.getByRole('link',{name:'OpenAI API hesabını ve anahtarını oluştur.',exact:true})).toBeVisible();
  expect(networkCalls).toBe(0);
- await page.screenshot({path:root+'/docs/evidence/ai-controls/setup-mobile.png',fullPage:true});
+ await page.screenshot({path:root+'/docs/evidence/evren/setup-mobile.png',fullPage:true});
  await page.route('**/api/v2/ai-planning-status', route => route.fulfill({json:{available:true,message:'Sentetik test sağlayıcısı hazır.',provider:'OpenAI',consent_version:'planning-form-v1',model:'synthetic-model'}}));
  await page.getByRole('button',{name:'Bağlantıyı yeniden kontrol et',exact:true}).click();
  await expect(page.getByText('Sentetik test sağlayıcısı hazır.',{exact:true})).toBeVisible();
@@ -71,16 +71,25 @@ try{
  await expect(page.getByRole('alert').filter({hasText:'veri gönderim onayını işaretle'})).toBeVisible();
  expect(networkCalls).toBe(0);
  await consentBox.check();
+ await page.unroute('**/api/v2/ai-planning-status');
+ await page.route('**/api/v2/ai-planning-status', route => route.fulfill({json:{available:true,message:'EVREN sentetik bağlantı.',provider:'EVREN',consent_version:'planning-form-evren-v1',model:'synthetic-model'}}));
+ await page.getByRole('button',{name:'Bağlantıyı yeniden kontrol et',exact:true}).click();
+ consentBox=page.getByRole('checkbox',{name:'Bu formdaki planlama bilgilerimin AI taslağı için EVREN’e gönderilmesini kabul ediyorum.',exact:true});
+ await expect(consentBox).not.toBeChecked();
+ await page.getByRole('button',{name:'AI ile programımı hazırla',exact:true}).click();
+ expect(networkCalls).toBe(0);
+ await consentBox.check();
+ results.push('Changing provider resets consent; EVREN clearly disclosed; no call before renewed consent');
  results.push('Native method selection and consent work without a key; local-only edits keep consent; submit explains setup; status refresh works without reload; missing consent never sends');
  let aiCalls=0;
  await page.route('**/api/v2/ai-program-drafts',async route=>{
    aiCalls++;
-   const body=route.request().postDataJSON();expect(body.consent).toBe('planning-form-v1');expect(body.adult).toBe(true);
+   const body=route.request().postDataJSON();expect(body.consent).toBe('planning-form-evren-v1');expect(body.adult).toBe(true);
    if(aiCalls===1){await route.fulfill({status:503,json:{error:{code:'ai_unavailable',message:'Sentetik AI bağlantı hatası; planın değiştirilmedi.',details:{}}}});return;}
    const {consent,...choices}=body;
    const response=await page.request.post(base+'/api/v2/guided-program-drafts',{headers:{'Origin':base,'X-CSRF-Token':route.request().headers()['x-csrf-token']},data:choices});
    expect(response.ok()).toBe(true);const draft=await response.json();
-   draft.program.ai_origin={provider:'OpenAI',model:'synthetic-model',prompt_version:'openai-planner-1',generated_at:new Date().toISOString(),summary:'Sentetik AI arayüz denemesi; gerçek model çıktısı değildir.'};
+   draft.program.ai_origin={provider:'EVREN',model:'synthetic-model',prompt_version:'openai-planner-1',generated_at:new Date().toISOString(),summary:'Sentetik AI arayüz denemesi; gerçek model çıktısı değildir.'};
    await route.fulfill({json:draft});
  });
  await page.getByRole('button',{name:'AI ile programımı hazırla',exact:true}).click();
@@ -98,10 +107,10 @@ try{
  expect(await page.locator('main').innerText()).not.toContain('Dambıl ile');
  for(const width of [360,390,768,1280]){await page.setViewportSize({width,height:844});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);}
  await page.setViewportSize({width:390,height:844});
- await page.screenshot({path:root+'/docs/evidence/ai-controls/preview.png',fullPage:true});
+ await page.screenshot({path:root+'/docs/evidence/evren/preview.png',fullPage:true});
  const {default:AxeBuilder}=await import('../../apps/web/node_modules/@axe-core/playwright/dist/index.mjs');
  const violations=(await new AxeBuilder({page}).analyze()).violations;
- writeFileSync(root+'/docs/evidence/ai-controls/a11y.json',JSON.stringify(violations,null,2));expect(violations).toEqual([]);
+ writeFileSync(root+'/docs/evidence/evren/a11y.json',JSON.stringify(violations,null,2));expect(violations).toEqual([]);
  await page.getByRole('button',{name:'Düzenle ve kaydet',exact:true}).click();
  await page.getByRole('button',{name:'Taslağı kaydet',exact:true}).click();await synced();
  let state=await api('bootstrap');expect(state.programs).toHaveLength(1);expect(state.programs[0].status).toBe('draft');
@@ -119,5 +128,5 @@ try{
  await expect(page.getByRole('link',{name:'Beslenmemi kaydet',exact:true})).toBeVisible();
  await expect(page.getByText('Yapılan çalışmaların dağılımı',{exact:true})).toHaveCount(1);
  results.push('Health exposes the shared muscle report and existing nutrition entry');
- expect(errors).toEqual([]);writeFileSync(root+'/docs/evidence/ai-controls/browser.json',JSON.stringify({result:'PASS',checks:results,browser:browser.version(),errors},null,2));console.log(JSON.stringify({result:'PASS',checks:results}));
-}catch(error){if(page&&!page.isClosed())await page.screenshot({path:root+'/docs/evidence/ai-controls/browser-failure.png',fullPage:true});console.error('Revision browser failed:',error.message);process.exitCode=1;}finally{if(browser)await browser.close();if(server){server.kill('SIGKILL');await new Promise(r=>server.once('exit',r));}execFileSync(python,['tools/v2/test_database.py','drop',name],{cwd:root,stdio:'pipe'});}
+ expect(errors).toEqual([]);writeFileSync(root+'/docs/evidence/evren/browser.json',JSON.stringify({result:'PASS',checks:results,browser:browser.version(),errors},null,2));console.log(JSON.stringify({result:'PASS',checks:results}));
+}catch(error){if(page&&!page.isClosed())await page.screenshot({path:root+'/docs/evidence/evren/browser-failure.png',fullPage:true});console.error('Revision browser failed:',error.message);process.exitCode=1;}finally{if(browser)await browser.close();if(server){server.kill('SIGKILL');await new Promise(r=>server.once('exit',r));}execFileSync(python,['tools/v2/test_database.py','drop',name],{cwd:root,stdio:'pipe'});}

@@ -48,3 +48,28 @@ Henüz GitHub/Render yayını yapılmadı. Ücretsiz Render ve MongoDB korunur. 
 Yöntem seçimi artık seçili durumu belirgin native radio kontrolüdür. Anahtar yokken de onay kutusu kullanılabilir; üretim düğmesi sessizce devre dışı kalmak yerine eksik bağlantı/izin/yaş koşulunu açıklar. Kurulum bağlantısı ve sayfayı yenilemeden bağlantı durumunu tekrar okuma eklenmiştir. Program adı, tarih, yaş/belirti gibi OpenAI'ye gönderilmeyen alanlar onayı silmez; dışarı gönderilecek hedef/ekipman/yetkinlik gibi alanlar değişirse onay yeniden gerekir. Sağlık kapısı ve sunucudaki onay doğrulaması korunur. Bu UI düzeltmesi API anahtarı olmadan gerçek GPT erişimi sağlamaz.
 
 `ai-controls-browser` anahtarsız seçim/onay, eksik bağlantıda sıfır AI isteği, yeniden kontrol, onaysız sıfır istek, taklit sağlayıcı hatası/başarısı ve plan kaydını doğrular. Üretim derlemesi ve lint geçti. Şema, hesap/medya göçü veya sunucu sırrı değişikliği yok. Yerel önizleme güncel; Render yayını yok. Geri dönüş yalnız UI/paket commit'idir; ana veriyi etkilemez.
+
+## EVREN alternatifi — 28 Eylül 2026
+
+Resmî kaynak: https://evren.ssyz.org.tr/llm/models (giriş gerekli), halka açık https://evren.ssyz.org.tr/llm-inference/.
+Resmî katalog istemcisindeki örnekler `https://evren-llmapi.ssyz.org.tr/v1`, Bearer veya X-API-Key kimlik doğrulaması, `/models`, `/terms/status`, `/chat/completions` ve `/responses` yollarını yayımlar. Bu uygulama EVREN için Chat Completions kullanır. OpenAI aynı Responses entegrasyonuyla korunur.
+
+Sunucunun gizli ortam ayarları:
+
+```text
+ALOS_V2_AI_PROVIDER=evren
+ALOS_V2_EVREN_API_KEY=<sunucuda gizli değer>
+ALOS_V2_EVREN_MODEL=<hesabında erişilebilir metin modeli>
+```
+
+- Anahtar kaynak koda, frontend VITE değişkenine, loga veya GitHub'a yazılmaz. Uygulama `.env` dosyasını kendiliğinden okumaz.
+- Kullanıcı EVREN'deki LLM kullanım koşullarını kendisi okumalı/kabul etmeli. Uygulama kullanım koşullarını otomatik kabul etmez. 403, koşullar/model/anahtar izinleri için açıklama gösterir.
+- Sabit HTTPS hedefi ve yönlendirme reddi anahtarın başka domaine gitmesini engeller. EVREN hatasında OpenAI'ye otomatik geçiş yoktur.
+- EVREN onayı `planning-form-evren-v1`; önceki OpenAI onayı geçersizdir. Sağlayıcı değişimi veya gönderilen form verisi değişimi onayı temizler; aynı sağlayıcıdaki bağlantı yenilemesi yerel onayı korur.
+- Yalnız formdaki hedef, ekipman, deneyim, yöntem, yetkinlik, odak, süre ve uygun hareket kataloğu gönderilir. Sağlık kayıtları/kimlik/şifre/medya gönderilmez. Kullanıcının hedef metni dış sağlayıcıya gittiği için arayüzde açıkça belirtilir.
+- EVREN'in OpenAI uyumluluğu strict JSON Schema desteği garantisi sayılmaz. JSON şeması isteme eklenir; yanıt Pydantic + mevcut hareket/süre/yetkinlik doğrulamasından geçer. Sadece tek dış Markdown JSON çiti kaldırılabilir; yanlış JSON veya plan onarılıp sessiz kabul edilmez. Eksik/yarım yanıtlar, araç çağrıları ve hatalar kayda dönüşmez.
+- Socket timeout 90 s, çıktı bütçesi 10.000 token (akıl yürütme de kullanabilir), en fazla 1 MB yanıt, otomatik tekrar yok. Provider rate limits ve mevcut uygulama 15 dakikalık limitleri birlikte geçerli; bunlar parasal harcama tavanı değildir.
+- Durum uç noktası yalnız ayar varlığını bildirir. Gerçek API erişimi ve model kalitesi ayrı canlı sentetik denemeyle doğrulanmalıdır.
+- Resmî sayfa 1 Kasım 2026'ya kadar ücretsiz entegrasyon dönemi belirtir; bu kalıcı ücretsiz kullanım garantisi veya üretim hizmet seviyesi taahhüdü değildir.
+
+Şema ve hesap/medya göçü yok. Render yayını ve kalıcı sunucu sırrı kurulumu bu yerel bağlantı çalışmasının parçası olarak yapılmadı. `AI_PROVIDER=openai` ile sağlayıcı geri alınabilir; uygun OpenAI key/model ve yeniden kullanıcı onayı gerekir. Kayıtları silmeyin.

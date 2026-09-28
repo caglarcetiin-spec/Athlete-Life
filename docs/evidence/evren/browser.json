@@ -1,0 +1,14 @@
+{
+  "result": "PASS",
+  "checks": [
+    "Questionnaire survives reload; five-point limit enforced",
+    "Changing provider resets consent; EVREN clearly disclosed; no call before renewed consent",
+    "Native method selection and consent work without a key; local-only edits keep consent; submit explains setup; status refresh works without reload; missing consent never sends",
+    "Unconfigured AI explains setup without a call; consent required; provider error does not save or fall back; mock AI preview labeled",
+    "Preview creates no program or actual set",
+    "Canonical plan saved with questionnaire, explicitly activated, visible on today; no fabricated actual sets",
+    "Health exposes the shared muscle report and existing nutrition entry"
+  ],
+  "browser": "154.0.8037.57",
+  "errors": []
+}

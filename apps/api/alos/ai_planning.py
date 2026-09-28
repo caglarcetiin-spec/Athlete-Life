@@ -1,4 +1,4 @@
-"""Opt-in OpenAI draft generation; no account data, tools or automatic plan writes."""
+"""Opt-in provider-specific draft generation; no account data, tools or automatic plan writes."""
 
 import json
 from datetime import datetime
@@ -17,10 +17,11 @@ from .programming import ProgramInput
 
 VERSION = "openai-planner-1"
 CONSENT = "planning-form-v1"
+EVREN_CONSENT = "planning-form-evren-v1"
 
 
 class AIRequest(GuidedRequest):
-    consent: Literal["planning-form-v1"]
+    consent: Literal["planning-form-v1", "planning-form-evren-v1"]
 
 
 class AIExercise(StrictModel):
@@ -44,17 +45,39 @@ class AIPlan(StrictModel):
     days: list[AIDay] = Field(min_length=1, max_length=6)
 
 
+def provider_config(settings):
+    if settings.ai_provider == "evren":
+        return "EVREN", settings.evren_api_key, settings.evren_model, EVREN_CONSENT
+    return "OpenAI", settings.openai_api_key, settings.openai_model, CONSENT
+
+
 def status(settings):
-    available = bool(settings.openai_api_key and settings.openai_model)
+    provider, key, model, consent = provider_config(settings)
+    available = bool(key and model)
     return {
         "available": available,
-        "provider": "OpenAI",
-        "model": settings.openai_model if available else None,
-        "consent_version": CONSENT,
-        "message": "AI bağlantı ayarları tanımlı; erişim ilk istekte doğrulanır."
+        "provider": provider,
+        "model": model if available else None,
+        "consent_version": consent,
+        "message": f"{provider} bağlantı ayarları tanımlı; erişim ilk istekte doğrulanır."
         if available
-        else "AI kurulumu bekleniyor: sunucuda OpenAI API anahtarı ve model ayarı gerekli.",
+        else f"AI kurulumu bekleniyor: sunucuda {provider} API anahtarı ve model ayarı gerekli.",
     }
+
+
+def require_consent(data, settings):
+    if data.consent != provider_config(settings)[3]:
+        raise DomainError(
+            "ai_consent_changed",
+            "AI sağlayıcısı değişti. Bağlantıyı yeniden kontrol et ve veri gönderim onayını yenile.",
+            422,
+        )
+
+
+def call_provider(settings, context):
+    if settings.ai_provider == "evren":
+        return call_evren(settings, context)
+    return call_openai(settings, context)
 
 
 def prepare(data, snapshot, at):
@@ -169,7 +192,79 @@ def call_openai(settings, context):
         ) from None
 
 
-def validate_plan(plan, data, baseline, context, at: datetime, model):
+def call_evren(settings, context):
+    # Fixed HTTPS destination: credentials cannot be redirected to arbitrary hosts.
+    # The public EVREN docs guarantee chat messages, not strict JSON-schema enforcement.
+    # Include the schema in the instruction and validate both structure and semantics locally.
+    body = {
+        "model": settings.evren_model,
+        "messages": [
+            {
+                "role": "system",
+                "content": INSTRUCTIONS + "\nRequired JSON schema: " + json.dumps(AIPlan.model_json_schema()),
+            },
+            {"role": "user", "content": json.dumps(context, ensure_ascii=False)},
+        ],
+        "max_tokens": 10000,
+        "stream": False,
+    }
+    request = Request(
+        "https://evren-llmapi.ssyz.org.tr/v1/chat/completions",
+        data=json.dumps(body).encode(),
+        headers={
+            "Authorization": "Bearer " + settings.evren_api_key.get_secret_value(),
+            "Content-Type": "application/json",
+        },
+        method="POST",
+    )
+    try:
+        with build_opener(NoRedirect()).open(request, timeout=90) as response:
+            raw = response.read(1_000_001)
+        if len(raw) > 1_000_000:
+            raise ValueError("oversize")
+        result = json.loads(raw)
+        choices = result["choices"]
+        if len(choices) != 1 or choices[0].get("finish_reason") != "stop":
+            raise ValueError("incomplete")
+        message = choices[0]["message"]
+        if message.get("refusal") or message.get("tool_calls"):
+            raise ValueError("not a plan")
+        content = message["content"]
+        if not isinstance(content, str):
+            raise TypeError("not text")
+        # A single enclosing Markdown fence is presentation, never a JSON repair.
+        content = content.strip()
+        if content.startswith("```json\n") and content.endswith("\n```"):
+            content = content[8:-4].strip()
+        return AIPlan.model_validate_json(content)
+    except HTTPError as error:
+        code, message = {
+            401: ("ai_credentials", "EVREN API anahtarı doğrulanamadı. Sunucu ayarını kontrol et."),
+            403: (
+                "ai_access",
+                "EVREN erişimi reddetti. EVREN hesabındaki LLM kullanım koşullarını, anahtar izinlerini ve model erişimini kontrol et.",
+            ),
+            429: (
+                "ai_quota",
+                "EVREN kullanım sınırına ulaşıldı. Kotanı kontrol edip daha sonra tekrar dene.",
+            ),
+        }.get(error.code, ("ai_provider", "EVREN isteği tamamlayamadı. Daha sonra tekrar dene."))
+        raise DomainError(code, message + " Planın değiştirilmedi.", 503) from None
+    except (URLError, TimeoutError, OSError):
+        raise DomainError(
+            "ai_unavailable",
+            "EVREN zamanında yanıt vermedi. Planın değiştirilmedi; tekrar deneyebilirsin.",
+            503,
+        ) from None
+    except (ValueError, KeyError, TypeError, AttributeError, IndexError):
+        raise DomainError(
+            "ai_invalid_response",
+            "EVREN yanıtı tamamlanamadı veya plan biçimine uymadı. Planına alınmadı; tekrar deneyebilirsin.",
+            502,
+        ) from None
+
+
+def validate_plan(plan, data, baseline, context, at: datetime, model, provider="OpenAI"):
     candidates = {o["movement_id"]: o for o in context["eligible_movements"]}
     if sorted(d.weekday for d in plan.days) != sorted(data.weekdays):
         raise DomainError(
@@ -403,7 +498,7 @@ def validate_plan(plan, data, baseline, context, at: datetime, model):
         **baseline["program"],
         "days": output_days,
         "ai_origin": {
-            "provider": "OpenAI",
+            "provider": provider,
             "model": model,
             "prompt_version": VERSION,
             "generated_at": at.isoformat(),
