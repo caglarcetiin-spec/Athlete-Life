@@ -56,6 +56,7 @@ class AIOrigin(StrictModel):
         "ai-planner-8",
         "ai-planner-9",
         "ai-planner-10",
+        "ai-planner-11",
     ]
     generated_at: datetime
     summary: str = Field(min_length=1, max_length=1500)
@@ -135,7 +136,9 @@ def apply_program(db, athlete, command):
         if data.guided_choices is not None:
             from .guided_planning import GuidedChoices
 
-            analysis["guided_choices"] = GuidedChoices.model_validate(data.guided_choices).model_dump()
+            analysis["guided_choices"] = GuidedChoices.model_validate(data.guided_choices).model_dump(
+                mode="json"
+            )
             from .planner_catalog import VERSION
 
             analysis["guided_model_version"] = VERSION
@@ -199,6 +202,24 @@ def apply_program(db, athlete, command):
             current.version += 1
             current.updated_at = utcnow()
             changes.append(touched(current, "program"))
+        from .models import AthleteProfile
+        from .planning_context import PlanningPreferences
+
+        profile = db.scalar(
+            select(AthleteProfile).where(
+                AthleteProfile.athlete_id == athlete.id, AthleteProfile.deleted_at.is_(None)
+            )
+        )
+        if profile:
+            preferences = PlanningPreferences.model_validate(profile.planning_preferences or {})
+            if preferences.onboarding_required and not preferences.onboarding_completed:
+                if preferences.intake is None:
+                    raise DomainError("intake_required", "Önce başlangıç analizini tamamla.")
+                preferences.onboarding_completed = True
+                profile.planning_preferences = preferences.model_dump(mode="json")
+                profile.version += 1
+                profile.updated_at = utcnow()
+                changes.append(touched(profile, "profile"))
         row.status = "active"
         row.version += 1
         row.updated_at = utcnow()

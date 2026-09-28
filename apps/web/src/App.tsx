@@ -1,3 +1,5 @@
+import { AthleteAssessment } from "./features/AthleteAssessment";
+import type { PlanningPrefs } from "./features/PlanningPreferences";
 import { Admin } from "./features/Admin";
 import { AIChat } from "./features/AIChat";
 import { BrandLogo } from "./BrandLogo";
@@ -58,6 +60,7 @@ function Workspace({
   onAccount: (m: Me) => void;
 }) {
   const [store] = useState(() => new SyncStore(me));
+  const [editIntake, setEditIntake] = useState(false);
   const [tour, setTour] = useState<number | null>(null);
   const [modeNotice, setModeNotice] = useState("");
   const welcomeKey = "alos-guide-dismissed:" + me.athlete_id;
@@ -231,6 +234,91 @@ function Workspace({
   const conflicts = store.pending.filter(
     (p) => p.state === "conflict" || p.state === "failed",
   );
+  const preferences = (profile?.planning_preferences || {}) as PlanningPrefs;
+  if (!store.snapshot)
+    return (
+      <main className="onboarding-shell">
+        <h1>Hesabın hazırlanıyor</h1>
+        {(error || store.error) && <p role="alert">{error || store.error}</p>}
+        <button onClick={() => void store.sync()}>Yeniden bağlan</button>
+        <button onClick={() => void logout()}>Çıkış yap</button>
+      </main>
+    );
+  if (preferences.onboarding_required && !preferences.onboarding_completed)
+    return (
+      <main className="onboarding-shell">
+        <header className="actions">
+          <BrandLogo />
+          <strong>{brand.name}</strong>
+          <span>{me.name}</span>
+          <button
+            className="secondary small"
+            aria-label={
+              theme === "light" ? "Koyu temaya geç" : "Açık temaya geç"
+            }
+            onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+          >
+            {theme === "light" ? <Sun size={18} /> : <Moon size={18} />}
+            {theme === "light" ? "Açık" : "Koyu"}
+          </button>
+          <button className="secondary small" onClick={() => void logout()}>
+            Çıkış yap
+          </button>
+        </header>
+        <p className="eyebrow">
+          İlk kurulum ·{" "}
+          {preferences.intake && !editIntake
+            ? "2 / 2 · Programın"
+            : "1 / 2 · Seni tanıyalım"}
+        </p>
+        <p>
+          Analizini tamamlayıp programını ana plana aldığında bütün bölümler
+          açılacak. Sonraki girişlerinde bu adımları tekrarlaman gerekmeyecek.
+        </p>
+        {(error || store.error || conflicts.length > 0) && (
+          <p role="alert">
+            {error ||
+              store.error ||
+              "Bilgilerin eşitlenemedi. Bağlantını kontrol edip tekrar dene."}
+          </p>
+        )}
+        {conflicts.map((job) => (
+          <section className="card" key={job.id}>
+            <p role="alert">{job.error || "Bekleyen kayıt incelenmeli."}</p>
+            <button
+              className="secondary"
+              onClick={() => void store.discard(job.id)}
+            >
+              Bu bekleyen değişikliği iptal et
+            </button>
+          </section>
+        ))}
+        {!preferences.intake || editIntake ? (
+          <AthleteAssessment
+            key={String(profile?.version)}
+            store={store}
+            onSaved={() => setEditIntake(false)}
+          />
+        ) : profile?.local_pending ? (
+          <section className="card">
+            <p role="status">Analiz bilgilerin sunucuya kaydediliyor…</p>
+            <button onClick={() => void store.sync()}>
+              Eşitlemeyi yeniden dene
+            </button>
+          </section>
+        ) : (
+          <>
+            <button
+              className="secondary small"
+              onClick={() => setEditIntake(true)}
+            >
+              Analiz bilgilerimi düzenle
+            </button>
+            <Programming store={store} />
+          </>
+        )}
+      </main>
+    );
   return (
     <div className="app">
       <a

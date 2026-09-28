@@ -1,3 +1,4 @@
+import type { AthleteContext } from "./AthleteAssessment";
 import { useState } from "react";
 import type { Entity } from "../api/contracts";
 import type { SyncStore } from "../sync/store";
@@ -10,6 +11,9 @@ export type EquipmentProfile = {
   original_text: string;
 };
 export type PlanningPrefs = {
+  onboarding_required?: boolean;
+  onboarding_completed?: boolean;
+  intake?: AthleteContext | null;
   goal?: string;
   weekdays?: number[];
   minutes?: number | null;

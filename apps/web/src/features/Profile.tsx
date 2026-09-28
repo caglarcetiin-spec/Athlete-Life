@@ -1,3 +1,4 @@
+import { AthleteAssessment } from "./AthleteAssessment";
 import { SportOptions, type SportOption } from "./SportOptions";
 import { PlanningPreferences } from "./PlanningPreferences";
 import { useEffect, useState } from "react";
@@ -14,28 +15,6 @@ import { RecordForm, choice, textField, type Field } from "./Records";
 import { saveFile } from "./Backups";
 const profileFields: Field[] = [
   { key: "birth_date", label: "Doğum tarihi (isteğe bağlı)", type: "date" },
-  choice(
-    "sex",
-    "Fizyolojik profil",
-    [
-      ["unspecified", "Belirtmek istemiyorum"],
-      ["female", "Kadın"],
-      ["male", "Erkek"],
-      ["intersex", "İnterseks"],
-    ],
-    "unspecified",
-  ),
-  choice(
-    "experience",
-    "Spor geçmişim",
-    [
-      ["new", "Yeni başlıyorum"],
-      ["returning", "Ara verdim, dönüyorum"],
-      ["regular", "Düzenli çalışıyorum"],
-      ["advanced", "İleri düzey çalışıyorum"],
-    ],
-    "new",
-  ),
   {
     key: "cycle_tracking",
     label: "İsteğe bağlı döngü günlüğünü kullanmak istiyorum",
@@ -129,6 +108,7 @@ export function Profile({
         </div>
         <UserRound className="heading-icon" />
       </div>
+      <AthleteAssessment key={String(profile?.version)} store={store} />
       {error && (
         <p role="alert" className="error">
           {error}

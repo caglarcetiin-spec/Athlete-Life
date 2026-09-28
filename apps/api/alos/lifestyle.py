@@ -468,6 +468,18 @@ def apply(db, athlete, command):
             if other.id == command.entity_id or other.duplicate_of:
                 raise DomainError("duplicate_cycle", "Kopya ilişkisi döngü oluşturamaz.")
         elif kind == "profile":
+            fields["planning_preferences"] = data.planning_preferences.model_dump(mode="json")
+            # Completion is acknowledged only by program.activate, not a profile patch.
+            existing = (row.planning_preferences or {}) if row else {}
+            for key in ("onboarding_required", "onboarding_completed"):
+                fields["planning_preferences"][key] = existing.get(key, False)
+            intake = data.planning_preferences.intake
+            if intake:
+                if intake.recorded_on > utcnow().astimezone(ZoneInfo(athlete.timezone)).date():
+                    raise DomainError("intake_date", "Analiz kayıt tarihi gelecekte olamaz.")
+                fields["sex"] = intake.sex
+                if intake.training_months == 0:
+                    fields["experience"] = "new"
             if data.avatar_id:
                 avatar = owned(db, m.MediaObject, athlete.id, data.avatar_id)
                 if not avatar.mime.startswith("image/"):

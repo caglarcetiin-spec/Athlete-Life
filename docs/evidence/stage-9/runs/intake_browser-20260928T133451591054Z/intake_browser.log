@@ -1,0 +1,43 @@
+Athlete Life
+Sentetik Sporcu
+Çıkış yap
+
+İLK KURULUM · 1 / 2 · SENİ TANIYALIM
+
+Analizini tamamlayıp programını ana plana aldığında bütün bölümler açılacak. Sonraki girişlerinde bu adımları tekrarlaman gerekmeyecek.
+
+Başlangıç analizin
+
+Önce seni tanıyalım. Sonra branşlarını, hedefini, ekipmanlarını ve haftalık düzenini seçip programını birlikte hazırlayacağız.
+
+Bedenin ve spor geçmişin
+
+Ölçülerini kendin bildirirsin. Bu bilgiler beden yapısı, kas oranı veya sağlık tanısı olarak yorumlanmaz.
+
+Yaşın
+Boyun (cm)
+Kilon (kg)
+Toplam spor geçmişin (ay)
+Cinsiyet
+Belirtmek istemiyorum
+Kadın
+Erkek
+İnterseks
+
+Hiç spor yapmadıysan geçmişine 0 yaz. Program temel hareketleri öğrenme ve düzen oluşturma ile başlar. Her branştaki deneyimini sonraki adımlarda ayrıca belirtebilirsin.
+
+Analizi kaydet ve planına geç
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+locator.selectOption: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for getByLabel('Cinsiyet', { exact: true })[22m
+
+    at /Users/caglarcetin/Documents/GitHub/Athlete-Life/tools/v2/intake_browser.mjs:20:69 {
+  log: [ "  - waiting for getByLabel('Cinsiyet', { exact: true })" ],
+  name: 'TimeoutError'
+}
+
+Node.js v24.19.0

@@ -1756,3 +1756,13 @@ button.secondary, .link-button.secondary { color: var(--ink); }
 .login-story { background: #111713; color: #F3F7F1; }
 .login-story .eyebrow, .login-story small { color: #C7F464; }
 .recovery-meter { width: 100%; height: 20px; accent-color: var(--accent); }
+
+/* First-use assessment shares the same accessible fields in profile and planner. */
+.onboarding-shell { width: min(960px, 100%); margin: 0 auto; padding: clamp(18px, 4vw, 48px); }
+.onboarding-shell > header { position: static; height: auto; padding: 0 0 24px; background: transparent; border: 0; backdrop-filter: none; gap: 12px; flex-wrap: wrap; }
+.onboarding-shell > header svg { width: 32px; height: 32px; }
+.intake-fields { min-width: 0; margin: 16px 0; border: 0; padding: 0; }
+.intake-fields > fieldset { min-width: 0; border: 1px solid var(--line); border-radius: 16px; padding: 16px; margin: 20px 0; }
+.intake-fields legend { font-weight: 650; padding-bottom: 12px; }
+.intake-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 16px; }
+.intake-grid label { min-width: 0; }

@@ -1,0 +1,10 @@
+{
+  "checks": [
+    "New signup and hash navigation stay in intake",
+    "Prefilled novice and cycle preferences reach planner; confirmed breaks appear in preview",
+    "Plan approval unlocks navigation; persisted completion survives reload",
+    "Male selection clears and hides optional cycle fields"
+  ],
+  "errors": [],
+  "provider": "synthetic EVREN; no real provider called"
+}

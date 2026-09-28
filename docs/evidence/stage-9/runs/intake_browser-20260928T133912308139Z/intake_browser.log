@@ -1,0 +1,143 @@
+İçeriğe geç
+Sunucuya kaydedildi
+Koyu
+S
+Sentetik Sporcu
+Sağlık kayıtları
+Beslenme ve su
+ÖNCE İYİ HİSSETMEK
+Sağlık
+
+Uyku, günlük durum ve sağlık geçmişin. Bu alan kayıt ve eğilim takibi içindir.
+
+Günlük durum
+Rahatsızlık ve dönüş
+Kas ve antrenman
+Kan tahlilleri
+Vücut ölçümleri
+Döngü takibi
+Görüntülenen tarih
+Nasıl hissediyorum?
+Ekle
+
+Sayı yükseldikçe başlıktaki durum artar. Enerjide 10 çok iyi, yorgunlukta 10 çok yorgun anlamına gelir.
+
+Henüz kayıt yok. Bir kayıt ekleyerek başlayabilirsin.
+
+Uyku geceleri
+Ekle
+
+Henüz kayıt yok. Bir kayıt ekleyerek başlayabilirsin.
+
+Ağrı günlüğü
+Ekle
+
+Henüz kayıt yok. Bir kayıt ekleyerek başlayabilirsin.
+
+Geri
+Bugün
+İleri
+Bugün
+Antrenman
+Sağlık
+Gelişim
+Araçlar
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+ExpectError: expect(locator).toBeVisible() failed
+
+Locator:  locator('.sidebar')
+Expected: visible
+Received: hidden
+Timeout:  20000ms
+
+Call log:
+  - Expect "toBeVisible" locator('.sidebar') with timeout 20000ms
+  - waiting for locator('.sidebar')
+    39 × locator resolved to <aside class="sidebar">…</aside>
+       - unexpected value "hidden"
+
+    at captureRawStack (/Users/caglarcetin/Documents/GitHub/Athlete-Life/apps/web/node_modules/playwright-core/lib/coreBundle.js:8588:17)
+    at callMatcherAsStep (/Users/caglarcetin/Documents/GitHub/Athlete-Life/apps/web/node_modules/playwright/lib/matchers/expect.js:13310:57)
+    at Object.toBeVisible (/Users/caglarcetin/Documents/GitHub/Athlete-Life/apps/web/node_modules/playwright/lib/matchers/expect.js:13302:23)
+    at /Users/caglarcetin/Documents/GitHub/Athlete-Life/tools/v2/intake_browser.mjs:36:42 {
+  matcherResult: {
+    message: 'expect(locator).toBeVisible() failed\n' +
+      '\n' +
+      "Locator:  locator('.sidebar')\n" +
+      'Expected: visible\n' +
+      'Received: hidden\n' +
+      'Timeout:  20000ms\n' +
+      '\n' +
+      'Call log:\n' +
+      `  - Expect "toBeVisible" locator('.sidebar') with timeout 20000ms\n` +
+      "  - waiting for locator('.sidebar')\n" +
+      '    39 × locator resolved to <aside class="sidebar">…</aside>\n' +
+      '       - unexpected value "hidden"\n',
+    pass: false,
+    actual: 'hidden',
+    name: 'toBeVisible',
+    expected: 'visible',
+    log: [
+      `  - Expect "toBeVisible" locator('.sidebar') with timeout 20000ms`,
+      "  - waiting for locator('.sidebar')",
+      '    39 × locator resolved to <aside class="sidebar">…</aside>',
+      '       - unexpected value "hidden"'
+    ],
+    timeout: 20000,
+    ariaSnapshot: '- link "İçeriğe geç":\n' +
+      '  - /url: "#content"\n' +
+      '- banner:\n' +
+      '  - button "Sunucuya kaydedildi"\n' +
+      '  - button "Koyu tema; açık temaya geç": Koyu\n' +
+      '  - link "Profilim · Sentetik Sporcu":\n' +
+      '    - /url: "#profile"\n' +
+      '    - text: S Sentetik Sporcu\n' +
+      '- main:\n' +
+      '  - navigation "Sağlık bölümleri":\n' +
+      '    - link "Sağlık kayıtları":\n' +
+      '      - /url: "#health"\n' +
+      '    - link "Beslenme ve su":\n' +
+      '      - /url: "#nutrition"\n' +
+      '  - text: Önce iyi hissetmek\n' +
+      '  - heading "Sağlık" [level=1]\n' +
+      '  - paragraph: Uyku, günlük durum ve sağlık geçmişin. Bu alan kayıt ve eğilim takibi içindir.\n' +
+      '  - button "Günlük durum" [pressed]\n' +
+      '  - button "Rahatsızlık ve dönüş"\n' +
+      '  - button "Kas ve antrenman"\n' +
+      '  - button "Kan tahlilleri"\n' +
+      '  - button "Vücut ölçümleri"\n' +
+      '  - button "Döngü takibi"\n' +
+      '  - text: Görüntülenen tarih\n' +
+      '  - textbox "Görüntülenen tarih": 2026-09-28\n' +
+      '  - heading "Nasıl hissediyorum?" [level=2]\n' +
+      '  - button "Ekle"\n' +
+      '  - paragraph: Sayı yükseldikçe başlıktaki durum artar. Enerjide 10 çok iyi, yorgunlukta 10 çok yorgun anlamına gelir.\n' +
+      '  - paragraph: Henüz kayıt yok. Bir kayıt ekleyerek başlayabilirsin.\n' +
+      '  - heading "Uyku geceleri" [level=2]\n' +
+      '  - button "Ekle"\n' +
+      '  - paragraph: Henüz kayıt yok. Bir kayıt ekleyerek başlayabilirsin.\n' +
+      '  - heading "Ağrı günlüğü" [level=2]\n' +
+      '  - button "Ekle"\n' +
+      '  - paragraph: Henüz kayıt yok. Bir kayıt ekleyerek başlayabilirsin.\n' +
+      '- contentinfo "Sayfa gezintisi":\n' +
+      '  - button "Geri git": Geri\n' +
+      '  - button "Ana sayfaya dön": Bugün\n' +
+      '  - button "İleri git": İleri\n' +
+      '- navigation "Mobil ana gezinme":\n' +
+      '  - link "Bugün":\n' +
+      '    - /url: "#today"\n' +
+      '  - link "Antrenman":\n' +
+      '    - /url: "#workout"\n' +
+      '  - link "Sağlık":\n' +
+      '    - /url: "#health"\n' +
+      '  - link "Gelişim":\n' +
+      '    - /url: "#status"\n' +
+      '  - link "Araçlar":\n' +
+      '    - /url: "#tools"'
+  }
+}
+
+Node.js v24.19.0

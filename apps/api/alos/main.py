@@ -681,7 +681,12 @@ def create_app(settings: Settings | None = None):
 
         identity = who(request, True)
         snapshot = service.bootstrap(database, UUID(identity["athlete_id"]))
-        return generate(GuidedRequest.model_validate(await request.json()), snapshot, utcnow())
+        from .athlete_intake import schedule_breaks
+        data = GuidedRequest.model_validate(await request.json())
+        result = generate(data, snapshot, utcnow())
+        result["program"], notes = schedule_breaks(result["program"], data.athlete_context)
+        result["notes"].extend(notes)
+        return result
 
     @app.get("/api/v2/ai-planning-status")
     def ai_planning_status(request: Request):

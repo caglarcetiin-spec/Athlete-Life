@@ -5,6 +5,7 @@ from typing import Literal
 
 from pydantic import Field, model_validator
 
+from .athlete_intake import AthleteIntake
 from .contracts import StrictModel
 from .movements import BY_ID, normalize
 from .planning_context import equipment_matches
@@ -87,6 +88,7 @@ class RunningProfile(StrictModel):
 
 
 class GuidedChoices(StrictModel):
+    athlete_context: AthleteIntake | None = None
     progression_mode: Literal["repeat", "phased"] = "repeat"
     target_rir: int = Field(default=3, ge=2, le=5)
     sport_methods: dict[str, list[Literal["sport_technique", "sport_practice", "sport_tactics"]]] = Field(
@@ -142,6 +144,14 @@ class GuidedChoices(StrictModel):
 
     @model_validator(mode="after")
     def validate_choices(self):
+        if self.athlete_context and self.athlete_context.training_months == 0 and self.experience != "new":
+            raise ValueError("Spor geçmişin 0 ay ise yeni başlayan düzeyini seç veya geçmişini düzelt.")
+        if (
+            self.athlete_context
+            and self.athlete_context.training_months == 0
+            and any(s.level not in (None, "new") or (s.years or 0) > 0 for s in self.sport_experience)
+        ):
+            raise ValueError("Toplam spor geçmişin 0 ay; branş deneyimini veya toplam geçmişini düzelt.")
         from .sport_training import BRANCH_METHODS, active_sports, sport_mode
 
         if set(self.sport_methods) - set(self.sport_ids):
@@ -224,7 +234,7 @@ def generate(data, snapshot, as_of):
             weeks=data.weeks,
             start_date=data.start_date,
             weekdays=data.weekdays,
-            adult=data.adult,
+            adult=data.adult and (data.athlete_context is None or data.athlete_context.age_years >= 18),
             symptoms=data.symptoms,
         ),
         snapshot,
@@ -586,7 +596,11 @@ def generate(data, snapshot, as_of):
             "Bu haftalık döngüde iki üst, bir alt gün var. Eşit sıklık için tüm vücut veya dört gün seçebilirsin."
         )
     return {
-        "program": {**baseline["program"], "name": data.name, "guided_choices": choices.model_dump()},
+        "program": {
+            **baseline["program"],
+            "name": data.name,
+            "guided_choices": choices.model_dump(mode="json"),
+        },
         "notes": list(dict.fromkeys(notes)),
         "review": {
             "days": day_info,

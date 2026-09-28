@@ -4,6 +4,7 @@ from typing import Literal
 
 from pydantic import Field, model_validator
 
+from .athlete_intake import AthleteIntake
 from .contracts import StrictModel
 from .movements import BY_ID, normalize
 
@@ -24,6 +25,9 @@ class EquipmentProfile(StrictModel):
 
 
 class PlanningPreferences(StrictModel):
+    onboarding_required: bool = False
+    onboarding_completed: bool = False
+    intake: AthleteIntake | None = None
     favorite_meal_ids: list[str] = Field(default_factory=list, max_length=100)
     goal: str = Field(default="", max_length=1000)
     weekdays: list[int] = Field(default_factory=lambda: [0, 2, 4], max_length=7)
@@ -62,7 +66,7 @@ def profile_context(profile):
         "experience": profile.get("experience"),
         "equipment": equipment,
         "original_equipment": profile.get("equipment", []),
-        "preferences": preferences.model_dump(),
+        "preferences": preferences.model_dump(mode="json"),
         "missing": []
         if equipment
         else ["Yapılandırılmış ekipman profili seçilmemiş; serbest metin otomatik eşlenmedi."],

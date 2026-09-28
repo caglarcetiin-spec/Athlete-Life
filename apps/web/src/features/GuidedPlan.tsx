@@ -1,3 +1,9 @@
+import {
+  IntakeFields,
+  emptyIntake,
+  intakeError,
+  type AthleteContext,
+} from "./AthleteAssessment";
 import { QuantityInput } from "./QuantityInput";
 import { formatQuantity } from "./quantities";
 import { BranchMethods } from "./BranchMethods";
@@ -92,6 +98,7 @@ type SportExperience = {
   known_skills: string;
 };
 type Answers = {
+  athlete_context: AthleteContext;
   sport_methods: Record<string, string[]>;
   performance_focus: string[];
   running_profile: {
@@ -170,7 +177,12 @@ export function GuidedPlan({
   onClose: () => void;
 }) {
   const profile = store.view("profile")[0];
+  const intakeSignature = JSON.stringify(
+    (profile?.planning_preferences as PlanningPrefs)?.intake || null,
+  );
   const [answers, setAnswers] = useState<Answers>({
+    athlete_context:
+      (profile?.planning_preferences as PlanningPrefs)?.intake || emptyIntake(),
     sport_methods: {},
     performance_focus: [],
     running_profile: null,
@@ -298,9 +310,29 @@ export function GuidedPlan({
       .then((saved) => {
         if (live) {
           if (saved?.answers) {
-            setAnswers((previous) => ({ ...previous, ...saved.answers }));
+            const latestProfile = store.view("profile")[0];
+            const latestIntake = (
+              latestProfile?.planning_preferences as PlanningPrefs
+            )?.intake;
+            const changedIntake =
+              latestIntake &&
+              saved.intake_signature !== JSON.stringify(latestIntake);
+            setAnswers((previous) => ({
+              ...previous,
+              ...saved.answers,
+              ...(changedIntake
+                ? {
+                    athlete_context: latestIntake,
+                    experience: String(latestProfile?.experience || "new"),
+                  }
+                : {}),
+            }));
             setStep(
-              saved.form_version === 2 ? Math.min(saved.step || 0, 8) : 0,
+              saved.form_version === 2 &&
+                !changedIntake &&
+                !intakeError(saved.answers.athlete_context)
+                ? Math.min(saved.step || 0, 8)
+                : 0,
             );
           } else {
             const current = store.view("profile")[0];
@@ -315,6 +347,7 @@ export function GuidedPlan({
               experience: String(current?.experience || "new"),
               equipment: equipment?.equipment || [],
               goal: prefs.goal || "",
+              athlete_context: prefs.intake || previous.athlete_context,
               weekdays:
                 prefs.weekdays?.length && prefs.weekdays.length <= 6
                   ? prefs.weekdays
@@ -352,7 +385,12 @@ export function GuidedPlan({
     setError("");
     setPreview(null);
     void store
-      .saveDraft("guided-plan", { answers: next, step, form_version: 2 })
+      .saveDraft("guided-plan", {
+        answers: next,
+        step,
+        form_version: 2,
+        intake_signature: intakeSignature,
+      })
       .catch(() =>
         setError(
           "Bu cihazda taslak saklanamadı. Sayfayı kapatmadan işlemi tamamla.",
@@ -367,6 +405,7 @@ export function GuidedPlan({
         answers,
         step: Math.min(next, 8),
         form_version: 2,
+        intake_signature: intakeSignature,
       })
       .catch(() => setError("Taslak cihazda saklanamadı."));
   }
@@ -396,18 +435,22 @@ export function GuidedPlan({
         ? 2
         : 1;
   const valid =
-    phase === 1
-      ? !!answers.goal.trim()
-      : phase === 3
-        ? answers.weekdays.length > 0 && answers.weekdays.length <= 6
-        : phase === 5
-          ? answers.weekdays.length >= minDays
-          : phase === 6
-            ? !!answers.name.trim() && !!answers.start_date
-            : step === 1
-              ? answers.methods.length > 0 &&
-                (!branchMode || answers.sport_ids.length > 0)
-              : true;
+    phase === 0
+      ? !intakeError(answers.athlete_context) &&
+        (answers.athlete_context.training_months !== 0 ||
+          answers.experience === "new")
+      : phase === 1
+        ? !!answers.goal.trim()
+        : phase === 3
+          ? answers.weekdays.length > 0 && answers.weekdays.length <= 6
+          : phase === 5
+            ? answers.weekdays.length >= minDays
+            : phase === 6
+              ? !!answers.name.trim() && !!answers.start_date
+              : step === 1
+                ? answers.methods.length > 0 &&
+                  (!branchMode || answers.sport_ids.length > 0)
+                : true;
   const environmentOptions = Array.from(
     new Map([
       ...(isRunning ? runningEquipment : []),
@@ -466,6 +509,11 @@ export function GuidedPlan({
   }
   const capacityIssue = capacityError(answers.competencies, options);
   async function generate() {
+    if (intakeError(answers.athlete_context)) {
+      setError(intakeError(answers.athlete_context));
+      setStep(0);
+      return;
+    }
     if (busy || (engine === "ai" && retrySeconds > 0)) return;
     if (capacityIssue) {
       go(2);
@@ -486,7 +534,11 @@ export function GuidedPlan({
         );
         return;
       }
-      if (!answers.adult || answers.symptoms) {
+      if (
+        !answers.adult ||
+        answers.symptoms ||
+        (answers.athlete_context.age_years ?? 0) < 18
+      ) {
         setError(
           "AI planı için yetişkin onayını kontrol et. Belirti bildirdiğinde otomatik AI planı oluşturulmaz.",
         );
@@ -594,28 +646,46 @@ export function GuidedPlan({
       <fieldset className="guided-fields" disabled={busy}>
         {phase === 0 && (
           <>
-            {choices("experience", [
-              [
-                "new",
-                "Yeni başlıyorum",
-                "Hareketleri ve düzenli çalışmayı öğreniyorum.",
-              ],
-              [
-                "returning",
-                "Ara verdim, geri dönüyorum",
-                "Önce ritmimi tekrar kurmak istiyorum.",
-              ],
-              [
-                "regular",
-                "Düzenli çalışıyorum",
-                "Temel hareketleri biliyorum.",
-              ],
-              [
-                "advanced",
-                "İleri düzeyim",
-                "Planımı ayrıntılı düzenlemek istiyorum.",
-              ],
-            ])}
+            <IntakeFields
+              value={answers.athlete_context}
+              onChange={(athlete_context) =>
+                update({
+                  athlete_context,
+                  ...(athlete_context.training_months === 0
+                    ? { experience: "new" }
+                    : {}),
+                })
+              }
+            />
+            {answers.athlete_context.training_months === 0 && (
+              <p className="notice">
+                Yeni başlangıç seçildi: önce temel hareketler ve sürdürülebilir
+                bir düzen.
+              </p>
+            )}
+            {answers.athlete_context.training_months !== 0 &&
+              choices("experience", [
+                [
+                  "new",
+                  "Yeni başlıyorum",
+                  "Hareketleri ve düzenli çalışmayı öğreniyorum.",
+                ],
+                [
+                  "returning",
+                  "Ara verdim, geri dönüyorum",
+                  "Önce ritmimi tekrar kurmak istiyorum.",
+                ],
+                [
+                  "regular",
+                  "Düzenli çalışıyorum",
+                  "Temel hareketleri biliyorum.",
+                ],
+                [
+                  "advanced",
+                  "İleri düzeyim",
+                  "Planımı ayrıntılı düzenlemek istiyorum.",
+                ],
+              ])}
             <p>
               Bu seçim yalnız bu taslağı etkiler; mevcut profilini veya
               geçmişini değiştirmez.
@@ -883,9 +953,24 @@ export function GuidedPlan({
                         Seç
                       </option>
                       <option value="new">Yeni başlıyorum</option>
-                      <option value="returning">Ara verdim</option>
-                      <option value="regular">Düzenli çalışıyorum</option>
-                      <option value="advanced">İleri düzey</option>
+                      <option
+                        value="returning"
+                        disabled={answers.athlete_context.training_months === 0}
+                      >
+                        Ara verdim
+                      </option>
+                      <option
+                        value="regular"
+                        disabled={answers.athlete_context.training_months === 0}
+                      >
+                        Düzenli çalışıyorum
+                      </option>
+                      <option
+                        value="advanced"
+                        disabled={answers.athlete_context.training_months === 0}
+                      >
+                        İleri düzey
+                      </option>
                     </select>
                   </label>
                   <div className="form-grid">
@@ -1158,18 +1243,45 @@ export function GuidedPlan({
             </label>
             <label>
               Dönem boyunca nasıl ilerleyelim?
-              <select aria-label="Dönem boyunca nasıl ilerleyelim?" value={answers.progression_mode} onChange={(e) => update({ progression_mode: e.target.value as "repeat" | "phased" })}>
-                <option value="phased">AI taslağında uyum, gelişim ve hafif hafta</option>
+              <select
+                aria-label="Dönem boyunca nasıl ilerleyelim?"
+                value={answers.progression_mode}
+                onChange={(e) =>
+                  update({
+                    progression_mode: e.target.value as "repeat" | "phased",
+                  })
+                }
+              >
+                <option value="phased">
+                  AI taslağında uyum, gelişim ve hafif hafta
+                </option>
                 <option value="repeat">Aynı haftalık hedefleri koru</option>
               </select>
             </label>
-            {showMuscles && <label>
-              Kuvvet setlerinin sonunda kaç tekrar yedekte kalsın (RIR)?
-              <select aria-label="Kuvvet setlerinin sonunda kaç tekrar yedekte kalsın (RIR)?" value={answers.target_rir} onChange={(e) => update({ target_rir: Number(e.target.value) })}>
-                {[2,3,4,5].map((n) => <option key={n} value={n}>{n} tekrar yedek</option>)}
-              </select>
-            </label>}
-            <p className="caption">RIR, set bittiğinde düzgün formla yapabileceğini düşündüğün ek tekrar sayısıdır. Dönemleme kuvvet çalışma setlerine uygulanır. Artış kararı gerçekleşen kayıtlar ve RIR ile değerlendirilir; otomatik kilogram artışı yapılmaz.</p>
+            {showMuscles && (
+              <label>
+                Kuvvet setlerinin sonunda kaç tekrar yedekte kalsın (RIR)?
+                <select
+                  aria-label="Kuvvet setlerinin sonunda kaç tekrar yedekte kalsın (RIR)?"
+                  value={answers.target_rir}
+                  onChange={(e) =>
+                    update({ target_rir: Number(e.target.value) })
+                  }
+                >
+                  {[2, 3, 4, 5].map((n) => (
+                    <option key={n} value={n}>
+                      {n} tekrar yedek
+                    </option>
+                  ))}
+                </select>
+              </label>
+            )}
+            <p className="caption">
+              RIR, set bittiğinde düzgün formla yapabileceğini düşündüğün ek
+              tekrar sayısıdır. Dönemleme kuvvet çalışma setlerine uygulanır.
+              Artış kararı gerçekleşen kayıtlar ve RIR ile değerlendirilir;
+              otomatik kilogram artışı yapılmaz.
+            </p>
             <p>
               Ölçülebilir hedeflerini Gelişim bölümünden takip edebilirsin.
               Hedefin, gerçekleşmiş performans veya gelişim garantisi değildir.
@@ -1560,7 +1672,9 @@ export function GuidedPlan({
                     koşulları geçerlidir.
                   </p>
                   <p>
-                    Hesap kimliğin, şifren ve kayıtlı sağlık geçmişin
+                    Yaş, boy, kilo, cinsiyet, spor geçmişi ve bu formda
+                    paylaştığın isteğe bağlı döngü bilgileri gönderilir. Hesap
+                    kimliğin, şifren ve diğer kayıtlı sağlık geçmişin
                     gönderilmez. Serbest hedef alanına yazdıkların gönderilir;
                     buraya kimlik veya özel sağlık bilgisi yazma.
                   </p>
@@ -1623,8 +1737,38 @@ export function GuidedPlan({
               {answers.weeks} hafta · haftada {answers.weekdays.length} gün ·{" "}
               {answers.goal}
             </p>
-            <details><summary>Dönem yapısı ve ilerleme koşulları</summary>
-              {preview.notes.filter((n) => n.includes("hafta") || n.includes("İlerleme koşulu") || n.includes("RIR") || n.includes("dozları")).map((n,i) => <p key={i}>{n}</p>)}
+            {preview.notes.some((n) =>
+              n.startsWith("Tercihine göre dinlenme tarihleri:"),
+            ) && (
+              <section
+                className="notice"
+                aria-label="Seçtiğin dinlenme günleri"
+              >
+                <h3>Döngü tercihine göre takvim</h3>
+                {preview.notes
+                  .filter(
+                    (n) =>
+                      n.startsWith("Tercihine göre dinlenme tarihleri:") ||
+                      n.startsWith("Gelecek döngüye ait tarihler"),
+                  )
+                  .map((n) => (
+                    <p key={n}>{n}</p>
+                  ))}
+              </section>
+            )}
+            <details>
+              <summary>Dönem yapısı ve ilerleme koşulları</summary>
+              {preview.notes
+                .filter(
+                  (n) =>
+                    n.includes("hafta") ||
+                    n.includes("İlerleme koşulu") ||
+                    n.includes("RIR") ||
+                    n.includes("dozları"),
+                )
+                .map((n, i) => (
+                  <p key={i}>{n}</p>
+                ))}
             </details>
             {preview.program.days.map((day) => (
               <details
@@ -1637,7 +1781,8 @@ export function GuidedPlan({
                 }
               >
                 <summary>
-                  {day.first_week != null && `${day.first_week}–${day.last_week ?? answers.weeks}. hafta · `}
+                  {day.first_week != null &&
+                    `${day.first_week}–${day.last_week ?? answers.weeks}. hafta · `}
                   {names[day.weekday]} ·{" "}
                   {day.kind === "rest"
                     ? "Dinlenme"

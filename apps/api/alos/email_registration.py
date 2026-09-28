@@ -18,7 +18,7 @@ from .ai_planning import NoRedirect
 from .contracts import StrictModel
 from .db import utcnow
 from .errors import DomainError
-from .models import EmailChallenge
+from .models import AthleteProfile, EmailChallenge
 from .mongo_db import retry_transaction
 
 
@@ -135,7 +135,12 @@ def complete(database, settings, body):
                 ):
                     invalid = True
                 else:
-                    user, _ = auth.create_user(db, body.username, body.name, body.password)
+                    user, athlete = auth.create_user(db, body.username, body.name, body.password)
+                    db.add(
+                        AthleteProfile(
+                            athlete_id=athlete.id, planning_preferences={"onboarding_required": True}
+                        )
+                    )
                     user.email = email
                     db.delete(challenge)
     except IntegrityError:
@@ -165,7 +170,8 @@ def complete_without_email(database, body):
     email = EmailRequest(email=body.email).email if body.email else None
     try:
         with database.sessions.begin() as db:
-            user, _ = auth.create_user(db, body.username, body.name, body.password)
+            user, athlete = auth.create_user(db, body.username, body.name, body.password)
+            db.add(AthleteProfile(athlete_id=athlete.id, planning_preferences={"onboarding_required": True}))
             user.email = email
     except IntegrityError:
         raise DomainError("account_unavailable", "Bu kullanıcı adı kullanılamıyor.", 409) from None

@@ -1,0 +1,217 @@
+Athlete Life
+Sentetik Sporcu
+Çıkış yap
+
+İLK KURULUM · 1 / 2 · SENİ TANIYALIM
+
+Analizini tamamlayıp programını ana plana aldığında bütün bölümler açılacak. Sonraki girişlerinde bu adımları tekrarlaman gerekmeyecek.
+
+Başlangıç analizin
+
+Önce seni tanıyalım. Sonra branşlarını, hedefini, ekipmanlarını ve haftalık düzenini seçip programını birlikte hazırlayacağız.
+
+Bedenin ve spor geçmişin
+
+Ölçülerini kendin bildirirsin. Bu bilgiler beden yapısı, kas oranı veya sağlık tanısı olarak yorumlanmaz.
+
+Yaşın
+Boyun (cm)
+Kilon (kg)
+Toplam spor geçmişin (ay)
+Cinsiyet
+Belirtmek istemiyorum
+Kadın
+Erkek
+İnterseks
+
+Hiç spor yapmadıysan geçmişine 0 yaz. Program temel hareketleri öğrenme ve düzen oluşturma ile başlar. Her branştaki deneyimini sonraki adımlarda ayrıca belirtebilirsin.
+
+Adet döngüsü ve çalışma tercihin · isteğe bağlı
+Döngü bilgisi eklemek ister misin?
+Paylaşmak istemiyorum
+Evet, planımda kullan
+Benim için geçerli değil
+Son adet başlangıcı
+Adet süresi (gün)
+Genellikle iki başlangıç arası (gün)
+Adet günlerinde nasıl çalışmak istersin?
+Gün gün kendim karar vereceğim
+Aynı programla devam etmek istiyorum
+Bu günlerde ara vermek istiyorum
+Döngü uzunluğuma göre tahmin edilen gelecek adet günlerini de bu planda dinlenme olarak kullan.
+
+Gelecek tarihler tahmindir; hormon veya performans ölçümü değildir. Ara vermeyi seçersen ilgili günler dinlenme olur, yük başka güne yığılmaz. Tarihin değişirse taslağını yeniden hazırla. Gün gün karar verme ve devam etme seçenekleri planın takvimini değiştirmez.
+
+Analizi kaydet ve planına geç
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+ExpectError: expect(received).toEqual(expected) // deep equality
+
+- Expected  -  1
++ Received  + 58
+
+- Array []
++ Array [
++   Object {
++     "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",
++     "help": "Elements must meet minimum color contrast ratio thresholds",
++     "helpUrl": "https://dequeuniversity.com/rules/axe/4.13/color-contrast?application=playwright",
++     "id": "color-contrast",
++     "impact": "serious",
++     "nodes": Array [
++       Object {
++         "all": Array [],
++         "any": Array [
++           Object {
++             "data": Object {
++               "bgColor": "#315a16",
++               "contrastRatio": 2.25,
++               "expectedContrastRatio": "4.5:1",
++               "fgColor": "#111713",
++               "fontSize": "12.0pt (16px)",
++               "fontWeight": "normal",
++               "messageKey": null,
++             },
++             "id": "color-contrast",
++             "impact": "serious",
++             "message": "Element has insufficient color contrast of 2.25 (foreground color: #111713, background color: #315a16, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1",
++             "relatedNodes": Array [
++               Object {
++                 "html": "<button>Analizi kaydet ve planına geç</button>",
++                 "target": Array [
++                   "form > button",
++                 ],
++               },
++             ],
++           },
++         ],
++         "failureSummary": "Fix any of the following:
++   Element has insufficient color contrast of 2.25 (foreground color: #111713, background color: #315a16, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1",
++         "html": "<button>Analizi kaydet ve planına geç</button>",
++         "impact": "serious",
++         "none": Array [],
++         "target": Array [
++           "form > button",
++         ],
++       },
++     ],
++     "tags": Array [
++       "cat.color",
++       "wcag2aa",
++       "wcag143",
++       "TTv5",
++       "TT13.c",
++       "EN-301-549",
++       "EN-9.1.4.3",
++       "ACT",
++       "RGAAv4",
++       "RGAA-3.2.1",
++     ],
++   },
++ ]
+    at captureRawStack (/Users/caglarcetin/Documents/GitHub/Athlete-Life/apps/web/node_modules/playwright-core/lib/coreBundle.js:8588:17)
+    at callMatcherAsStep (/Users/caglarcetin/Documents/GitHub/Athlete-Life/apps/web/node_modules/playwright/lib/matchers/expect.js:13310:57)
+    at Object.toEqual (/Users/caglarcetin/Documents/GitHub/Athlete-Life/apps/web/node_modules/playwright/lib/matchers/expect.js:13302:23)
+    at /Users/caglarcetin/Documents/GitHub/Athlete-Life/tools/v2/intake_browser.mjs:23:262 {
+  matcherResult: {
+    actual: [
+      {
+        id: 'color-contrast',
+        impact: 'serious',
+        tags: [
+          'cat.color',  'wcag2aa',
+          'wcag143',    'TTv5',
+          'TT13.c',     'EN-301-549',
+          'EN-9.1.4.3', 'ACT',
+          'RGAAv4',     'RGAA-3.2.1'
+        ],
+        description: 'Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds',
+        help: 'Elements must meet minimum color contrast ratio thresholds',
+        helpUrl: 'https://dequeuniversity.com/rules/axe/4.13/color-contrast?application=playwright',
+        nodes: [
+          {
+            any: [Array],
+            all: [],
+            none: [],
+            impact: 'serious',
+            html: '<button>Analizi kaydet ve planına geç</button>',
+            target: [Array],
+            failureSummary: 'Fix any of the following:\n' +
+              '  Element has insufficient color contrast of 2.25 (foreground color: #111713, background color: #315a16, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1'
+          }
+        ]
+      }
+    ],
+    expected: [],
+    message: 'expect(received).toEqual(expected) // deep equality\n' +
+      '\n' +
+      '- Expected  -  1\n' +
+      '+ Received  + 58\n' +
+      '\n' +
+      '- Array []\n' +
+      '+ Array [\n' +
+      '+   Object {\n' +
+      '+     "description": "Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds",\n' +
+      '+     "help": "Elements must meet minimum color contrast ratio thresholds",\n' +
+      '+     "helpUrl": "https://dequeuniversity.com/rules/axe/4.13/color-contrast?application=playwright",\n' +
+      '+     "id": "color-contrast",\n' +
+      '+     "impact": "serious",\n' +
+      '+     "nodes": Array [\n' +
+      '+       Object {\n' +
+      '+         "all": Array [],\n' +
+      '+         "any": Array [\n' +
+      '+           Object {\n' +
+      '+             "data": Object {\n' +
+      '+               "bgColor": "#315a16",\n' +
+      '+               "contrastRatio": 2.25,\n' +
+      '+               "expectedContrastRatio": "4.5:1",\n' +
+      '+               "fgColor": "#111713",\n' +
+      '+               "fontSize": "12.0pt (16px)",\n' +
+      '+               "fontWeight": "normal",\n' +
+      '+               "messageKey": null,\n' +
+      '+             },\n' +
+      '+             "id": "color-contrast",\n' +
+      '+             "impact": "serious",\n' +
+      '+             "message": "Element has insufficient color contrast of 2.25 (foreground color: #111713, background color: #315a16, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1",\n' +
+      '+             "relatedNodes": Array [\n' +
+      '+               Object {\n' +
+      '+                 "html": "<button>Analizi kaydet ve planına geç</button>",\n' +
+      '+                 "target": Array [\n' +
+      '+                   "form > button",\n' +
+      '+                 ],\n' +
+      '+               },\n' +
+      '+             ],\n' +
+      '+           },\n' +
+      '+         ],\n' +
+      '+         "failureSummary": "Fix any of the following:\n' +
+      '+   Element has insufficient color contrast of 2.25 (foreground color: #111713, background color: #315a16, font size: 12.0pt (16px), font weight: normal). Expected contrast ratio of 4.5:1",\n' +
+      '+         "html": "<button>Analizi kaydet ve planına geç</button>",\n' +
+      '+         "impact": "serious",\n' +
+      '+         "none": Array [],\n' +
+      '+         "target": Array [\n' +
+      '+           "form > button",\n' +
+      '+         ],\n' +
+      '+       },\n' +
+      '+     ],\n' +
+      '+     "tags": Array [\n' +
+      '+       "cat.color",\n' +
+      '+       "wcag2aa",\n' +
+      '+       "wcag143",\n' +
+      '+       "TTv5",\n' +
+      '+       "TT13.c",\n' +
+      '+       "EN-301-549",\n' +
+      '+       "EN-9.1.4.3",\n' +
+      '+       "ACT",\n' +
+      '+       "RGAAv4",\n' +
+      '+       "RGAA-3.2.1",\n' +
+      '+     ],\n' +
+      '+   },\n' +
+      '+ ]',
+    name: 'toEqual',
+    pass: false
+  }
+}
+
+Node.js v24.19.0
