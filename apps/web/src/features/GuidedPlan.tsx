@@ -1,3 +1,4 @@
+import { SportOptions, type SportOption } from "./SportOptions";
 import { FocusMap } from "./FocusMap";
 import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight, Check, Sparkles } from "lucide-react";
@@ -54,7 +55,16 @@ type PlannerOption = {
   competency_required: boolean;
   block: string;
 };
+type SportExperience = {
+  sport_id: string;
+  level: string | null;
+  years: number | null;
+  sessions_per_week: number | null;
+  session_minutes: number | null;
+  known_skills: string;
+};
 type Answers = {
+  sport_experience: SportExperience[];
   sport_ids: string[];
   training_history: string;
   methods: string[];
@@ -125,6 +135,7 @@ export function GuidedPlan({
   const [answers, setAnswers] = useState<Answers>({
     sport_ids: (profile?.sport_ids as string[]) || [],
     training_history: "",
+    sport_experience: [],
     methods: ["weights"],
     competencies: [],
     conditioning_minutes: 10,
@@ -147,10 +158,9 @@ export function GuidedPlan({
     [busy, setBusy] = useState(false),
     [error, setError] = useState("");
   const [options, setOptions] = useState<PlannerOption[]>([]);
-  const [sports, setSports] = useState<
-    { id: string; name: string; aliases: string }[]
-  >([]);
+  const [sports, setSports] = useState<SportOption[]>([]);
   const [sportSearch, setSportSearch] = useState("");
+  const [sportCategory, setSportCategory] = useState("");
   const [optionsError, setOptionsError] = useState("");
   const [capabilitySearch, setCapabilitySearch] = useState("");
   const synced = Boolean(store.snapshot);
@@ -468,6 +478,27 @@ export function GuidedPlan({
               />
             </label>
             <label>
+              Branş kategorisi
+              <select
+                aria-label="Branş kategorisi"
+                value={sportCategory}
+                onChange={(e) => setSportCategory(e.target.value)}
+              >
+                <option value="">Tüm kategoriler</option>
+                {[
+                  ...new Set(
+                    sports.map((s) => s.category_label || "Diğer branşlar"),
+                  ),
+                ]
+                  .sort((a, b) => a.localeCompare(b, "tr"))
+                  .map((label) => (
+                    <option key={label} value={label}>
+                      {label}
+                    </option>
+                  ))}
+              </select>
+            </label>
+            <label>
               Çalıştığın branşı ekle
               <select
                 aria-label="Çalıştığın branşı ekle"
@@ -480,19 +511,22 @@ export function GuidedPlan({
                 <option value="">
                   199 branştan seç · birden fazla ekleyebilirsin
                 </option>
-                {sports
-                  .filter(
+                <SportOptions
+                  sports={sports.filter(
                     (s) =>
                       !answers.sport_ids.includes(s.id) &&
-                      (s.name + " " + s.aliases)
+                      (!sportCategory || s.category_label === sportCategory) &&
+                      (
+                        s.name +
+                        " " +
+                        (s.aliases || "") +
+                        " " +
+                        (s.category_label || "")
+                      )
                         .toLocaleLowerCase("tr-TR")
                         .includes(sportSearch.toLocaleLowerCase("tr-TR")),
-                  )
-                  .map((s) => (
-                    <option key={s.id} value={s.id}>
-                      {s.name}
-                    </option>
-                  ))}
+                  )}
+                />
               </select>
             </label>
             <div className="actions">
@@ -503,6 +537,9 @@ export function GuidedPlan({
                   onClick={() =>
                     update({
                       sport_ids: answers.sport_ids.filter((s) => s !== id),
+                      sport_experience: answers.sport_experience.filter(
+                        (s) => s.sport_id !== id,
+                      ),
                     })
                   }
                 >
@@ -587,6 +624,106 @@ export function GuidedPlan({
         )}
         {step === 2 && (
           <>
+            {answers.sport_ids.map((id) => {
+              const entry = answers.sport_experience.find(
+                (s) => s.sport_id === id,
+              );
+              const change = (patch: Partial<SportExperience>) =>
+                update({
+                  sport_experience: [
+                    ...answers.sport_experience.filter(
+                      (s) => s.sport_id !== id,
+                    ),
+                    {
+                      sport_id: id,
+                      level: null,
+                      years: null,
+                      sessions_per_week: null,
+                      session_minutes: null,
+                      known_skills: "",
+                      ...entry,
+                      ...patch,
+                    },
+                  ],
+                });
+              return (
+                <details key={id} className="card">
+                  <summary>
+                    {sports.find((s) => s.id === id)?.name || id} · branşa özgü
+                    deneyimim
+                  </summary>
+                  <p>
+                    Bu branştaki geçmişin diğer sporlardaki yeterliğinden ayrı
+                    değerlendirilir. Alanları boş bırakırsan bilinmiyor olarak
+                    kalır.
+                  </p>
+                  <label>
+                    Bu branştaki seviyem
+                    <select
+                      aria-label={id + " seviyesi"}
+                      value={entry?.level || ""}
+                      onChange={(e) => change({ level: e.target.value })}
+                    >
+                      <option value="" disabled>
+                        Seç
+                      </option>
+                      <option value="new">Yeni başlıyorum</option>
+                      <option value="returning">Ara verdim</option>
+                      <option value="regular">Düzenli çalışıyorum</option>
+                      <option value="advanced">İleri düzey</option>
+                    </select>
+                  </label>
+                  <div className="form-grid">
+                    {(
+                      [
+                        ["years", "Kaç yıldır yapıyorsun?", 0, 100],
+                        [
+                          "sessions_per_week",
+                          "Şu an haftada kaç seans?",
+                          0,
+                          21,
+                        ],
+                        [
+                          "session_minutes",
+                          "Ortalama seans süresi (dk)",
+                          5,
+                          480,
+                        ],
+                      ] as const
+                    ).map(([key, label, min, max]) => (
+                      <label key={key}>
+                        {label}
+                        <input
+                          aria-label={id + " " + label}
+                          type="number"
+                          min={min}
+                          max={max}
+                          step={key === "years" ? 0.5 : 1}
+                          value={entry?.[key] ?? ""}
+                          onChange={(e) =>
+                            change({
+                              [key]:
+                                e.target.value === ""
+                                  ? null
+                                  : Number(e.target.value),
+                            })
+                          }
+                        />
+                      </label>
+                    ))}
+                  </div>
+                  <label>
+                    Bildiğin teknikler ve takip ettiğin performans
+                    <textarea
+                      maxLength={500}
+                      value={entry?.known_skills || ""}
+                      onChange={(e) => change({ known_skills: e.target.value })}
+                      placeholder="Örneğin serbest yüzme, 100 m sürem; boksta bildiğim teknikler…"
+                    />
+                  </label>
+                </details>
+              );
+            })}
             <p>
               Yalnız tekniğini bildiğin ve kontrollü yapabildiğin hareketleri
               seç. İleri düzey seçmek, front lever veya muscle-up yapabildiğin

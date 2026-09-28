@@ -62,8 +62,18 @@ class Competency(StrictModel):
         return self
 
 
+class SportExperience(StrictModel):
+    sport_id: str
+    level: Literal["new", "returning", "regular", "advanced"] | None = None
+    years: float | None = Field(default=None, ge=0, le=100)
+    sessions_per_week: int | None = Field(default=None, ge=0, le=21)
+    session_minutes: int | None = Field(default=None, ge=5, le=480)
+    known_skills: str = Field(default="", max_length=500)
+
+
 class GuidedChoices(StrictModel):
     sport_ids: list[str] = Field(default_factory=list, max_length=20)
+    sport_experience: list[SportExperience] = Field(default_factory=list, max_length=20)
     training_history: str = Field(default="", max_length=1000)
     experience: Literal["new", "returning", "regular", "advanced"]
     objective: Literal["strength", "hypertrophy", "strength_hypertrophy", "endurance", "technique"]
@@ -81,6 +91,9 @@ class GuidedChoices(StrictModel):
 
     @model_validator(mode="after")
     def validate_choices(self):
+        ids = [s.sport_id for s in self.sport_experience]
+        if len(ids) != len(set(ids)) or any(s not in self.sport_ids for s in ids):
+            raise ValueError("Branş deneyimi yalnız seçili branşlara ve birer kez eklenebilir.")
         if len(set(self.sport_ids)) != len(self.sport_ids) or any(s not in BY_SPORT for s in self.sport_ids):
             raise ValueError("Branşları katalogdan ve tekil seç.")
         if len(set(self.weekdays)) != len(self.weekdays) or any(d not in range(7) for d in self.weekdays):

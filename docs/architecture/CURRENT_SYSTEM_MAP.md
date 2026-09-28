@@ -196,3 +196,11 @@ GET `/api/v2/ai-planning-status` yalnız yapılandırma durumunu oturum sahibine
 - `guided_choices.sport_ids` / `training_history` form kökenli isteğe bağlı bağlamdır. Varsayılanları [] / boş metin; AI sağlayıcısına yalnız form onayı kapsamında aktarılır. `sports.py` 199 katalog kimliğinin ortak doğrulamasıdır.
 - Running/swimming yöntemleri, endurance/technique hedefleri, Pool ekipmanı; `swim-{freestyle,backstroke,breaststroke,butterfly}` cardio kimlikleri (kas eşlemesi UNKNOWN). Bunlar program → reçete slotu → gerçek kayıt hattını paylaşır.
 - Ayrıntı, sınırlamalar, rollback ve test kanıtları: `docs/RUNNER_AND_SPORTS_REVISION.md`.
+
+### 2026-09-28 — tam katalog / kategoriler / AI gelişim yorumu
+
+`MovementGuide::MovementLibrary` /api/v2/catalogs hareketlerini eksiksiz listeler; altı yerel çizim ayrı teknik rehber katmanıdır. `SportOptions` profil ve GuidedPlan'da `sports.py::categorized_sports` çıktısını kullanır. Özgün sport_id/family değişmez.
+
+`guided_choices.sport_experience[]`: sport_id, nullable level/years/sessions_per_week/session_minutes, known_skills; isteğe bağlı alan, varsayılan []. Program kabulünden sonra mevcut guided_choices JSON hattında korunur, otomatik profil yazımı yapılmaz.
+
+`ai_progress.py`: hesap oturumundan snapshot → seçilen ve önceki dönem → izin verilen sayısal facts → önizleme/digest → sağlayıcıya özel onay → EVREN/OpenAI ProgressReview → evidence_ids doğrulaması. `AIProgress` Gelişim bölümünde çalışır; kayıt/plan mutasyonu veya otomatik rapor arşivi yok. DB göçü yok. Ayrıntı: `docs/AI_PROGRESS_AND_CATALOG.md`.

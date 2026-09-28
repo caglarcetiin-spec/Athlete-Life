@@ -1,3 +1,4 @@
+import { SportOptions, type SportOption } from "./SportOptions";
 import { PlanningPreferences } from "./PlanningPreferences";
 import { useEffect, useState } from "react";
 import {
@@ -64,7 +65,7 @@ export function Profile({
   const [error, setError] = useState(""),
     [notice, setNotice] = useState(""),
     [codes, setCodes] = useState<string[]>([]),
-    [catalog, setCatalog] = useState<{ id: string; name: string }[]>([]),
+    [catalog, setCatalog] = useState<SportOption[]>([]),
     [sports, setSports] = useState<string[]>([]),
     [equipment, setEquipment] = useState("");
   const profile = store.view("profile")[0];
@@ -76,7 +77,7 @@ export function Profile({
     void api("catalogs")
       .then((v) => {
         const data = v as {
-          sports: { sports: { id: string; name: string }[] };
+          sports: { sports: SportOption[] };
         };
         setCatalog(data.sports.sports);
       })
@@ -202,11 +203,9 @@ export function Profile({
                 }}
               >
                 <option value="">Branş seç</option>
-                {catalog.map((s) => (
-                  <option key={s.id} value={s.id}>
-                    {s.name}
-                  </option>
-                ))}
+                <SportOptions
+                  sports={catalog.filter((s) => !sports.includes(s.id))}
+                />
               </select>
             </label>
             <label>

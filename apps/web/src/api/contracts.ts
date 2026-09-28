@@ -134,7 +134,11 @@ export async function api(path: string, options: RequestInit = {}) {
     // Provider generation can take 150 seconds; ordinary sync stays responsive.
     signal:
       options.signal ??
-      AbortSignal.timeout(path === "ai-program-drafts" ? 180000 : 12000),
+      AbortSignal.timeout(
+        ["ai-program-drafts", "ai-progress-review"].includes(path)
+          ? 180000
+          : 12000,
+      ),
     headers: { "Content-Type": "application/json", ...options.headers },
   });
   const date = response.headers.get("Date");

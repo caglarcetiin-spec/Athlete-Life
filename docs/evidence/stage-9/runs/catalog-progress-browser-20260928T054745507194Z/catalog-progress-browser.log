@@ -1,0 +1,142 @@
+İçeriğe geç
+Sunucuya kaydedildi
+Açık
+D
+Deniz Test
+Durumum
+Raporlar ve 3B
+Hedeflerim
+KAYDINA DAYANAN İÇGÖRÜLER
+Durumum
+
+Hedeflerin ve bugün bildiğimiz durumun.
+
+ AI ile dönem değerlendirmesi
+
+Kaydettiğin antrenmanları aynı uzunluktaki önceki dönemle karşılaştır. Eklemek istediğin ölçüleri seç; göndermeden önce özeti incele. AI mevcut programını değiştirmez.
+
+Analiz bitiş tarihi
+İncelenecek dönem
+1 hafta
+2 hafta
+4 hafta
+8 hafta
+12 hafta
+
+Antrenman kayıtları ve katalogdan hesaplanan kas yükü özeti dahil edilir.
+
+Kilo, bel çevresi ve vücut ölçülerim
+Performans testlerim
+Hedef ilerleme kayıtlarım
+Beslenme ve su toplamlarım
+Uyku sürelerim
+Gönderilecek verileri incele
+EVREN ile değerlendir
+
+2026-09-02 – 2026-09-15 · Önceki dönem 2026-08-19 tarihinden başlar.
+
+2 kayıt · 0 kas eşlemesi eksik kayıt
+
+Kimlik, serbest notlar, fotoğraf, kan tahlili, ağrı ve regl verileri gönderilmez. Seçtiğin sayısal kayıtlar yukarıdaki AI sağlayıcısına gider.
+
+Gönderilecek tam veri özeti (9 dayanak)
+Bu özetteki seçili kayıtlarımın EVREN sağlayıcısına gelişim yorumu için gönderilmesini kabul ediyorum.
+Gelişimimi AI ile analiz et
+2026-09-02 – 2026-09-15 değerlendirmesi
+
+EVREN · synthetic-model · AI yorumu; klinik değerlendirme veya kas büyümesi ölçümü değildir.
+
+Sentetik dönem değerlendirmesi.
+
+Kayıt düzeni
+
+Kas büyümesi ölçümü değil; kayıt özeti.
+
+Dayandığı kayıt özeti
+Sonraki adımlar
+Karşılaştırılabilir kayıt tut.
+Verinin sınırları
+Kayıtlar öz bildirimdir; eksik kayıt sıfır değildir.
+Kas büyümesi/hasarı doğrudan ölçülmüyor.
+Serbest notlar, kimlik, fotoğraf, kan tahlili, ağrı ve regl verileri bu gönderime dahil değildir.
+Sınırlı kayıt.
+Değerlendirmeyi indir
+
+Yorum bu ekranda tutulur. Saklamak için indir; kayıtların ve programın otomatik değiştirilmez.
+
+Rapor içeriğini seç
+Dosyaya dahil edilecek bilgiler
+Antrenman ve hedefler
+Beslenme ve su
+Hassas sağlık kayıtları
+Seçimimi önizle
+Seçili dönemin özeti
+
+2026-08-19 – 2026-09-15 · 0 tamamlanan seans · 0 tarihe bağlanmış plan hedefi · 1 gerçek set
+
+Payda yalnız tarihe bağlanmış plan hedeflerini içerir. Kaydı olmayan gün yapılmadı sayılmaz; eski seanslar yeni planla yeniden yazılmaz.
+
+Planımı gözden geçir
+Kaydedilen çalışma dağılımı
+
+1 / 1 gerçek kayıt kas dağılımına alınabildi. Ağırlıklar katalog varsayımıdır; ölçülmüş gelişim veya kas hasarı değildir.
+
+Çalışma: 0 · Isınma: 0 · Türü belirtilmemiş: 1
+
+Kas grubu	Kaydedilen katkı	Kaynak kayıt
+Karın	12 ağırlıklı tutuş saniyesi	1
+Kalça fleksörleri	10,8 ağırlıklı tutuş saniyesi	1
+Arka kol kası	5,04 ağırlıklı tutuş saniyesi	1
+Kürek kemiği çevresi	6 ağırlıklı tutuş saniyesi	1
+Önkol	3,36 ağırlıklı tutuş saniyesi	1
+Görüntülenen tarih
+Zaman aralığı
+Günlük
+Haftalık
+4 hafta
+12 hafta
+Hesap görünümü
+Güncel kayıtlarla yeniden hesap
+O tarihte bilinen kayıtlarla
+SON HESAP · 15.09.2026 23:59:59
+Biraz daha bilgiye ihtiyacımız var.
+
+Kayıtlar bir güvenli antrenman garantisi değildir.
+
+Eksik: Bugünün enerji/yorgunluk öz-bildirimi · Son iki günde biten uyku kaydı · Tamamlanmış beslenme günlüğü · Su kaydı
+
+Günlük durumumu gir
+Hedeflerimi düzenle
+İlk hedefini belirle.
+
+Ölçülebilir bir hedef eklediğinde gelişimin burada görünür.
+
+Hedef ekle
+Bu hesabın dayanağı
+
+Model exposure-1 · Veri sürümü 3 · Güncel kayıtlarla yeniden hesap
+
+Kişisel zamana sıralı doğrulama ve uzman incelemesi yok; başlangıç modeli kullanılıyor.
+
+Kararı geçmişime kaydet
+Bilim ve sınırlar
+Saklanan kararlar
+Canlı hesap
+Geri
+Bugün
+İleri
+Bugün
+Antrenman
+Sağlık
+Gelişim
+Araçlar
+file:///Users/caglarcetin/Documents/GitHub/Athlete-Life/apps/web/node_modules/@axe-core/playwright/dist/index.mjs:218
+      throw new Error(
+            ^
+
+Error: Please use browser.newContext()
+ Please check out https://github.com/dequelabs/axe-core-npm/blob/develop/packages/playwright/error-handling.md
+    at AxeBuilder.analyze (file:///Users/caglarcetin/Documents/GitHub/Athlete-Life/apps/web/node_modules/@axe-core/playwright/dist/index.mjs:218:13)
+    at async file:///Users/caglarcetin/Documents/GitHub/Athlete-Life/tools/v2/catalog_progress_browser.mjs:29:183
+
+Node.js v24.19.0

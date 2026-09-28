@@ -1,3 +1,4 @@
+import { AIProgress } from "./AIProgress";
 import { ReportExport } from "./ReportExport";
 import { useEffect, useState, lazy, Suspense } from "react";
 import { recoverySchema } from "./muscleRecovery";
@@ -489,6 +490,7 @@ export function Reports({
           <ChartNoAxesCombined className="heading-icon" />
         )}
       </div>
+      <AIProgress store={store} selected={selected} />
       {report && (
         <ReportExport
           key={[selected, days, knowledge, saved, report.input_digest].join(

@@ -579,13 +579,13 @@ def create_app(settings: Settings | None = None):
 
     @app.get("/api/v2/catalogs")
     def catalogs(request: Request):
-        import json
-
         from .lifestyle import DEFINITIONS
         from .movements import BY_ID, VERSION
 
         who(request)
-        sports = json.loads((Path(__file__).parent / "catalogs/sports.json").read_text())
+        from .sports import categorized_sports
+
+        sports = {"sports": categorized_sports()}
         return {
             "capabilities": [{k: v for k, v in row.items() if k != "bands"} for row in DEFINITIONS.values()],
             "sports": sports,
@@ -627,9 +627,9 @@ def create_app(settings: Settings | None = None):
         from .planner_catalog import VERSION, options
 
         who(request)
-        from .sports import SPORTS
+        from .sports import categorized_sports
 
-        return {"version": VERSION, "movements": options(), "sports": SPORTS}
+        return {"version": VERSION, "movements": options(), "sports": categorized_sports()}
 
     @app.post("/api/v2/guided-program-drafts")
     async def guided_program_draft(request: Request):
@@ -717,6 +717,51 @@ def create_app(settings: Settings | None = None):
                 "AI yanıtı programın kayıt biçimine uymadı. Form seçimlerin korundu; yeniden taslak hazırlayabilirsin.",
                 502,
             ) from None
+
+    @app.get("/api/v2/ai-progress-status")
+    def ai_progress_status(request: Request):
+        from .ai_progress import configuration
+
+        who(request)
+        return configuration(settings)
+
+    @app.post("/api/v2/ai-progress-preview")
+    def ai_progress_preview(request: Request, data: dict):
+        from .ai_progress import PeriodRequest, configuration, prepare
+        from .db import utcnow
+
+        identity = who(request, True)
+        period = PeriodRequest.model_validate(data)
+        snapshot = service.bootstrap(database, UUID(identity["athlete_id"]))
+        return {**prepare(period, snapshot, utcnow()), "configuration": configuration(settings)}
+
+    @app.post("/api/v2/ai-progress-review")
+    async def ai_progress_review(request: Request):
+        from starlette.concurrency import run_in_threadpool
+
+        from .ai_progress import ReviewRequest, analyze, configuration, prepare
+        from .db import utcnow
+
+        identity = who(request, True)
+        data = ReviewRequest.model_validate(await request.json())
+        current = configuration(settings)
+        if not current["available"]:
+            raise DomainError("ai_not_configured", current["message"], 503)
+        if data.consent != current["consent_version"]:
+            raise DomainError(
+                "progress_consent", "Sağlayıcı değişti. Gönderim özetini açıp onayını yenile.", 409
+            )
+        snapshot = service.bootstrap(database, UUID(identity["athlete_id"]))
+        preview = prepare(data, snapshot, utcnow())
+        if preview["digest"] != data.preview_digest:
+            raise DomainError(
+                "progress_stale", "Kayıtlar değişti. Gönderilecek özeti yeniden açıp onayla.", 409
+            )
+        if not preview["context"]["coverage"]["selected_signal_count"]:
+            raise DomainError("progress_empty", "Seçilen dönemde analiz edilebilecek kayıt yok.")
+        auth.rate_limit(database, "ai-user:" + identity["athlete_id"], settings.ai_user_limit)
+        auth.rate_limit(database, "ai-global", settings.ai_global_limit)
+        return await run_in_threadpool(analyze, settings, preview)
 
     @app.get("/api/v2/movement-alternatives")
     def movement_alternatives(request: Request, movement_id: str):
