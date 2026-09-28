@@ -13,6 +13,7 @@ export function Login({ onLogin }: { onLogin: (m: Me) => void }) {
   const [challenge, setChallenge] = useState("");
   const [code, setCode] = useState("");
   const [emailReady, setEmailReady] = useState(false);
+  const [verificationRequired, setVerificationRequired] = useState(true);
   const [support, setSupport] = useState("");
   async function sendCode() {
     const result = (await api("auth/email-code", {
@@ -29,10 +30,12 @@ export function Login({ onLogin }: { onLogin: (m: Me) => void }) {
         const config = v as {
           registration_enabled: boolean;
           email_delivery: string;
+          email_verification_required: boolean;
           support_email: string;
         };
         setOpen(config.registration_enabled);
         setEmailReady(config.email_delivery === "ready");
+        setVerificationRequired(config.email_verification_required !== false);
         setSupport(config.support_email);
       })
       .catch(() => {});
@@ -86,7 +89,7 @@ export function Login({ onLogin }: { onLogin: (m: Me) => void }) {
             setNotice("");
             try {
               if (mode === "signup") {
-                if (!challenge) {
+                if (verificationRequired && !challenge) {
                   await sendCode();
                   return;
                 }
@@ -95,9 +98,7 @@ export function Login({ onLogin }: { onLogin: (m: Me) => void }) {
                   body: JSON.stringify({
                     username: f.get("username"),
                     name: f.get("name"),
-                    email,
-                    challenge_id: challenge,
-                    code,
+                    ...(verificationRequired ? { email, challenge_id: challenge, code } : {}),
                     password: f.get("password"),
                   }),
                 });
@@ -141,7 +142,7 @@ export function Login({ onLogin }: { onLogin: (m: Me) => void }) {
               />
             </label>
           )}
-          {mode === "signup" && (
+          {mode === "signup" && verificationRequired && (
             <>
               <label>
                 E-posta adresin
@@ -241,11 +242,13 @@ export function Login({ onLogin }: { onLogin: (m: Me) => void }) {
             </p>
           )}
           {notice && <p role="status">{notice}</p>}
-          <button disabled={busy || (mode === "signup" && !emailReady)}>
+          <button disabled={busy || (mode === "signup" && verificationRequired && !emailReady)}>
             {busy
               ? "Bağlanıyor…"
               : mode === "signup"
-                ? challenge
+                ? !verificationRequired
+                  ? "Hesap oluştur"
+                  : challenge
                   ? "Kodu doğrula ve hesap oluştur"
                   : "Doğrulama kodu gönder"
                 : mode === "recover"

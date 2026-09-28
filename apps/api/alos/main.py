@@ -239,7 +239,9 @@ def create_app(settings: Settings | None = None):
         if not settings.registration_enabled:
             raise DomainError("registration_closed", "Kayıt davetle açılır.", 403)
         auth.rate_limit(database, "signup:" + (request.client.host if request.client else "unknown"), 5)
-        from .email_registration import complete
+        from .email_registration import complete, complete_without_email
+        if not settings.email_verification_required:
+            return complete_without_email(database, body)
         return complete(database, settings, body)
 
     @app.post("/api/v2/auth/email-code")
@@ -254,7 +256,7 @@ def create_app(settings: Settings | None = None):
             "registration_enabled": settings.registration_enabled,
             "password_min_length": 8,
             "email_delivery": "ready" if available(settings) else "unconfigured",
-            "email_verification_required": True,
+            "email_verification_required": settings.email_verification_required,
             "support_email": settings.support_email,
         }
 

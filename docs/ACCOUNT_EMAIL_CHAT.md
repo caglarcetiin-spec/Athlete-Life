@@ -47,3 +47,9 @@ Kod geri alınırken ek koleksiyon bırakılabilir. Eski sürüm doğrulamasız 
 İlk derleme sohbet bağlantısının yanlışlıkla sözlük dizisine eklenmesini yakaladı; bağlantı Araçlar listesine taşındı. İlk API testinde medya listesi `media` sanılmıştı; gerçek `medias` sözleşmesine düzeltildi. İlk browser koşusu Axe'ın açık newContext gereksiniminde durdu; fixture düzeltildi. Test beklentileri gevşetilmedi.
 
 Son sonuç: 28 API/yaşam döngüsü/regresyon testi + 2 ek fotoğraf/sahiplik silme testi; 39 web testi; mobil/masaüstü uçtan uca kayıt-sohbet-silme ve Axe kontrolleri geçti. Son bağlam sınırı değişikliği birim testleri ve son üretim derlemesiyle doğrulandı. Yerel önizleme readiness=200, güncel JS varlığı eşleşiyor; email_delivery=unconfigured olduğu ayrıca doğrulandı.
+
+## 2026-09-28 geçici kullanıcı adı/şifre kaydı
+
+Kullanıcı alan adı olmadığı için doğrulamayı geçici kapatma seçeneğini açıkça onayladı. `ALOS_V2_EMAIL_VERIFICATION_REQUIRED=false` durumunda signup e-posta/kod istemez; yanıt `registration_email_verified=false` olur. Varsayılan true kalır, e-posta sağlayıcısının eksikliği tek başına doğrulamayı kapatmaz. Kayıt kapatma, parola özeti, rate limit ve normal rol kuralları korunur. Mevcut hesaplar değişmez, şema/veri göçü yok. Yerel 10005 başlatıcısında false etkinleştirildi; Render değiştirilmedi. E-posta servisi hazır olduğunda aynı ayar true yapılıp sunucu yeniden başlatılır. Bu geçiş geçmiş kullanıcıların e-postalarını doğrulanmış saymaz. Kod geri alınmadan önce doğrulama servisi bağlanmalı veya yeni kayıt kapatılmalı.
+
+Kanıt: `stage-9/password_signup_api` sentetik kayıt/giriş/çakışma/kapalı kayıt ve yeniden doğrulama testleri; `password_signup_build` üretim derlemesi.

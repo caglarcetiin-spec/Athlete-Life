@@ -21,6 +21,7 @@ class Settings(BaseSettings):
     ai_user_limit: int = Field(default=3, ge=1, le=20)
     ai_global_limit: int = Field(default=20, ge=1, le=1000)
 
+    email_verification_required: bool = True
     resend_api_key: SecretStr | None = Field(default=None, repr=False)
     email_code_secret: SecretStr | None = Field(default=None, repr=False, min_length=32)
     email_from: str = Field(default="", max_length=254)

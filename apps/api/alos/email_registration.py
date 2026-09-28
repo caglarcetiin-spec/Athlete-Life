@@ -157,3 +157,16 @@ def cleanup(database):
             return
     with database.sessions.begin() as db:
         db.execute(delete(EmailChallenge).where(EmailChallenge.expires_at < utcnow()))
+
+
+@retry_transaction
+def complete_without_email(database, body):
+    """Explicit server policy only; no email ownership claim."""
+    email = EmailRequest(email=body.email).email if body.email else None
+    try:
+        with database.sessions.begin() as db:
+            user, _ = auth.create_user(db, body.username, body.name, body.password)
+            user.email = email
+    except IntegrityError:
+        raise DomainError("account_unavailable", "Bu kullanıcı adı kullanılamıyor.", 409) from None
+    return {"created": True, "registration_email_verified": False}
