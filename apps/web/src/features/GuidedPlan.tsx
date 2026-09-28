@@ -146,6 +146,8 @@ export function GuidedPlan({
   const synced = Boolean(store.snapshot);
   const [engine, setEngine] = useState<"ai" | "standard">("ai");
   const [consent, setConsent] = useState(false);
+  const [statusRevision, setStatusRevision] = useState(0);
+  const [setupOpen, setSetupOpen] = useState(false);
   const [aiStatus, setAiStatus] = useState<{
     available: boolean;
     message: string;
@@ -153,6 +155,7 @@ export function GuidedPlan({
   useEffect(() => {
     if (!synced) return;
     let active = true;
+    setAiStatus(null);
     void api("ai-planning-status")
       .then((value) => {
         if (active)
@@ -168,7 +171,7 @@ export function GuidedPlan({
     return () => {
       active = false;
     };
-  }, [synced]);
+  }, [synced, statusRevision]);
   const [preview, setPreview] = useState<Preview | null>(null);
   const heading = useRef<HTMLHeadingElement>(null);
   // Old eight-step drafts retain answers but restart so new questions are not skipped.
@@ -242,7 +245,14 @@ export function GuidedPlan({
   function update(patch: Partial<Answers>) {
     const next = { ...answers, ...patch };
     setAnswers(next);
-    setConsent(false);
+    // Only changes to the outbound payload require renewed consent.
+    if (
+      Object.keys(patch).some(
+        (key) => !["name", "start_date", "adult", "symptoms"].includes(key),
+      )
+    )
+      setConsent(false);
+    setError("");
     setPreview(null);
     void store
       .saveDraft("guided-plan", { answers: next, step, form_version: 2 })
@@ -283,11 +293,32 @@ export function GuidedPlan({
               ? answers.methods.length > 0
               : true;
   async function generate() {
-    if (
-      engine === "ai" &&
-      (!aiStatus?.available || !consent || !answers.adult || answers.symptoms)
-    )
+    if (busy) return;
+    if (!valid) {
+      setError("Program adı ve başlangıç tarihini tamamla.");
       return;
+    }
+    if (engine === "ai") {
+      if (!aiStatus?.available) {
+        setSetupOpen(true);
+        setError(
+          aiStatus
+            ? "GPT bağlantısı henüz hazır değil. Aşağıdaki AI kurulumu adımlarını tamamlayıp bağlantıyı yeniden kontrol et. Onay kutusu tek başına API bağlantısını açmaz."
+            : "Bağlantı durumu kontrol ediliyor. Birazdan tekrar dene.",
+        );
+        return;
+      }
+      if (!answers.adult || answers.symptoms) {
+        setError(
+          "AI planı için yetişkin onayını kontrol et. Belirti bildirdiğinde otomatik AI planı oluşturulmaz.",
+        );
+        return;
+      }
+      if (!consent) {
+        setError("AI taslağı oluşturmak için veri gönderim onayını işaretle.");
+        return;
+      }
+    }
     setBusy(true);
     setError("");
     try {
@@ -769,62 +800,6 @@ export function GuidedPlan({
         )}
         {phase === 6 && (
           <>
-            <div className="card">
-              <h3>Planı nasıl hazırlayalım?</h3>
-              <div className="actions">
-                <button
-                  type="button"
-                  className="secondary"
-                  aria-pressed={engine === "ai"}
-                  onClick={() => {
-                    setEngine("ai");
-                    setConsent(false);
-                  }}
-                >
-                  AI ile hazırla
-                </button>
-                <button
-                  type="button"
-                  className="secondary"
-                  aria-pressed={engine === "standard"}
-                  onClick={() => setEngine("standard")}
-                >
-                  Standart taslak
-                </button>
-              </div>
-              {engine === "ai" && (
-                <>
-                  <p role="status">
-                    {aiStatus?.message || "AI bağlantısı kontrol ediliyor…"}
-                  </p>
-                  <p>
-                    AI; hedefini, ekipmanını, yöntemlerini, deneyimini,
-                    bildirdiğin hareket kapasitesini, gün/süre ve bölge
-                    önceliklerini OpenAI üzerinden değerlendirir. API kullanımı
-                    uygulama sahibine ayrıca ücretlenir.
-                  </p>
-                  <p>
-                    Hesap kimliğin, şifren ve kayıtlı sağlık geçmişin
-                    gönderilmez. Serbest hedef alanına yazdıkların gönderilir;
-                    buraya kimlik veya özel sağlık bilgisi yazma.
-                  </p>
-                  <label className="check">
-                    <input
-                      type="checkbox"
-                      checked={consent}
-                      disabled={!aiStatus?.available}
-                      onChange={(e) => setConsent(e.target.checked)}
-                    />
-                    Bu formdaki planlama bilgilerimin AI taslağı için OpenAI'ye
-                    gönderilmesini kabul ediyorum.
-                  </label>
-                  <p>
-                    AI taslağı ekipman, süre ve kayıt kurallarından geçer. Son
-                    düzenlemeyi ve ana plana alma kararını sen verirsin.
-                  </p>
-                </>
-              )}
-            </div>
             <label>
               Program adı
               <input
@@ -863,6 +838,125 @@ export function GuidedPlan({
               Standart taslakta otomatik hareket dozu yerine düzenleyebileceğin
               gün planı hazırlanır. Kayıtlı sağlık uyarıları da dikkate alınır.
             </p>
+            <div className="card">
+              <h3>Planı nasıl hazırlayalım?</h3>
+              <fieldset className="planner-engine-options">
+                <legend>Hazırlama yöntemi</legend>
+                <label className="check">
+                  <input
+                    type="radio"
+                    name="planner-engine"
+                    value="ai"
+                    checked={engine === "ai"}
+                    onChange={() => {
+                      setEngine("ai");
+                      setError("");
+                    }}
+                  />
+                  AI ile hazırla
+                </label>
+                <label className="check">
+                  <input
+                    type="radio"
+                    name="planner-engine"
+                    value="standard"
+                    checked={engine === "standard"}
+                    onChange={() => {
+                      setEngine("standard");
+                      setError("");
+                    }}
+                  />
+                  Standart taslak
+                </label>
+              </fieldset>
+              {engine === "ai" && (
+                <>
+                  <p role="status">
+                    {aiStatus?.message || "AI bağlantısı kontrol ediliyor…"}
+                  </p>
+                  {!aiStatus?.available && (
+                    <div className="notice">
+                      <strong>
+                        Gerçek GPT üretimi için bağlantı kurulmalı
+                      </strong>
+                      <p>
+                        Seçimini ve onayını verebilirsin. Program üretmek için
+                        uygulama sahibinin OpenAI API hesabını ve sunucu
+                        bağlantısını tamamlaması gerekiyor.
+                      </p>
+                      <button
+                        type="button"
+                        className="secondary"
+                        aria-expanded={setupOpen}
+                        onClick={() => setSetupOpen(!setupOpen)}
+                      >
+                        AI kurulum adımları
+                      </button>
+                      {setupOpen && (
+                        <ol>
+                          <li>
+                            <a
+                              href="https://developers.openai.com/api/docs/quickstart"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              OpenAI API hesabını ve proje anahtarını oluştur.
+                            </a>
+                          </li>
+                          <li>
+                            API anahtarı ve model, uygulama sahibi tarafından
+                            sunucunun gizli ayarlarına eklenmeli. Anahtarı bu
+                            forma veya sohbete yazma.
+                          </li>
+                          <li>
+                            Sunucu yeniden başladıktan sonra aşağıdaki bağlantı
+                            kontrolünü çalıştır.
+                          </li>
+                        </ol>
+                      )}
+                    </div>
+                  )}
+                  <button
+                    type="button"
+                    className="secondary"
+                    disabled={aiStatus === null}
+                    onClick={() => {
+                      setError("");
+                      setStatusRevision((n) => n + 1);
+                    }}
+                  >
+                    Bağlantıyı yeniden kontrol et
+                  </button>
+                  <p>
+                    AI; hedefini, ekipmanını, yöntemlerini, deneyimini,
+                    bildirdiğin hareket kapasitesini, gün/süre ve bölge
+                    önceliklerini OpenAI üzerinden değerlendirir. API kullanımı
+                    uygulama sahibine ayrıca ücretlenir.
+                  </p>
+                  <p>
+                    Hesap kimliğin, şifren ve kayıtlı sağlık geçmişin
+                    gönderilmez. Serbest hedef alanına yazdıkların gönderilir;
+                    buraya kimlik veya özel sağlık bilgisi yazma.
+                  </p>
+                  <label className="check">
+                    <input
+                      type="checkbox"
+                      checked={consent}
+                      onChange={(e) => {
+                        setConsent(e.target.checked);
+                        setError("");
+                      }}
+                    />
+                    Bu formdaki planlama bilgilerimin AI taslağı için OpenAI'ye
+                    gönderilmesini kabul ediyorum.
+                  </label>
+                  <p>
+                    AI taslağı ekipman, süre ve kayıt kurallarından geçer. Son
+                    düzenlemeyi ve ana plana alma kararını sen verirsin.
+                  </p>
+                </>
+              )}
+            </div>
           </>
         )}
         {phase === 7 && preview && (
@@ -1007,18 +1101,7 @@ export function GuidedPlan({
             <ArrowRight size={18} />
           </button>
         ) : phase === 6 ? (
-          <button
-            disabled={
-              !valid ||
-              busy ||
-              (engine === "ai" &&
-                (!aiStatus?.available ||
-                  !consent ||
-                  !answers.adult ||
-                  answers.symptoms))
-            }
-            onClick={() => void generate()}
-          >
+          <button disabled={busy} onClick={() => void generate()}>
             <Sparkles size={18} />
             {busy
               ? "Taslak hazırlanıyor…"

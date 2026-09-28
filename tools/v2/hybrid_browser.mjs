@@ -48,7 +48,7 @@ try{
  await page.getByRole('button',{name:'Üst / alt vücut',exact:false}).click();
  await page.getByRole('button',{name:'Devam',exact:true}).click();
  await page.getByLabel('18 yaş veya üzerindeyim.',{exact:true}).check();
- await page.getByRole('button',{name:'Standart taslak',exact:true}).click();
+ await page.getByRole('radio',{name:'Standart taslak',exact:true}).check();
  await page.getByRole('button',{name:'Programımı hazırla',exact:true}).click();
  await expect(page.getByRole('heading',{name:'Planına göz at',exact:true})).toBeVisible();
  expect((await api('bootstrap')).programs).toHaveLength(0);

@@ -1,0 +1,12 @@
+{
+  "at": "2026-09-28T02:36:48.138732+00:00",
+  "model": "gpt-4.1",
+  "synthetic": true,
+  "personal_records_read": false,
+  "provider_requests": 1,
+  "request_kind": "model_access_read_only",
+  "result": "MODEL_ACCESS_PASS",
+  "model_access_verified": true,
+  "generation_verified": false,
+  "generation_previous_http_status": 429
+}

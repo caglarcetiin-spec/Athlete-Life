@@ -1696,3 +1696,7 @@ button.secondary { transition: transform 0.18s; }
 .plan-exercise-summary { padding-block: .65rem; border-bottom: 1px solid var(--line); }
 
 .guided-fields { border: 0; padding: 0; margin: 0; min-width: 0; }
+
+.planner-engine-options { border: 0; padding: 0; display: grid; gap: .6rem; }
+.planner-engine-options > label { border: 1px solid var(--line); border-radius: 12px; padding: .8rem; cursor: pointer; }
+.planner-engine-options > label:has(input:checked) { border-color: var(--accent); background: var(--tint); font-weight: 650; }

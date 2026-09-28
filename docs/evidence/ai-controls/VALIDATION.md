@@ -1,0 +1,7 @@
+# AI final-step controls
+
+Base commit c9a46c0. Previous UI disabled consent when configuration was absent and cleared it for local-only fields; selected method had only an aria-pressed change. Native radios, independent consent, explicit submit feedback and status refresh replace this dead end. Provider access still requires configuration and consent on both client and server.
+
+Synthetic browser: PASS, including zero outbound AI requests when configuration or consent is missing, method toggling, local-field consent preservation, refresh without reload, mocked provider failure/success, draft save and explicit activation. Zero Axe preview violations; preview tested at 360/390/768/1280px. No real provider call or personal data. Build/lint pass. Commands/source hashes/output/exit codes: ../stage-9/ai-controls-*.
+
+Live setup: user explicitly supplied an API credential and requested activation. One synthetic OpenAI generation request returned HTTP 429 (ai_quota); user confirmed no API credit had been loaded. A separate read-only model lookup verified access to gpt-4.1. No personal records were submitted or read for testing. live-connection.json and model-access.json retain only sanitized outcome metadata. Credential was entered through non-echoing getpass and retained only in the local preview process; no secret file or source addition. Actual AI generation remains unverified/blocked by available API credit. This is not counted as a passing generation test.

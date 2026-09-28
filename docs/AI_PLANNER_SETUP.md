@@ -42,3 +42,9 @@ Henüz GitHub/Render yayını yapılmadı. Ücretsiz Render ve MongoDB korunur. 
 ## Kanıt
 
 `docs/evidence/stage-9/ai-*`: komut, baz commit, kaynak hashleri, stdout/stderr, çıkış kodu. `docs/evidence/ai-planning/VALIDATION.md`: başarısız fixture koşuları ve düzeltme gerekçeleri. Testler yerel sentetik PostgreSQL/Mongo, taklit OpenAI HTTP yanıtları ve mobil tarayıcı UI sözleşmesini kapsar. Hiçbir test gerçek OpenAI sunucusuna bağlanmaz.
+
+### 28 Eylül — son kontrol ekranı düzeltmesi
+
+Yöntem seçimi artık seçili durumu belirgin native radio kontrolüdür. Anahtar yokken de onay kutusu kullanılabilir; üretim düğmesi sessizce devre dışı kalmak yerine eksik bağlantı/izin/yaş koşulunu açıklar. Kurulum bağlantısı ve sayfayı yenilemeden bağlantı durumunu tekrar okuma eklenmiştir. Program adı, tarih, yaş/belirti gibi OpenAI'ye gönderilmeyen alanlar onayı silmez; dışarı gönderilecek hedef/ekipman/yetkinlik gibi alanlar değişirse onay yeniden gerekir. Sağlık kapısı ve sunucudaki onay doğrulaması korunur. Bu UI düzeltmesi API anahtarı olmadan gerçek GPT erişimi sağlamaz.
+
+`ai-controls-browser` anahtarsız seçim/onay, eksik bağlantıda sıfır AI isteği, yeniden kontrol, onaysız sıfır istek, taklit sağlayıcı hatası/başarısı ve plan kaydını doğrular. Üretim derlemesi ve lint geçti. Şema, hesap/medya göçü veya sunucu sırrı değişikliği yok. Yerel önizleme güncel; Render yayını yok. Geri dönüş yalnız UI/paket commit'idir; ana veriyi etkilemez.

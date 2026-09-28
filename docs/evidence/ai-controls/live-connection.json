@@ -1,0 +1,11 @@
+{
+  "at": "2026-09-28T02:35:03.255280+00:00",
+  "model": "gpt-4.1",
+  "synthetic": true,
+  "personal_records_read": false,
+  "provider_requests": 1,
+  "provider_http_status": 429,
+  "result": "FAIL",
+  "code": "ai_quota",
+  "message": "AI bağlantısı isteği tamamlayamadı. Sunucunun API erişimini ve kullanım limitini kontrol et; planın değiştirilmedi."
+}
