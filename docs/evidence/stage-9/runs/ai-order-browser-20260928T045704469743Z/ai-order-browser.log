@@ -1,0 +1,12 @@
+Revision browser failed: expect(locator).toBeVisible() failed
+
+Locator: getByText('Teknik çalışma sırası düzenlendi:')
+Expected: visible
+Error: strict mode violation: getByText('Teknik çalışma sırası düzenlendi:') resolved to 2 elements:
+    1) <p>Teknik çalışma sırası düzenlendi: Pazartesi. Tekn…</p> aka getByRole('paragraph').filter({ hasText: 'Teknik çalışma sırası dü' })
+    2) <p>Teknik çalışma sırası düzenlendi: Pazartesi. Tekn…</p> aka getByText('Teknik çalışma sırası dü').nth(1)
+
+Call log:
+  - Expect "toBeVisible" getByText('Teknik çalışma sırası düzenlendi:') with timeout 5000ms
+  - waiting for getByText('Teknik çalışma sırası düzenlendi:')
+

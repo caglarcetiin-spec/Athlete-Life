@@ -5,6 +5,7 @@
     "Questionnaire survives reload; five-point limit enforced",
     "Changing provider resets consent; EVREN clearly disclosed; no call before renewed consent",
     "Native method selection and consent work without a key; local-only edits keep consent; submit explains setup; status refresh works without reload; missing consent never sends",
+    "Technical-order adjustment is disclosed in AI preview before edit or save",
     "Unconfigured AI explains setup without a call; consent required; provider error does not save or fall back; mock AI preview labeled",
     "Preview creates no program or actual set",
     "AI plan automatically fills all editor values; one optional edit survives close/reload; submitted program exactly matches full AI draft plus that edit; no repeated questionnaire or movement entry",

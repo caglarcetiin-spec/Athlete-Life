@@ -184,3 +184,7 @@ GET `/api/v2/ai-planning-status` yalnız yapılandırma durumunu oturum sahibine
 ## 28 Eylül 2026 — AI taslağı son düzenleme akışı
 
 `GuidedPlan.onUse → Programming.edit → SyncStore.saveDraft("program")` aynı dolu planı taşır. `Programming` açılışında hesaba özel mevcut `draft:program` kaydı yüklenir ve soru akışından önce düzenleyiciye geri alınır. AI/yönlendirmeli taslaklarda tekrar öneri formu gizlidir; dozlar özetlenir ve kullanıcı isterse dolu kontrolleri açar. Veri alanı veya şema değişikliği yok; kanıt ve geri dönüş: `docs/AI_PLAN_HANDOFF.md`.
+
+## 28 Eylül 2026 — Teknik çalışma sırası normalizasyonu
+
+`validate_plan → normalize_technical_order → mevcut doz/gün/katalog denetimleri`: yalnız katalogda teknik olarak sınıflanan hareketler günün başına stabil olarak taşınır. `review.ordering_adjustments` ve `notes` türetilmiş açıklama alanlarıdır; kullanıcıya önizlemede gösterilir. Kanonik programın hareket/doz nesneleri korunur, yalnız sıra değişir; geçmiş planlar güncellenmez. Ayrıntı ve geri dönüş: `docs/AI_TECHNICAL_ORDER_FIX.md`.

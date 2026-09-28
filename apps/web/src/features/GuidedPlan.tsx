@@ -1020,7 +1020,8 @@ export function GuidedPlan({
                   (n) =>
                     n.includes("eksik") ||
                     n.includes("karşılan") ||
-                    n.includes("kondisyon isteği"),
+                    n.includes("kondisyon isteği") ||
+                    n.startsWith("Teknik çalışma sırası düzenlendi:"),
                 )
                 .map((n) => (
                   <p key={n}>{n}</p>

@@ -123,7 +123,6 @@ def test_valid_ai_plan_uses_canonical_ids_and_preview_is_pure():
         "units",
         "volume",
         "coverage",
-        "skill_order",
     ],
 )
 def test_bad_ai_draft_cannot_be_accepted(fault):
@@ -149,8 +148,6 @@ def test_bad_ai_draft_cannot_be_accepted(fault):
         request = data(experience="new")
     elif fault == "coverage":
         plan.days[0].exercises = plan.days[0].exercises[:2]
-    else:
-        plan.days[0].exercises.append(plan.days[0].exercises.pop(0))
     with pytest.raises(DomainError):
         ai.validate_plan(plan, request, baseline, context, AT, "synthetic-model")
 
@@ -284,3 +281,52 @@ def test_global_ai_limit_is_shared_between_accounts(client, app, monkeypatch):
     other = login(app, "arda", "test-password-456")
     assert other.post("/api/v2/ai-program-drafts", json=payload).status_code == 429
     assert len(calls) == 1
+
+
+def test_technical_order_is_normalized_without_changing_prescription():
+    request = data()
+    baseline, context = ai.prepare(request, snap(), AT)
+    plan = reply(request)
+    plan.days[0].exercises.append(plan.days[0].exercises.pop(0))
+    before = deepcopy(plan.model_dump())
+    corrected, notes = ai.normalize_technical_order(plan)
+    assert notes
+    assert plan.model_dump() == before
+    for old, new in zip(plan.days, corrected.days, strict=True):
+        for skill in (True, False):
+            assert [
+                e.model_dump()
+                for e in old.exercises
+                if (ai.META[e.movement_id]["block"] == "skill") == skill
+            ] == [
+                e.model_dump()
+                for e in new.exercises
+                if (ai.META[e.movement_id]["block"] == "skill") == skill
+            ]
+    twice, second_notes = ai.normalize_technical_order(corrected)
+    assert twice == corrected
+    assert second_notes == []
+    result = ai.validate_plan(plan, request, baseline, context, AT, "synthetic-model")
+    assert result["review"]["ordering_adjustments"] == notes
+    assert all(note in result["notes"] for note in notes)
+    assert (
+        result["program"]["days"][0]["exercises"][0]["movement_id"]
+        == corrected.days[0].exercises[0].movement_id
+    )
+
+
+@pytest.mark.parametrize("fault", ["capacity", "unknown", "duplicate"])
+def test_reordering_never_hides_other_invalid_prescriptions(fault):
+    request = data()
+    baseline, context = ai.prepare(request, snap(), AT)
+    plan = reply(request)
+    technical = plan.days[0].exercises.pop(0)
+    plan.days[0].exercises.append(technical)
+    if fault == "capacity":
+        technical.reps = 20
+    elif fault == "unknown":
+        technical.movement_id = "not-in-catalog"
+    else:
+        plan.days[0].exercises.append(technical)
+    with pytest.raises(DomainError):
+        ai.validate_plan(plan, request, baseline, context, AT, "synthetic-model")

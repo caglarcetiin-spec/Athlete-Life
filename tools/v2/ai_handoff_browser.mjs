@@ -99,7 +99,8 @@ try{
    const {consent,...choices}=body;
    const response=await page.request.post(base+'/api/v2/guided-program-drafts',{headers:{'Origin':base,'X-CSRF-Token':route.request().headers()['x-csrf-token']},data:choices});
    expect(response.ok()).toBe(true);const draft=await response.json();
-   draft.program.ai_origin={provider:'EVREN',model:'synthetic-model',prompt_version:'ai-planner-4',generated_at:new Date().toISOString(),summary:'Sentetik AI arayüz denemesi; gerçek model çıktısı değildir.'};
+   draft.program.ai_origin={provider:'EVREN',model:'synthetic-model',prompt_version:'ai-planner-5',generated_at:new Date().toISOString(),summary:'Sentetik AI arayüz denemesi; gerçek model çıktısı değildir.'};
+   draft.notes.push('Teknik çalışma sırası düzenlendi: Pazartesi. Teknik hareketler günün başına alındı; hareketler, setler, tekrarlar, süreler ve dinlenmeler değiştirilmedi.');
    generatedProgram=structuredClone(draft.program);
    await new Promise(resolve=>setTimeout(resolve,13000));
    await route.fulfill({json:draft});
@@ -110,6 +111,8 @@ try{
  await page.getByRole('button',{name:'AI ile programımı hazırla',exact:true}).click();
  await expect(page.getByText('AI ile hazırlanan taslak',{exact:true})).toBeVisible({timeout:25000});
  expect(aiCalls).toBe(2);
+ await expect(page.getByText('Teknik çalışma sırası düzenlendi:',{exact:false}).filter({visible:true})).toBeVisible();
+ results.push('Technical-order adjustment is disclosed in AI preview before edit or save');
  results.push('Unconfigured AI explains setup without a call; consent required; provider error does not save or fall back; mock AI preview labeled');
  await expect(page.getByRole('heading',{name:'Planına göz at',exact:true})).toBeVisible();
  expect((await api('bootstrap')).programs).toHaveLength(0);

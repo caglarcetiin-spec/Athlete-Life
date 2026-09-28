@@ -17,7 +17,7 @@ from .movements import BY_ID
 from .planner_catalog import FAMILY_LABELS, META, options
 from .programming import ProgramInput
 
-VERSION = "ai-planner-4"
+VERSION = "ai-planner-5"
 CONSENT = "planning-form-v1"
 EVREN_CONSENT = "planning-form-evren-v1"
 REQUIRED_PATTERNS = {
@@ -420,12 +420,29 @@ def call_evren(settings, context):
         ) from None
 
 
+def normalize_technical_order(plan):
+    """Stable partition only: preserve every movement, dosage and within-block order."""
+    days, adjustments = [], []
+    names = ["Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi", "Pazar"]
+    for day in plan.days:
+        ordered = sorted(
+            day.exercises, key=lambda item: META.get(item.movement_id, {}).get("block") != "skill"
+        )
+        if ordered != day.exercises:
+            adjustments.append(
+                f"Teknik çalışma sırası düzenlendi: {names[day.weekday]}. Teknik hareketler günün başına alındı; hareketler, setler, tekrarlar, süreler ve dinlenmeler değiştirilmedi."
+            )
+        days.append(day.model_copy(update={"exercises": ordered}))
+    return plan.model_copy(update={"days": days}), adjustments
+
+
 def validate_plan(plan, data, baseline, context, at: datetime, model, provider="OpenAI"):
     candidates = {o["movement_id"]: o for o in context["eligible_movements"]}
     if sorted(d.weekday for d in plan.days) != sorted(data.weekdays):
         raise DomainError(
             "ai_plan_invalid", "AI çalışma günlerini doğru oluşturmadı; taslak kabul edilmedi.", 502
         )
+    plan, ordering_notes = normalize_technical_order(plan)
     capacities = {c.movement_id: c for c in data.competencies}
     issues, infos, all_rows = [], [], []
     output_days = []
@@ -626,6 +643,7 @@ def validate_plan(plan, data, baseline, context, at: datetime, model, provider="
         "isometric_seconds": sum(e["sets"] * e["seconds"] for e in all_rows if e["modality"] == "isometric"),
         "conditioning_seconds": sum(e["seconds"] for e in all_rows if e["modality"] == "cardio"),
         "version": VERSION,
+        "ordering_adjustments": ordering_notes,
     }
     return {
         "program": program,
@@ -633,6 +651,7 @@ def validate_plan(plan, data, baseline, context, at: datetime, model, provider="
         "notes": [
             plan.summary,
             "AI taslağıdır; doğrulama biyolojik uygunluk garantisi değildir. Ana plana almak için inceleyip onayla.",
+            *ordering_notes,
             *issues,
             *plan.limitations,
         ],

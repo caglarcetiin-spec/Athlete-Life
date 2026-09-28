@@ -387,3 +387,36 @@ def test_recorded_live_synthetic_plan_saves_and_reads_back(client, app, monkeypa
     )
     assert len([d for d in saved["program_days"] if d["kind"] == "training"]) == 5
     assert saved["sets"] == []
+
+
+def test_evren_technical_order_fix_persists_with_explicit_save(
+    client, app, monkeypatch
+):
+    app.state.settings.ai_provider = "evren"
+    app.state.settings.evren_api_key = SecretStr("synthetic-key")
+    app.state.settings.evren_model = "synthetic-model"
+    request = data(consent=ai.EVREN_CONSENT)
+    plan = reply(request)
+    plan.days[0].exercises.append(plan.days[0].exercises.pop(0))
+    corrected, notes = ai.normalize_technical_order(plan)
+    monkeypatch.setattr(ai, "call_evren", lambda *_: plan)
+    response = client.post(
+        "/api/v2/ai-program-drafts", json=request.model_dump(mode="json")
+    )
+    assert response.status_code == 200, response.text
+    assert notes and response.json()["review"]["ordering_adjustments"] == notes
+    assert client.get("/api/v2/bootstrap").json()["programs"] == []
+    write(client, cmd("program.create", **response.json()["program"]))
+    saved = client.get("/api/v2/bootstrap").json()
+    day = next(
+        d for d in saved["program_days"] if d["weekday"] == corrected.days[0].weekday
+    )
+    exercises = sorted(
+        (e for e in saved["program_exercises"] if e["day_id"] == day["id"]),
+        key=lambda e: e["position"],
+    )
+    assert [e["movement_id"] for e in exercises] == [
+        e.movement_id for e in corrected.days[0].exercises
+    ]
+    assert saved["programs"][0]["status"] == "draft"
+    assert saved["sets"] == []
