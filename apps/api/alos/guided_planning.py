@@ -10,18 +10,11 @@ from .contracts import StrictModel
 from .movements import BY_ID, normalize
 from .planning_context import equipment_matches
 from .programming import DraftRequest, draft_with_context
+from .region_scope import GROUPS, day_kind, focused
+from .region_scope import LABELS as REGION_LABELS
+from .region_scope import exclusion as region_exclusion
 from .sports import BY_SPORT, ENDURANCE_METHODS
 
-GROUPS = {
-    "chest": ["chest"],
-    "back": ["lats", "upperBack", "scapular"],
-    "shoulders": ["frontDelts", "sideDelts", "rearDelts"],
-    "arms": ["biceps", "triceps", "forearms"],
-    "core": ["abs", "obliques"],
-    "quads": ["quads"],
-    "posterior": ["glutes", "hamstrings"],
-    "calves": ["calves"],
-}
 LABELS = {
     "barbell-squat": "Bar ile çömelme",
     "bodyweight-squat": "Vücut ağırlığıyla çömelme",
@@ -88,6 +81,7 @@ class RunningProfile(StrictModel):
 
 
 class GuidedChoices(StrictModel):
+    region_mode: Literal["priority", "selected"] = "priority"
     athlete_context: AthleteIntake | None = None
     progression_mode: Literal["repeat", "phased"] = "repeat"
     target_rir: int = Field(default=3, ge=2, le=5)
@@ -208,6 +202,8 @@ class GuidedChoices(StrictModel):
             "sport_days": 1,
             "endurance_days": 1,
         }[self.split]
+        if focused(self):
+            minimum = 1
         if len(self.weekdays) < minimum:
             raise ValueError("Seçtiğin çalışma düzeni için yeterli gün yok.")
         return self
@@ -258,6 +254,7 @@ def generate(data, snapshot, as_of):
     for key, meta in META.items():
         reason = (
             exclusion(data, key)
+            or region_exclusion(data, BY_ID[key])
             or running_exclusion(data, key, available)
             or (
                 "Tercihlerin dışında"
@@ -323,15 +320,7 @@ def generate(data, snapshot, as_of):
         if day["kind"] != "training" or not allowed:
             continue
         index = training_days.index(day["weekday"])
-        kind = (
-            "full_body"
-            if data.split in ("full_body", "endurance_days")
-            else (
-                ["upper", "lower"][index % 2]
-                if data.split == "upper_lower"
-                else ["push", "pull", "legs"][index % 3]
-            )
-        )
+        kind = day_kind(data, index)
         families = {
             "full_body": [
                 "knee",
@@ -357,6 +346,9 @@ def generate(data, snapshot, as_of):
             "legs": [],
         }[kind]
         expected = families[:4] if kind in ("full_body", "upper") else families[:2]
+        if focused(data):
+            available_families = {family(k) for k in pool}
+            expected = [f for f in expected if f in available_families]
         if set(data.methods) <= ENDURANCE_METHODS | {"explosive_power"}:
             families, extras, expected = [], [], []
         limit = data.minutes * 60
@@ -531,7 +523,9 @@ def generate(data, snapshot, as_of):
             )
         day["exercises"] = selected
         day["label"] = (
-            "Kondisyon"
+            "Seçtiğin bölgeler"
+            if focused(data)
+            else "Kondisyon"
             if set(data.methods) <= ENDURANCE_METHODS
             else {
                 "full_body": "Tüm vücut",
@@ -584,14 +578,15 @@ def generate(data, snapshot, as_of):
     ]
     if missing_focus:
         notes.append(
-            "Öncelik verdiğin bazı bölgeler kuvvet bloğunda karşılanamadı: " + ", ".join(missing_focus)
+            "Öncelik verdiğin bazı bölgeler kuvvet bloğunda karşılanamadı: "
+            + ", ".join(REGION_LABELS[g] for g in missing_focus)
         )
     represented = {method for e in all_planned for method in META[e["movement_id"]]["methods"]} & set(
         data.methods
     )
     if set(data.methods) - represented:
         notes.append("Taslakta karşılanamayan yöntem: " + ", ".join(sorted(set(data.methods) - represented)))
-    if len(training_days) == 3 and data.split == "upper_lower":
+    if not focused(data) and len(training_days) == 3 and data.split == "upper_lower":
         notes.append(
             "Bu haftalık döngüde iki üst, bir alt gün var. Eşit sıklık için tüm vücut veya dört gün seçebilirsin."
         )

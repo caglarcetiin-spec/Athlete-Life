@@ -1,9 +1,22 @@
+import {
+  catalogGuide,
+  muscleLabels,
+  type CatalogMovement,
+} from "./catalogVisuals";
 import { api } from "../api/contracts";
 import { useEffect, useId, useState } from "react";
 import { BookOpen, ChevronRight } from "lucide-react";
 import { findMovement, type Movement } from "./movementLibrary";
 
-function Pose({ pose, label }: { pose: string; label: string }) {
+function Pose({
+  pose,
+  label,
+  equipment,
+}: {
+  pose: string;
+  label: string;
+  equipment?: string;
+}) {
   const id = useId();
   const [head, ...lines] = pose.split("|");
   const [cx, cy] = head.split(",");
@@ -11,6 +24,14 @@ function Pose({ pose, label }: { pose: string; label: string }) {
     <svg viewBox="0 0 180 170" role="img" aria-labelledby={id}>
       <title id={id}>{label}</title>
       <path d="M15 151H165" className="pose-floor" />
+      {equipment && (
+        <path
+          d={equipment}
+          fill="none"
+          stroke="var(--accent)"
+          strokeWidth="3"
+        />
+      )}
       <g
         fill="none"
         stroke="currentColor"
@@ -80,11 +101,15 @@ function Anatomy({ movement }: { movement: Movement }) {
 export function MovementCard({ movement }: { movement: Movement }) {
   return (
     <article className="movement-card">
+      <p className="eyebrow">
+        {movement.visualScope || "Başlangıç ve hareket pozisyonu"}
+      </p>
       <div className="movement-poses">
         {movement.poses.map((pose, i) => (
           <figure key={i}>
             <Pose
               pose={pose}
+              equipment={movement.equipmentPaths?.[i]}
               label={`${movement.name} — ${movement.phases[i]}`}
             />
             <figcaption>
@@ -101,13 +126,15 @@ export function MovementCard({ movement }: { movement: Movement }) {
           <p>{movement.cue}</p>
           <p className="caption">{movement.detail}</p>
           <a href={movement.source} target="_blank" rel="noreferrer">
-            ACE hareket kütüphanesi <ChevronRight size={13} />
+            Uygulama kaynağını aç <ChevronRight size={13} />
           </a>
         </div>
-        <div className="movement-muscles">
-          <Anatomy movement={movement} />
-          <strong>{movement.muscles}</strong>
-        </div>
+        {movement.regions.length > 0 && (
+          <div className="movement-muscles">
+            <Anatomy movement={movement} />
+            <strong>{movement.muscles}</strong>
+          </div>
+        )}
       </div>
       <p className="caption">
         Şematik anlatım · Renkler hedef kas bölgelerini gösterir; ölçülmüş kas
@@ -123,10 +150,38 @@ export function MovementHelp({
   name: string;
   variant?: string;
 }) {
-  const movement = findMovement(name, variant);
+  const [catalog, setCatalog] = useState<CatalogMovement[]>([]);
+  const [open, setOpen] = useState(false);
+  useEffect(() => {
+    if (!open) return;
+    let live = true;
+    void api("catalogs")
+      .then((v) => {
+        if (live) setCatalog((v as { movements: CatalogMovement[] }).movements);
+      })
+      .catch(() => {});
+    return () => {
+      live = false;
+    };
+  }, [open]);
+  const norm = (v: string) =>
+    v.trim().toLocaleLowerCase("tr-TR").replace(/[-_ ]/g, "");
+  const candidate = catalog.find((m) =>
+    [m.id, m.name, m.displayNameTR || "", ...(m.aliases || [])].some(
+      (v) => norm(v) === norm(name),
+    ),
+  );
+  const movement =
+    findMovement(name, variant) ||
+    (["standard", "standart", ""].includes(variant) && candidate
+      ? catalogGuide(candidate)
+      : undefined);
   if (!name.trim()) return null;
   return (
-    <details className="movement-help">
+    <details
+      className="movement-help"
+      onToggle={(e) => setOpen(e.currentTarget.open)}
+    >
       <summary>
         <BookOpen size={17} /> Hareket görseli ve uygulama rehberi
       </summary>
@@ -142,41 +197,6 @@ export function MovementHelp({
     </details>
   );
 }
-type CatalogMovement = {
-  id: string;
-  name: string;
-  displayNameTR?: string;
-  aliases?: string[];
-  modality: string;
-  equipment: string[];
-  muscles: Record<string, number>;
-  pattern?: string;
-  contraction?: string;
-  catalog_version: string;
-  note?: string;
-  sport_id?: string;
-  source_urls?: string[];
-};
-const muscleLabels: Record<string, string> = {
-  chest: "Göğüs",
-  lats: "Geniş sırt",
-  upperBack: "Üst sırt",
-  lowerBack: "Bel",
-  frontDelts: "Ön omuz",
-  sideDelts: "Yan omuz",
-  rearDelts: "Arka omuz",
-  biceps: "Ön kol kası",
-  triceps: "Arka kol kası",
-  forearms: "Önkol",
-  abs: "Karın",
-  obliques: "Yan karın",
-  glutes: "Kalça",
-  quads: "Ön bacak",
-  hamstrings: "Arka bacak",
-  calves: "Baldır",
-  scapular: "Kürek kemiği çevresi",
-  hipFlexors: "Kalça fleksörleri",
-};
 const modalities: Record<string, string> = {
   strength: "Kuvvet",
   isometric: "Sabit tutuş",
@@ -186,72 +206,79 @@ const modalities: Record<string, string> = {
 };
 function CatalogMuscleMap({ muscles }: { muscles: Record<string, number> }) {
   const id = useId();
-  const locations: [string, number, number][] = [
-    ["chest", 50, 51],
-    ["abs", 50, 78],
-    ["obliques", 64, 85],
-    ["frontDelts", 30, 43],
-    ["sideDelts", 73, 43],
-    ["biceps", 28, 63],
-    ["forearms", 23, 85],
-    ["quads", 41, 118],
-    ["hipFlexors", 57, 100],
-    ["lats", 150, 69],
-    ["upperBack", 150, 48],
-    ["lowerBack", 150, 87],
-    ["rearDelts", 175, 44],
-    ["scapular", 140, 56],
-    ["triceps", 174, 65],
-    ["glutes", 150, 102],
-    ["hamstrings", 140, 125],
-    ["calves", 140, 148],
+  const [selected, setSelected] = useState(
+    Object.keys(muscles).sort((a, b) => muscles[b] - muscles[a])[0] || "",
+  );
+  const regions: [string, string][] = [
+    [
+      "chest",
+      "M35 38Q43 33 49 39L49 53L36 51Z M51 39Q60 33 65 38L64 51L51 53Z",
+    ],
+    ["abs", "M43 55H57L56 84H44Z"],
+    ["obliques", "M36 55L41 58L42 83L37 81Z M59 58L64 55L63 81L58 83Z"],
+    ["frontDelts", "M30 34L35 38L32 49L24 44Z"],
+    ["sideDelts", "M70 34L75 44L67 49L65 38Z"],
+    ["biceps", "M24 48L31 51L27 69L20 66Z M69 51L76 48L80 66L73 69Z"],
+    ["forearms", "M19 69L26 72L21 92L14 88Z M74 72L81 69L86 88L79 92Z"],
+    ["hipFlexors", "M37 86H47L45 101L36 96Z M53 86H63L64 96L55 101Z"],
+    ["quads", "M35 102L47 106L43 136L33 136Z M53 106L65 102L67 136L57 136Z"],
+    ["upperBack", "M140 35L150 31L160 35L156 49H144Z"],
+    ["scapular", "M136 40L144 46L144 60L133 55Z M156 46L164 40L167 55L156 60Z"],
+    ["lats", "M135 59L146 64L149 81L139 73Z M154 64L165 59L161 73L151 81Z"],
+    ["lowerBack", "M142 77L150 83L158 77V92H142Z"],
+    [
+      "rearDelts",
+      "M129 34L135 39L132 50L123 45Z M165 39L171 34L177 45L168 50Z",
+    ],
+    ["triceps", "M124 48L131 51L128 70L120 66Z M169 51L176 48L180 66L172 70Z"],
+    ["glutes", "M137 94L149 94V107L134 106Z M151 94L163 94L166 106L151 107Z"],
+    ["hamstrings", "M135 111H146L143 136H133Z M154 111H165L167 136H157Z"],
+    ["calves", "M134 140H144L141 162H134Z M156 140H166V162H159Z"],
   ];
   return (
-    <figure>
+    <figure className="interactive-muscles">
       <svg
         viewBox="0 0 200 185"
-        role="img"
+        role="group"
         aria-labelledby={id}
         className="muscle-map"
       >
-        <title id={id}>
-          Katalog kas bölgeleri:{" "}
-          {Object.keys(muscles)
-            .map((k) => muscleLabels[k] || k)
-            .join(", ")}
-        </title>
+        <title id={id}>Kas bölgelerine dokunarak ayrıntıyı göster</title>
         {[0, 100].map((x) => (
-          <g
-            key={x}
-            transform={`translate(${x} 0)`}
-            fill="none"
-            stroke="currentColor"
-            opacity="0.3"
-          >
+          <g key={x} transform={`translate(${x} 0)`} className="anatomy-base">
             <circle cx="50" cy="16" r="10" />
             <path d="M30 34Q50 25 70 34L62 77L67 102L68 164H56L50 118L44 164H32L33 102L38 77Z" />
             <path
               d="M30 37L20 91M70 37L80 91"
+              fill="none"
               strokeWidth="9"
               strokeLinecap="round"
             />
           </g>
         ))}
-        {locations
+        {regions
           .filter(([key]) => muscles[key] > 0)
-          .map(([key, x, y]) => (
-            <circle
+          .map(([key, d]) => (
+            <path
               key={key}
-              cx={x}
-              cy={y}
-              r={5 + muscles[key] * 4}
-              fill="currentColor"
-              opacity={0.45 + muscles[key] * 0.55}
+              d={d}
+              role="button"
+              tabIndex={0}
+              aria-label={muscleLabels[key]}
+              aria-pressed={selected === key}
+              className={
+                selected === key ? "muscle-region selected" : "muscle-region"
+              }
+              onClick={() => setSelected(key)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  setSelected(key);
+                }
+              }}
             >
-              <title>
-                {muscleLabels[key] || key} · {muscles[key]}
-              </title>
-            </circle>
+              <title>{muscleLabels[key]}</title>
+            </path>
           ))}
         <text x="50" y="181" textAnchor="middle">
           Ön
@@ -260,15 +287,35 @@ function CatalogMuscleMap({ muscles }: { muscles: Record<string, number> }) {
           Arka
         </text>
       </svg>
-      <figcaption>
-        Şematik bölge gösterimi · ayrıntılar aşağıdaki listede
+      <figcaption aria-live="polite">
+        <strong>{muscleLabels[selected] || selected}</strong> ·{" "}
+        {muscles[selected] >= 0.8
+          ? "Katalogda yüksek katkı"
+          : "Katalogda yardımcı katkı"}
+        . Bu eşleme aktivasyon veya gelişim yüzdesi değildir.
       </figcaption>
+      <div className="actions" aria-label="Kas bölgesi seçimi">
+        {Object.keys(muscles)
+          .filter((k) => muscles[k] > 0)
+          .map((key) => (
+            <button
+              type="button"
+              className="secondary small"
+              aria-pressed={selected === key}
+              key={key}
+              onClick={() => setSelected(key)}
+            >
+              {muscleLabels[key] || key}
+            </button>
+          ))}
+      </div>
     </figure>
   );
 }
 export function MovementLibrary() {
   const [catalog, setCatalog] = useState<CatalogMovement[]>([]);
   const [selected, setSelected] = useState("");
+  const [visualOnly, setVisualOnly] = useState(false);
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState("");
   const [error, setError] = useState("");
@@ -291,13 +338,14 @@ export function MovementLibrary() {
     v.toLocaleLowerCase("tr-TR").replace(/ı/g, "i");
   const results = catalog.filter(
     (m) =>
+      (!visualOnly || Boolean(catalogGuide(m))) &&
       (!filter || m.modality === filter) &&
       normalize(
         [m.name, m.displayNameTR, ...(m.aliases || [])].join(" "),
       ).includes(normalize(query)),
   );
   const movement = results.find((m) => m.id === selected) || results[0];
-  const guide = movement && findMovement(movement.name);
+  const guide = movement && catalogGuide(movement);
   const muscleEntries = movement
     ? Object.entries(movement.muscles).sort((a, b) => b[1] - a[1])
     : [];
@@ -349,6 +397,15 @@ export function MovementLibrary() {
             </select>
           </label>
         </div>
+        <label className="check">
+          <input
+            type="checkbox"
+            checked={visualOnly}
+            onChange={(e) => setVisualOnly(e.target.checked)}
+          />
+          Yalnız form çizimi bulunanları göster (
+          {catalog.filter((m) => catalogGuide(m)).length})
+        </label>
         <label>
           İncelemek istediğin hareket
           <select
@@ -375,11 +432,13 @@ export function MovementLibrary() {
               · {movement.equipment.join(" · ") || "Ek ekipman belirtilmemiş"}
             </p>
             {guide ? (
-              <MovementCard movement={guide} />
+              <MovementCard key={"form:" + movement.id} movement={guide} />
             ) : (
               <p className="caption">
-                Bu harekete ait teknik çizim henüz yok. Kas eşlemesi ve kayıt
-                biçimi aşağıda; başka hareketin görseli yerine kullanılmaz.
+                {movement.sport_id
+                  ? "Bu kayıt branşa ait bir çalışma başlığıdır. Tek bir hareketin yapılışını tarif etmez; bu başlık için doğrulanmış teknik çizim bulunmuyor."
+                  : "Bu özel varyasyona ait form çizimi henüz bulunmuyor."}{" "}
+                Varsa aşağıdaki kaynak bağlantısından tekniği inceleyebilirsin.
               </p>
             )}
             {movement.note && <p>{movement.note}</p>}
@@ -390,7 +449,7 @@ export function MovementLibrary() {
             ))}
             <h4>Katalogdaki kas bölgeleri</h4>
             {muscleEntries.length > 0 && (
-              <CatalogMuscleMap muscles={movement.muscles} />
+              <CatalogMuscleMap key={"muscles:" + movement.id} muscles={movement.muscles} />
             )}
             {muscleEntries.length ? (
               <ul className="catalog-muscle-list">

@@ -98,6 +98,7 @@ type SportExperience = {
   known_skills: string;
 };
 type Answers = {
+  region_mode: "priority" | "selected";
   athlete_context: AthleteContext;
   sport_methods: Record<string, string[]>;
   performance_focus: string[];
@@ -181,6 +182,7 @@ export function GuidedPlan({
     (profile?.planning_preferences as PlanningPrefs)?.intake || null,
   );
   const [answers, setAnswers] = useState<Answers>({
+    region_mode: "selected",
     athlete_context:
       (profile?.planning_preferences as PlanningPrefs)?.intake || emptyIntake(),
     sport_methods: {},
@@ -331,7 +333,7 @@ export function GuidedPlan({
               saved.form_version === 2 &&
                 !changedIntake &&
                 !intakeError(saved.answers.athlete_context)
-                ? Math.min(saved.step || 0, 8)
+                ? Math.min(saved.step || 0, saved.answers.region_mode ? 8 : 6)
                 : 0,
             );
           } else {
@@ -427,13 +429,20 @@ export function GuidedPlan({
   const selectedProfiles = sportTraining.filter((p) =>
     answers.sport_ids.includes(p.sport_id),
   );
-  const minDays = branchMode
-    ? Math.max(1, activeBranches(answers).length)
-    : answers.split === "push_pull_legs"
-      ? 3
-      : answers.split === "upper_lower"
-        ? 2
-        : 1;
+  const regionOnly =
+    answers.region_mode === "selected" &&
+    total > 0 &&
+    !branchMode &&
+    !isEndurance;
+  const minDays = regionOnly
+    ? 1
+    : branchMode
+      ? Math.max(1, activeBranches(answers).length)
+      : answers.split === "push_pull_legs"
+        ? 3
+        : answers.split === "upper_lower"
+          ? 2
+          : 1;
   const valid =
     phase === 0
       ? !intakeError(answers.athlete_context) &&
@@ -1397,12 +1406,79 @@ export function GuidedPlan({
             )}
             <section aria-label="Kas bölgesi öncelikleri">
               <h3>Hangi bölgeler önceliğin?</h3>
+              <label>
+                Bölge seçimim planı nasıl etkilesin?
+                <select
+                  aria-label="Bölge seçimim planı nasıl etkilesin?"
+                  value={answers.region_mode}
+                  onChange={(e) =>
+                    update({
+                      region_mode: e.target.value as Answers["region_mode"],
+                    })
+                  }
+                >
+                  <option value="selected">
+                    Kuvvette yalnız seçtiğim bölgeleri çalıştır
+                  </option>
+                  <option value="priority">
+                    Genel planı koru, seçtiğim bölgelere öncelik ver
+                  </option>
+                </select>
+              </label>
+              <p>
+                {answers.region_mode === "selected"
+                  ? "Seçmediğin bölgeler için kuvvet hareketi zorunlu tutulmaz. Birden çok kası kullanan hareketlerde yardımcı kaslar yine çalışabilir. Hiç bölge seçmezsen genel düzen uygulanır."
+                  : "Tüm vücut veya üst/alt gün düzeni korunur; seçtiğin bölgeler ek öncelik kazanır."}{" "}
+                Koşu, yüzme ve branş tekniği seçimleri ayrıca korunur.
+              </p>
               <p>
                 İstersen toplam 5 öncelik puanını dağıt. Hepsini kullanmak
                 zorunda değilsin. Beş farklı bölge seçebilir veya bir bölgeye
                 daha fazla puan verebilirsin. Bu puanlar büyüme yüzdesi
                 değildir. Branşına uygun hareketlerde dikkate alınır; bölge
                 seçmek çalışma yöntemini değiştirmez.
+              </p>
+              <div className="actions">
+                <button
+                  type="button"
+                  className="secondary small"
+                  onClick={() =>
+                    update({
+                      focus: {
+                        chest: 1,
+                        back: 1,
+                        shoulders: 1,
+                        arms: 1,
+                        core: 1,
+                      },
+                    })
+                  }
+                >
+                  Üst vücut bölgelerini seç
+                </button>
+                <button
+                  type="button"
+                  className="secondary small"
+                  onClick={() =>
+                    update({ focus: { quads: 1, posterior: 1, calves: 1 } })
+                  }
+                >
+                  Alt vücut bölgelerini seç
+                </button>
+                <button
+                  type="button"
+                  className="secondary small"
+                  onClick={() => update({ focus: {} })}
+                >
+                  Bölge seçimini temizle
+                </button>
+              </div>
+              <p>
+                Seçili bölgeler:{" "}
+                {Object.entries(answers.focus)
+                  .filter(([, n]) => n > 0)
+                  .map(([id]) => groups[id])
+                  .join(" · ") || "Yok; genel plan uygulanır"}
               </p>
               <FocusMap focus={answers.focus} />
               <strong role="status">{total} / 5 puan kullanıldı</strong>
@@ -1463,31 +1539,39 @@ export function GuidedPlan({
                       "Koşu/yüzme çalışmaları süre ve günlere göre düzenlenir. Koşuda kolay günler temel, yoğun çalışma ayrı gündür.",
                     ],
                   ]
-                : branchMode
+                : regionOnly
                   ? [
                       [
-                        "sport_days",
-                        "Branş günleri",
-                        "Her güne bir branş; seçtiğin sırayla dönüşümlü. Teknik, uygulama ve destek aynı seansta.",
+                        "full_body",
+                        "Seçtiğim bölgeler",
+                        "Her çalışma gününü yalnız seçtiğin ana kas bölgelerindeki kuvvet hareketlerinden oluştur.",
                       ],
                     ]
-                  : [
-                      [
-                        "full_body",
-                        "Tüm vücut",
-                        "Her çalışma gününde farklı ana hareketleri bir arada yap.",
+                  : branchMode
+                    ? [
+                        [
+                          "sport_days",
+                          "Branş günleri",
+                          "Her güne bir branş; seçtiğin sırayla dönüşümlü. Teknik, uygulama ve destek aynı seansta.",
+                        ],
+                      ]
+                    : [
+                        [
+                          "full_body",
+                          "Tüm vücut",
+                          "Her çalışma gününde farklı ana hareketleri bir arada yap.",
+                        ],
+                        [
+                          "upper_lower",
+                          "Üst / alt vücut",
+                          "Üst ve alt vücut günleri dönüşümlü; en az 2 gün.",
+                        ],
+                        [
+                          "push_pull_legs",
+                          "İtiş / çekiş / bacak",
+                          "Çalışma günlerini üç gruba ayır; en az 3 gün.",
+                        ],
                       ],
-                      [
-                        "upper_lower",
-                        "Üst / alt vücut",
-                        "Üst ve alt vücut günleri dönüşümlü; en az 2 gün.",
-                      ],
-                      [
-                        "push_pull_legs",
-                        "İtiş / çekiş / bacak",
-                        "Çalışma günlerini üç gruba ayır; en az 3 gün.",
-                      ],
-                    ],
             )}
             {!valid && (
               <p role="alert">

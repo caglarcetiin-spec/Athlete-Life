@@ -1,0 +1,8 @@
+{
+  "checked_at": "2026-09-28T14:52:17.782513+00:00",
+  "url": "http://127.0.0.1:10005",
+  "readiness_status": 200,
+  "index_matches_release": true,
+  "index_sha256": "d7b7efe865710c377371f92ff20b641fbf5ef0aa07e95f15c76fa878617040d9",
+  "scope": "Unauthenticated readiness and public static HTML only; no account records read."
+}

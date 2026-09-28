@@ -1,4 +1,6 @@
 export type Movement = {
+  visualScope?: string;
+  equipmentPaths?: [string, string];
   id: string;
   name: string;
   aliases: string[];
