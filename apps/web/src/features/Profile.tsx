@@ -78,7 +78,11 @@ export function Profile({
   async function photo(file: File) {
     setError("");
     try {
-      if (file.size > 2000000) throw Error("En fazla 2 MB fotoğraf seç.");
+      if (
+        file.size > 8000000 ||
+        !["image/jpeg", "image/png", "image/webp"].includes(file.type)
+      )
+        throw Error("En fazla 8 MB JPEG, PNG veya WebP fotoğraf seç.");
       const content = await new Promise<string>((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = () => resolve(String(reader.result));
@@ -88,9 +92,11 @@ export function Profile({
       await store.enqueue("media.save", null, {
         name: "Profil fotoğrafı · " + me.name,
         content,
+        avatar: true,
+        profile_version: profile?.version || 0,
       });
       setNotice(
-        "Fotoğraf cihazına kaydedildi. Sunucu onayından sonra aşağıdaki fotoğraflardan profil fotoğrafını seç.",
+        "Fotoğraf yükleme sırasına alındı. Sunucu onaylayınca profil fotoğrafın olarak tüm sayfalarda görünecek.",
       );
     } catch (e) {
       setError((e as Error).message);
@@ -108,6 +114,16 @@ export function Profile({
         </div>
         <UserRound className="heading-icon" />
       </div>
+      <section className="card">
+        <h2>EVREN ile antrenmanını geliştir</h2>
+        <p>
+          Spor hakkında konuş; sohbet sırasında hazırlanan programı seçip
+          planlayıcıya aktar. Son düzenlemeleri yaparak onaylayabilirsin.
+        </p>
+        <a className="text-button" href="#chat">
+          EVREN ile sohbet et ve program oluştur
+        </a>
+      </section>
       <AthleteAssessment key={String(profile?.version)} store={store} />
       {error && (
         <p role="alert" className="error">
@@ -263,6 +279,7 @@ export function Profile({
           Fotoğraf ekle
           <input
             type="file"
+            disabled={Boolean(profile?.local_pending) || store.writing > 0}
             accept="image/jpeg,image/png,image/webp"
             onChange={(e) =>
               e.target.files?.[0] && void photo(e.target.files[0])
@@ -270,8 +287,8 @@ export function Profile({
           />
         </label>
         <p>
-          En fazla 2 MB; kaydederken 960 piksele küçültülür ve konum metadata’sı
-          çıkarılır.
+          En fazla 8 MB ve 12 megapiksel; kaydederken 960 piksele küçültülür ve
+          konum metadata’sı çıkarılır.
         </p>
         <div className="avatar-choices">
           {store

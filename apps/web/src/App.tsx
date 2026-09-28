@@ -250,6 +250,11 @@ function Workspace({
         <header className="actions">
           <BrandLogo />
           <strong>{brand.name}</strong>
+          {!!profile?.avatar_id && (
+            <span className="avatar small-avatar">
+              <img src={"/api/v2/media/" + profile.avatar_id} alt="" />
+            </span>
+          )}
           <span>{me.name}</span>
           <button
             className="secondary small"
@@ -342,7 +347,13 @@ function Workspace({
         <span className="eyebrow nav-caption">{brand.tagline}</span>
         <PrimaryNavigation route={route} />
         <div className="sidebar-foot">
-          <span className="avatar">{me.name.slice(0, 1)}</span>
+          <span className="avatar small-avatar">
+            {profile?.avatar_id ? (
+              <img src={"/api/v2/media/" + profile.avatar_id} alt="" />
+            ) : (
+              me.name.slice(0, 1)
+            )}
+          </span>
           <div>
             <strong>{me.name}</strong>
             <small>Kendi ritminde</small>
@@ -446,7 +457,7 @@ function Workspace({
           <PageBoundary key={route}>
             <div className="page-enter">
               {route === "chat" ? (
-                <AIChat csrf={me.csrf} />
+                <AIChat csrf={me.csrf} store={store} />
               ) : route === "tools" ? (
                 <Tools />
               ) : route === "guide" ? (

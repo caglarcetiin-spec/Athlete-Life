@@ -1,0 +1,101 @@
+İçeriğe geç
+Sunucuya kaydedildi
+Açık
+D
+Deniz Test
+Seanslarım
+Planım
+Haftam
+SENİN HEDEFİN, SENİN PLANIN
+Antrenman planım
+
+Hedefini anlat, taslağı düzenle ve hazır olduğunda ana planına al.
+
+SANA GÖRE BİR BAŞLANGIÇ · 1/10
+Daha sonra
+Nereden başlıyoruz?
+Bedenin ve spor geçmişin
+
+Ölçülerini kendin bildirirsin. Bu bilgiler beden yapısı, kas oranı veya sağlık tanısı olarak yorumlanmaz.
+
+Yaşın
+Boyun (cm)
+Kilon (kg)
+Toplam spor geçmişin (ay)
+Cinsiyet
+Belirtmek istemiyorum
+Kadın
+Erkek
+İnterseks
+
+Hiç spor yapmadıysan geçmişine 0 yaz. Program temel hareketleri öğrenme ve düzen oluşturma ile başlar. Her branştaki deneyimini sonraki adımlarda ayrıca belirtebilirsin.
+
+Yeni başlıyorum
+Hareketleri ve düzenli çalışmayı öğreniyorum.
+Ara verdim, geri dönüyorum
+Önce ritmimi tekrar kurmak istiyorum.
+Düzenli çalışıyorum
+Temel hareketleri biliyorum.
+İleri düzeyim
+Planımı ayrıntılı düzenlemek istiyorum.
+
+Bu seçim yalnız bu taslağı etkiler; mevcut profilini veya geçmişini değiştirmez.
+
+Geri
+Devam
+Geri
+Bugün
+İleri
+Bugün
+Antrenman
+Sağlık
+Gelişim
+Araçlar
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+ExpectError: expect(locator).toBeVisible() failed
+
+Locator: getByRole('button', { name: 'Sunucuya kaydedildi', exact: true })
+Expected: visible
+Timeout: 20000ms
+Error: element(s) not found
+
+Call log:
+  - Expect "toBeVisible" getByRole('button', { name: 'Sunucuya kaydedildi', exact: true }) with timeout 20000ms
+  - waiting for getByRole('button', { name: 'Sunucuya kaydedildi', exact: true })
+
+    at captureRawStack (/Users/caglarcetin/Documents/GitHub/Athlete-Life/apps/web/node_modules/playwright-core/lib/coreBundle.js:8588:17)
+    at callMatcherAsStep (/Users/caglarcetin/Documents/GitHub/Athlete-Life/apps/web/node_modules/playwright/lib/matchers/expect.js:13310:57)
+    at Object.toBeVisible (/Users/caglarcetin/Documents/GitHub/Athlete-Life/apps/web/node_modules/playwright/lib/matchers/expect.js:13302:23)
+    at synced (/Users/caglarcetin/Documents/GitHub/Athlete-Life/tools/v2/final_touch_browser.mjs:6:104)
+    at /Users/caglarcetin/Documents/GitHub/Athlete-Life/tools/v2/final_touch_browser.mjs:14:235 {
+  matcherResult: {
+    message: 'expect(locator).toBeVisible() failed\n' +
+      '\n' +
+      "Locator: getByRole('button', { name: 'Sunucuya kaydedildi', exact: true })\n" +
+      'Expected: visible\n' +
+      'Timeout: 20000ms\n' +
+      'Error: element(s) not found\n' +
+      '\n' +
+      'Call log:\n' +
+      `  - Expect "toBeVisible" getByRole('button', { name: 'Sunucuya kaydedildi', exact: true }) with timeout 20000ms\n` +
+      "  - waiting for getByRole('button', { name: 'Sunucuya kaydedildi', exact: true })\n",
+    pass: false,
+    actual: undefined,
+    name: 'toBeVisible',
+    expected: 'visible',
+    log: [
+      `  - Expect "toBeVisible" getByRole('button', { name: 'Sunucuya kaydedildi', exact: true }) with timeout 20000ms`,
+      "  - waiting for getByRole('button', { name: 'Sunucuya kaydedildi', exact: true })"
+    ],
+    timeout: 20000,
+    ariaSnapshot: '- main:\n' +
+      '  - heading "Hesabın hazırlanıyor" [level=1]\n' +
+      '  - button "Yeniden bağlan"\n' +
+      '  - button "Çıkış yap"'
+  }
+}
+
+Node.js v24.19.0

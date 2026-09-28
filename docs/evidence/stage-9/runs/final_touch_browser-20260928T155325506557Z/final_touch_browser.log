@@ -1,0 +1,66 @@
+İçeriğe geç
+Sunucuya kaydedildi
+Açık
+Deniz Test
+Araçlar
+AI ile sohbet et
+ AI ile sohbet et
+
+Spor, antrenman ve teknik hakkında EVREN’e sor.
+
+Yeni sohbet
+
+Bu sohbet uygulama kayıtlarını okumaz veya planını kendiliğinden değiştirmez. Konuşma bu sayfada tutulur; sayfadan çıkınca silinir. Önceki görseller sonraki mesajlarda tekrar gönderilmez; son mesajlar ve yanıtlar sohbet bağlamını sağlar.
+
+Sen
+
+Halkada evde uygulayacağım örnek bir programı birlikte hazırlayalım.
+
+EVREN
+
+Pazartesi ve çarşamba: halka çekişi ve şınav. Önce kontrollü teknik, sonra kuvvet. Her hareket 3 set, 6 tekrar; arada 90 saniye dinlenme. Sentetik sohbet programı.
+
+Bu yanıtı programa dönüştür
+Sohbetten antrenman programı
+
+EVREN’in program içeren yanıtında “Bu yanıtı programa dönüştür” düğmesine bas. Metni gözden geçirip planlayıcıya aktar; profilini, günlerini ve ekipmanını doğruladıktan sonra düzenlenebilir program hazırlanır.
+
+Programa aktarılacak sohbet metni
+
+Yalnız bu metin aktarılır; sohbet görselleri aktarılmaz. Kayıtlı programını değiştirmek için ayrıca onay vereceksin.
+
+Planlayıcıda tamamla
+Mesajın
+Görsel ekle (isteğe bağlı)
+
+Bu modelde görsel desteği yapılandırılmadı.
+
+Mesajlarımın ve seçtiğim görselin EVREN’e gönderilmesini kabul ediyorum.
+
+Görsel sunucuda küçültülür ve konum bilgileri çıkarılır. Fotoğraftan kas hasarı veya kesin gelişim yüzdesi ölçülmez.
+
+Gönder
+Geri
+Bugün
+İleri
+Bugün
+Antrenman
+Sağlık
+Gelişim
+Araçlar
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+locator.inputValue: Timeout 15000ms exceeded.
+Call log:
+[2m  - waiting for getByLabel('Programa aktarılacak sohbet metni', { exact: true })[22m
+
+    at /Users/caglarcetin/Documents/GitHub/Athlete-Life/tools/v2/final_touch_browser.mjs:26:87 {
+  log: [
+    "  - waiting for getByLabel('Programa aktarılacak sohbet metni', { exact: true })"
+  ],
+  name: 'TimeoutError'
+}
+
+Node.js v24.19.0

@@ -4,18 +4,22 @@ import io
 import warnings
 from datetime import date
 from typing import Literal
+from uuid import uuid4
 
 from PIL import Image, UnidentifiedImageError
 from pydantic import Field
+from sqlalchemy import select
 
 from .contracts import Empty, StrictModel
 from .db import utcnow
 from .errors import DomainError
-from .models import MediaObject
+from .models import AthleteProfile, MediaObject
 from .service import get_owned, serial
 
 
 class PhotoInput(StrictModel):
+    avatar: bool = False
+    profile_version: int | None = Field(default=None, ge=0)
     name: str = Field(min_length=1, max_length=150)
     content: str = Field(max_length=11_200_000)
     mime: Literal["image/jpeg", "model/gltf-binary"] = "image/jpeg"
@@ -34,10 +38,10 @@ class MediaDetails(StrictModel):
     note: str = Field(default="", max_length=1000)
 
 
-def normalize_photo(encoded):
+def normalize_photo(encoded, max_bytes=2_000_000):
     try:
         raw = base64.b64decode(encoded.split(",", 1)[-1], validate=True)
-        if len(raw) > 2_000_000:
+        if len(raw) > max_bytes:
             raise ValueError("size")
         with warnings.catch_warnings():
             warnings.simplefilter("error", Image.DecompressionBombWarning)
@@ -62,7 +66,8 @@ def normalize_photo(encoded):
         Image.DecompressionBombWarning,
     ):
         raise DomainError(
-            "invalid_image", "En fazla 2 MB, 12 megapiksel JPEG/PNG/WebP fotoğraf seç."
+            "invalid_image",
+            f"En fazla {max_bytes // 1_000_000} MB, 12 megapiksel JPEG/PNG/WebP fotoğraf seç.",
         ) from None
 
 
@@ -87,6 +92,7 @@ def validate_restored_media(mime, content):
 
 
 def apply_media(db, athlete, command, attachment=None):
+    extra_changes = []
     row = get_owned(
         db,
         MediaObject,
@@ -118,12 +124,27 @@ def apply_media(db, athlete, command, attachment=None):
         row.version += 1
     elif command.command_type == "media.save":
         data = PhotoInput.model_validate(command.payload)
+        avatar_profile = None
+        if data.avatar:
+            if data.mime != "image/jpeg" or data.profile_version is None:
+                raise DomainError("avatar", "Profil fotoğrafı ve profil sürümü gerekli.")
+            avatar_profile = db.scalar(select(AthleteProfile).where(AthleteProfile.athlete_id == athlete.id))
+            if avatar_profile and (
+                avatar_profile.deleted_at or avatar_profile.version != data.profile_version
+            ):
+                raise DomainError(
+                    "version_conflict",
+                    "Profil başka bir yerde değişti; eşitleyip fotoğrafı yeniden seç.",
+                    409,
+                )
+            if not avatar_profile and data.profile_version != 0:
+                raise DomainError("version_conflict", "Profil sürümünü eşitleyip yeniden dene.", 409)
         if data.mime == "model/gltf-binary":
             from .body_model import normalize_glb
 
             content = normalize_glb(data.content)
         else:
-            content = normalize_photo(data.content)
+            content = normalize_photo(data.content, 8_000_000 if data.avatar else 2_000_000)
         if row is None:
             row = MediaObject(id=command.entity_id, athlete_id=athlete.id, version=0)
             db.add(row)
@@ -132,8 +153,18 @@ def apply_media(db, athlete, command, attachment=None):
         row.content = content
         row.sha256 = hashlib.sha256(content).hexdigest()
         row.version += 1
+        if data.avatar:
+            db.flush()
+            if avatar_profile is None:
+                avatar_profile = AthleteProfile(id=uuid4(), athlete_id=athlete.id, version=0)
+                db.add(avatar_profile)
+            avatar_profile.avatar_id = row.id
+            avatar_profile.version += 1
+            avatar_profile.updated_at = utcnow()
+            db.flush()
+            extra_changes.append({"kind": "profile", "entity": serial(avatar_profile)})
     else:
         raise DomainError("unknown_command", "Desteklenmeyen medya işlemi.")
     row.updated_at = utcnow()
     db.flush()
-    return row, before, [{"kind": "media", "entity": serial(row)}]
+    return row, before, [{"kind": "media", "entity": serial(row)}, *extra_changes]

@@ -99,6 +99,8 @@ type SportExperience = {
   known_skills: string;
 };
 type Answers = {
+  final_requests: string;
+  chat_plan_text: string;
   region_mode: "priority" | "selected";
   athlete_context: AthleteContext;
   sport_methods: Record<string, string[]>;
@@ -135,6 +137,7 @@ type Preview = {
   program: PlanDraft;
   notes: string[];
   review: {
+    limitations?: string[];
     days: {
       weekday: number;
       estimated_minutes: number;
@@ -183,6 +186,8 @@ export function GuidedPlan({
     (profile?.planning_preferences as PlanningPrefs)?.intake || null,
   );
   const [answers, setAnswers] = useState<Answers>({
+    final_requests: "",
+    chat_plan_text: "",
     region_mode: "selected",
     athlete_context:
       (profile?.planning_preferences as PlanningPrefs)?.intake || emptyIntake(),
@@ -246,6 +251,7 @@ export function GuidedPlan({
     consent_version?: string;
   } | null>(null);
   const consentScope = useRef("");
+  const chatImportId = useRef<string | undefined>(undefined);
   useEffect(() => {
     if (!synced) return;
     let active = true;
@@ -310,7 +316,8 @@ export function GuidedPlan({
     let live = true;
     void store
       .loadDraft("guided-plan")
-      .then((saved) => {
+      .then(async (saved) => {
+        const imported = await store.loadDraft("chat-plan-import");
         if (live) {
           if (saved?.answers) {
             const latestProfile = store.view("profile")[0];
@@ -369,6 +376,21 @@ export function GuidedPlan({
                 : 45,
             }));
           }
+          chatImportId.current = imported?.id || saved?.chat_import_id;
+          if (
+            typeof imported?.text === "string" &&
+            imported.text.trim() &&
+            imported.id !== saved?.chat_import_id
+          ) {
+            const nextSource = imported.text.slice(0, 20000);
+            setAnswers((previous) => ({
+              ...previous,
+              chat_plan_text: nextSource,
+            }));
+            setEngine("ai");
+            setConsent(false);
+            // Keep the transfer until the complete guided draft is durably saved.
+          }
           setReady(true);
         }
       })
@@ -397,6 +419,7 @@ export function GuidedPlan({
     void store
       .saveDraft("guided-plan", {
         answers: next,
+        chat_import_id: chatImportId.current,
         step,
         form_version: 2,
         intake_signature: intakeSignature,
@@ -413,6 +436,7 @@ export function GuidedPlan({
     void store
       .saveDraft("guided-plan", {
         answers,
+        chat_import_id: chatImportId.current,
         step: Math.min(next, 8),
         form_version: 2,
         intake_signature: intakeSignature,
@@ -553,6 +577,12 @@ export function GuidedPlan({
       return;
     }
     if (engine === "ai") {
+      if (!answers.final_requests.trim()) {
+        setError(
+          "Son isteklerini yaz: hangi günlerde, nasıl ve hangi koşullarda çalışmak istiyorsun?",
+        );
+        return;
+      }
       if (!aiStatus?.available) {
         setSetupOpen(true);
         setError(
@@ -1746,6 +1776,62 @@ export function GuidedPlan({
               </fieldset>
               {engine === "ai" && (
                 <>
+                  <section
+                    className="notice"
+                    aria-label="AI için son isteklerin"
+                  >
+                    <h3>Programının son şeklini birlikte belirleyelim</h3>
+                    <label>
+                      Tam olarak nasıl bir çalışma istiyorsun? (gerekli)
+                      <textarea
+                        aria-label="Tam olarak nasıl bir çalışma istiyorsun? (gerekli)"
+                        required
+                        rows={5}
+                        maxLength={4000}
+                        value={answers.final_requests}
+                        onChange={(e) =>
+                          update({ final_requests: e.target.value })
+                        }
+                        placeholder="Örneğin pazartesi evde 45 dk kuvvet, çarşamba açık havada kolay koşu istiyorum. Cuma daha hafif olsun. Önce teknik, sonra kuvvet çalışmayı tercih ediyorum…"
+                      />
+                    </label>
+                    <p>
+                      Hangi gün ne çalışmak istediğini, ortamını, önceliklerini
+                      ve dinlenme tercihlerini anlat. AI bu metni de kullanacak.
+                      Buradaki günler veya ekipmanlar önceki seçimlerinle
+                      farklıysa Geri ile seçimlerini güncelle.
+                    </p>
+                    {answers.chat_plan_text && (
+                      <details open>
+                        <summary>Sohbetten getirdiğin program</summary>
+                        <label>
+                          AI’nin plana dönüştüreceği sohbet metni
+                          <textarea
+                            aria-label="AI’nin plana dönüştüreceği sohbet metni"
+                            rows={8}
+                            maxLength={20000}
+                            value={answers.chat_plan_text}
+                            onChange={(e) =>
+                              update({ chat_plan_text: e.target.value })
+                            }
+                          />
+                        </label>
+                        <button
+                          type="button"
+                          className="secondary small"
+                          onClick={() => update({ chat_plan_text: "" })}
+                        >
+                          Sohbet metnini kaldır
+                        </button>
+                        <p>
+                          AI bu metni seçtiğin gün, süre, ekipman ve
+                          yetkinliklerle eşleştirir. Uyuşmayan hareketler veya
+                          istekler sonuçta açıklanır; onayından önce ana planın
+                          değişmez.
+                        </p>
+                      </details>
+                    )}
+                  </section>
                   <p role="status">
                     {aiStatus?.message || "AI bağlantısı kontrol ediliyor…"}
                   </p>
@@ -1817,8 +1903,9 @@ export function GuidedPlan({
                     paylaştığın isteğe bağlı döngü bilgileri gönderilir. Hesap
                     kimliğin, şifren ve diğer kayıtlı sağlık geçmişin
                     gönderilmez. Hedef, spor geçmişi ve branşlara yazdığın
-                    teknik/performans notları da gönderilir; buraya kimlik veya
-                    özel sağlık bilgisi yazma.
+                    teknik/performans notları, son isteklerin ve varsa seçtiğin
+                    sohbet programı da gönderilir; buraya kimlik veya özel
+                    sağlık bilgisi yazma.
                   </p>
                   <label className="check">
                     <input
@@ -1854,6 +1941,16 @@ export function GuidedPlan({
                   onayladıktan sonra planına alınır.
                 </p>
               </div>
+            )}
+            {!!preview.review.limitations?.length && (
+              <section className="notice" aria-label="AI planının sınırları">
+                <h3>Planı onaylamadan gözden geçir</h3>
+                <ul>
+                  {preview.review.limitations.map((note, i) => (
+                    <li key={i}>{note}</li>
+                  ))}
+                </ul>
+              </section>
             )}
             {preview.review.status === "needs_review" && (
               <p className="notice" role="status">

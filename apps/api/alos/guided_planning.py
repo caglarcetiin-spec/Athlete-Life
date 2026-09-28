@@ -81,6 +81,8 @@ class RunningProfile(StrictModel):
 
 
 class GuidedChoices(StrictModel):
+    final_requests: str = Field(default="", max_length=4000)
+    chat_plan_text: str = Field(default="", max_length=20000)
     region_mode: Literal["priority", "selected"] = "priority"
     athlete_context: AthleteIntake | None = None
     progression_mode: Literal["repeat", "phased"] = "repeat"

@@ -1,0 +1,5 @@
+
+> athlete-life-web@2.0.0-dev build
+> tsc -b && vite build
+
+src/App.tsx(253,11): error TS2322: Type 'unknown' is not assignable to type 'ReactNode'.

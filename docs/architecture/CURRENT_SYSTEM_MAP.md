@@ -286,3 +286,9 @@ için boş olmayan not veya açık bilinmiyor yanıtı ister; eski API kayıtlar
 uyumluluk için boş notla okunur. `ai-planner-13` metnin kullanımını ve belirsizlik
 sınırını açıklar; katalog/kapasite sınırları korunur. Şema veya veri göçü yok.
 Detay ve kanıt: [SPORT_EXPERIENCE_NOTES](../SPORT_EXPERIENCE_NOTES.md).
+
+## 2026-09-28: AI son istekleri, sohbet aktarımı ve atomik avatar
+
+`GuidedChoices.final_requests` (4000) ve `chat_plan_text` (20000) → AI izinli bağlamı → EVREN → `ai-planner-14` doğrulanmış program → `decisions.guided_choices`. `review.limitations` önizlemede gösterilir. `AIChat` seçilen metni hesap kapsamlı `chat-plan-import` yerel taslağına kaydeder; `GuidedPlan` aktarım kimliğiyle tekrar yüklemelerde kullanıcının düzeltmesini korur. `Programming` yalnız kullanıcı önizlemeyi kabul edince düzenleyiciyi doldurur.
+
+`media.save.avatar` ve `profile_version`: 8 MB giriş fotoğrafını normalleştirir; medya ve `AthleteProfile.avatar_id` aynı sahiplik/sürüm kontrollü işlemde değişir, eşitleme iki değişikliği birlikte döndürür. Genel medya ve sohbet sınırları değişmez. Şema/göç yok; ayrıntı: `docs/FINAL_TOUCH_RELEASE.md`.

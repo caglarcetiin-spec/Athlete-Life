@@ -113,12 +113,14 @@ export function Programming({ store }: { store: SyncStore }) {
     let current = true;
     void store
       .loadDraft("program")
-      .then((saved) => {
+      .then(async (saved) => {
+        const imported = await store.loadDraft("chat-plan-import");
         if (!current) return;
         if (saved) {
           setDraft(saved);
           setGuided(false);
         }
+        if (imported?.text) setGuided(true);
         setDraftReady(true);
       })
       .catch(() => {
@@ -269,12 +271,20 @@ export function Programming({ store }: { store: SyncStore }) {
           </button>
         </div>
       )}
+      {draftReady && guided && draft && (
+        <p className="notice">
+          Düzenleyicide bir taslağın var. Yeni öneride “Düzenle ve kaydet”
+          dersen onun yerine yeni taslak açılır; kayıtlı ve aktif programların
+          korunur.
+        </p>
+      )}
       {draftReady && guided && (
         <GuidedPlan
           store={store}
           onClose={() => setGuided(false)}
           onUse={(plan, messages) => {
             edit(plan);
+            void store.saveDraft("chat-plan-import", null);
             setNotes(messages);
             setGuided(false);
           }}

@@ -2,6 +2,7 @@ import { chatHistory } from "./chatHistory";
 import { useEffect, useRef, useState } from "react";
 import { MessageCircle, Send, Trash2 } from "lucide-react";
 import { api } from "../api/contracts";
+import type { SyncStore } from "../sync/store";
 
 type Message = { role: "user" | "assistant"; text: string; image?: string };
 type Configuration = {
@@ -10,7 +11,25 @@ type Configuration = {
   model: string;
   consent_version: string;
 };
-export function AIChat({ csrf }: { csrf: string }) {
+export function AIChat({ csrf, store }: { csrf: string; store: SyncStore }) {
+  const [planText, setPlanText] = useState("");
+  const [transferring, setTransferring] = useState(false);
+  async function transfer() {
+    if (!planText.trim() || transferring) return;
+    setTransferring(true);
+    setError("");
+    try {
+      await store.saveDraft("chat-plan-import", {
+        id: crypto.randomUUID(),
+        text: planText.trim(),
+      });
+      location.hash = "program";
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setTransferring(false);
+    }
+  }
   const [config, setConfig] = useState<Configuration | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [text, setText] = useState("");
@@ -92,6 +111,7 @@ export function AIChat({ csrf }: { csrf: string }) {
             setImage(undefined);
             setText("");
             setError("");
+            setPlanText("");
           }}
         >
           <Trash2 size={16} />
@@ -99,10 +119,10 @@ export function AIChat({ csrf }: { csrf: string }) {
         </button>
       </div>
       <p className="caption">
-        Bu sohbet uygulama kayıtlarını okumaz veya planını değiştirmez. Konuşma
-        bu sayfada tutulur; sayfadan çıkınca silinir. Önceki görseller sonraki
-        mesajlarda tekrar gönderilmez; son mesajlar ve yanıtlar sohbet bağlamını
-        sağlar.
+        Bu sohbet uygulama kayıtlarını okumaz veya planını kendiliğinden
+        değiştirmez. Konuşma bu sayfada tutulur; sayfadan çıkınca silinir.
+        Önceki görseller sonraki mesajlarda tekrar gönderilmez; son mesajlar ve
+        yanıtlar sohbet bağlamını sağlar.
       </p>
       {config && !config.available && (
         <p role="status">EVREN sohbet bağlantısı henüz hazır değil.</p>
@@ -121,11 +141,53 @@ export function AIChat({ csrf }: { csrf: string }) {
             <strong>{m.role === "user" ? "Sen" : "EVREN"}</strong>
             {m.image && <img src={m.image} alt="Sohbete eklediğin görsel" />}
             <p>{m.text}</p>
+            {m.role === "assistant" && (
+              <button
+                className="secondary small"
+                disabled={busy || transferring}
+                onClick={() => setPlanText(m.text)}
+              >
+                Bu yanıtı programa dönüştür
+              </button>
+            )}
           </article>
         ))}
         {busy && <p role="status">EVREN yanıt hazırlıyor…</p>}
         <div ref={bottom} />
       </div>
+      <section className="card" aria-label="Sohbetten antrenman programı">
+        <h2>Sohbetten antrenman programı</h2>
+        <p>
+          EVREN’in program içeren yanıtında “Bu yanıtı programa dönüştür”
+          düğmesine bas. Metni gözden geçirip planlayıcıya aktar; profilini,
+          günlerini ve ekipmanını doğruladıktan sonra düzenlenebilir program
+          hazırlanır.
+        </p>
+        {planText && (
+          <>
+            <label>
+              Programa aktarılacak sohbet metni
+              <textarea
+                aria-label="Programa aktarılacak sohbet metni"
+                rows={8}
+                maxLength={20000}
+                value={planText}
+                onChange={(e) => setPlanText(e.target.value)}
+              />
+            </label>
+            <p>
+              Yalnız bu metin aktarılır; sohbet görselleri aktarılmaz. Kayıtlı
+              programını değiştirmek için ayrıca onay vereceksin.
+            </p>
+            <button
+              disabled={busy || transferring || !planText.trim()}
+              onClick={() => void transfer()}
+            >
+              {transferring ? "Aktarılıyor…" : "Planlayıcıda tamamla"}
+            </button>
+          </>
+        )}
+      </section>
       <form
         onSubmit={(e) => {
           e.preventDefault();
