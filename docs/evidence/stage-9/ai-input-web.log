@@ -1,0 +1,13 @@
+
+> athlete-life-web@2.0.0-dev test
+> vitest run src/api/contracts.test.ts src/features/planningCapacity.test.ts
+
+
+ RUN  v4.1.11 /Users/caglarcetin/Documents/GitHub/Athlete-Life/apps/web
+
+
+ Test Files  2 passed (2)
+      Tests  4 passed (4)
+   Start at  07:12:35
+   Duration  192ms (transform 57ms, setup 0ms, import 116ms, tests 19ms, environment 0ms)
+

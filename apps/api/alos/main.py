@@ -653,20 +653,68 @@ def create_app(settings: Settings | None = None):
         from .db import utcnow
 
         identity = who(request, True)
-        data = AIRequest.model_validate(await request.json())
+        try:
+            data = AIRequest.model_validate(await request.json())
+        except ValidationError as exc:
+            labels = {
+                "goal": "Somut hedefin",
+                "name": "Program adı",
+                "start_date": "Başlangıç tarihi",
+                "weeks": "Dönem süresi",
+                "experience": "Deneyim",
+                "objective": "Hedef türü",
+                "equipment": "Ekipman",
+                "weekdays": "Antrenman günleri",
+                "minutes": "Seans süresi",
+                "split": "Çalışma düzeni",
+                "focus": "Bölge öncelikleri",
+                "methods": "Çalışma yöntemleri",
+                "competencies": "Hareket kapasitesi (tekrar / saniye)",
+                "conditioning_minutes": "Kondisyon süresi",
+                "adult": "Yetişkin onayı",
+                "symptoms": "Belirti bildirimi",
+                "consent": "AI veri gönderim onayı",
+            }
+            fields = list(
+                dict.fromkeys(
+                    labels.get(str(e["loc"][0]), "Form seçimleri")
+                    if e["loc"]
+                    else "Antrenman günleri, çalışma düzeni ve bölge öncelikleri"
+                    for e in exc.errors()
+                )
+            )
+            raise DomainError(
+                "ai_form_invalid",
+                "Şu alanları kontrol et: " + ", ".join(fields) + ". Form seçimlerin korundu.",
+                details={"fields": fields},
+            ) from None
         require_consent(data, settings)
         if not status(settings)["available"]:
             raise DomainError("ai_not_configured", status(settings)["message"], 503)
         snapshot = service.bootstrap(database, UUID(identity["athlete_id"]))
         at = utcnow()
-        baseline, context = prepare(data, snapshot, at)
+        try:
+            baseline, context = prepare(data, snapshot, at)
+        except ValidationError:
+            raise DomainError(
+                "ai_context_invalid",
+                "Planlama bağlamı hazırlanamadı. Form seçimlerin korundu; bu bir sunucu doğrulama hatasıdır.",
+                502,
+            ) from None
         auth.rate_limit(database, "ai-user:" + identity["athlete_id"], settings.ai_user_limit)
         auth.rate_limit(database, "ai-global", settings.ai_global_limit)
         result = await run_in_threadpool(call_provider, settings, context)
         configuration = status(settings)
-        return validate_plan(
-            result, data, baseline, context, at, configuration["model"], configuration["provider"]
-        )
+        try:
+            return validate_plan(
+                result, data, baseline, context, at, configuration["model"], configuration["provider"]
+            )
+        except ValidationError:
+            raise DomainError(
+                "ai_invalid_response",
+                "AI yanıtı programın kayıt biçimine uymadı. Form seçimlerin korundu; yeniden taslak hazırlayabilirsin.",
+                502,
+            ) from None
 
     @app.get("/api/v2/movement-alternatives")
     def movement_alternatives(request: Request, movement_id: str):

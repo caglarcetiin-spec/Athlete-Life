@@ -172,3 +172,7 @@ MongoDB/hesap/medya göçü yok. Geri dönüş eski kaynak/paket commit'i; yeni 
 ### AI planlayıcı entegrasyonu (28 Eylül 2026)
 
 GET `/api/v2/ai-planning-status` yalnız yapılandırma durumunu oturum sahibine verir. CSRF korumalı POST `/api/v2/ai-program-drafts`: açık gönderim onayı → sunucuda sağlık/yaş kapısı → uygun kanonik adaylar → izinli alanlarla OpenAI Responses → katı şema + süre/ekipman/yetkinlik/split kontrolü → salt okunur önizleme. `ai_planning.py` sabit dış hedef, güvenli hata, süre/çıktı/istek sınırı sağlar. Yeni tablo yok; `programming.py` isteğe bağlı `ai_origin` bilgisini karar JSON'unda tutar. Anahtar/model yokken UI açıkça devre dışıdır; sentetik testi gerçek AI üretimi diye sunmaz. Kurulum, veri haritası ve rollback: `docs/AI_PLANNER_SETUP.md`.
+
+## 28 Eylül 2026 — AI planlama kapasite doğrulaması
+
+`guided_planning.Competency.seconds` mevcut alanının sınırı hareket türüne göre ayrılır: kardiyo >0–86400 saniye, izometrik tutuş >0–600 saniye. `planningCapacity.ts` aynı giriş sınırlarını formda uygular; istek akışı `GuidedPlan → ai-program-drafts → prepare → provider → validate_plan → kullanıcı taslak onayı` olarak kalır. Yeni kalıcı alan veya veri göçü yok. Hata ve test kanıtları: `docs/AI_INPUT_FIX.md`.

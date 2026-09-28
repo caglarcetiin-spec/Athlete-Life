@@ -1,0 +1,2 @@
+PRE-FIX: synthetic 30-minute cardio rejected: [(('seconds',), 'less_than_equal')]
+FIXED: same synthetic cardio accepted; no account or database accessed.

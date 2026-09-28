@@ -163,3 +163,20 @@ def test_conditioning_only_does_not_invent_strength_work():
     assert all(e["modality"] == "cardio" for e in exercises(result))
     assert all(not d["missing_patterns"] for d in result["review"]["days"])
     assert result["review"]["status"] == "draft"
+
+
+@pytest.mark.parametrize("seconds", [601, 1800, 3600, 86400])
+def test_cardio_capacity_is_not_isometric_hold(seconds):
+    from alos.guided_planning import Competency
+
+    assert Competency(movement_id="zone-2-run", seconds=seconds).seconds == seconds
+    with pytest.raises(ValidationError):
+        Competency(movement_id="front-lever", seconds=seconds)
+
+
+@pytest.mark.parametrize("seconds", [0, -1, 86401, float("inf")])
+def test_cardio_capacity_still_rejects_invalid_duration(seconds):
+    from alos.guided_planning import Competency
+
+    with pytest.raises(ValidationError):
+        Competency(movement_id="zone-2-run", seconds=seconds)

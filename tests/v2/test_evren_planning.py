@@ -204,3 +204,66 @@ def test_model_receives_explicit_unit_capacity_and_split_rules():
     assert context["session_limits"]["max_non_cardio_sets"] == 24
     assert context["reference_draft"]
     assert "name" not in context["reference_draft"][0]
+
+
+def test_long_cardio_capacity_reaches_provider_and_saves_draft(
+    client, app, monkeypatch
+):
+    app.state.settings.ai_provider = "evren"
+    app.state.settings.evren_api_key = SecretStr("synthetic-key")
+    app.state.settings.evren_model = "synthetic-model"
+    request = data(
+        consent=ai.EVREN_CONSENT,
+        competencies=[{"movement_id": "zone-2-run", "seconds": 1800}],
+    )
+    calls = []
+
+    def fake(_config, context):
+        calls.append(context)
+        return reply(request)
+
+    monkeypatch.setattr(ai, "call_evren", fake)
+    response = client.post(
+        "/api/v2/ai-program-drafts", json=request.model_dump(mode="json")
+    )
+    assert response.status_code == 200, response.text
+    assert calls[0]["competencies"][0]["seconds"] == 1800
+    assert client.get("/api/v2/bootstrap").json()["programs"] == []
+    created = write(client, cmd("program.create", **response.json()["program"]))
+    assert created["entity"]["status"] == "draft"
+
+
+def test_invalid_capacity_is_actionable_and_never_calls_provider(client, monkeypatch):
+    monkeypatch.setattr(
+        ai, "call_provider", lambda *_: pytest.fail("Invalid form sent externally")
+    )
+    payload = data().model_dump(mode="json")
+    payload["competencies"] = [{"movement_id": "front-lever", "seconds": 1800}]
+    payload["goal"] = "private-synthetic-goal"
+    response = client.post("/api/v2/ai-program-drafts", json=payload)
+    assert response.status_code == 422
+    assert response.json()["error"]["code"] == "ai_form_invalid"
+    assert "Hareket kapasitesi" in response.json()["error"]["message"]
+    assert "private-synthetic-goal" not in response.text
+
+
+def test_generated_schema_error_does_not_blame_form(client, app, monkeypatch):
+    from alos.programming import ProgramInput
+
+    app.state.settings.ai_provider = "evren"
+    app.state.settings.evren_api_key = SecretStr("synthetic-key")
+    app.state.settings.evren_model = "synthetic-model"
+    monkeypatch.setattr(ai, "call_provider", lambda *_: reply(data()))
+
+    def invalid(*_args):
+        ProgramInput.model_validate({"name": "private-output"})
+
+    monkeypatch.setattr(ai, "validate_plan", invalid)
+    response = client.post(
+        "/api/v2/ai-program-drafts",
+        json=data(consent=ai.EVREN_CONSENT).model_dump(mode="json"),
+    )
+    assert response.status_code == 502
+    assert response.json()["error"]["code"] == "ai_invalid_response"
+    assert "private-output" not in response.text
+    assert client.get("/api/v2/bootstrap").json()["programs"] == []

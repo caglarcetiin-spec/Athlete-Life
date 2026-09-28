@@ -6,6 +6,7 @@ import type { SyncStore } from "../sync/store";
 import type { PlanDraft } from "./Programming";
 import { today } from "../time";
 import { type PlanningPrefs, equipmentOptions } from "./PlanningPreferences";
+import { capacityError, capacityMaximum } from "./planningCapacity";
 
 const groups: Record<string, string> = {
   chest: "Göğüs",
@@ -305,8 +306,14 @@ export function GuidedPlan({
             : step === 1
               ? answers.methods.length > 0
               : true;
+  const capacityIssue = capacityError(answers.competencies, options);
   async function generate() {
     if (busy) return;
+    if (capacityIssue) {
+      go(2);
+      setError(capacityIssue);
+      return;
+    }
     if (!valid) {
       setError("Program adı ve başlangıç tarihini tamamla.");
       return;
@@ -353,7 +360,11 @@ export function GuidedPlan({
       setPreview(result);
       go(9);
     } catch (e) {
-      setError((e as Error).message);
+      setError(
+        (e as Error).name === "TimeoutError"
+          ? "AI yanıtı bekleme süresini aştı. Form seçimlerin korundu; biraz sonra yeniden deneyebilirsin."
+          : (e as Error).message,
+      );
     } finally {
       setBusy(false);
     }
@@ -543,14 +554,17 @@ export function GuidedPlan({
                       </label>
                       {selected && (
                         <label>
-                          {o.metric === "seconds"
-                            ? "Kontrollü tutuş / süre (sn)"
-                            : "Kontrollü tekrar sayısı"}
+                          {o.block === "conditioning"
+                            ? "Kesintisiz çalışma süresi (sn)"
+                            : o.metric === "seconds"
+                              ? "Kontrollü tutuş / süre (sn)"
+                              : "Kontrollü tekrar sayısı"}
                           <input
                             aria-label={o.name + " kapasitesi"}
                             type="number"
-                            min={1}
-                            max={o.metric === "seconds" ? 600 : 100}
+                            min={o.metric === "seconds" ? 0.01 : 1}
+                            max={capacityMaximum(o)}
+                            step={o.metric === "seconds" ? "any" : 1}
                             inputMode="numeric"
                             value={
                               (o.metric === "seconds"
@@ -1101,9 +1115,9 @@ export function GuidedPlan({
             </p>
           </>
         )}
-        {error && (
+        {((step === 2 && capacityIssue) || error) && (
           <p className="error" role="alert">
-            {error}
+            {(step === 2 && capacityIssue) || error}
           </p>
         )}
       </fieldset>
@@ -1117,7 +1131,10 @@ export function GuidedPlan({
           Geri
         </button>
         {phase < 6 ? (
-          <button disabled={!valid} onClick={() => go(step + 1)}>
+          <button
+            disabled={!valid || (step === 2 && !!capacityIssue)}
+            onClick={() => go(step + 1)}
+          >
             Devam
             <ArrowRight size={18} />
           </button>
@@ -1139,6 +1156,12 @@ export function GuidedPlan({
           </button>
         )}
       </div>
+      {busy && engine === "ai" && (
+        <p role="status">
+          AI taslağı hazırlanıyor. Yanıt yaklaşık 1–2 dakika sürebilir;
+          seçimlerin korunuyor.
+        </p>
+      )}
     </section>
   );
 }

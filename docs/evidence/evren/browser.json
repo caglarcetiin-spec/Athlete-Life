@@ -1,6 +1,7 @@
 {
   "result": "PASS",
   "checks": [
+    "30-minute cardio accepted; excessive isometric hold blocked with a specific correction",
     "Questionnaire survives reload; five-point limit enforced",
     "Changing provider resets consent; EVREN clearly disclosed; no call before renewed consent",
     "Native method selection and consent work without a key; local-only edits keep consent; submit explains setup; status refresh works without reload; missing consent never sends",

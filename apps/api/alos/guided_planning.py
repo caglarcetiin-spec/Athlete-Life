@@ -41,7 +41,7 @@ LABELS = {
 class Competency(StrictModel):
     movement_id: str
     reps: int | None = Field(default=None, ge=1, le=100)
-    seconds: float | None = Field(default=None, gt=0, le=600)
+    seconds: float | None = Field(default=None, gt=0, le=86400)
 
     @model_validator(mode="after")
     def metric_matches(self):
@@ -52,6 +52,12 @@ class Competency(StrictModel):
         metric = "seconds" if BY_ID[self.movement_id]["modality"] in ("isometric", "cardio") else "reps"
         if metric == "seconds" and self.reps is not None or metric != "seconds" and self.seconds is not None:
             raise ValueError("Tutuş saniyesi ile tekrar sayısını karıştırma.")
+        if (
+            BY_ID[self.movement_id]["modality"] == "isometric"
+            and self.seconds is not None
+            and self.seconds > 600
+        ):
+            raise ValueError("Tutuş kapasitesi en fazla 600 saniye olmalı.")
         return self
 
 
