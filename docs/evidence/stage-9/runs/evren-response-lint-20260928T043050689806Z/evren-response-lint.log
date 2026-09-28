@@ -1,0 +1,46 @@
+I001 [*] Import block is un-sorted or un-formatted
+ --> tests/mongodb/test_evren_parity.py:3:1
+  |
+1 |   """Same explicit consent and persistence contract on isolated local MongoDB."""
+2 |
+3 | / from test_evren_planning import (
+4 | |     test_evren_api_consent_and_persistence,
+5 | |     test_recorded_live_synthetic_plan_saves_and_reads_back,
+6 | |     test_long_cardio_capacity_reaches_provider_and_saves_draft,
+7 | | )
+  | |_^
+8 |
+9 |   __all__ = [
+  |
+help: Organize imports
+  |
+4 |     test_evren_api_consent_and_persistence,
+5 +     test_long_cardio_capacity_reaches_provider_and_saves_draft,
+6 |     test_recorded_live_synthetic_plan_saves_and_reads_back,
+  -     test_long_cardio_capacity_reaches_provider_and_saves_draft,
+7 | )
+  |
+
+RUF022 [*] `__all__` is not sorted
+  --> tests/mongodb/test_evren_parity.py:9:11
+   |
+ 7 |   )
+ 8 |
+ 9 |   __all__ = [
+   |  ___________^
+10 | |     "test_evren_api_consent_and_persistence",
+11 | |     "test_recorded_live_synthetic_plan_saves_and_reads_back",
+12 | |     "test_long_cardio_capacity_reaches_provider_and_saves_draft",
+13 | | ]
+   | |_^
+help: Apply an isort-style sorting to `__all__`
+   |
+10 |     "test_evren_api_consent_and_persistence",
+11 +     "test_long_cardio_capacity_reaches_provider_and_saves_draft",
+12 |     "test_recorded_live_synthetic_plan_saves_and_reads_back",
+   -     "test_long_cardio_capacity_reaches_provider_and_saves_draft",
+13 | ]
+   |
+
+Found 2 errors.
+[*] 2 fixable with the `--fix` option.

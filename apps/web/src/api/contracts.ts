@@ -131,10 +131,10 @@ export async function api(path: string, options: RequestInit = {}) {
   const response = await fetch("/api/v2/" + path, {
     ...options,
     credentials: "same-origin",
-    // Provider generation can take 90 seconds; ordinary sync stays responsive.
+    // Provider generation can take 150 seconds; ordinary sync stays responsive.
     signal:
       options.signal ??
-      AbortSignal.timeout(path === "ai-program-drafts" ? 120000 : 12000),
+      AbortSignal.timeout(path === "ai-program-drafts" ? 180000 : 12000),
     headers: { "Content-Type": "application/json", ...options.headers },
   });
   const date = response.headers.get("Date");

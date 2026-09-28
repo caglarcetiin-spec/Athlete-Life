@@ -176,3 +176,7 @@ GET `/api/v2/ai-planning-status` yalnız yapılandırma durumunu oturum sahibine
 ## 28 Eylül 2026 — AI planlama kapasite doğrulaması
 
 `guided_planning.Competency.seconds` mevcut alanının sınırı hareket türüne göre ayrılır: kardiyo >0–86400 saniye, izometrik tutuş >0–600 saniye. `planningCapacity.ts` aynı giriş sınırlarını formda uygular; istek akışı `GuidedPlan → ai-program-drafts → prepare → provider → validate_plan → kullanıcı taslak onayı` olarak kalır. Yeni kalıcı alan veya veri göçü yok. Hata ve test kanıtları: `docs/AI_INPUT_FIX.md`.
+
+## 28 Eylül 2026 — EVREN yanıtı ve günlük hareket sözleşmesi
+
+`ai-planner-4` her gün için `allowed_movement_ids` üretir; bunlar kalıcı kullanıcı alanları değil, mevcut uygun hareket listesi ve `ALLOWED_FAMILIES` üzerinden hesaplanan AI bağlamıdır. Aynı sabit çıktı denetiminde kullanılır. EVREN parser yalnız tamamlanan, kanonik şemaya uyan yanıtı geçirir. Yanıt bütçesi/teşhis/geri dönüş etkisi: `docs/EVREN_RESPONSE_FIX.md`.

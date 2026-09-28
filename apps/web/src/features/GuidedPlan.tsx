@@ -1158,7 +1158,7 @@ export function GuidedPlan({
       </div>
       {busy && engine === "ai" && (
         <p role="status">
-          AI taslağı hazırlanıyor. Yanıt yaklaşık 1–2 dakika sürebilir;
+          AI taslağı hazırlanıyor. Yanıt yaklaşık 1–3 dakika sürebilir;
           seçimlerin korunuyor.
         </p>
       )}

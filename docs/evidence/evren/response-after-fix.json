@@ -1,0 +1,79 @@
+{
+  "synthetic": true,
+  "personal_data_read": false,
+  "finish_reason": "stop",
+  "usage": {
+    "prompt_tokens": 5645,
+    "total_tokens": 13500,
+    "completion_tokens": 7855,
+    "completion_tokens_details": {
+      "reasoning_tokens": 6042
+    }
+  },
+  "content": "\n\n{\"summary\":\"İleri push/pull/legs; beceri önce, hipertrofi odaklı hacim. Back 3, omuz 2 odaklı. Kısa kondisyon sonlandırıcı.\",\"limitations\":[\"Süre kısıtı nedeniyle bazı accessory hacim sınırlı\",\"Otomatik progresyon yok; kullanıcı ilerlemeyi kendi izlemeli\",\"Vücut ağırlığı bacak hareketlerinde yük artışı sınırlı\",\"Front lever ve muscle-up teknik yorgunluk oluşturabilir\",\"Sınırlandırmalar kişisel; klinik reçete değildir\"],\"days\":[{\"weekday\":0,\"exercises\":[{\"movement_id\":\"push-up\",\"sets\":4,\"reps\":10,\"seconds\":null,\"rest_seconds\":150,\"rir\":3,\"reason\":\"Yatay itiş ana hareket; göğüs ve ön omuz hipertrofisi\"},{\"movement_id\":\"ring-dip\",\"sets\":4,\"reps\":7,\"seconds\":null,\"rest_seconds\":150,\"rir\":3,\"reason\":\"Dikey itiş; kapasiteye uygun üst sınırda tekrar\"},{\"movement_id\":\"ez-bar-overhead-press\",\"sets\":3,\"reps\":10,\"seconds\":null,\"rest_seconds\":120,\"rir\":3,\"reason\":\"Ek dikey itiş ile omuz hacmini artırır\"},{\"movement_id\":\"ez-bar-triceps-extension\",\"sets\":3,\"reps\":12,\"seconds\":null,\"rest_seconds\":90,\"rir\":3,\"reason\":\"Arka kol izolasyonu; itiş sonrası ek hacim\"},{\"movement_id\":\"plank\",\"sets\":2,\"reps\":null,\"seconds\":30,\"rest_seconds\":60,\"rir\":null,\"reason\":\"Gövde stabilitesi; kısa izometrik tutuş\"},{\"movement_id\":\"walk\",\"sets\":1,\"reps\":null,\"seconds\":480,\"rest_seconds\":0,\"rir\":null,\"reason\":\"Kondisyon bloğu; hafif aerobik toparlanma\"}]},{\"weekday\":1,\"exercises\":[{\"movement_id\":\"muscle-up\",\"sets\":2,\"reps\":3,\"seconds\":null,\"rest_seconds\":120,\"rir\":null,\"reason\":\"Teknik beceri; kapasite sınırında düşük tekrar\"},{\"movement_id\":\"front-lever\",\"sets\":2,\"reps\":null,\"seconds\":6,\"rest_seconds\":60,\"rir\":null,\"reason\":\"İzometrik beceri; 60% kapasite kuralına uygun\"},{\"movement_id\":\"pull-up\",\"sets\":4,\"reps\":8,\"seconds\":null,\"rest_seconds\":150,\"rir\":3,\"reason\":\"Dikey çekiş ana; back odağı için yüksek hacim\"},{\"movement_id\":\"ez-bar-row\",\"sets\":3,\"reps\":10,\"seconds\":null,\"rest_seconds\":150,\"rir\":3,\"reason\":\"Yatay çekiş; sırt kalınlığı hedefi\"},{\"movement_id\":\"ring-face-pull\",\"sets\":3,\"reps\":12,\"seconds\":null,\"rest_seconds\":90,\"rir\":3,\"reason\":\"Arka omuz ve skapula sağlığı; omuz odağı\"},{\"movement_id\":\"ez-bar-curl\",\"sets\":3,\"reps\":12,\"seconds\":null,\"rest_seconds\":90,\"rir\":3,\"reason\":\"Biceps izolasyonu; çekme sonrası ek hacim\"},{\"movement_id\":\"plank\",\"sets\":2,\"reps\":null,\"seconds\":30,\"rest_seconds\":60,\"rir\":null,\"reason\":\"Gövde stabilitesi; çekme gücünü destekler\"},{\"movement_id\":\"walk\",\"sets\":1,\"reps\":null,\"seconds\":480,\"rest_seconds\":0,\"rir\":null,\"reason\":\"Kondisyon; düşük yoğunluklu aerobik\"}]},{\"weekday\":2,\"exercises\":[{\"movement_id\":\"bodyweight-squat\",\"sets\":3,\"reps\":12,\"seconds\":null,\"rest_seconds\":150,\"rir\":3,\"reason\":\"Diz ana hareketi; üst bacak hipertrofisi\"},{\"movement_id\":\"bodyweight-split-squat\",\"sets\":3,\"reps\":10,\"seconds\":null,\"rest_seconds\":120,\"rir\":3,\"reason\":\"Tek bacak diz çalışması; dengesiz yük\"},{\"movement_id\":\"ez-bar-rdl\",\"sets\":4,\"reps\":10,\"seconds\":null,\"rest_seconds\":150,\"rir\":3,\"reason\":\"Kalça menteşe ana hareketi; arka zincir\"},{\"movement_id\":\"glute-bridge\",\"sets\":3,\"reps\":12,\"seconds\":null,\"rest_seconds\":90,\"rir\":3,\"reason\":\"Glute maksimus izolasyonu; menteşe desteği\"},{\"movement_id\":\"bodyweight-calf-raise\",\"sets\":3,\"reps\":15,\"seconds\":null,\"rest_seconds\":90,\"rir\":3,\"reason\":\"Baldır hipertrofisi; yüksek tekrar\"},{\"movement_id\":\"plank\",\"sets\":2,\"reps\":null,\"seconds\":30,\"rest_seconds\":60,\"rir\":null,\"reason\":\"Gövde stabilitesi; bacak gününde core\"},{\"movement_id\":\"walk\",\"sets\":1,\"reps\":null,\"seconds\":480,\"rest_seconds\":0,\"rir\":null,\"reason\":\"Kondisyon; bacak sonrası aktif toparlanma\"}]},{\"weekday\":4,\"exercises\":[{\"movement_id\":\"ring-dip\",\"sets\":4,\"reps\":7,\"seconds\":null,\"rest_seconds\":150,\"rir\":3,\"reason\":\"Dikey itiş ana; hafta içi tekrar sırası değişti\"},{\"movement_id\":\"push-up\",\"sets\":4,\"reps\":12,\"seconds\":null,\"rest_seconds\":150,\"rir\":3,\"reason\":\"Yatay itiş; tekrar aralığı arttırıldı\"},{\"movement_id\":\"ez-bar-overhead-press\",\"sets\":3,\"reps\":10,\"seconds\":null,\"rest_seconds\":120,\"rir\":3,\"reason\":\"Omuz odağı; dikey itiş hacmi\"},{\"movement_id\":\"ez-bar-triceps-extension\",\"sets\":3,\"reps\":12,\"seconds\":null,\"rest_seconds\":90,\"rir\":3,\"reason\":\"Arka kol; itiş sonrası izolasyon\"},{\"movement_id\":\"plank\",\"sets\":2,\"reps\":null,\"seconds\":30,\"rest_seconds\":60,\"rir\":null,\"reason\":\"Gövde stabilitesi; kısa tutuş\"},{\"movement_id\":\"walk\",\"sets\":1,\"reps\":null,\"seconds\":480,\"rest_seconds\":0,\"rir\":null,\"reason\":\"Kondisyon; hafif aerobik sonlandırma\"}]},{\"weekday\":5,\"exercises\":[{\"movement_id\":\"muscle-up\",\"sets\":2,\"reps\":3,\"seconds\":null,\"rest_seconds\":120,\"rir\":null,\"reason\":\"Beceri tekrarı; haftanın ikinci teknik pratik\"},{\"movement_id\":\"front-lever\",\"sets\":2,\"reps\":null,\"seconds\":6,\"rest_seconds\":60,\"rir\":null,\"reason\":\"İzometrik beceri; nötral sinir yükü\"},{\"movement_id\":\"pull-up\",\"sets\":4,\"reps\":8,\"seconds\":null,\"rest_seconds\":150,\"rir\":3,\"reason\":\"Dikey çekiş; lat ve biceps hacmi\"},{\"movement_id\":\"ring-row\",\"sets\":3,\"reps\":10,\"seconds\":null,\"rest_seconds\":150,\"rir\":3,\"reason\":\"Yatay çekiş; ring versiyonu ile skapula kontrolü\"},{\"movement_id\":\"ring-rear-delt-row\",\"sets\":3,\"reps\":12,\"seconds\":null,\"rest_seconds\":90,\"rir\":3,\"reason\":\"Arka omuz; omuz odağı desteği\"},{\"movement_id\":\"ez-bar-curl\",\"sets\":3,\"reps\":12,\"seconds\":null,\"rest_seconds\":90,\"rir\":3,\"reason\":\"Biceps izolasyonu; çekiş sonrası\"},{\"movement_id\":\"plank\",\"sets\":2,\"reps\":null,\"seconds\":30,\"rest_seconds\":60,\"rir\":null,\"reason\":\"Core stabilitesi; çekme gücüne destek\"},{\"movement_id\":\"walk\",\"sets\":1,\"reps\":null,\"seconds\":480,\"rest_seconds\":0,\"rir\":null,\"reason\":\"Kondisyon; hafta sonu düşük yoğunluklu\"}]}]}",
+  "result": "PASS",
+  "review": "draft",
+  "elapsed_seconds": 64.74,
+  "input": {
+    "experience": "advanced",
+    "objective": "hypertrophy",
+    "equipment": [
+      "Rings",
+      "Pull-Up Bar",
+      "EZ Bar",
+      "Outdoor"
+    ],
+    "weekdays": [
+      0,
+      1,
+      2,
+      4,
+      5
+    ],
+    "minutes": 60,
+    "split": "push_pull_legs",
+    "focus": {
+      "back": 3,
+      "shoulders": 2
+    },
+    "goal": "Sentetik ileri sporcu: front lever ve muscle-up tekniğini korurken kuvvet ve kas gelişimi; beceri setleri önce, süre sınırını aşmadan kısa kondisyon.",
+    "methods": [
+      "weights",
+      "calisthenics",
+      "gymnastics",
+      "conditioning"
+    ],
+    "competencies": [
+      {
+        "movement_id": "front-lever",
+        "seconds": 10
+      },
+      {
+        "movement_id": "muscle-up",
+        "reps": 5
+      },
+      {
+        "movement_id": "pull-up",
+        "reps": 12
+      },
+      {
+        "movement_id": "ring-dip",
+        "reps": 10
+      }
+    ],
+    "conditioning_minutes": 8,
+    "weeks": 8,
+    "start_date": "2026-09-28",
+    "name": "Sentetik model karşılaştırması",
+    "adult": true,
+    "symptoms": false,
+    "consent": "planning-form-evren-v1"
+  },
+  "source_commit": "45fabf5137143c57d38995c6b86d36882f0f56af",
+  "prompt_version": "ai-planner-4",
+  "source_sha256": {
+    "apps/api/alos/ai_planning.py": "f466a2d1c4331119b0bed45f8046ac3c3e10e73afed6885a5bd30fa5e25439a8",
+    "apps/api/alos/programming.py": "de2632d8b0faec64254da45cf686bea45d10ff65d3f7601f41f9af9e9b6a8fa8"
+  },
+  "environment": "Manual live EVREN call, synthetic form, no DB access; existing in-memory secret through anonymous stdin pipe"
+}

@@ -20,13 +20,13 @@ it("waits for an AI response beyond ordinary sync timeout without retrying", asy
         );
         setTimeout(
           () => resolve(new Response(JSON.stringify({ program: "synthetic" }))),
-          65000,
+          130000,
         );
       }),
   );
   vi.stubGlobal("fetch", fetcher);
   const result = api("ai-program-drafts", { method: "POST" });
-  await vi.advanceTimersByTimeAsync(65000);
+  await vi.advanceTimersByTimeAsync(130000);
   expect(await result).toEqual({ program: "synthetic" });
   expect(fetcher).toHaveBeenCalledTimes(1);
 });
