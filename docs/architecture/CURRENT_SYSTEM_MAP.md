@@ -219,3 +219,10 @@ GET `/api/v2/ai-planning-status` yalnız yapılandırma durumunu oturum sahibine
 - `running.py` → 15 koşu türü, yedi yeni kanonik kimlik, aday ortamı ve deneyim, tek yoğun gün, interval/tek süre, kapasite ve haftalık süre sınırları. `running_program.py` saf koşu haftası; karma planda `guided_planning` aynı aday/doz kurallarını paylaşır. `run_form` katalog arayüz metadata alanıdır.
 - `guided_choices.running_profile.{target_distance_km,continuous_minutes,weekly_minutes}` nullable; `performance_focus[]` varsayılan boş; `split=endurance_days`; `ai_origin.prompt_version=ai-planner-8`. Tek yazım mevcut `program.decisions.guided_choices`; eski alanlar ve sürümler desteklenir.
 - `planningJourney` / `PerformanceFocus` / `GuidedPlan`: yönteme göre sorular, koşu/dövüş/yüzme ekipmanı ve performans öncelikleri. [Kapsam, kaynak, göç ve geri alma](../RUNNING_PLANNER.md).
+
+## 2026-09-28 — Branş seçimi → yöntem → teknik → AI günü
+
+- `sport_training.coverage()` her branş için `method_options[]` (id/label/description/automatic) ve nullable `native_method` verir. `BranchMethods` / `branchSelection` katalogdan dinamik kartları ve seçili destekleri gösterir.
+- `guided_choices.sport_methods` yeni isteğe bağlı sport_id→branş yöntemi dizisi; varsayılan `{}`, eksik anahtar eski global davranışı, `[]` açıkça seçilmeyen branş yöntemini temsil eder. Tek yazım `program.decisions.guided_choices`; AI form allowlist'ine aynı harita eklenir.
+- `methods_for` aday uygunluğunu; `active_sports/days` gün dağılımını; `sport_program` ve `ai_planning` günlük yöntem/teknik kapsamını paylaşır. Başka branşın seçili yöntemi bu güne zorunlu tutulmaz.
+- `guided-sports-6`, `ai-planner-9`; eski sürüm okuma korunur. DB şema/hesap/medya göçü yok. [Kapsam, yayın, test ve rollback](../BRANCH_METHOD_SELECTION.md).

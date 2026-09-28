@@ -13,7 +13,7 @@ try{
  browser=await chromium.launch({executablePath:'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',headless:true});const context=await browser.newContext({viewport:{width:390,height:844}});page=await context.newPage();page.on('pageerror',e=>errors.push(e.message));
  await page.goto(base);await page.getByLabel('Kullanıcı adı',{exact:true}).fill('deniz');await page.getByLabel('Şifre',{exact:true}).fill('test-password-123');await page.getByRole('button',{name:'Giriş yap',exact:true}).click();await synced();await next();
  await page.getByRole('button',{name:'Koşu çalışması',exact:false}).click();
- await expect(page.getByRole('button',{name:'Ağırlık çalışması',exact:false})).toHaveAttribute('aria-pressed','false');await next();
+ await expect(page.getByRole('button',{name:'Ağırlık çalışması',exact:false})).not.toBeVisible();await next();
  for(const label of ['Kolay tempoda koşu','Tempo koşusu','Uzun ve rahat koşu']) await page.getByRole('checkbox',{name:label,exact:true}).check();
  await expect(page.getByRole('checkbox',{name:'Yokuş tekrarları',exact:true})).toBeVisible();
  await expect(page.getByRole('checkbox',{name:'Kontrollü kısa hızlanmalar',exact:true})).toBeVisible();
@@ -26,7 +26,7 @@ try{
  await expect(page.getByRole('heading',{name:'Hangi performans hedefleri önceliğin?',exact:true})).toBeVisible();await expect(page.getByLabel('Göğüs öncelik puanı',{exact:true})).toHaveCount(0);await page.getByRole('button',{name:'Daha uzun mesafe',exact:true}).click();await next();
  await expect(page.getByRole('button',{name:'Dayanıklılık günleri',exact:false})).toHaveAttribute('aria-pressed','true');await expect(page.getByRole('button',{name:'Tüm vücut',exact:false})).toHaveCount(0);await next();
  await page.getByLabel('18 yaş veya üzerindeyim.',{exact:true}).check();await page.getByRole('checkbox',{name:/Bu formdaki planlama bilgilerimin AI taslağı için EVREN/}).check();
- const rp=page.waitForResponse(r=>r.url().endsWith('/api/v2/ai-program-drafts'));await page.getByRole('button',{name:'AI ile programımı hazırla',exact:true}).click();const response=await rp;const result=await response.json();expect(response.status(),JSON.stringify(result)).toBe(200);expect(result.program.ai_origin.prompt_version).toBe('ai-planner-8');
+ const rp=page.waitForResponse(r=>r.url().endsWith('/api/v2/ai-program-drafts'));await page.getByRole('button',{name:'AI ile programımı hazırla',exact:true}).click();const response=await rp;const result=await response.json();expect(response.status(),JSON.stringify(result)).toBe(200);expect(result.program.ai_origin.prompt_version).toBe('ai-planner-9');expect(result.program.guided_choices.methods).toEqual(['running']);
  expect(result.program.guided_choices.performance_focus).toContain('distance');expect(result.program.guided_choices.running_profile.target_distance_km).toBe(10);
  expect(result.program.days.flatMap(d=>d.exercises).every(e=>e.modality==='cardio' && e.seconds>0)).toBe(true);
  await expect(page.getByRole('heading',{name:'Planına göz at',exact:true})).toBeVisible();await expect(page.locator('summary').filter({hasText:'Çalışma süresi ve seçim gerekçeleri'})).toBeVisible();await page.screenshot({path:root+'/docs/evidence/running-planner/preview.png',fullPage:true});await page.getByRole('button',{name:'Düzenle ve kaydet',exact:true}).click();

@@ -154,7 +154,7 @@ def test_plan_actual_and_muscle_report_share_canonical_ids(client):
         client.get("/api/v2/bootstrap").json()["programs"][0]["decisions"][
             "guided_model_version"
         ]
-        == "guided-sports-5"
+        == "guided-sports-6"
     )
 
 

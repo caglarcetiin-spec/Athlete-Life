@@ -1,3 +1,11 @@
+import { BranchMethods } from "./BranchMethods";
+import {
+  addBranch,
+  removeBranch,
+  toggleBranchMethod,
+  branchMap,
+  activeBranches,
+} from "./branchSelection";
 import { PerformanceFocus } from "./PerformanceFocus";
 import {
   enduranceOnly,
@@ -12,7 +20,6 @@ import {
   branchMethods,
   type SportTrainingProfile,
   type SportReadiness,
-  type TrainingMethod,
 } from "./SportTrainingFields";
 import { SportOptions, type SportOption } from "./SportOptions";
 import { FocusMap } from "./FocusMap";
@@ -83,6 +90,7 @@ type SportExperience = {
   known_skills: string;
 };
 type Answers = {
+  sport_methods: Record<string, string[]>;
   performance_focus: string[];
   running_profile: {
     target_distance_km: number | null;
@@ -159,6 +167,7 @@ export function GuidedPlan({
 }) {
   const profile = store.view("profile")[0];
   const [answers, setAnswers] = useState<Answers>({
+    sport_methods: {},
     performance_focus: [],
     running_profile: null,
     sport_readiness: [],
@@ -190,7 +199,7 @@ export function GuidedPlan({
   const [sportTraining, setSportTraining] = useState<SportTrainingProfile[]>(
     [],
   );
-  const [trainingMethods, setTrainingMethods] = useState<TrainingMethod[]>([]);
+
   const [sports, setSports] = useState<SportOption[]>([]);
   const [sportSearch, setSportSearch] = useState("");
   const [sportCategory, setSportCategory] = useState("");
@@ -253,10 +262,7 @@ export function GuidedPlan({
             (result as { sport_training: SportTrainingProfile[] })
               .sport_training || [],
           );
-          setTrainingMethods(
-            (result as { training_methods: TrainingMethod[] })
-              .training_methods || [],
-          );
+
           setSports((result as { sports: typeof sports }).sports || []);
         }
       })
@@ -369,7 +375,7 @@ export function GuidedPlan({
     answers.sport_ids.includes(p.sport_id),
   );
   const minDays = branchMode
-    ? Math.max(1, answers.sport_ids.length)
+    ? Math.max(1, activeBranches(answers).length)
     : answers.split === "push_pull_legs"
       ? 3
       : answers.split === "upper_lower"
@@ -412,6 +418,14 @@ export function GuidedPlan({
       ...(enduranceOnly(next.methods)
         ? { focus: {}, objective: "endurance" }
         : {}),
+      sport_methods:
+        key === "running" &&
+        next.methods.includes("running") &&
+        !answers.sport_ids.some((id) =>
+          ["running", "trail-running", "track-running"].includes(id),
+        )
+          ? { ...branchMap(answers), running: [] }
+          : answers.sport_methods,
       sport_ids:
         key === "running" &&
         next.methods.includes("running") &&
@@ -421,6 +435,22 @@ export function GuidedPlan({
           ? [...answers.sport_ids, "running"]
           : answers.sport_ids,
     });
+  }
+  function selectBranch(id: string) {
+    const profile = sportTraining.find((p) => p.sport_id === id);
+    if (!profile) return;
+    const next = addBranch(answers, profile);
+    update({
+      ...next,
+      ...(enduranceOnly(next.methods)
+        ? { objective: "endurance", focus: {} }
+        : next.methods.some((m) => branchMethods.includes(m))
+          ? { objective: "technique" }
+          : {}),
+    });
+  }
+  function changeBranchMethod(sport: string, method: string) {
+    update(toggleBranchMethod(answers, sport, method));
   }
   const capacityIssue = capacityError(answers.competencies, options);
   async function generate() {
@@ -614,10 +644,7 @@ export function GuidedPlan({
               <select
                 aria-label="Çalıştığın branşı ekle"
                 value=""
-                onChange={(e) =>
-                  e.target.value &&
-                  update({ sport_ids: [...answers.sport_ids, e.target.value] })
-                }
+                onChange={(e) => e.target.value && selectBranch(e.target.value)}
               >
                 <option value="">
                   199 branştan seç · birden fazla ekleyebilirsin
@@ -647,7 +674,7 @@ export function GuidedPlan({
                   className="secondary small"
                   onClick={() =>
                     update({
-                      sport_ids: answers.sport_ids.filter((s) => s !== id),
+                      ...removeBranch(answers, id),
                       sport_readiness: (answers.sport_readiness || []).filter(
                         (r) => r.sport_id !== id,
                       ),
@@ -684,113 +711,50 @@ export function GuidedPlan({
               Birden fazla yöntem seçebilirsin. Hibrit, bu yöntemlerin tek
               haftada birlikte planlanmasıdır.
             </p>
-            {selectedProfiles.length > 0 && (
-              <section className="card" aria-label="Branşa özel çalışma">
-                <h3>Branşına özel program</h3>
-                <button
-                  type="button"
-                  className="primary"
-                  onClick={() =>
-                    update({
-                      methods: ["sport_technique"],
-                      split: "sport_days",
-                      objective: "technique",
-                      focus: {},
-                    })
-                  }
+            {sportCategory &&
+              !selectedProfiles.some(
+                (p) =>
+                  sports.find((s) => s.id === p.sport_id)?.category_label ===
+                  sportCategory,
+              ) && (
+                <section
+                  className="notice"
+                  aria-label="Kategoriye uygun yöntemler"
                 >
-                  Branş teknikleriyle planla
-                </button>
-                <p>
-                  Aşağıdaki teknikler planlayıcının gerçek hareket kataloğuna
-                  bağlıdır. Bu temel liste, branşın tüm teknikleri veya eksiksiz
-                  bir uzman müfredatı değildir.
-                </p>
-                {selectedProfiles.map((p) => (
-                  <details key={p.sport_id}>
-                    <summary>
-                      {p.name} · {p.movement_count} çalışma
-                    </summary>
-                    <ul>
-                      {p.techniques.map((t) => (
-                        <li key={t.key}>{t.name}</li>
-                      ))}
-                    </ul>
-                    <p>
-                      {p.practice_label} ve teknik/taktik analiz de seçilebilir.
-                    </p>
-                  </details>
-                ))}
-              </section>
-            )}
-            <div className="guided-options">
-              {trainingMethods
-                .filter(
-                  (m) =>
-                    m.id === "explosive_power" || selectedProfiles.length > 0,
-                )
-                .map((m) => (
-                  <button
-                    type="button"
-                    className="guided-option secondary"
-                    key={m.id}
-                    aria-pressed={answers.methods.includes(m.id)}
-                    onClick={() => toggleMethod(m.id)}
-                  >
-                    <strong>{m.label}</strong>
-                    <span>{m.description}</span>
-                  </button>
-                ))}
-            </div>
-            <h3>İsteğe bağlı destek çalışmaları</h3>
-            <div className="guided-options">
-              {[
-                [
-                  "weights",
-                  "Ağırlık çalışması",
-                  "Bar, EZ bar, dambıl; squat, kaldırış ve itiş/çekiş.",
-                ],
-                [
-                  "calisthenics",
-                  "Kalistenik",
-                  "Vücut ağırlığı, barfiks, halka ve yük eklenmiş çalışmalar.",
-                ],
-                [
-                  "gymnastics",
-                  "Jimnastik becerileri",
-                  "Front lever, muscle-up ve kontrollü tutuşları teknik blokta çalış.",
-                ],
-                [
-                  "running",
-                  "Koşu çalışması",
-                  "Koşu yetkinliğine göre süre temelli dayanıklılık çalışması.",
-                ],
-                [
-                  "swimming",
-                  "Yüzme çalışması",
-                  "Havuz ve bildiğin yüzme stilleriyle süre temelli çalışma.",
-                ],
-                [
-                  "conditioning",
-                  "Kondisyon",
-                  "Yürüyüş veya yetkinliğini belirttiğin kolay tempoda koşu.",
-                ],
-              ].map(([key, label, text]) => (
-                <button
-                  key={key}
-                  className="guided-option secondary"
-                  aria-pressed={answers.methods.includes(key)}
-                  onClick={() => toggleMethod(key)}
-                >
-                  <strong>{label}</strong>
-                  <span>{text}</span>
-                </button>
-              ))}
-            </div>
+                  <h3>{sportCategory} yöntemleri</h3>
+                  <p>
+                    Yöntemleri seçebilmek için yukarıdan bu kategorideki
+                    branşını ekle.
+                  </p>
+                  {sportTraining
+                    .filter(
+                      (p) =>
+                        sports.find((s) => s.id === p.sport_id)
+                          ?.category_label === sportCategory,
+                    )
+                    .slice(0, 3)
+                    .map((p) => (
+                      <p key={p.sport_id}>
+                        <strong>{p.name}:</strong>{" "}
+                        {p.techniques
+                          .slice(0, 3)
+                          .map((t) => t.name)
+                          .join(", ")}
+                        ; uygulama ve teknik analiz.
+                      </p>
+                    ))}
+                </section>
+              )}
+            <BranchMethods
+              profiles={selectedProfiles}
+              state={answers}
+              onBranch={changeBranchMethod}
+              onSupport={toggleMethod}
+            />
             <p>
-              Branş tekniği, uygulama ve taktik seçimi günlere branş sırasıyla
-              dağıtılır. Ağırlık veya kondisyon seçersen süre elverdiğinde
-              destek bloğu eklenir.
+              Branş yöntemleri sonraki adımdaki teknikleri ve AI taslağını
+              belirler. Katalog temel çalışma başlıklarını içerir; eksiksiz
+              uzman müfredatı değildir.
             </p>
           </>
         )}
@@ -846,7 +810,9 @@ export function GuidedPlan({
             )}
             {branchMode && (
               <SportTrainingFields
-                profiles={selectedProfiles}
+                profiles={selectedProfiles.filter((p) =>
+                  activeBranches(answers).includes(p.sport_id),
+                )}
                 readiness={answers.sport_readiness || []}
                 onChange={(sport_readiness) => update({ sport_readiness })}
               />
@@ -988,7 +954,11 @@ export function GuidedPlan({
               {options
                 .filter(
                   (o) =>
-                    (!o.sport_id || answers.sport_ids.includes(o.sport_id)) &&
+                    (!o.sport_id ||
+                      (answers.sport_ids.includes(o.sport_id) &&
+                        o.methods.some((m) =>
+                          (branchMap(answers)[o.sport_id!] || []).includes(m),
+                        ))) &&
                     o.methods.some((m) => answers.methods.includes(m)) &&
                     `${o.name} ${o.movement_id}`
                       .toLocaleLowerCase("tr")
@@ -1379,7 +1349,9 @@ export function GuidedPlan({
                     {sports.find(
                       (s) =>
                         s.id ===
-                        answers.sport_ids[i % answers.sport_ids.length],
+                        activeBranches(answers)[
+                          i % activeBranches(answers).length
+                        ],
                     )?.name || "Önce branş seç"}
                   </p>
                 ))}

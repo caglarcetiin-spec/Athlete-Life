@@ -37,6 +37,54 @@ METHODS = [
 ]
 
 
+NATIVE_METHODS = {
+    "strength": "weights",
+    "bodybuilding": "weights",
+    "powerlifting": "weights",
+    "calisthenics": "calisthenics",
+    "running": "running",
+    "trail-running": "running",
+    "track-running": "running",
+    "swimming": "swimming",
+}
+
+
+def methods_for(data, sport):
+    mapping = getattr(data, "sport_methods", {})
+    return set(mapping[sport]) if sport in mapping else BRANCH_METHODS & set(data.methods)
+
+
+def active_sports(data):
+    return [s for s in data.sport_ids if methods_for(data, s)]
+
+
+def method_options(sport):
+    p, name = PROFILES[sport], BY_SPORT[sport]["name"]
+    return [
+        {
+            "id": "sport_technique",
+            "label": name + " · Teknik çalışma",
+            "description": ", ".join(t["name"] for t in p["techniques"][:4]),
+            "automatic": p["automatic_physical_dose"],
+        },
+        {
+            "id": "sport_practice",
+            "label": name
+            + " · "
+            + ("Uygulama" if p["practice_label"] == "Branşa özgü uygulama bloğu" else p["practice_label"]),
+            "description": p["environment"]
+            + ". Uygunluk, eğitmen ve partner bilgilerini sonraki adımda belirt.",
+            "automatic": p["automatic_physical_dose"],
+        },
+        {
+            "id": "sport_tactics",
+            "label": name + " · Teknik / taktik analiz",
+            "description": "Branşa ait teknik, rutin, parkur veya kararların analizi; fiziksel yük sayılmaz.",
+            "automatic": True,
+        },
+    ]
+
+
 def sport_mode(data):
     return bool(set(data.methods) & BRANCH_METHODS)
 
@@ -109,7 +157,13 @@ BY_ID = {d["id"]: d for d in DEFINITIONS}
 
 def coverage():
     return [
-        {**p, "name": BY_SPORT[s]["name"], "movement_count": len(p["techniques"]) + 2}
+        {
+            **p,
+            "name": BY_SPORT[s]["name"],
+            "movement_count": len(p["techniques"]) + 2,
+            "method_options": method_options(s),
+            "native_method": NATIVE_METHODS.get(s),
+        }
         for s, p in PROFILES.items()
     ]
 
@@ -121,6 +175,8 @@ def exclusion(data, key):
     sport = d["sport_id"]
     if sport not in data.sport_ids:
         return "Bu teknik seçili branşa ait değil"
+    if d["method"] not in methods_for(data, sport):
+        return "Bu branş için çalışma yöntemi seçilmedi"
     if not d["physical"]:
         return None
     readiness = next((r for r in data.sport_readiness if r.sport_id == sport), None)
@@ -150,7 +206,8 @@ def exclusion(data, key):
 
 def days(data):
     # Explicit one-branch-per-day schedule. User can select the order in the form.
-    return {day: data.sport_ids[i % len(data.sport_ids)] for i, day in enumerate(sorted(data.weekdays))}
+    sports = active_sports(data)
+    return {day: sports[i % len(sports)] for i, day in enumerate(sorted(data.weekdays))}
 
 
 def rules(key, capacity=None):

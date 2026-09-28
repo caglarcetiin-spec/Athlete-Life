@@ -87,6 +87,9 @@ class RunningProfile(StrictModel):
 
 
 class GuidedChoices(StrictModel):
+    sport_methods: dict[str, list[Literal["sport_technique", "sport_practice", "sport_tactics"]]] = Field(
+        default_factory=dict, max_length=20
+    )
     running_profile: RunningProfile | None = None
     performance_focus: list[
         Literal[
@@ -137,8 +140,18 @@ class GuidedChoices(StrictModel):
 
     @model_validator(mode="after")
     def validate_choices(self):
-        from .sport_training import sport_mode
+        from .sport_training import BRANCH_METHODS, active_sports, sport_mode
 
+        if set(self.sport_methods) - set(self.sport_ids):
+            raise ValueError("Yöntem seçimleri yalnız seçili branşlara ait olabilir.")
+        for methods in self.sport_methods.values():
+            if len(methods) != len(set(methods)) or set(methods) - set(self.methods):
+                raise ValueError("Branş yöntemleri tekil olmalı ve genel yöntem seçimiyle uyuşmalı.")
+        represented = set().union(
+            *(set(self.sport_methods.get(s, BRANCH_METHODS & set(self.methods))) for s in self.sport_ids)
+        )
+        if self.sport_ids and represented != BRANCH_METHODS & set(self.methods):
+            raise ValueError("Seçili branş yöntemleri ile plan yöntemleri uyuşmuyor.")
         if len(self.performance_focus) != len(set(self.performance_focus)):
             raise ValueError("Performans öncelikleri tekil olmalı.")
         if self.split == "endurance_days" and (
@@ -154,7 +167,7 @@ class GuidedChoices(StrictModel):
                 raise ValueError("Branş çalışması için önce branş seç.")
             if self.split != "sport_days":
                 raise ValueError("Branş çalışmasında 'Branş günleri' düzenini seç.")
-            if len(self.sport_ids) > len(self.weekdays):
+            if len(active_sports(self)) > len(self.weekdays):
                 raise ValueError(
                     "Her branş için haftada en az bir çalışma günü ayır veya branş sayısını azalt."
                 )

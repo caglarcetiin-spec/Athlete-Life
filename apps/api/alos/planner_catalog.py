@@ -3,7 +3,7 @@
 from .movements import BY_ID
 from .running import RUNS
 
-VERSION = "guided-sports-5"
+VERSION = "guided-sports-6"
 # id, movement family, eligible methods, self-reported competency required, block
 ROWS = [
     ("bodyweight-squat", "knee", "weights calisthenics", False, "main"),

@@ -1,0 +1,9 @@
+{
+  "result": "PASS",
+  "checks": [
+    "category preview; cycling/winter/equestrian methods; independent per-sport selection; removal/reload; filtered competencies; per-day synthetic AI methods; populated editor; 390/1280px Axe"
+  ],
+  "errors": [],
+  "browser": "154.0.8037.57",
+  "provider": "synthetic"
+}

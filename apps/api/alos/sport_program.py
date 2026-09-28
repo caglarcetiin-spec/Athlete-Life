@@ -3,7 +3,7 @@
 from .guided_planning import GROUPS, generate
 from .movements import BY_ID
 from .planner_catalog import FAMILY_LABELS, META, VERSION
-from .sport_training import BRANCH_METHODS, PROFILES, days, experience_for, rules, set_limit
+from .sport_training import BRANCH_METHODS, PROFILES, days, experience_for, methods_for, rules, set_limit
 from .sports import BY_SPORT
 
 
@@ -13,7 +13,9 @@ def generate_sport_program(data, baseline, choices, pool, excluded, allowed, sna
     support = set(data.methods) - BRANCH_METHODS
     support_days = {}
     if support and allowed:
-        support_data = data.model_copy(update={"methods": sorted(support), "split": "full_body"})
+        support_data = data.model_copy(
+            update={"methods": sorted(support), "split": "full_body", "sport_methods": {}}
+        )
         support_result = generate(support_data, snapshot, as_of)
         support_days = {d["weekday"]: d["exercises"] for d in support_result["program"]["days"]}
     notes = [
@@ -61,7 +63,7 @@ def generate_sport_program(data, baseline, choices, pool, excluded, allowed, sna
             # At least one block of each selected branch method gets first chance at budget.
             queues = {
                 m: [k for k in branch_pool if m in META[k]["methods"]]
-                for m in sorted(BRANCH_METHODS & set(data.methods))
+                for m in sorted(methods_for(data, sport))
             }
             order = [q[0] for q in queues.values() if q]
             order += [k for q in queues.values() for k in q[1:]]
@@ -104,7 +106,7 @@ def generate_sport_program(data, baseline, choices, pool, excluded, allowed, sna
             )
             blocks.sort(key=lambda b: b["block"] not in ("sport_technique", "skill", "power"))
             represented = {m for row in selected for m in META[row["movement_id"]]["methods"]}
-            missing = [m for m in data.methods if m not in represented]
+            missing = [m for m in methods_for(data, sport) | support if m not in represented]
         else:
             missing = list(data.methods)
         for method in missing:

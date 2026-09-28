@@ -5,6 +5,13 @@ export type SportReadiness = {
   partner_available: boolean;
 };
 export type SportTrainingProfile = {
+  native_method?: string | null;
+  method_options: {
+    id: string;
+    label: string;
+    description: string;
+    automatic: boolean;
+  }[];
   sport_id: string;
   name: string;
   environment: string;
