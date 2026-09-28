@@ -1,0 +1,10 @@
+{
+  "result": "PASS",
+  "scope": "Local preview schema-only additive collection/index creation. No existing account, health or media records read or changed.",
+  "collection": "alos_v2_email_challenges",
+  "indexes": [
+    "email",
+    "expires_at TTL=0"
+  ],
+  "email_delivery": "unconfigured; no messages sent"
+}

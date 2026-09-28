@@ -3,6 +3,7 @@
 import asyncio
 import logging
 from datetime import timedelta
+from time import monotonic
 from uuid import uuid4
 
 from pymongo.errors import PyMongoError
@@ -65,8 +66,13 @@ def process(database, job):
 
 async def run(database):
     """One lightweight consumer per instance; durable leases coordinate instances."""
+    cleanup_at = 0.0
     while True:
         try:
+            if monotonic() >= cleanup_at:
+                from .email_registration import cleanup
+                await asyncio.to_thread(cleanup, database)
+                cleanup_at = monotonic() + 60
             job = await asyncio.to_thread(claim, database)
             if job:
                 await asyncio.to_thread(process, database, job)

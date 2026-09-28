@@ -12,7 +12,7 @@ from .contracts import StrictModel
 from .credentials import verify_password
 from .db import Base, utcnow
 from .errors import DomainError
-from .models import Athlete, AuthSession, RecoveryCode, SecurityAudit, User
+from .models import Athlete, AuthSession, EmailChallenge, RecoveryCode, SecurityAudit, User
 from .mongo_db import retry_transaction
 
 
@@ -141,6 +141,8 @@ def erase(database, identity, data):
         athlete = db.get(Athlete, UUID(identity["athlete_id"]), with_for_update=True)
         user, _ = locked_account(db, identity)
         verify(user, data.password)
+        if user.email:
+            db.execute(delete(EmailChallenge).where(EmailChallenge.email == user.email.strip().casefold()))
         for table in reversed(Base.metadata.sorted_tables):
             if table.name in ("users", "athletes"):
                 continue

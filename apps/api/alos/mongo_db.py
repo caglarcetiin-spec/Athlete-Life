@@ -174,6 +174,8 @@ class MongoDatabase:
             for index in table.indexes:
                 cols = [c.name for c in index.columns]
                 options = {}
+                if table.name == "email_challenges" and cols == ["expires_at"]:
+                    options["expireAfterSeconds"] = 0
                 if index.unique:
                     options["unique"] = True
                 if index.name == "unique_session_slot_alive":

@@ -176,6 +176,12 @@ export function Tools() {
       <div className="tools-grid">
         {[
           [
+            "chat",
+            "AI ile sohbet et",
+            "EVREN ile metin ve görsel üzerinden spor sohbeti.",
+            BookOpen,
+          ],
+          [
             "capability",
             "Capability Lab",
             "Beceri ve fiziksel kapasite testleri.",

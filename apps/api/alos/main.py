@@ -239,21 +239,23 @@ def create_app(settings: Settings | None = None):
         if not settings.registration_enabled:
             raise DomainError("registration_closed", "Kayıt davetle açılır.", 403)
         auth.rate_limit(database, "signup:" + (request.client.host if request.client else "unknown"), 5)
-        from sqlalchemy.exc import IntegrityError
+        from .email_registration import complete
+        return complete(database, settings, body)
 
-        try:
-            with database.sessions.begin() as db:
-                auth.create_user(db, body.username, body.name, body.password)
-        except IntegrityError:
-            raise DomainError("account_unavailable", "Bu kullanıcı adı kullanılamıyor.", 409) from None
-        return {"created": True}
+    @app.post("/api/v2/auth/email-code")
+    def email_code(request: Request, body: dict):
+        from .email_registration import EmailRequest, issue
+        return issue(database, settings, EmailRequest.model_validate(body), request.client.host if request.client else "unknown")
 
     @app.get("/api/v2/auth/config")
     def auth_config():
+        from .email_registration import available
         return {
             "registration_enabled": settings.registration_enabled,
             "password_min_length": 8,
-            "email_delivery": "unconfigured",
+            "email_delivery": "ready" if available(settings) else "unconfigured",
+            "email_verification_required": True,
+            "support_email": settings.support_email,
         }
 
     @app.patch("/api/v2/auth/profile")
@@ -723,6 +725,23 @@ def create_app(settings: Settings | None = None):
         except Exception:
             auth.release_rate_slot(database, key, reservation)
             raise
+
+    @app.get("/api/v2/ai-chat-status")
+    def ai_chat_status(request: Request):
+        from .ai_chat import configuration
+        who(request)
+        return configuration(settings)
+
+    @app.post("/api/v2/ai-chat")
+    async def ai_chat(request: Request):
+        from starlette.concurrency import run_in_threadpool
+
+        from .ai_chat import ChatRequest, respond
+        identity = who(request, True)
+        data = ChatRequest.model_validate(await request.json())
+        auth.ai_rate_limit(database, "ai-chat:" + identity["athlete_id"], 20)
+        auth.ai_rate_limit(database, "ai-global", settings.ai_global_limit)
+        return await run_in_threadpool(respond, settings, data)
 
     @app.get("/api/v2/ai-progress-status")
     def ai_progress_status(request: Request):

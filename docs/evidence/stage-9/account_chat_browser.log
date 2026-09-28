@@ -1,0 +1,10 @@
+file:///Users/caglarcetin/Documents/GitHub/Athlete-Life/apps/web/node_modules/@axe-core/playwright/dist/index.mjs:218
+      throw new Error(
+            ^
+
+Error: Please use browser.newContext()
+ Please check out https://github.com/dequelabs/axe-core-npm/blob/develop/packages/playwright/error-handling.md
+    at AxeBuilder.analyze (file:///Users/caglarcetin/Documents/GitHub/Athlete-Life/apps/web/node_modules/@axe-core/playwright/dist/index.mjs:218:13)
+    at async file:///Users/caglarcetin/Documents/GitHub/Athlete-Life/tools/v2/account_chat_browser.mjs:22:183
+
+Node.js v24.19.0

@@ -14,6 +14,7 @@ export const routes = new Set([
   "system",
   "backups",
   "tools",
+  "chat",
   "profile",
   "guide",
   "events",

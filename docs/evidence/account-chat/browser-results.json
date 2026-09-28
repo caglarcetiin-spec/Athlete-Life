@@ -1,0 +1,12 @@
+{
+  "result": "PASS",
+  "errors": [],
+  "checks": [
+    "Code before registration; wrong then correct code",
+    "Chat consent and image upload; mobile/desktop Axe",
+    "Ephemeral chat cleared on reload",
+    "Profile deletion and rejected login afterward"
+  ],
+  "transport": "synthetic email and EVREN",
+  "browser": "154.0.8037.57"
+}

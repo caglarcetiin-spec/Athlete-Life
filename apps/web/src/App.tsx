@@ -1,3 +1,4 @@
+import { AIChat } from "./features/AIChat";
 import { BrandLogo } from "./BrandLogo";
 import { ConflictComparison } from "./features/ConflictComparison";
 import { brand } from "./brand";
@@ -355,7 +356,9 @@ function Workspace({
           <SectionNavigation route={route} />
           <PageBoundary key={route}>
             <div className="page-enter">
-              {route === "tools" ? (
+              {route === "chat" ? (
+                <AIChat csrf={me.csrf} />
+              ) : route === "tools" ? (
                 <Tools />
               ) : route === "guide" ? (
                 <Guide

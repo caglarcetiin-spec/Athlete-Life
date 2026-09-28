@@ -6,7 +6,7 @@ const sections = [
   { route: "workout", label: "Antrenman", icon: Activity, pages: [["workout", "Seanslarım"], ["program", "Planım"], ["week", "Haftam"]] },
   { route: "health", label: "Sağlık", icon: HeartPulse, pages: [["health", "Sağlık kayıtları"], ["nutrition", "Beslenme ve su"]] },
   { route: "status", label: "Gelişim", icon: ChartNoAxesCombined, pages: [["status", "Durumum"], ["reports", "Raporlar ve 3B"], ["goals", "Hedeflerim"]] },
-  { route: "tools", label: "Araçlar", icon: Grid2X2, pages: [["tools", "Araçlar"], ["capability", "Capability Lab"], ["events", "Sürpriz Plan"], ["backups", "Yedekler ve arşiv"], ["science", "Bilim ve sınırlar"], ["system", "Sistem Durumu"], ["guide", "Yol haritam"]] },
+  { route: "tools", label: "Araçlar", icon: Grid2X2, pages: [["tools", "Araçlar"], ["chat", "AI ile sohbet et"], ["capability", "Capability Lab"], ["events", "Sürpriz Plan"], ["backups", "Yedekler ve arşiv"], ["science", "Bilim ve sınırlar"], ["system", "Sistem Durumu"], ["guide", "Yol haritam"]] },
 ];
 export function PrimaryNavigation({ route, mobile = false }: { route: string; mobile?: boolean }) {
   return <nav className={mobile ? "mobile-primary" : "primary-navigation"} aria-label={mobile ? "Mobil ana gezinme" : "Ana gezinme"}>

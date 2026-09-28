@@ -15,6 +15,9 @@ class Login(StrictModel):
 
 
 class Signup(Login):
+    email: str | None = Field(default=None, max_length=254)
+    challenge_id: str | None = Field(default=None, max_length=64)
+    code: str | None = Field(default=None, max_length=6)
     name: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=100)]
 
 

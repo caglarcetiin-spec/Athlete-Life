@@ -21,6 +21,13 @@ class Settings(BaseSettings):
     ai_user_limit: int = Field(default=3, ge=1, le=20)
     ai_global_limit: int = Field(default=20, ge=1, le=1000)
 
+    resend_api_key: SecretStr | None = Field(default=None, repr=False)
+    email_code_secret: SecretStr | None = Field(default=None, repr=False, min_length=32)
+    email_from: str = Field(default="", max_length=254)
+    support_email: str = "caglar.cetiin@outlook.com"
+    evren_chat_model: str = Field(default="", max_length=100, pattern=r"^[A-Za-z0-9._:/-]*$")
+    evren_chat_vision: bool = False
+
     body_model_path: Path | None = None
     body_model_owner_id: UUID | None = None
     mongo_database: str | None = None

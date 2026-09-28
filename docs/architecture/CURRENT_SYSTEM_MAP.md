@@ -242,3 +242,10 @@ GET `/api/v2/ai-planning-status` yalnız yapılandırma durumunu oturum sahibine
 ## 2026-09-28 — Tüm branşlarda kas bölgesi öncelikleri
 
 GuidedPlan bölge panelini her branşta açık gösterir; endurance geçişi/gönderimi focus'u silmez. Aynı mevcut focus alanı guided_choices üzerinden saklanır. ai_planning.prepare geçici body_region_priorities (region/priority_points/muscle_ids) açıklamasını mevcut focus ve GROUPS kataloğundan üretir; EVREN sistem talimatı bölge tercihlerini branş, doz ve ekipman sınırları içinde ele alır. Yeni kalıcı alan/DB göçü yok. [Test, kapsam ve rollback](../ALL_SPORT_REGION_FOCUS.md).
+
+## 2026-09-28 — E-posta koduyla kayıt ve geçici AI sohbeti
+
+- `EmailChallenge/email_challenges`: id, email, code_hash, attempts, expires_at; PostgreSQL a829email001, Mongo TTL. email_registration.issue/complete → tek kullanımlık doğrulama + aynı işlemde User/Athlete oluşturma. Kod/parola düz metin saklanmaz; mevcut hesap göçü yok.
+- account.erase mevcut sahiplik kapsamına ek olarak hesap e-postasının bekleyen doğrulamasını kaldırır. Profile üst düğmesi mevcut şifre/onay silme akışını açar.
+- `ai_chat.ChatRequest`: messages(role/text), isteğe bağlı image, consent; geçici istek. normalize_photo → sabit EVREN chat endpoint. Kayıt bootstrap'ı bağlama eklenmez; sohbet DB'ye yazılmaz. AIChat yalnız sayfa belleği; chatHistory sınırlı tam mesaj çiftlerini taşır. `/chat` Araçlar altında.
+- [Kurulum, güvenlik, göç ve rollback](../ACCOUNT_EMAIL_CHAT.md).

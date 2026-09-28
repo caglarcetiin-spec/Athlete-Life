@@ -9,15 +9,32 @@ export function Login({ onLogin }: { onLogin: (m: Me) => void }) {
     [error, setError] = useState(""),
     [notice, setNotice] = useState(""),
     [busy, setBusy] = useState(false);
+  const [email, setEmail] = useState("");
+  const [challenge, setChallenge] = useState("");
+  const [code, setCode] = useState("");
+  const [emailReady, setEmailReady] = useState(false);
+  const [support, setSupport] = useState("");
+  async function sendCode() {
+    const result = (await api("auth/email-code", {
+      method: "POST",
+      body: JSON.stringify({ email }),
+    })) as { challenge_id: string; message: string };
+    setChallenge(result.challenge_id);
+    setCode("");
+    setNotice(result.message);
+  }
   useEffect(() => {
     void api("auth/config")
-      .then((v) =>
-        setOpen(
-          Boolean(
-            (v as { registration_enabled: boolean }).registration_enabled,
-          ),
-        ),
-      )
+      .then((v) => {
+        const config = v as {
+          registration_enabled: boolean;
+          email_delivery: string;
+          support_email: string;
+        };
+        setOpen(config.registration_enabled);
+        setEmailReady(config.email_delivery === "ready");
+        setSupport(config.support_email);
+      })
       .catch(() => {});
   }, []);
   return (
@@ -69,11 +86,18 @@ export function Login({ onLogin }: { onLogin: (m: Me) => void }) {
             setNotice("");
             try {
               if (mode === "signup") {
+                if (!challenge) {
+                  await sendCode();
+                  return;
+                }
                 await api("auth/signup", {
                   method: "POST",
                   body: JSON.stringify({
                     username: f.get("username"),
                     name: f.get("name"),
+                    email,
+                    challenge_id: challenge,
+                    code,
                     password: f.get("password"),
                   }),
                 });
@@ -117,6 +141,66 @@ export function Login({ onLogin }: { onLogin: (m: Me) => void }) {
               />
             </label>
           )}
+          {mode === "signup" && (
+            <>
+              <label>
+                E-posta adresin
+                <input
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  maxLength={254}
+                  required
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    setChallenge("");
+                    setCode("");
+                  }}
+                />
+              </label>
+              {!emailReady && (
+                <p role="status">
+                  E-posta doğrulama bağlantısı hazırlanıyor; yeni kayıt henüz
+                  açılamıyor. Mevcut hesabınla giriş yapabilirsin.
+                </p>
+              )}
+              {challenge && (
+                <>
+                  <label>
+                    E-postana gelen 6 haneli kod
+                    <input
+                      value={code}
+                      onChange={(e) => setCode(e.target.value)}
+                      inputMode="numeric"
+                      autoComplete="one-time-code"
+                      pattern="[0-9]{6}"
+                      maxLength={6}
+                      required
+                    />
+                  </label>
+                  <button
+                    type="button"
+                    className="secondary"
+                    disabled={busy}
+                    onClick={async () => {
+                      setBusy(true);
+                      setError("");
+                      try {
+                        await sendCode();
+                      } catch (e) {
+                        setError((e as Error).message);
+                      } finally {
+                        setBusy(false);
+                      }
+                    }}
+                  >
+                    Yeni kod gönder
+                  </button>
+                </>
+              )}
+            </>
+          )}
           <label>
             Kullanıcı adı
             <input
@@ -157,11 +241,13 @@ export function Login({ onLogin }: { onLogin: (m: Me) => void }) {
             </p>
           )}
           {notice && <p role="status">{notice}</p>}
-          <button disabled={busy}>
+          <button disabled={busy || (mode === "signup" && !emailReady)}>
             {busy
               ? "Bağlanıyor…"
               : mode === "signup"
-                ? "Hesap oluştur"
+                ? challenge
+                  ? "Kodu doğrula ve hesap oluştur"
+                  : "Doğrulama kodu gönder"
                 : mode === "recover"
                   ? "Şifreyi yenile"
                   : "Giriş yap"}
@@ -193,6 +279,11 @@ export function Login({ onLogin }: { onLogin: (m: Me) => void }) {
             </>
           )}
         </div>
+        {support && (
+          <p>
+            <a href={"mailto:" + support}>Yöneticiyle iletişim</a>
+          </p>
+        )}
         <small>
           Çevrimdışı yeni giriş yapılamaz. Bekleyen kayıtlar aynı hesapla tekrar
           giriş yaptığında korunur.

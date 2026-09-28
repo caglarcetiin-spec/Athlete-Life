@@ -679,3 +679,12 @@ class WorkspaceArchive(Owned, Base):
     counts: Mapped[dict] = mapped_column(JSONB)
     raw: Mapped[dict] = mapped_column(JSONB)
     __table_args__ = (UniqueConstraint("athlete_id", "id"),)
+
+
+class EmailChallenge(Base):
+    __tablename__ = "email_challenges"
+    id: Mapped[str] = mapped_column(String(64), primary_key=True)
+    email: Mapped[str] = mapped_column(String(254), index=True)
+    code_hash: Mapped[str] = mapped_column(String(64))
+    attempts: Mapped[int] = mapped_column(Integer, default=0)
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), index=True)

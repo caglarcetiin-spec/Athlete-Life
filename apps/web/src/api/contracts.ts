@@ -137,7 +137,7 @@ export async function api(path: string, options: RequestInit = {}) {
       AbortSignal.timeout(
         path === "ai-program-drafts"
           ? 330000
-          : path === "ai-progress-review"
+          : ["ai-progress-review", "ai-chat"].includes(path)
             ? 180000
             : 12000,
       ),

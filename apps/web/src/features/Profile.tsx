@@ -63,6 +63,7 @@ export function Profile({
   onLogout: () => void;
 }) {
   const [error, setError] = useState(""),
+    [deleting, setDeleting] = useState(false),
     [notice, setNotice] = useState(""),
     [codes, setCodes] = useState<string[]>([]),
     [catalog, setCatalog] = useState<SportOption[]>([]),
@@ -152,6 +153,21 @@ export function Profile({
         <div>
           <h2>{me.name}</h2>
           <p>Kendi başlangıcın, kendi hedeflerin.</p>
+          <button
+            className="text-button"
+            onClick={() => {
+              const panel = document.getElementById(
+                "delete-account-panel",
+              ) as HTMLDetailsElement | null;
+              if (panel) {
+                panel.open = true;
+                panel.scrollIntoView({ block: "center" });
+                panel.querySelector("input")?.focus();
+              }
+            }}
+          >
+            Hesabı kalıcı olarak sil
+          </button>
           <a className="text-button" href="#guide">
             <GraduationCap size={18} />
             Uygulamayı tanı
@@ -255,8 +271,9 @@ export function Profile({
           }}
         />
         <p className="caption">
-          E-posta doğrulama/gönderme hizmeti yapılandırılmadı. Şifre kurtarmak
-          için aşağıdaki tek kullanımlık kodları saklayabilirsin.
+          Yeni kayıt sırasında e-posta kodla doğrulanır. Burada adresini
+          değiştirmek yeni adresi doğrulamaz. Şifre kurtarmak için aşağıdaki tek
+          kullanımlık kodları saklayabilirsin.
         </p>
       </section>
       <section className="card">
@@ -414,8 +431,8 @@ export function Profile({
           <LogOut size={17} />
           Çıkış yap
         </button>
-        <details>
-          <summary>Hesabımı ve aktif verilerimi sil</summary>
+        <details id="delete-account-panel" className="account-danger">
+          <summary>Hesabı kalıcı olarak sil</summary>
           <p>
             Profil, sağlık kayıtları, antrenmanlar, fotoğraflar ve işlem geçmişi
             aktif veritabanından kalıcı silinir. İndirdiğin yedek dosyaları ve
@@ -429,10 +446,12 @@ export function Profile({
               try {
                 if (store.pending.length)
                   throw Error("Önce bekleyen kayıtları eşitle veya yedekle.");
+                setDeleting(true);
                 await authAction("delete", { password: f.get("password") });
                 await store.eraseLocal();
                 location.reload();
               } catch (e) {
+                setDeleting(false);
                 setError((e as Error).message);
               }
             }}
@@ -450,8 +469,8 @@ export function Profile({
               <input type="checkbox" required />
               Hesabımı kalıcı silmek istiyorum.
             </label>
-            <button disabled={store.pending.length > 0}>
-              Hesabımı kalıcı sil
+            <button disabled={deleting || store.pending.length > 0}>
+              {deleting ? "Hesap siliniyor…" : "Hesabımı kalıcı sil"}
             </button>
           </form>
         </details>
