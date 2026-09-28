@@ -9,6 +9,7 @@ from .contracts import StrictModel
 from .movements import BY_ID, normalize
 from .planning_context import equipment_matches
 from .programming import DraftRequest, draft_with_context
+from .sports import BY_SPORT, ENDURANCE_METHODS
 
 GROUPS = {
     "chest": ["chest"],
@@ -62,22 +63,26 @@ class Competency(StrictModel):
 
 
 class GuidedChoices(StrictModel):
+    sport_ids: list[str] = Field(default_factory=list, max_length=20)
+    training_history: str = Field(default="", max_length=1000)
     experience: Literal["new", "returning", "regular", "advanced"]
-    objective: Literal["strength", "hypertrophy", "strength_hypertrophy"]
+    objective: Literal["strength", "hypertrophy", "strength_hypertrophy", "endurance", "technique"]
     equipment: list[str] = Field(max_length=50)
     weekdays: list[int] = Field(min_length=1, max_length=6)
     minutes: int = Field(ge=15, le=180)
     split: Literal["full_body", "upper_lower", "push_pull_legs"]
     focus: dict[str, int] = Field(default_factory=dict)
     goal: str = Field(min_length=1, max_length=1000)
-    methods: list[Literal["weights", "calisthenics", "gymnastics", "conditioning"]] = Field(
-        default_factory=lambda: ["weights"], min_length=1, max_length=4
+    methods: list[Literal["weights", "calisthenics", "gymnastics", "conditioning", "running", "swimming"]] = (
+        Field(default_factory=lambda: ["weights"], min_length=1, max_length=6)
     )
-    competencies: list[Competency] = Field(default_factory=list, max_length=54)
+    competencies: list[Competency] = Field(default_factory=list, max_length=100)
     conditioning_minutes: int = Field(default=10, ge=5, le=45)
 
     @model_validator(mode="after")
     def validate_choices(self):
+        if len(set(self.sport_ids)) != len(self.sport_ids) or any(s not in BY_SPORT for s in self.sport_ids):
+            raise ValueError("Branşları katalogdan ve tekil seç.")
         if len(set(self.weekdays)) != len(self.weekdays) or any(d not in range(7) for d in self.weekdays):
             raise ValueError("Günler tekil ve 0–6 aralığında olmalı.")
         if (
@@ -148,6 +153,8 @@ def generate(data, snapshot, as_of):
         else:
             pool.append(key)
     notes = [
+        "Seçilen branşlar: " + ", ".join(BY_SPORT[s]["name"] for s in data.sport_ids),
+        "Branş hedefi AI bağlamına aktarılır. Otomatik hareket kapsamı seçili yöntemler ve yetkinlik kataloğuyla sınırlıdır; diğer branşların özel tekniklerini manuel ekleyebilirsin.",
         "Taslak; seçtiğin yöntemler, kontrollü yapabildiğin hareketler, ekipman ve süre birlikte değerlendirilerek üretildi.",
         "Kilogram otomatik belirlenmez. Set/tekrar/tutuş süreleri düzenlenebilir koçluk varsayımlarıdır; kişisel gelişim veya klinik uygunluk garantisi değildir.",
         "Beceri bloğu teknik kalite içindir; tutuş süreleri ve kondisyon saniyeleri hipertrofi setleriyle aynı doz sayılmaz.",
@@ -219,7 +226,7 @@ def generate(data, snapshot, as_of):
             "legs": [],
         }[kind]
         expected = families[:4] if kind in ("full_body", "upper") else families[:2]
-        if set(data.methods) == {"conditioning"}:
+        if set(data.methods) <= ENDURANCE_METHODS:
             families, extras, expected = [], [], []
         limit = data.minutes * 60
         used = 480 if data.minutes >= 30 else 300
@@ -229,9 +236,14 @@ def generate(data, snapshot, as_of):
         decisions = []
         selected_sets = 0
         cardio = next((key for key in sorted(pool, key=rank) if META[key]["block"] == "conditioning"), None)
-        reserve = (data.conditioning_minutes * 60 + 60) if cardio and "conditioning" in data.methods else 0
+        cardio_seconds = min(data.conditioning_minutes * 60, max(0, limit - used - 60))
+        reserve = (
+            (cardio_seconds + 60)
+            if cardio and bool(set(data.methods) & ENDURANCE_METHODS) and cardio_seconds
+            else 0
+        )
         # Conditioning cannot consume a whole mixed session silently.
-        if reserve > limit * 0.35 and len(data.methods) > 1:
+        if reserve > limit * 0.35 and bool(set(data.methods) - ENDURANCE_METHODS):
             notes.append(
                 f"{day['weekday'] + 1}. gün: kondisyon isteği toplam sürenin büyük kısmını kaplıyor; süreyi artır veya kondisyonu ayrı güne ayır."
             )
@@ -349,7 +361,7 @@ def generate(data, snapshot, as_of):
                     "load_kind": "none",
                     "equipment": ", ".join(e for e in definition["equipment"] if normalize(e) in available),
                     "sets": 1,
-                    "seconds": data.conditioning_minutes * 60,
+                    "seconds": cardio_seconds,
                     "rest_seconds": 0,
                     "set_kind": "working",
                 }
@@ -374,7 +386,7 @@ def generate(data, snapshot, as_of):
         day["exercises"] = selected
         day["label"] = (
             "Kondisyon"
-            if set(data.methods) == {"conditioning"}
+            if set(data.methods) <= ENDURANCE_METHODS
             else {
                 "full_body": "Tüm vücut",
                 "upper": "Üst vücut",

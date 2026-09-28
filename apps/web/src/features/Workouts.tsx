@@ -1,8 +1,9 @@
 import { RecordForm, choice, decimalField, note } from "./Records";
+import { plannedDays } from "./workoutProgress";
 import { previousComparable } from "./setHistory";
 import { ExercisePicker } from "./ExercisePicker";
 import { MovementHelp, MovementLibrary } from "./MovementGuide";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Check,
   ChevronRight,
@@ -89,6 +90,7 @@ function SetForm({
 }) {
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const saving = useRef(false);
   const [past] = useState(
     String(session.local_date) !== today(store.snapshot?.timezone),
   );
@@ -103,7 +105,8 @@ function SetForm({
     status = "completed",
     useTarget = false,
   ) {
-    if (busy) return;
+    if (saving.current) return;
+    saving.current = true;
     setBusy(true);
     setError("");
     try {
@@ -207,12 +210,14 @@ function SetForm({
     } catch (e) {
       setError((e as Error).message);
     } finally {
+      saving.current = false;
       setBusy(false);
     }
   }
   const source = editing || slot;
   const mainMetricKeys =
-    (source?.modality || formDraft.modality || "strength") === "strength"
+    (source?.modality || formDraft.modality || "strength") === "strength" ||
+    (source?.modality || formDraft.modality) === "skill"
       ? ["reps", "external_kg"]
       : ["seconds", "distance_m"];
   const comparison: Entity = source || {
@@ -529,6 +534,7 @@ export function Workouts({
   );
   const [error, setError] = useState("");
   const [extra, setExtra] = useState(false);
+  const [confirmFinish, setConfirmFinish] = useState(false);
   const [editing, setEditing] = useState<Entity | undefined>();
   const [clock, setClock] = useState(serverNow());
   const [manualTitle, setManualTitle] = useState("Serbest antrenman");
@@ -547,25 +553,23 @@ export function Workouts({
     .view("set")
     .filter((s) => s.session_id === active?.id)
     .sort((a, b) => String(a.created_at).localeCompare(String(b.created_at)));
-  const next = slots.find((s) => !actuals.some((a) => a.slot_id === s.id));
-  const programs = store.view("program").filter((p) => p.status === "active");
-  const weekday = (new Date(selected + "T12:00:00Z").getUTCDay() + 6) % 7;
-  const days = store.view("program_day").filter(
-    (d) =>
-      d.weekday === weekday &&
-      programs.some((p) => {
-        const week =
-          Math.floor(
-            (Date.parse(selected + "T12:00:00Z") -
-              Date.parse(String(p.start_date) + "T12:00:00Z")) /
-              604800000,
-          ) + 1;
-        return (
-          p.id === d.program_id &&
-          week >= Number(d.first_week || 1) &&
-          week <= Number(d.last_week || p.weeks)
-        );
-      }),
+  const resolved = new Set(
+    actuals
+      .filter((a) => !["conflict", "failed"].includes(String(a.local_state)))
+      .map((a) => a.slot_id),
+  );
+  const remainingSlots = slots.filter((s) => !resolved.has(s.id));
+  const next = remainingSlots[0];
+  const movementSlots = next
+    ? slots.filter(
+        (s) => s.movement_id === next.movement_id && s.variant === next.variant,
+      )
+    : [];
+  const previous = [...slots].reverse().find((s) => resolved.has(s.id));
+  const days = plannedDays(
+    selected,
+    store.view("program"),
+    store.view("program_day"),
   );
   const pendingSession = store.pending.some(
     (p) => p.command.entity_id === active?.id,
@@ -578,6 +582,7 @@ export function Workouts({
         : 0;
   function choose(id: string) {
     setSessionId(id);
+    setConfirmFinish(false);
     setEditing(undefined);
     setExtra(false);
     history.replaceState(
@@ -588,6 +593,17 @@ export function Workouts({
   }
   async function open(prescription?: Entity) {
     try {
+      const existing =
+        prescription &&
+        sessions.find(
+          (s) =>
+            s.prescription_id === prescription.id &&
+            !["completed", "abandoned"].includes(String(s.status)),
+        );
+      if (existing) {
+        choose(existing.id);
+        return;
+      }
       const id = await store.enqueue("session.open", null, {
         prescription_id: prescription?.id || null,
         local_date: selected,
@@ -687,6 +703,13 @@ export function Workouts({
                 İlk sete başla
               </button>
             )}
+          {!active.prescription_id && (
+            <p className="notice">
+              Bu serbest seans bir programa bağlı değil; sıradaki hareket
+              otomatik seçilmez. Planlı ilerleme için seans listesinde gününün
+              antrenmanını aç.
+            </p>
+          )}
           <div className="runner-progress">
             <strong>
               {actuals.filter((a) => a.status !== "skipped").length}
@@ -716,7 +739,9 @@ export function Workouts({
                   onClick={() =>
                     void action("session.timer", {
                       action: "start",
-                      seconds: Number(next?.rest_seconds ?? 90),
+                      seconds: Number(
+                        previous?.rest_seconds ?? next?.rest_seconds ?? 90,
+                      ),
                     })
                   }
                 >
@@ -751,6 +776,24 @@ export function Workouts({
               </div>
             </div>
           ) : null}
+          {next &&
+            !["completed", "abandoned"].includes(String(active.status)) &&
+            !editing &&
+            !extra && (
+              <div className="notice" role="status" aria-live="polite">
+                <strong>Sıradaki: {String(next.name)}</strong>
+                <p>
+                  Bu hareketin{" "}
+                  {movementSlots.findIndex((s) => s.id === next.id) + 1}. seti /{" "}
+                  {movementSlots.length} · Antrenmanda{" "}
+                  {slots.length - remainingSlots.length + 1} / {slots.length}
+                </p>
+                <small>
+                  Bu seti kaydedince sıradaki sete geçilir. Aynı hareketin tüm
+                  setleri bitince sonraki hareket açılır.
+                </small>
+              </div>
+            )}
           {!active.local_pending &&
           (editing ||
             (active.status !== "completed" && active.status !== "abandoned")) &&
@@ -791,7 +834,11 @@ export function Workouts({
                 <button
                   disabled={pendingSession || store.pending.length > 0}
                   onClick={() =>
-                    void action("session.transition", { status: "completed" })
+                    remainingSlots.length
+                      ? setConfirmFinish(true)
+                      : void action("session.transition", {
+                          status: "completed",
+                        })
                   }
                 >
                   Seansı tamamla
@@ -812,6 +859,46 @@ export function Workouts({
               </>
             )}
           </div>
+          {active.status === "completed" && next && (
+            <button
+              className="secondary"
+              disabled={pendingSession}
+              onClick={() =>
+                void action("session.transition", { status: "active" })
+              }
+            >
+              Eksik setlere devam et
+            </button>
+          )}
+          {confirmFinish &&
+            !["completed", "abandoned"].includes(String(active.status)) && (
+              <section className="notice" role="alert">
+                <strong>
+                  {remainingSlots.length} planlanan set henüz kaydedilmedi.
+                </strong>
+                <p>
+                  Seansı bitirirsen bu setler yapılmış sayılmaz. Çalışmaya devam
+                  etmek için sete dön.
+                </p>
+                <div className="actions">
+                  <button onClick={() => setConfirmFinish(false)}>
+                    Sete dön
+                  </button>
+                  <button
+                    className="secondary"
+                    disabled={pendingSession || store.pending.length > 0}
+                    onClick={() => {
+                      setConfirmFinish(false);
+                      void action("session.transition", {
+                        status: "completed",
+                      });
+                    }}
+                  >
+                    Eksik setlerle seansı bitir
+                  </button>
+                </div>
+              </section>
+            )}
           {active.status === "completed" && (
             <details className="card">
               <summary>Seans özeti ve isteğe bağlı geri bildirim</summary>
@@ -960,7 +1047,15 @@ export function Workouts({
                   {day.kind === "training" &&
                     (prescription ? (
                       <button onClick={() => void open(prescription)}>
-                        Yeni seans aç
+                        {sessions.some(
+                          (s) =>
+                            s.prescription_id === prescription.id &&
+                            !["completed", "abandoned"].includes(
+                              String(s.status),
+                            ),
+                        )
+                          ? "Seansıma devam et"
+                          : "Yeni seans aç"}
                         <ChevronRight size={17} />
                       </button>
                     ) : (

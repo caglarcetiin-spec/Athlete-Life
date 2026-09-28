@@ -3277,5 +3277,77 @@
       "glutes": 0.2
     },
     "mapping_note": "Engineering approximation, not measured muscle activation or tissue damage."
+  },
+  "Swim freestyle": {
+    "id": "swim-freestyle",
+    "name": "Swim freestyle",
+    "displayNameTR": "Serbest stil yüzme",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [
+      "Serbest stil yüzme"
+    ],
+    "load_kind": "none",
+    "modality": "cardio",
+    "metric": "seconds",
+    "equipment": [
+      "Pool"
+    ],
+    "muscles": {},
+    "note": "Süre ve mesafe kaydı; doğrulanmış kas katsayısı yok.",
+    "type": "CARDIO"
+  },
+  "Swim backstroke": {
+    "id": "swim-backstroke",
+    "name": "Swim backstroke",
+    "displayNameTR": "Sırtüstü yüzme",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [
+      "Sırtüstü yüzme"
+    ],
+    "load_kind": "none",
+    "modality": "cardio",
+    "metric": "seconds",
+    "equipment": [
+      "Pool"
+    ],
+    "muscles": {},
+    "note": "Süre ve mesafe kaydı; doğrulanmış kas katsayısı yok.",
+    "type": "CARDIO"
+  },
+  "Swim breaststroke": {
+    "id": "swim-breaststroke",
+    "name": "Swim breaststroke",
+    "displayNameTR": "Kurbağalama yüzme",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [
+      "Kurbağalama yüzme"
+    ],
+    "load_kind": "none",
+    "modality": "cardio",
+    "metric": "seconds",
+    "equipment": [
+      "Pool"
+    ],
+    "muscles": {},
+    "note": "Süre ve mesafe kaydı; doğrulanmış kas katsayısı yok.",
+    "type": "CARDIO"
+  },
+  "Swim butterfly": {
+    "id": "swim-butterfly",
+    "name": "Swim butterfly",
+    "displayNameTR": "Kelebek yüzme",
+    "catalog_version": "movement-catalog-2",
+    "aliases": [
+      "Kelebek yüzme"
+    ],
+    "load_kind": "none",
+    "modality": "cardio",
+    "metric": "seconds",
+    "equipment": [
+      "Pool"
+    ],
+    "muscles": {},
+    "note": "Süre ve mesafe kaydı; doğrulanmış kas katsayısı yok.",
+    "type": "CARDIO"
   }
 }

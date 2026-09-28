@@ -41,6 +41,7 @@ const equipmentNames = [
   "Açık alan",
   "Koşu bandı",
   "Ağırlık sehpası",
+  "Yüzme havuzu",
 ];
 type Competency = { movement_id: string; reps?: number; seconds?: number };
 type PlannerOption = {
@@ -54,6 +55,8 @@ type PlannerOption = {
   block: string;
 };
 type Answers = {
+  sport_ids: string[];
+  training_history: string;
   methods: string[];
   competencies: Competency[];
   conditioning_minutes: number;
@@ -120,6 +123,8 @@ export function GuidedPlan({
 }) {
   const profile = store.view("profile")[0];
   const [answers, setAnswers] = useState<Answers>({
+    sport_ids: (profile?.sport_ids as string[]) || [],
+    training_history: "",
     methods: ["weights"],
     competencies: [],
     conditioning_minutes: 10,
@@ -142,6 +147,10 @@ export function GuidedPlan({
     [busy, setBusy] = useState(false),
     [error, setError] = useState("");
   const [options, setOptions] = useState<PlannerOption[]>([]);
+  const [sports, setSports] = useState<
+    { id: string; name: string; aliases: string }[]
+  >([]);
+  const [sportSearch, setSportSearch] = useState("");
   const [optionsError, setOptionsError] = useState("");
   const [capabilitySearch, setCapabilitySearch] = useState("");
   const synced = Boolean(store.snapshot);
@@ -195,8 +204,10 @@ export function GuidedPlan({
     let live = true;
     void api("guided-planning-options")
       .then((result) => {
-        if (live)
+        if (live) {
           setOptions((result as { movements: PlannerOption[] }).movements);
+          setSports((result as { sports: typeof sports }).sports || []);
+        }
       })
       .catch(() => {
         if (live)
@@ -229,6 +240,7 @@ export function GuidedPlan({
             );
             setAnswers((previous) => ({
               ...previous,
+              sport_ids: (current?.sport_ids as string[]) || [],
               experience: String(current?.experience || "new"),
               equipment: equipment?.equipment || [],
               goal: prefs.goal || "",
@@ -446,6 +458,72 @@ export function GuidedPlan({
         )}
         {step === 1 && (
           <>
+            <label>
+              Branş ara
+              <input
+                type="search"
+                value={sportSearch}
+                onChange={(e) => setSportSearch(e.target.value)}
+                placeholder="Koşu, yüzme, binicilik…"
+              />
+            </label>
+            <label>
+              Çalıştığın branşı ekle
+              <select
+                aria-label="Çalıştığın branşı ekle"
+                value=""
+                onChange={(e) =>
+                  e.target.value &&
+                  update({ sport_ids: [...answers.sport_ids, e.target.value] })
+                }
+              >
+                <option value="">
+                  199 branştan seç · birden fazla ekleyebilirsin
+                </option>
+                {sports
+                  .filter(
+                    (s) =>
+                      !answers.sport_ids.includes(s.id) &&
+                      (s.name + " " + s.aliases)
+                        .toLocaleLowerCase("tr-TR")
+                        .includes(sportSearch.toLocaleLowerCase("tr-TR")),
+                  )
+                  .map((s) => (
+                    <option key={s.id} value={s.id}>
+                      {s.name}
+                    </option>
+                  ))}
+              </select>
+            </label>
+            <div className="actions">
+              {answers.sport_ids.map((id) => (
+                <button
+                  key={id}
+                  className="secondary small"
+                  onClick={() =>
+                    update({
+                      sport_ids: answers.sport_ids.filter((s) => s !== id),
+                    })
+                  }
+                >
+                  {sports.find((s) => s.id === id)?.name || id} · kaldır
+                </button>
+              ))}
+            </div>
+            <label>
+              Spor geçmişin ve şu anki düzenin
+              <textarea
+                maxLength={1000}
+                value={answers.training_history}
+                onChange={(e) => update({ training_history: e.target.value })}
+                placeholder="Örneğin 2 yıldır yüzüyorum, haftada 3 seans; serbest ve sırtüstü biliyorum."
+              />
+            </label>
+            <p>
+              Branşların ve burada yazdığın geçmiş AI taslağının bağlamına
+              eklenir. Aşağıda programa katmak istediğin çalışma yöntemlerini
+              seç.
+            </p>
             <p>
               Birden fazla yöntem seçebilirsin. Hibrit, bu yöntemlerin tek
               haftada birlikte planlanmasıdır.
@@ -466,6 +544,16 @@ export function GuidedPlan({
                   "gymnastics",
                   "Jimnastik becerileri",
                   "Front lever, muscle-up ve kontrollü tutuşları teknik blokta çalış.",
+                ],
+                [
+                  "running",
+                  "Koşu çalışması",
+                  "Koşu yetkinliğine göre süre temelli dayanıklılık çalışması.",
+                ],
+                [
+                  "swimming",
+                  "Yüzme çalışması",
+                  "Havuz ve bildiğin yüzme stilleriyle süre temelli çalışma.",
                 ],
                 [
                   "conditioning",
@@ -491,8 +579,9 @@ export function GuidedPlan({
               ))}
             </div>
             <p>
-              Diğer branşlar için mevcut manuel planlayıcı korunur;
-              desteklenmeyen bir branş için otomatik uzman programı üretilmez.
+              Tüm branşlar hedef bağlamına eklenebilir. Otomatik hareket seçimi
+              katalogdaki yetkinliklerle sınırlıdır; diğer branşların özel
+              tekniklerini son düzenlemede ekleyebilirsin.
             </p>
           </>
         )}
@@ -608,6 +697,16 @@ export function GuidedPlan({
           <>
             {choices("objective", [
               [
+                "endurance",
+                "Dayanıklılık",
+                "Koşu veya yüzmede süre ve düzenli katılım hedefi.",
+              ],
+              [
+                "technique",
+                "Tekniğimi geliştirmek",
+                "Bildiğin becerileri kontrollü çalışmak; yeni teknikler için eğitmen desteği.",
+              ],
+              [
                 "hypertrophy",
                 "Kas geliştirmek",
                 "Kas gelişimine yönelik başlangıç taslağı.",
@@ -707,7 +806,9 @@ export function GuidedPlan({
                 ))}
               </select>
             </label>
-            {answers.methods.includes("conditioning") && (
+            {answers.methods.some((m) =>
+              ["conditioning", "running", "swimming"].includes(m),
+            ) && (
               <label>
                 Bir seanstaki kondisyon süresi
                 <select

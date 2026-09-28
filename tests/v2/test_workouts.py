@@ -177,15 +177,12 @@ def test_edit_preserves_original_time_skip_extra_delete_and_timer(client):
         client,
         cmd("session.transition", latest["id"], latest["version"], status="completed"),
     )["entity"]
-    assert (
-        client.post(
-            "/api/v2/commands",
-            json=cmd(
-                "session.transition", done["id"], done["version"], status="active"
-            ),
-        ).status_code
-        == 409
-    )
+    resumed = write(
+        client, cmd("session.transition", done["id"], done["version"], status="active")
+    )["entity"]
+    assert resumed["status"] == "active" and resumed["ended_at"] is None
+    assert resumed["started_at"] == latest["started_at"]
+    assert len(client.get("/api/v2/bootstrap").json()["sets"]) == 3
     write(client, cmd("set.delete", changed["id"], changed["version"]))
     records = client.get("/api/v2/bootstrap").json()["sets"]
     assert len([r for r in records if not r["deleted_at"]]) == 2
@@ -544,3 +541,17 @@ def test_range_prescription_requires_an_actual_value_and_keeps_range(client):
         client.get("/api/v2/bootstrap").json()["slots"][0]["target_range"]
         == slot["target_range"]
     )
+
+
+def test_duplicate_slot_is_rejected_but_deleted_slot_can_be_recorded_again(client):
+    p, d = program(client)
+    rx = prescription(client, p, d)
+    slot = next(c["entity"] for c in rx["changes"] if c["kind"] == "slot")
+    s = session(client, rx)
+    saved = write(client, actual(client, s, slot))["entity"]
+    duplicate = client.post("/api/v2/commands", json=actual(client, s, slot))
+    assert duplicate.status_code == 409
+    assert duplicate.json()["error"]["code"] == "slot_recorded"
+    write(client, cmd("set.delete", saved["id"], saved["version"]))
+    replacement = write(client, actual(client, s, slot))["entity"]
+    assert replacement["id"] != saved["id"]

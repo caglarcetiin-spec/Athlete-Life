@@ -68,7 +68,7 @@ export function MovementLibrary() {
   const movement = movements.find(item => item.id === selected)!;
   return <section className="card movement-library">
     <details>
-      <summary><BookOpen size={19} /><span>Hareket kütüphanesi<small>6 temel hareket · görsel anlatım ve kas bölgeleri</small></span></summary>
+      <summary><BookOpen size={19} /><span>Görsel hareket rehberi<small>6 temel görsel · analiz kataloğu daha fazla hareket içerir</small></span></summary>
       <label htmlFor={id}>İncelemek istediğin hareket</label>
       <select id={id} value={selected} onChange={e => setSelected(e.target.value)}>
         {movements.map(item => <option key={item.id} value={item.id}>{item.name}</option>)}

@@ -1,0 +1,25 @@
+{
+  "source_commit": "366b47f",
+  "test_updates": [
+    {
+      "test": "legacy workout_browser",
+      "reason": "Old manual creation entry no longer present; new isolated runner test seeds canonical plan through commands, then verifies actual UI execution."
+    },
+    {
+      "test": "runner_progress_browser setup",
+      "reason": "Corrected program.save to actual program.create API command before application flow test."
+    },
+    {
+      "test": "test_workouts completed transition",
+      "reason": "Intentional new resume feature replaces former terminal completed rule. Asserts preserved sets/start time and cleared end time."
+    },
+    {
+      "test": "test_hybrid_planning metadata",
+      "reason": "Version deliberately raised to guided-hybrid-3 for sport context and swim catalogue; updated expected persisted version."
+    },
+    {
+      "test": "sport selector exact accessible name",
+      "reason": "Nested select options polluted exact label matching; added an explicit stable aria-label to production selector."
+    }
+  ]
+}

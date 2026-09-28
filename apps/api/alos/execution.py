@@ -139,7 +139,7 @@ def apply_session(db, athlete, command):
             "ready": {"abandoned"},
             "active": {"paused", "completed", "abandoned"},
             "paused": {"active", "completed", "abandoned"},
-            "completed": set(),
+            "completed": {"active"},
             "abandoned": set(),
         }
         if data.status not in allowed[row.status]:
@@ -149,6 +149,7 @@ def apply_session(db, athlete, command):
             row.timer_remaining_ms = timer_remaining(row.timer_deadline, None, utcnow())
             row.timer_deadline = None
         elif data.status == "active":
+            row.ended_at = None
             if row.timer_remaining_ms is not None:
                 row.timer_deadline = utcnow() + timedelta(milliseconds=row.timer_remaining_ms)
             row.timer_remaining_ms = None
@@ -225,6 +226,17 @@ def apply_set(db, athlete, command):
         if row and (row.session_id != data.session_id or row.slot_id != data.slot_id):
             raise DomainError("actual_identity", "Geçmiş setin seans/slot kimliği değiştirilemez.", 409)
         if data.slot_id:
+            duplicate = db.scalar(
+                select(PerformedSet).where(
+                    PerformedSet.session_id == session.id,
+                    PerformedSet.slot_id == data.slot_id,
+                    PerformedSet.deleted_at.is_(None),
+                )
+            )
+            if duplicate and (row is None or duplicate.id != row.id):
+                raise DomainError(
+                    "slot_recorded", "Bu set zaten kayıtlı. Yeni kayıt yerine mevcut seti düzenle.", 409
+                )
             slot = owned(db, PrescriptionSlot, athlete.id, data.slot_id)
             if slot.prescription_id != session.prescription_id:
                 raise DomainError("slot_session", "Bu set başka bir seans reçetesine ait.", 409)

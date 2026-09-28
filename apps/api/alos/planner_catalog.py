@@ -2,7 +2,7 @@
 
 from .movements import BY_ID
 
-VERSION = "guided-hybrid-2"
+VERSION = "guided-hybrid-3"
 # id, movement family, eligible methods, self-reported competency required, block
 ROWS = [
     ("bodyweight-squat", "knee", "weights calisthenics", False, "main"),
@@ -58,8 +58,10 @@ ROWS = [
     ("tuck-planche", "skill_push", "gymnastics calisthenics", True, "skill"),
     ("planche-lean", "skill_push", "gymnastics calisthenics", True, "skill"),
     ("walk", "conditioning", "conditioning", False, "conditioning"),
-    ("zone-2-run", "conditioning", "conditioning", True, "conditioning"),
+    ("zone-2-run", "conditioning", "conditioning running", True, "conditioning"),
 ]
+for stroke in ("freestyle", "backstroke", "breaststroke", "butterfly"):
+    ROWS.append(("swim-" + stroke, "conditioning", "swimming", True, "conditioning"))
 META = {
     r[0]: {"family": r[1], "methods": r[2].split(), "competency_required": r[3], "block": r[4]} for r in ROWS
 }

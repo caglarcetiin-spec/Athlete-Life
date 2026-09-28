@@ -18,7 +18,12 @@ def normalize(value):
 BY_ID = {d["id"]: d for d in DEFINITIONS.values()}
 ALIASES = {}
 for definition in BY_ID.values():
-    for label in [definition["name"], definition["id"], *definition.get("aliases", [])]:
+    for label in [
+        definition["name"],
+        definition.get("displayNameTR", definition["name"]),
+        definition["id"],
+        *definition.get("aliases", []),
+    ]:
         ALIASES.setdefault(normalize(label), set()).add(definition["id"])
 
 

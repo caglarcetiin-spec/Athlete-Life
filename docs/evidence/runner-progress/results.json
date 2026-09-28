@@ -1,0 +1,14 @@
+{
+  "result": "PASS",
+  "checks": [
+    "same-exercise set advances",
+    "early finish requires explicit choice",
+    "resume reuses session",
+    "offline next exercise and reload preserved",
+    "manual actual preserved",
+    "three distinct slots",
+    "weekly plan reflects completion"
+  ],
+  "browser": "154.0.8037.57",
+  "errors": []
+}

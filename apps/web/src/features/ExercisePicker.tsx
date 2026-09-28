@@ -5,6 +5,7 @@ export type ExerciseDefinition = {
   modality: string;
   id: string;
   name: string;
+  displayNameTR?: string;
   catalog_version: string;
   aliases: string[];
   metric: string;
@@ -33,7 +34,9 @@ export function ExercisePicker({
   const normalize = (s: string) =>
     s.toLocaleLowerCase("tr-TR").replace(/ı/g, "i");
   const results = catalog.filter((d) =>
-    [d.name, ...d.aliases].some((n) => normalize(n).includes(normalize(query))),
+    [d.name, d.displayNameTR || d.name, ...d.aliases].some((n) =>
+      normalize(n).includes(normalize(query)),
+    ),
   );
   return (
     <div className="exercise-picker" onChange={(e) => e.stopPropagation()}>
@@ -59,7 +62,7 @@ export function ExercisePicker({
           <option value="">Seçim yap — özel hareket için aşağıya yaz</option>
           {results.map((d) => (
             <option key={d.id} value={d.id}>
-              {d.name}
+              {d.displayNameTR || d.name}
             </option>
           ))}
         </select>

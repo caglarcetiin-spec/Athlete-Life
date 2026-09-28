@@ -188,3 +188,11 @@ GET `/api/v2/ai-planning-status` yalnız yapılandırma durumunu oturum sahibine
 ## 28 Eylül 2026 — Teknik çalışma sırası normalizasyonu
 
 `validate_plan → normalize_technical_order → mevcut doz/gün/katalog denetimleri`: yalnız katalogda teknik olarak sınıflanan hareketler günün başına stabil olarak taşınır. `review.ordering_adjustments` ve `notes` türetilmiş açıklama alanlarıdır; kullanıcıya önizlemede gösterilir. Kanonik programın hareket/doz nesneleri korunur, yalnız sıra değişir; geçmiş planlar güncellenmez. Ayrıntı ve geri dönüş: `docs/AI_TECHNICAL_ORDER_FIX.md`.
+
+### 2026-09-28 — seans ilerlemesi / spor bağlamı
+
+- `features/workoutProgress.ts::plannedDays` Runner ve haftalık antrenman görünümünde aynı dönem/gün sınırlarını kullanır.
+- `execution.py`: completed → active açık kullanıcı isteğiyle yeniden açılır, ended_at temizlenir; mevcut set ve started_at korunur. Aynı seans+slot için ikinci canlı set yeni entity ile kabul edilmez.
+- `guided_choices.sport_ids` / `training_history` form kökenli isteğe bağlı bağlamdır. Varsayılanları [] / boş metin; AI sağlayıcısına yalnız form onayı kapsamında aktarılır. `sports.py` 199 katalog kimliğinin ortak doğrulamasıdır.
+- Running/swimming yöntemleri, endurance/technique hedefleri, Pool ekipmanı; `swim-{freestyle,backstroke,breaststroke,butterfly}` cardio kimlikleri (kas eşlemesi UNKNOWN). Bunlar program → reçete slotu → gerçek kayıt hattını paylaşır.
+- Ayrıntı, sınırlamalar, rollback ve test kanıtları: `docs/RUNNER_AND_SPORTS_REVISION.md`.

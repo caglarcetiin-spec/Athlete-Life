@@ -1,3 +1,4 @@
+import { plannedDays } from "./workoutProgress";
 import { useEffect, useState } from "react";
 import {
   ArrowLeft,
@@ -280,6 +281,42 @@ export function Scheduling({
           {displayDate(start)} — {displayDate(addDays(start, 6))}
         </span>
       </div>
+      <section className="card" aria-label="Haftalık antrenman planım">
+        <h2>Bu haftanın antrenmanları</h2>
+        {Array.from({ length: 7 }, (_, i) => {
+          const date = addDays(start, i);
+          const planned = plannedDays(
+            date,
+            store.view("program"),
+            store.view("program_day"),
+          );
+          const sessions = store
+            .view("session")
+            .filter((s) => s.local_date === date);
+          return (
+            <div className="record-row" key={date}>
+              <div>
+                <strong>{displayDate(date, true)}</strong>
+                <p>
+                  {planned.map((d) => String(d.label)).join(" · ") ||
+                    "Planlanmış çalışma yok"}
+                </p>
+                <small>
+                  {sessions.filter((s) => s.status === "completed").length}{" "}
+                  tamamlanan seans ·{" "}
+                  {
+                    sessions.filter((s) =>
+                      ["ready", "active", "paused"].includes(String(s.status)),
+                    ).length
+                  }{" "}
+                  devam eden seans
+                </small>
+              </div>
+              <a href={"?date=" + date + "#workout"}>Günü aç</a>
+            </div>
+          );
+        })}
+      </section>
       <div className="split">
         <section aria-label="Haftalık vardiyalar">
           {Array.from({ length: 7 }, (_, i) => {
