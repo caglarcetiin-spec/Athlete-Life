@@ -197,6 +197,14 @@ export function GuidedPlan({
     [ready, setReady] = useState(false),
     [busy, setBusy] = useState(false),
     [error, setError] = useState("");
+  const [retryAt, setRetryAt] = useState(0);
+  const [clock, setClock] = useState(Date.now());
+  useEffect(() => {
+    if (!retryAt) return;
+    const timer = window.setInterval(() => setClock(Date.now()), 1000);
+    return () => window.clearInterval(timer);
+  }, [retryAt]);
+  const retrySeconds = Math.max(0, Math.ceil((retryAt - clock) / 1000));
   const [options, setOptions] = useState<PlannerOption[]>([]);
   const [sportTraining, setSportTraining] = useState<SportTrainingProfile[]>(
     [],
@@ -456,7 +464,7 @@ export function GuidedPlan({
   }
   const capacityIssue = capacityError(answers.competencies, options);
   async function generate() {
-    if (busy) return;
+    if (busy || (engine === "ai" && retrySeconds > 0)) return;
     if (capacityIssue) {
       go(2);
       setError(capacityIssue);
@@ -516,6 +524,13 @@ export function GuidedPlan({
       setPreview(result);
       go(9);
     } catch (e) {
+      if (e instanceof ApiError && e.code === "ai_rate_limited") {
+        const seconds = Number(e.details.retry_after_seconds);
+        if (Number.isFinite(seconds) && seconds > 0) {
+          setClock(Date.now());
+          setRetryAt(Date.now() + seconds * 1000);
+        }
+      }
       if (e instanceof ApiError && e.code === "ai_no_candidates") {
         go(e.details.section === "competencies" ? 2 : 4);
       }
@@ -1719,7 +1734,10 @@ export function GuidedPlan({
             <ArrowRight size={18} />
           </button>
         ) : phase === 6 ? (
-          <button disabled={busy} onClick={() => void generate()}>
+          <button
+            disabled={busy || (engine === "ai" && retrySeconds > 0)}
+            onClick={() => void generate()}
+          >
             <Sparkles size={18} />
             {busy
               ? "Taslak hazırlanıyor…"
@@ -1736,10 +1754,17 @@ export function GuidedPlan({
           </button>
         )}
       </div>
+      {engine === "ai" && retrySeconds > 0 && (
+        <p>
+          Yeniden AI denemesi: {Math.floor(retrySeconds / 60)}:
+          {String(retrySeconds % 60).padStart(2, "0")} sonra. İstersen standart
+          taslağı hazırlayabilirsin.
+        </p>
+      )}
       {busy && engine === "ai" && (
         <p role="status">
-          AI taslağı hazırlanıyor. Yanıt yaklaşık 1–3 dakika sürebilir;
-          seçimlerin korunuyor.
+          AI taslağı hazırlanıyor ve kontrol ediliyor. Gerekirse bir kez
+          düzeltilecek; işlem 5 dakikaya kadar sürebilir. Seçimlerin korunuyor.
         </p>
       )}
     </section>

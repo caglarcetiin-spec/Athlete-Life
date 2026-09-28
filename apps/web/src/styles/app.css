@@ -1713,3 +1713,9 @@ button.secondary { transition: transform 0.18s; }
 .movement-library article > figure { margin: 16px 0; padding: 14px; border: 1px solid var(--line); border-radius: 16px; background: var(--tint); }
 .movement-library article > figure .muscle-map { width: 100%; max-height: 200px; color: var(--accent); }
 .movement-library figcaption { color: var(--muted); font-size: .8rem; margin-top: 8px; }
+
+/* Compact engine choices: radio controls must not inherit full-width text fields. */
+.planner-engine-options { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; min-width: 0; }
+.planner-engine-options > label.check { color: var(--ink); padding: 8px 10px; min-height: 44px; gap: 8px; margin: 0; font-size: 13px; }
+.planner-engine-options input[type="radio"] { flex: 0 0 18px; width: 18px; height: 18px; min-height: 18px; margin: 0; padding: 0; accent-color: var(--accent); }
+@media (max-width: 360px) { .planner-engine-options { grid-template-columns: 1fr; } }

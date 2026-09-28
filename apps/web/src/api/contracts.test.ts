@@ -41,3 +41,15 @@ it("keeps ordinary requests at 12 seconds and honors caller cancellation", async
   await api("ai-program-drafts", { signal });
   expect(fetcher.mock.calls[1][1].signal).toBe(signal);
 });
+
+it("allows one server-side repair while keeping progress review timeout unchanged", async () => {
+  const spy = vi.spyOn(AbortSignal, "timeout");
+  vi.stubGlobal(
+    "fetch",
+    vi.fn().mockImplementation(() => Promise.resolve(new Response("{}"))),
+  );
+  await api("ai-program-drafts");
+  expect(spy).toHaveBeenLastCalledWith(330000);
+  await api("ai-progress-review");
+  expect(spy).toHaveBeenLastCalledWith(180000);
+});

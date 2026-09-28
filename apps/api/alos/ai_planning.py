@@ -627,6 +627,7 @@ def validate_plan(plan, data, baseline, context, at: datetime, model, provider="
                     "ai_plan_invalid",
                     "AI tekrar, tutuş, dinlenme veya kapasite sınırlarını karşılamadı; taslak kabul edilmedi.",
                     502,
+                    {"weekday": old["weekday"], "movement_id": key, "prescription_rules": candidates[key].get("prescription_rules")},
                 )
             cost = (
                 item.sets * (item.seconds if item.seconds is not None else item.reps * 4)
@@ -684,7 +685,10 @@ def validate_plan(plan, data, baseline, context, at: datetime, model, provider="
             or skill_cost > min(900, data.minutes * 60 * 0.2)
         ):
             raise DomainError(
-                "ai_plan_invalid", "AI süre veya çalışma hacmi sınırını aştı; taslak kabul edilmedi.", 502
+                "ai_plan_invalid", "AI süre veya çalışma hacmi sınırını aştı; taslak kabul edilmedi.", 502,
+                {"weekday": old["weekday"], "used_seconds": used, "available_seconds": data.minutes * 60,
+                 "sets": sets, "max_sets": cap, "skill_count": skills, "max_skills": 2,
+                 "skill_seconds": skill_cost, "max_skill_seconds": min(900, data.minutes * 60 * 0.2)}
             )
         index = sorted(data.weekdays).index(old["weekday"])
         kind = (
@@ -798,3 +802,36 @@ def validate_plan(plan, data, baseline, context, at: datetime, model, provider="
             *plan.limitations,
         ],
     }
+
+
+def generate_validated(settings, data, baseline, context, at, before_call):
+    """At most one repair; no retry of transport, quota, access or refusal errors."""
+    configuration = status(settings)
+    current = context
+    for attempt in range(2):
+        before_call()  # Every provider call consumes the global spend guard.
+        try:
+            plan = call_provider(settings, current)
+            result = validate_plan(plan, data, baseline, context, at,
+                                   configuration["model"], configuration["provider"])
+            if attempt:
+                result["notes"].append("AI taslağı doğrulama sonrası bir kez yeniden hazırlandı ve kontrol edildi.")
+            return result
+        except (DomainError, ValidationError) as exc:
+            if isinstance(exc, DomainError) and (
+                exc.code not in {"ai_plan_invalid", "ai_invalid_response"}
+                or exc.details.get("reason") == "refusal"
+            ):
+                raise
+            message = str(exc) if isinstance(exc, DomainError) else "Plan alanları kayıt şemasına uymadı."
+            if attempt:
+                raise DomainError("ai_draft_rejected",
+                    "AI taslağı bir düzeltme denemesinden sonra da doğrulanamadı. " + message +
+                    " Başarılı plan hakkın kullanılmadı; mevcut planın ve seçimlerin korundu.",
+                    502, {"repair_attempted": True}) from None
+            # Only fixed server validation text is sent, never exception payloads or account data.
+            current = {**context, "validation_feedback": {
+                "instruction": "Rebuild the complete draft. Correct the validation failure; all original constraints still apply. Use reference_draft as a starting point, then verify each dose and the total budget.",
+                "failure": message,
+                "constraints": exc.details if isinstance(exc, DomainError) else {},
+            }}

@@ -2,6 +2,7 @@
 
 from datetime import timedelta
 from hashlib import sha256
+from math import ceil
 from secrets import compare_digest, token_urlsafe
 
 from sqlalchemy import delete, select
@@ -49,8 +50,32 @@ def rate_limit(database, key, limit=10):
             attempt.count, attempt.reset_at = 0, now + timedelta(minutes=15)
         attempt.count += 1
         exceeded = attempt.count > limit
+        reset_at = attempt.reset_at
     if exceeded:
-        raise DomainError("rate_limited", "Çok fazla deneme. 15 dakika sonra tekrar dene.", 429)
+        seconds = max(1, ceil((reset_at - now).total_seconds()))
+        raise DomainError("rate_limited", f"Kullanım sınırına ulaşıldı. {ceil(seconds / 60)} dakika sonra tekrar dene.", 429,
+                          {"retry_after_seconds": seconds})
+    return reset_at
+
+
+@retry_transaction
+def release_rate_slot(database, key, reset_at):
+    """Release only this reservation's window; never reset another request/window."""
+    with database.sessions.begin() as db:
+        attempt = db.get(LoginAttempt, token_hash(key), with_for_update=True)
+        if attempt and attempt.reset_at == reset_at:
+            attempt.count = max(0, attempt.count - 1)
+
+
+def ai_rate_limit(database, key, limit):
+    try:
+        return rate_limit(database, key, limit)
+    except DomainError as exc:
+        if exc.code != "rate_limited":
+            raise
+        seconds = exc.details["retry_after_seconds"]
+        raise DomainError("ai_rate_limited", f"AI kullanım sınırına ulaşıldı. Yaklaşık {ceil(seconds / 60)} dakika sonra yeniden deneyebilirsin. Form seçimlerin korundu.",
+                          429, exc.details) from None
 
 
 @retry_transaction

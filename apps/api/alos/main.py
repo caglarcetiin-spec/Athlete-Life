@@ -658,7 +658,7 @@ def create_app(settings: Settings | None = None):
     async def ai_program_draft(request: Request):
         from starlette.concurrency import run_in_threadpool
 
-        from .ai_planning import AIRequest, call_provider, prepare, require_consent, status, validate_plan
+        from .ai_planning import AIRequest, generate_validated, prepare, require_consent, status
         from .db import utcnow
 
         identity = who(request, True)
@@ -710,20 +710,19 @@ def create_app(settings: Settings | None = None):
                 "Planlama bağlamı hazırlanamadı. Form seçimlerin korundu; bu bir sunucu doğrulama hatasıdır.",
                 502,
             ) from None
-        auth.rate_limit(database, "ai-user:" + identity["athlete_id"], settings.ai_user_limit)
-        auth.rate_limit(database, "ai-global", settings.ai_global_limit)
-        result = await run_in_threadpool(call_provider, settings, context)
-        configuration = status(settings)
+        # Failed drafts do not consume the successful-plan allowance. Separate
+        # bounded attempts and global call limits still cap concurrent/paid work.
+        auth.ai_rate_limit(database, "ai-plan-attempt:" + identity["athlete_id"], max(6, settings.ai_user_limit * 2))
+        key = "ai-user:" + identity["athlete_id"]
+        reservation = auth.ai_rate_limit(database, key, settings.ai_user_limit)
         try:
-            return validate_plan(
-                result, data, baseline, context, at, configuration["model"], configuration["provider"]
+            return await run_in_threadpool(
+                generate_validated, settings, data, baseline, context, at,
+                lambda: auth.ai_rate_limit(database, "ai-global", settings.ai_global_limit),
             )
-        except ValidationError:
-            raise DomainError(
-                "ai_invalid_response",
-                "AI yanıtı programın kayıt biçimine uymadı. Form seçimlerin korundu; yeniden taslak hazırlayabilirsin.",
-                502,
-            ) from None
+        except Exception:
+            auth.release_rate_slot(database, key, reservation)
+            raise
 
     @app.get("/api/v2/ai-progress-status")
     def ai_progress_status(request: Request):

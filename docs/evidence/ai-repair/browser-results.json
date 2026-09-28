@@ -1,0 +1,9 @@
+{
+  "result": "PASS",
+  "checks": [
+    "Compact 18px radio, 44px touch target, mobile/desktop Axe; quota countdown disables AI only and permits retry after expiry; generated plan opens populated editor"
+  ],
+  "errors": [],
+  "browser": "154.0.8037.57",
+  "provider": "synthetic"
+}

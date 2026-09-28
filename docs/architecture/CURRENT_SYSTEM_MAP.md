@@ -232,3 +232,9 @@ GET `/api/v2/ai-planning-status` yalnız yapılandırma durumunu oturum sahibine
 - `quantities` / `QuantityInput`: görünür saniye/dakika/saat ve metre/km → mevcut seconds, duration_seconds, rest_seconds, distance_m kanonik alanları. GuidedPlan, Programming, Records/Workouts, DurationPreview aynı dönüşümü kullanır; Reports okunabilir birimleri gösterir. Yeni antrenman veri alanı yoktur.
 - `lifestyle.CapabilityInput.unit=h` → `capability_series` saniye normalizasyonu (×3600); özgün ölçüm birimi/değeri saklanır. Yeni tablo veya veri göçü yoktur.
 - [Kapsam, test, yayın ve geri alma](../METRIC_UNITS.md).
+
+## 2026-09-28 — AI taslak düzeltmesi ve sınırlı yeniden deneme
+
+- `ai_planning.generate_validated`: aynı onaylı bağlam + geçici validation_feedback ile en fazla bir düzeltme, her sonuç aynı validate_plan hattında. Yeni saklanan program alanı yok.
+- `auth.rate_limit` rezervasyon pencere zamanını döndürür; `release_rate_slot` yalnız aynı pencerenin kotasını iade eder. `ai_rate_limit` geçici `retry_after_seconds` döndürür; GuidedPlan geri sayım gösterir. Global çağrı ve ayrı kullanıcı deneme sınırı korunur.
+- [Kapsam, test, tüketim, yayın ve geri alma](../AI_DRAFT_REPAIR.md).
