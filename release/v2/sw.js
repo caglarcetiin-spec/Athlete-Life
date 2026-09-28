@@ -1,5 +1,5 @@
 
-const CACHE='alos-shell-e3b1dfda493c0a30',FILES=["/index.html","/manifest.webmanifest","/app-icon.svg","/assets/index-BB1-cr2i.css","/assets/index-iCNTQlZt.js","/assets/BodyModel-D5SiP5oO.js"];
+const CACHE='alos-shell-adb07955c8d84ee5',FILES=["/index.html","/manifest.webmanifest","/app-icon.svg","/assets/index-BB1-cr2i.css","/assets/index-BchZpfCo.js","/assets/BodyModel-CQRGqOIZ.js"];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(FILES))));
 self.addEventListener('message',event=>{if(event.data?.type==='ACTIVATE_UPDATE')self.skipWaiting(); if(event.data?.type==='GET_VERSION')event.ports?.[0]?.postMessage(CACHE)});
 self.addEventListener('activate',event=>event.waitUntil((async()=>{const names=(await caches.keys()).filter(name=>name.startsWith('alos-shell-'));const keep=new Set([CACHE,...names.filter(name=>name!==CACHE).slice(-2)]);await Promise.all(names.filter(name=>!keep.has(name)).map(name=>caches.delete(name)));await self.clients.claim()})()));

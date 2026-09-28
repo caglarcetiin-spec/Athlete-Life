@@ -253,7 +253,13 @@ def test_generated_schema_error_does_not_blame_form(client, app, monkeypatch):
     app.state.settings.ai_provider = "evren"
     app.state.settings.evren_api_key = SecretStr("synthetic-key")
     app.state.settings.evren_model = "synthetic-model"
-    monkeypatch.setattr(ai, "call_provider", lambda *_: reply(data()))
+    calls = []
+
+    def provider(*_args):
+        calls.append(1)
+        return reply(data())
+
+    monkeypatch.setattr(ai, "call_provider", provider)
 
     def invalid(*_args):
         ProgramInput.model_validate({"name": "private-output"})
@@ -264,7 +270,9 @@ def test_generated_schema_error_does_not_blame_form(client, app, monkeypatch):
         json=data(consent=ai.EVREN_CONSENT).model_dump(mode="json"),
     )
     assert response.status_code == 502
-    assert response.json()["error"]["code"] == "ai_invalid_response"
+    assert response.json()["error"]["code"] == "ai_draft_rejected"
+    assert response.json()["error"]["details"]["repair_attempted"] is True
+    assert len(calls) == 2
     assert "private-output" not in response.text
     assert client.get("/api/v2/bootstrap").json()["programs"] == []
 

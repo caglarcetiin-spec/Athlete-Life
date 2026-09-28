@@ -39,6 +39,7 @@ import type { PlanDraft } from "./Programming";
 import { today } from "../time";
 import { type PlanningPrefs, equipmentOptions } from "./PlanningPreferences";
 import { capacityError, capacityMaximum } from "./planningCapacity";
+import { missingSportNotes, unknownSportNotes } from "./sportExperience";
 
 const groups: Record<string, string> = {
   chest: "Göğüs",
@@ -333,7 +334,14 @@ export function GuidedPlan({
               saved.form_version === 2 &&
                 !changedIntake &&
                 !intakeError(saved.answers.athlete_context)
-                ? Math.min(saved.step || 0, saved.answers.region_mode ? 8 : 6)
+                ? Math.min(
+                    saved.step || 0,
+                    missingSportNotes(saved.answers).length
+                      ? 2
+                      : saved.answers.region_mode
+                        ? 8
+                        : 6,
+                  )
                 : 0,
             );
           } else {
@@ -444,22 +452,24 @@ export function GuidedPlan({
           ? 2
           : 1;
   const valid =
-    phase === 0
-      ? !intakeError(answers.athlete_context) &&
-        (answers.athlete_context.training_months !== 0 ||
-          answers.experience === "new")
-      : phase === 1
-        ? !!answers.goal.trim()
-        : phase === 3
-          ? answers.weekdays.length > 0 && answers.weekdays.length <= 6
-          : phase === 5
-            ? answers.weekdays.length >= minDays
-            : phase === 6
-              ? !!answers.name.trim() && !!answers.start_date
-              : step === 1
-                ? answers.methods.length > 0 &&
-                  (!branchMode || answers.sport_ids.length > 0)
-                : true;
+    step === 2
+      ? missingSportNotes(answers).length === 0
+      : phase === 0
+        ? !intakeError(answers.athlete_context) &&
+          (answers.athlete_context.training_months !== 0 ||
+            answers.experience === "new")
+        : phase === 1
+          ? !!answers.goal.trim()
+          : phase === 3
+            ? answers.weekdays.length > 0 && answers.weekdays.length <= 6
+            : phase === 5
+              ? answers.weekdays.length >= minDays
+              : phase === 6
+                ? !!answers.name.trim() && !!answers.start_date
+                : step === 1
+                  ? answers.methods.length > 0 &&
+                    (!branchMode || answers.sport_ids.length > 0)
+                  : true;
   const environmentOptions = Array.from(
     new Map([
       ...(isRunning ? runningEquipment : []),
@@ -517,6 +527,10 @@ export function GuidedPlan({
     update(toggleBranchMethod(answers, sport, method));
   }
   const capacityIssue = capacityError(answers.competencies, options);
+  const missingNotes = missingSportNotes(answers);
+  const notesIssue = missingNotes.length
+    ? `Devam etmek için şu branşlarda teknik ve performans bilgini tamamla: ${missingNotes.map((id) => sports.find((s) => s.id === id)?.name || id).join(", ")}. Bilgin yoksa ilgili kutunun altındaki seçeneği kullanabilirsin.`
+    : "";
   async function generate() {
     if (intakeError(answers.athlete_context)) {
       setError(intakeError(answers.athlete_context));
@@ -524,6 +538,11 @@ export function GuidedPlan({
       return;
     }
     if (busy || (engine === "ai" && retrySeconds > 0)) return;
+    if (notesIssue) {
+      go(2);
+      setError(notesIssue);
+      return;
+    }
     if (capacityIssue) {
       go(2);
       setError(capacityIssue);
@@ -941,15 +960,15 @@ export function GuidedPlan({
                   ],
                 });
               return (
-                <details key={id} className="card">
+                <details key={id} className="card" open>
                   <summary>
                     {sports.find((s) => s.id === id)?.name || id} · branşa özgü
                     deneyimim
                   </summary>
                   <p>
                     Bu branştaki geçmişin diğer sporlardaki yeterliğinden ayrı
-                    değerlendirilir. Alanları boş bırakırsan bilinmiyor olarak
-                    kalır.
+                    değerlendirilir. Sayısal alanlar isteğe bağlıdır; boş
+                    bıraktıkların bilinmiyor olarak kalır.
                   </p>
                   <label>
                     Bu branştaki seviyem
@@ -1022,14 +1041,52 @@ export function GuidedPlan({
                     ))}
                   </div>
                   <label>
-                    Bildiğin teknikler ve takip ettiğin performans
+                    Bildiğin teknikler ve takip ettiğin performans (gerekli)
                     <textarea
+                      required
+                      aria-describedby={`skills-help-${id}`}
+                      aria-label={`${sports.find((s) => s.id === id)?.name || id}: Bildiğin teknikler ve takip ettiğin performans`}
                       maxLength={500}
                       value={entry?.known_skills || ""}
                       onChange={(e) => change({ known_skills: e.target.value })}
                       placeholder="Örneğin serbest yüzme, 100 m sürem; boksta bildiğim teknikler…"
                     />
                   </label>
+                  <div className="notice" id={`skills-help-${id}`}>
+                    <strong>
+                      Önemli: AI planını sana göre hazırlamak için bu bilgiyi
+                      kullanır.
+                    </strong>
+                    <p>
+                      Bildiğin teknikleri ve varsa güncel tekrar, süre, mesafe
+                      veya temponu yaz. AI ile hazırlamayı seçip son adımda onay
+                      verdiğinde bu notlar{" "}
+                      {aiStatus?.provider === "EVREN"
+                        ? "EVREN’e"
+                        : aiStatus?.provider === "OpenAI"
+                          ? "OpenAI’ye"
+                          : "AI sağlayıcısına"}{" "}
+                      gönderilir; hareket seçimi, zorluk ve gelişim önerileri
+                      için değerlendirilir.
+                    </p>
+                    <p>
+                      Örnek: “6 kontrollü barfiks yapıyorum, halkada L tutuşum
+                      10 saniye” veya “30 dakika kesintisiz koşuyorum, tempomu
+                      henüz ölçmedim”. Bilmiyorsan sayı tahmin etme.
+                      Yapabildiğin hareketleri aşağıdaki listeden de işaretle.
+                    </p>
+                  </div>
+                  {!entry?.known_skills?.trim() && (
+                    <button
+                      type="button"
+                      className="secondary small"
+                      onClick={() =>
+                        change({ known_skills: unknownSportNotes })
+                      }
+                    >
+                      Henüz teknik veya performans bilgim yok
+                    </button>
+                  )}
                 </details>
               );
             })}
@@ -1759,8 +1816,9 @@ export function GuidedPlan({
                     Yaş, boy, kilo, cinsiyet, spor geçmişi ve bu formda
                     paylaştığın isteğe bağlı döngü bilgileri gönderilir. Hesap
                     kimliğin, şifren ve diğer kayıtlı sağlık geçmişin
-                    gönderilmez. Serbest hedef alanına yazdıkların gönderilir;
-                    buraya kimlik veya özel sağlık bilgisi yazma.
+                    gönderilmez. Hedef, spor geçmişi ve branşlara yazdığın
+                    teknik/performans notları da gönderilir; buraya kimlik veya
+                    özel sağlık bilgisi yazma.
                   </p>
                   <label className="check">
                     <input
@@ -1952,9 +2010,9 @@ export function GuidedPlan({
             </p>
           </>
         )}
-        {((step === 2 && capacityIssue) || error) && (
+        {((step === 2 && (capacityIssue || notesIssue)) || error) && (
           <p className="error" role="alert">
-            {(step === 2 && capacityIssue) || error}
+            {(step === 2 && (capacityIssue || notesIssue)) || error}
           </p>
         )}
       </fieldset>

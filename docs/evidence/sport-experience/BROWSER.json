@@ -1,0 +1,10 @@
+{
+  "blankAndWhitespaceBlocked": true,
+  "eachSportRequired": true,
+  "explicitUnknownAccepted": true,
+  "notesSurviveReload": true,
+  "notesInAIRequest": true,
+  "editorOpened": true,
+  "accessibilityViolations": [],
+  "errors": []
+}

@@ -276,3 +276,13 @@ Yeni `GuidedChoices.progression_mode` (repeat/phased, eski veri default repeat) 
 - `features/catalogVisuals.ts`: explicit canonical movement ID → original SVG pose template/reference. Unsupported special techniques remain unavailable; sport practice headings do not inherit generic strength forms. `MovementGuide.tsx` reuses this for library and movement help, with interactive canonical muscle keys and an illustrated-only filter.
 - `region_scope.py` owns body group membership and strength/skill/isometric primary-target filtering. `GuidedChoices.region_mode` (`priority` legacy default; `selected` UI default) is saved under `Program.decisions.guided_choices` and included in the AI allowlist (`ai-planner-12`). Positive `focus` values activate selected scope; zero/unselected regions never become obligations. Conditioning/branch technique preserve their own semantics. Both deterministic generation and AI validation use the same day/candidate scope.
 - No account, media or primary-data migration. Additional JSON enum only; retain the additive reader on rollback. See `docs/LIBRARY_REGION_FIX.md` and `docs/evidence/stage-9/library_regions_*` for tests, constraints and deployment scope.
+
+## 2026-09-28: Branş teknik/performans notlarının AI akışı
+
+Mevcut `sport_experience[].known_skills` ve `training_history` → `GuidedPlan`
+isteği → `ai_planning.prepare` izinli bağlamı → EVREN kullanıcı JSON mesajı →
+onaylı programın `decisions.guided_choices` alanı. Yeni sihirbaz her seçili branş
+için boş olmayan not veya açık bilinmiyor yanıtı ister; eski API kayıtları
+uyumluluk için boş notla okunur. `ai-planner-13` metnin kullanımını ve belirsizlik
+sınırını açıklar; katalog/kapasite sınırları korunur. Şema veya veri göçü yok.
+Detay ve kanıt: [SPORT_EXPERIENCE_NOTES](../SPORT_EXPERIENCE_NOTES.md).

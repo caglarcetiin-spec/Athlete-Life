@@ -58,6 +58,7 @@ class AIOrigin(StrictModel):
         "ai-planner-10",
         "ai-planner-11",
         "ai-planner-12",
+        "ai-planner-13",
     ]
     generated_at: datetime
     summary: str = Field(min_length=1, max_length=1500)
