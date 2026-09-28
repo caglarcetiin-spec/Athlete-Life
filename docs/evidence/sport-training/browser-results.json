@@ -1,0 +1,11 @@
+{
+  "result": "PASS",
+  "checks": [
+    "selected-branch techniques only; prerequisites and choices survive reload",
+    "synthetic EVREN response through real validation endpoint; timed branch rounds; prefilled final editor",
+    "recorded technique seconds appear in branch report without invented muscle values"
+  ],
+  "errors": [],
+  "browser": "154.0.8037.57",
+  "provider": "synthetic"
+}

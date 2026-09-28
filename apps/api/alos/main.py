@@ -627,9 +627,16 @@ def create_app(settings: Settings | None = None):
         from .planner_catalog import VERSION, options
 
         who(request)
+        from .sport_training import METHODS, coverage
         from .sports import categorized_sports
 
-        return {"version": VERSION, "movements": options(), "sports": categorized_sports()}
+        return {
+            "version": VERSION,
+            "movements": options(),
+            "sports": categorized_sports(),
+            "sport_training": coverage(),
+            "training_methods": METHODS,
+        }
 
     @app.post("/api/v2/guided-program-drafts")
     async def guided_program_draft(request: Request):

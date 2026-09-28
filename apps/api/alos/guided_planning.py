@@ -50,7 +50,9 @@ class Competency(StrictModel):
 
         if self.movement_id not in META:
             raise ValueError("Yetkinlik için katalogdan hareket seç.")
-        metric = "seconds" if BY_ID[self.movement_id]["modality"] in ("isometric", "cardio") else "reps"
+        metric = (
+            "seconds" if BY_ID[self.movement_id]["modality"] in ("isometric", "cardio", "circuit") else "reps"
+        )
         if metric == "seconds" and self.reps is not None or metric != "seconds" and self.seconds is not None:
             raise ValueError("Tutuş saniyesi ile tekrar sayısını karıştırma.")
         if (
@@ -71,26 +73,61 @@ class SportExperience(StrictModel):
     known_skills: str = Field(default="", max_length=500)
 
 
+class SportReadiness(StrictModel):
+    sport_id: str
+    environment_ready: bool = False
+    coach_present: bool = False
+    partner_available: bool = False
+
+
 class GuidedChoices(StrictModel):
+    sport_readiness: list[SportReadiness] = Field(default_factory=list, max_length=20)
     sport_ids: list[str] = Field(default_factory=list, max_length=20)
     sport_experience: list[SportExperience] = Field(default_factory=list, max_length=20)
     training_history: str = Field(default="", max_length=1000)
     experience: Literal["new", "returning", "regular", "advanced"]
-    objective: Literal["strength", "hypertrophy", "strength_hypertrophy", "endurance", "technique"]
+    objective: Literal["strength", "hypertrophy", "strength_hypertrophy", "endurance", "technique", "power"]
     equipment: list[str] = Field(max_length=50)
     weekdays: list[int] = Field(min_length=1, max_length=6)
     minutes: int = Field(ge=15, le=180)
-    split: Literal["full_body", "upper_lower", "push_pull_legs"]
+    split: Literal["full_body", "upper_lower", "push_pull_legs", "sport_days"]
     focus: dict[str, int] = Field(default_factory=dict)
     goal: str = Field(min_length=1, max_length=1000)
-    methods: list[Literal["weights", "calisthenics", "gymnastics", "conditioning", "running", "swimming"]] = (
-        Field(default_factory=lambda: ["weights"], min_length=1, max_length=6)
-    )
+    methods: list[
+        Literal[
+            "weights",
+            "calisthenics",
+            "gymnastics",
+            "conditioning",
+            "running",
+            "swimming",
+            "sport_technique",
+            "sport_practice",
+            "sport_tactics",
+            "explosive_power",
+        ]
+    ] = Field(default_factory=lambda: ["weights"], min_length=1, max_length=10)
     competencies: list[Competency] = Field(default_factory=list, max_length=100)
     conditioning_minutes: int = Field(default=10, ge=5, le=45)
 
     @model_validator(mode="after")
     def validate_choices(self):
+        from .sport_training import sport_mode
+
+        readiness_ids = [s.sport_id for s in self.sport_readiness]
+        if len(set(readiness_ids)) != len(readiness_ids) or set(readiness_ids) - set(self.sport_ids):
+            raise ValueError("Ortam bilgisi seçili branşlara birer kez eklenebilir.")
+        if sport_mode(self):
+            if not self.sport_ids:
+                raise ValueError("Branş çalışması için önce branş seç.")
+            if self.split != "sport_days":
+                raise ValueError("Branş çalışmasında 'Branş günleri' düzenini seç.")
+            if len(self.sport_ids) > len(self.weekdays):
+                raise ValueError(
+                    "Her branş için haftada en az bir çalışma günü ayır veya branş sayısını azalt."
+                )
+        elif self.split == "sport_days":
+            raise ValueError("Branş günleri için teknik, uygulama veya taktik yöntemi seç.")
         ids = [s.sport_id for s in self.sport_experience]
         if len(ids) != len(set(ids)) or any(s not in self.sport_ids for s in ids):
             raise ValueError("Branş deneyimi yalnız seçili branşlara ve birer kez eklenebilir.")
@@ -107,7 +144,7 @@ class GuidedChoices(StrictModel):
             {c.movement_id for c in self.competencies}
         ) != len(self.competencies):
             raise ValueError("Yöntem ve yetkinlikler tekil olmalı.")
-        minimum = {"full_body": 1, "upper_lower": 2, "push_pull_legs": 3}[self.split]
+        minimum = {"full_body": 1, "upper_lower": 2, "push_pull_legs": 3, "sport_days": 1}[self.split]
         if len(self.weekdays) < minimum:
             raise ValueError("Seçtiğin çalışma düzeni için yeterli gün yok.")
         return self
@@ -123,6 +160,7 @@ class GuidedRequest(GuidedChoices):
 
 def generate(data, snapshot, as_of):
     from .planner_catalog import FAMILY_LABELS, META, VERSION
+    from .sport_training import exclusion, sport_mode
 
     baseline = draft_with_context(
         DraftRequest(
@@ -150,7 +188,7 @@ def generate(data, snapshot, as_of):
     excluded = []
     pool = []
     for key, meta in META.items():
-        reason = (
+        reason = exclusion(data, key) or (
             "Tercihlerin dışında"
             if key in dislikes
             else "Seçilen yöntemlere ait değil"
@@ -165,6 +203,10 @@ def generate(data, snapshot, as_of):
             excluded.append({"movement_id": key, "reason": reason})
         else:
             pool.append(key)
+    if sport_mode(data):
+        from .sport_program import generate_sport_program
+
+        return generate_sport_program(data, baseline, choices, pool, excluded, allowed, snapshot, as_of)
     notes = [
         "Seçilen branşlar: " + ", ".join(BY_SPORT[s]["name"] for s in data.sport_ids),
         "Branş hedefi AI bağlamına aktarılır. Otomatik hareket kapsamı seçili yöntemler ve yetkinlik kataloğuyla sınırlıdır; diğer branşların özel tekniklerini manuel ekleyebilirsin.",
@@ -239,7 +281,7 @@ def generate(data, snapshot, as_of):
             "legs": [],
         }[kind]
         expected = families[:4] if kind in ("full_body", "upper") else families[:2]
-        if set(data.methods) <= ENDURANCE_METHODS:
+        if set(data.methods) <= ENDURANCE_METHODS | {"explosive_power"}:
             families, extras, expected = [], [], []
         limit = data.minutes * 60
         used = 480 if data.minutes >= 30 else 300
@@ -275,7 +317,7 @@ def generate(data, snapshot, as_of):
             rest = 150 if block == "main" else 90
             if data.objective == "strength" and block == "main":
                 rest = 180
-            if block == "skill":
+            if block in ("skill", "power"):
                 sets = 2
                 reps = 3
                 rest = 120
@@ -293,7 +335,7 @@ def generate(data, snapshot, as_of):
                 "name": label(key),
                 "catalog_version": definition["catalog_version"],
                 "modality": "skill"
-                if block == "skill" and definition["modality"] != "isometric"
+                if block in ("skill", "power") and definition["modality"] != "isometric"
                 else definition["modality"],
                 "equipment": ", ".join(definition["equipment"]),
                 "load_kind": definition["load_kind"],
@@ -301,7 +343,7 @@ def generate(data, snapshot, as_of):
                 "sets": sets,
                 "reps": reps,
                 "seconds": seconds,
-                "rir": None if definition["modality"] == "isometric" or block == "skill" else 3,
+                "rir": None if definition["modality"] == "isometric" or block in ("skill", "power") else 3,
                 "rest_seconds": rest,
                 "set_kind": "working",
             }, cost
@@ -342,9 +384,9 @@ def generate(data, snapshot, as_of):
         skill_start = used
         for key in sorted(pool, key=rank):
             if (
-                META[key]["block"] == "skill"
-                and family(key) in skill_families
-                and len([e for e in selected if META[e["movement_id"]]["block"] == "skill"]) < 2
+                META[key]["block"] in ("skill", "power")
+                and (family(key) in skill_families or META[key]["block"] == "power")
+                and len([e for e in selected if META[e["movement_id"]]["block"] in ("skill", "power")]) < 2
             ):
                 add(key, min(strength_limit, skill_start + skill_budget))
         missing_families = []
@@ -476,7 +518,9 @@ def generate(data, snapshot, as_of):
             "health_context": baseline["health_context"],
             "meaning": "Haftalık kuvvet setlerinin katalog katsayılarıyla dağılımı. Teknik tutuş ve kondisyon bu toplama katılmaz; büyüme/hasar ölçümü değildir.",
             "duration_assumptions": "5–8 dk hazırlık + tekrar başına 4 sn veya hedef tutuş süresi + belirtilen dinlenmeler + hareket başına 60 sn geçiş. Gerçek süre değişebilir.",
-            "skill_sets": sum(e["sets"] for e in all_planned if META[e["movement_id"]]["block"] == "skill"),
+            "skill_sets": sum(
+                e["sets"] for e in all_planned if META[e["movement_id"]]["block"] in ("skill", "power")
+            ),
             "isometric_seconds": sum(
                 e["sets"] * (e.get("seconds") or 0) for e in all_planned if e["modality"] == "isometric"
             ),

@@ -5,6 +5,8 @@ import re
 import unicodedata
 from pathlib import Path
 
+from .sport_training import DEFINITIONS as SPORT_DEFINITIONS
+
 VERSION = "movement-catalog-2"
 DEFINITIONS = json.loads((Path(__file__).parent / "catalogs/movements.json").read_text())
 
@@ -14,6 +16,8 @@ def normalize(value):
     value = unicodedata.normalize("NFKD", value)
     return re.sub(r"[^a-z0-9]", "", value)
 
+
+DEFINITIONS.update({d["id"]: d for d in SPORT_DEFINITIONS})
 
 BY_ID = {d["id"]: d for d in DEFINITIONS.values()}
 ALIASES = {}

@@ -1,0 +1,5214 @@
+{
+  "version": "sport-training-1",
+  "profiles": {
+    "strength": {
+      "sport_id": "strength",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Kuvvet antrenmanı için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "2b595c6f25",
+          "name": "Çömelme tekniği"
+        },
+        {
+          "key": "930199df24",
+          "name": "Kalça menteşesi tekniği"
+        },
+        {
+          "key": "fafe5a4bf6",
+          "name": "İtiş ve çekiş tekniği"
+        }
+      ]
+    },
+    "calisthenics": {
+      "sport_id": "calisthenics",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Kalistenik için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "057db13ca7",
+          "name": "Skapula kontrolü"
+        },
+        {
+          "key": "df08b3553a",
+          "name": "Bar üzerinde tutuş ve salınım kontrolü"
+        },
+        {
+          "key": "9ace6fef77",
+          "name": "Gövde pozisyonu çalışması"
+        }
+      ]
+    },
+    "bodybuilding": {
+      "sport_id": "bodybuilding",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Vücut geliştirme için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "2b595c6f25",
+          "name": "Çömelme tekniği"
+        },
+        {
+          "key": "930199df24",
+          "name": "Kalça menteşesi tekniği"
+        },
+        {
+          "key": "fafe5a4bf6",
+          "name": "İtiş ve çekiş tekniği"
+        }
+      ]
+    },
+    "powerlifting": {
+      "sport_id": "powerlifting",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Powerlifting için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "b39193a87a",
+          "name": "Squat yarışma komutları"
+        },
+        {
+          "key": "7c26991192",
+          "name": "Bench press duraklatma tekniği"
+        },
+        {
+          "key": "1087c3f26c",
+          "name": "Deadlift kilitleme tekniği"
+        }
+      ]
+    },
+    "weightlifting": {
+      "sport_id": "weightlifting",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Halter için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "e01081788d",
+          "name": "Koparma çekiş yolu"
+        },
+        {
+          "key": "dfff3686ad",
+          "name": "Silkmede ön raf pozisyonu"
+        },
+        {
+          "key": "f877d17693",
+          "name": "Jerk ayak yerleşimi"
+        }
+      ]
+    },
+    "strongman": {
+      "sport_id": "strongman",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Strongman için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "d83981082c",
+          "name": "Farmer walk dönüş tekniği"
+        },
+        {
+          "key": "b5e2e35268",
+          "name": "Log press yerleşimi"
+        },
+        {
+          "key": "4baf2b2cac",
+          "name": "Taş kaldırmada pozisyon analizi"
+        }
+      ]
+    },
+    "functional-fitness": {
+      "sport_id": "functional-fitness",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Fonksiyonel fitness için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "2b595c6f25",
+          "name": "Çömelme tekniği"
+        },
+        {
+          "key": "930199df24",
+          "name": "Kalça menteşesi tekniği"
+        },
+        {
+          "key": "fafe5a4bf6",
+          "name": "İtiş ve çekiş tekniği"
+        }
+      ]
+    },
+    "kettlebell": {
+      "sport_id": "kettlebell",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Kettlebell sporu için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "112c165b8b",
+          "name": "Swing kalça menteşesi"
+        },
+        {
+          "key": "ac843c22ae",
+          "name": "Clean raf pozisyonu"
+        },
+        {
+          "key": "c78659e133",
+          "name": "Snatch el geçişi"
+        }
+      ]
+    },
+    "arm-wrestling": {
+      "sport_id": "arm-wrestling",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Bilek güreşi için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "3e0c3d3be5",
+          "name": "Masa başında başlangıç pozisyonu"
+        },
+        {
+          "key": "941ee7790b",
+          "name": "Tutuş yerleşimi"
+        },
+        {
+          "key": "8a7d4debce",
+          "name": "Hakem komutlarına tepki"
+        }
+      ]
+    },
+    "running": {
+      "sport_id": "running",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Koşu için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "d7a8def29e",
+          "name": "Koşu duruşu"
+        },
+        {
+          "key": "d9ac5d457c",
+          "name": "Ritim ve kadans çalışması"
+        },
+        {
+          "key": "83f1151647",
+          "name": "Kontrollü hızlanma tekniği"
+        }
+      ]
+    },
+    "trail-running": {
+      "sport_id": "trail-running",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Patika koşusu için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "d7a8def29e",
+          "name": "Koşu duruşu"
+        },
+        {
+          "key": "d9ac5d457c",
+          "name": "Ritim ve kadans çalışması"
+        },
+        {
+          "key": "83f1151647",
+          "name": "Kontrollü hızlanma tekniği"
+        }
+      ]
+    },
+    "track-running": {
+      "sport_id": "track-running",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Pist koşusu için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "d7a8def29e",
+          "name": "Koşu duruşu"
+        },
+        {
+          "key": "d9ac5d457c",
+          "name": "Ritim ve kadans çalışması"
+        },
+        {
+          "key": "83f1151647",
+          "name": "Kontrollü hızlanma tekniği"
+        }
+      ]
+    },
+    "race-walking": {
+      "sport_id": "race-walking",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Sportif yürüyüş için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "8b519b7c74",
+          "name": "Adım ritmi"
+        },
+        {
+          "key": "00c08be7d1",
+          "name": "Kol salınımı"
+        },
+        {
+          "key": "6baa08ec33",
+          "name": "Ayak basış kontrolü"
+        }
+      ]
+    },
+    "walking": {
+      "sport_id": "walking",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Yürüyüş için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "8b519b7c74",
+          "name": "Adım ritmi"
+        },
+        {
+          "key": "00c08be7d1",
+          "name": "Kol salınımı"
+        },
+        {
+          "key": "6baa08ec33",
+          "name": "Ayak basış kontrolü"
+        }
+      ]
+    },
+    "road-cycling": {
+      "sport_id": "road-cycling",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Yol bisikleti için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "770bc573ae",
+          "name": "Pedal çevirme ritmi"
+        },
+        {
+          "key": "84c5429fbe",
+          "name": "Vites ve kadans geçişi"
+        },
+        {
+          "key": "aca8efc524",
+          "name": "Sürüş pozisyonu"
+        }
+      ]
+    },
+    "track-cycling": {
+      "sport_id": "track-cycling",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Pist bisikleti için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "770bc573ae",
+          "name": "Pedal çevirme ritmi"
+        },
+        {
+          "key": "84c5429fbe",
+          "name": "Vites ve kadans geçişi"
+        },
+        {
+          "key": "aca8efc524",
+          "name": "Sürüş pozisyonu"
+        }
+      ]
+    },
+    "mountain-bike": {
+      "sport_id": "mountain-bike",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Dağ bisikleti için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "931289030c",
+          "name": "Frenleme tekniği"
+        },
+        {
+          "key": "5c73746615",
+          "name": "Viraj çizgisi"
+        },
+        {
+          "key": "beace0b007",
+          "name": "Engel öncesi ağırlık aktarımı"
+        }
+      ]
+    },
+    "indoor-cycling": {
+      "sport_id": "indoor-cycling",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Salon bisikleti için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "770bc573ae",
+          "name": "Pedal çevirme ritmi"
+        },
+        {
+          "key": "84c5429fbe",
+          "name": "Vites ve kadans geçişi"
+        },
+        {
+          "key": "aca8efc524",
+          "name": "Sürüş pozisyonu"
+        }
+      ]
+    },
+    "rowing": {
+      "sport_id": "rowing",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Kürek için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "14af8f6d2f",
+          "name": "Bacak-gövde-kol çekiş sırası"
+        },
+        {
+          "key": "355d876aba",
+          "name": "Catch pozisyonu"
+        },
+        {
+          "key": "d6e5709768",
+          "name": "Recovery fazı ritmi"
+        }
+      ]
+    },
+    "indoor-rowing": {
+      "sport_id": "indoor-rowing",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Kürek ergometresi için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "14af8f6d2f",
+          "name": "Bacak-gövde-kol çekiş sırası"
+        },
+        {
+          "key": "355d876aba",
+          "name": "Catch pozisyonu"
+        },
+        {
+          "key": "d6e5709768",
+          "name": "Recovery fazı ritmi"
+        }
+      ]
+    },
+    "triathlon": {
+      "sport_id": "triathlon",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Triatlon için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "32c55b85c9",
+          "name": "Yüzme yön bulma"
+        },
+        {
+          "key": "d4a3ae6111",
+          "name": "Bisiklet-koşu geçişi"
+        },
+        {
+          "key": "0274e35366",
+          "name": "Geçiş alanı düzeni"
+        }
+      ]
+    },
+    "duathlon": {
+      "sport_id": "duathlon",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Duatlon için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "67268292da",
+          "name": "Koşu-bisiklet geçişi"
+        },
+        {
+          "key": "d4a3ae6111",
+          "name": "Bisiklet-koşu geçişi"
+        },
+        {
+          "key": "0274e35366",
+          "name": "Geçiş alanı düzeni"
+        }
+      ]
+    },
+    "aquathlon": {
+      "sport_id": "aquathlon",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Akuatlon için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "5da2ab58b4",
+          "name": "Yüzme-koşu geçişi"
+        },
+        {
+          "key": "32c55b85c9",
+          "name": "Yüzme yön bulma"
+        },
+        {
+          "key": "d768aed3f8",
+          "name": "Koşu ritmi"
+        }
+      ]
+    },
+    "modern-pentathlon": {
+      "sport_id": "modern-pentathlon",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Modern pentatlon için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "07b4340c6e",
+          "name": "Engel parkuru teknik analizi"
+        },
+        {
+          "key": "8a581bdec5",
+          "name": "Yüzme teknik çalışması"
+        },
+        {
+          "key": "76abf70c78",
+          "name": "Laser-run geçiş analizi"
+        }
+      ]
+    },
+    "athletics-jumps": {
+      "sport_id": "athletics-jumps",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Atletizm atlamaları için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "4a72c531c0",
+          "name": "Yaklaşma koşusu ritmi"
+        },
+        {
+          "key": "3f84df43c8",
+          "name": "Sıçrama basış tekniği"
+        },
+        {
+          "key": "d8cb4511a3",
+          "name": "İniş pozisyonu"
+        }
+      ]
+    },
+    "athletics-throws": {
+      "sport_id": "athletics-throws",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Atletizm atışları için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "00f953d2cd",
+          "name": "Tutuş ve başlangıç pozisyonu"
+        },
+        {
+          "key": "315ad6170f",
+          "name": "Atışa hazırlık adımları"
+        },
+        {
+          "key": "7b3da5b0a4",
+          "name": "Atış sonrası denge"
+        }
+      ]
+    },
+    "combined-athletics": {
+      "sport_id": "combined-athletics",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Çoklu atletizm için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "1e940c6b44",
+          "name": "Koşu başlangıç tekniği"
+        },
+        {
+          "key": "096b5ee1fa",
+          "name": "Atlama yaklaşma ritmi"
+        },
+        {
+          "key": "447e39f4d2",
+          "name": "Atış tekniği analizi"
+        }
+      ]
+    },
+    "swimming": {
+      "sport_id": "swimming",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Havuz yüzmesi için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "194ffdc104",
+          "name": "Serbest kulaç koordinasyonu"
+        },
+        {
+          "key": "57155917a0",
+          "name": "Sırtüstü kulaç koordinasyonu"
+        },
+        {
+          "key": "6b5d1c0c34",
+          "name": "Kurbağalama koordinasyonu"
+        }
+      ]
+    },
+    "open-water": {
+      "sport_id": "open-water",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Açık su yüzmesi için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "194ffdc104",
+          "name": "Serbest kulaç koordinasyonu"
+        },
+        {
+          "key": "57155917a0",
+          "name": "Sırtüstü kulaç koordinasyonu"
+        },
+        {
+          "key": "6b5d1c0c34",
+          "name": "Kurbağalama koordinasyonu"
+        }
+      ]
+    },
+    "artistic-swimming": {
+      "sport_id": "artistic-swimming",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Artistik yüzme için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "fe2ad418c8",
+          "name": "Sculling el hareketi"
+        },
+        {
+          "key": "8a41c64fa2",
+          "name": "Eggbeater su üstünde denge"
+        },
+        {
+          "key": "a75c710bc1",
+          "name": "Rutin sayım çalışması"
+        }
+      ]
+    },
+    "diving": {
+      "sport_id": "diving",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": false,
+      "adaptation_required": false,
+      "environment": "Atlama için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "36fe8be239",
+          "name": "Tramplen yaklaşma ritmi"
+        },
+        {
+          "key": "0f80d2875a",
+          "name": "Sıçrama duruşu"
+        },
+        {
+          "key": "9556effef8",
+          "name": "Giriş pozisyonu analizi"
+        }
+      ]
+    },
+    "water-polo": {
+      "sport_id": "water-polo",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Su topu için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "cae23e72a7",
+          "name": "Eggbeater ayak çalışması"
+        },
+        {
+          "key": "ea08f936da",
+          "name": "Tek elle pas"
+        },
+        {
+          "key": "09666e8983",
+          "name": "Şut öncesi gövde yerleşimi"
+        }
+      ]
+    },
+    "canoe-sprint": {
+      "sport_id": "canoe-sprint",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Kano sprint için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "214bf8b10d",
+          "name": "İleri kürek çekişi"
+        },
+        {
+          "key": "2483386dd4",
+          "name": "Süpürme çekişi"
+        },
+        {
+          "key": "ca030bc21d",
+          "name": "Dümenleme tekniği"
+        }
+      ]
+    },
+    "canoe-slalom": {
+      "sport_id": "canoe-slalom",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Kano slalom için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "260cf69935",
+          "name": "Kapıya yaklaşma çizgisi"
+        },
+        {
+          "key": "1a2280b0de",
+          "name": "Eddy dönüşü analizi"
+        },
+        {
+          "key": "52f6d155fd",
+          "name": "Çapraz akıntı geçişi analizi"
+        }
+      ]
+    },
+    "sea-kayak": {
+      "sport_id": "sea-kayak",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Deniz kayağı için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "214bf8b10d",
+          "name": "İleri kürek çekişi"
+        },
+        {
+          "key": "2483386dd4",
+          "name": "Süpürme çekişi"
+        },
+        {
+          "key": "ca030bc21d",
+          "name": "Dümenleme tekniği"
+        }
+      ]
+    },
+    "rafting": {
+      "sport_id": "rafting",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Rafting için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "ace9fb1f61",
+          "name": "Kürek komutları"
+        },
+        {
+          "key": "1f0ab704e3",
+          "name": "Ekip çekiş koordinasyonu"
+        },
+        {
+          "key": "55cc52afcc",
+          "name": "Rota okuma"
+        }
+      ]
+    },
+    "sailing": {
+      "sport_id": "sailing",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Yelken için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "849f19707a",
+          "name": "Yelken trim analizi"
+        },
+        {
+          "key": "63c1620627",
+          "name": "Tramola sırası"
+        },
+        {
+          "key": "699646033c",
+          "name": "Kavança sırası"
+        }
+      ]
+    },
+    "windsurfing": {
+      "sport_id": "windsurfing",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Rüzgâr sörfü için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "fb33cc1f08",
+          "name": "Yelken dengesi"
+        },
+        {
+          "key": "1ff6e43115",
+          "name": "Tramola ayak yerleşimi"
+        },
+        {
+          "key": "177fcc223e",
+          "name": "Rüzgâr açısı okuma"
+        }
+      ]
+    },
+    "kitesurfing": {
+      "sport_id": "kitesurfing",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": false,
+      "adaptation_required": false,
+      "environment": "Uçurtma sörfü için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "8c597109ef",
+          "name": "Uçurtma kontrol alanı analizi"
+        },
+        {
+          "key": "23a167785f",
+          "name": "Kalkış prosedürü analizi"
+        },
+        {
+          "key": "c8729542aa",
+          "name": "Kıyı ve rüzgâr değerlendirmesi"
+        }
+      ]
+    },
+    "surfing": {
+      "sport_id": "surfing",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Dalga sörfü için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "77e1ea0f32",
+          "name": "Tahta üzerinde kürek çekişi"
+        },
+        {
+          "key": "9cc2222bb8",
+          "name": "Karada pop-up tekniği"
+        },
+        {
+          "key": "cc297f5c90",
+          "name": "Dalga seçimi analizi"
+        }
+      ]
+    },
+    "sup": {
+      "sport_id": "sup",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Ayakta kürek için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "214bf8b10d",
+          "name": "İleri kürek çekişi"
+        },
+        {
+          "key": "352571d5ab",
+          "name": "Süpürme dönüşü"
+        },
+        {
+          "key": "3b9a5fa01c",
+          "name": "Ayakta denge"
+        }
+      ]
+    },
+    "water-ski": {
+      "sport_id": "water-ski",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Su kayağı için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "af62ffd56f",
+          "name": "Başlangıç duruşu"
+        },
+        {
+          "key": "6b700a00b9",
+          "name": "Kenar kontrolü"
+        },
+        {
+          "key": "547bc8710f",
+          "name": "Halat hattı pozisyonu"
+        }
+      ]
+    },
+    "wakeboard": {
+      "sport_id": "wakeboard",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Wakeboard için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "af62ffd56f",
+          "name": "Başlangıç duruşu"
+        },
+        {
+          "key": "6b700a00b9",
+          "name": "Kenar kontrolü"
+        },
+        {
+          "key": "547bc8710f",
+          "name": "Halat hattı pozisyonu"
+        }
+      ]
+    },
+    "scuba": {
+      "sport_id": "scuba",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": false,
+      "adaptation_required": false,
+      "environment": "Tüplü dalış için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "ce60b85cd8",
+          "name": "Eş kontrolü prosedürü"
+        },
+        {
+          "key": "ee73daf601",
+          "name": "Ekipman tanıma"
+        },
+        {
+          "key": "87e268b50b",
+          "name": "Dalış planı değerlendirmesi"
+        }
+      ]
+    },
+    "freediving": {
+      "sport_id": "freediving",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": false,
+      "adaptation_required": false,
+      "environment": "Serbest dalış için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "8793c4ee78",
+          "name": "Eş güvenlik prosedürü"
+        },
+        {
+          "key": "3a0bef288b",
+          "name": "Kurtarma protokolü teorisi"
+        },
+        {
+          "key": "d1fcf04946",
+          "name": "Ekipman kontrolü"
+        }
+      ]
+    },
+    "finswimming": {
+      "sport_id": "finswimming",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Paletli yüzme için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "2021a47cd1",
+          "name": "Palet vuruş ritmi"
+        },
+        {
+          "key": "dbd2d1cf6f",
+          "name": "Gövde hizası"
+        },
+        {
+          "key": "43b6a6ee97",
+          "name": "Yüzey dönüş tekniği"
+        }
+      ]
+    },
+    "lifesaving": {
+      "sport_id": "lifesaving",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Cankurtarma sporu için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "fb4efac672",
+          "name": "Kurtarma ekipmanı tanıma"
+        },
+        {
+          "key": "bcb42658fb",
+          "name": "Kurtarma senaryosu analizi"
+        },
+        {
+          "key": "610bf4b0c4",
+          "name": "Ekip iletişimi"
+        }
+      ]
+    },
+    "football": {
+      "sport_id": "football",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [
+        "https://www.fifatrainingcentre.com/en/practice/technical-activation/technical-activation-circuit-1.php"
+      ],
+      "terminology_status": "reference_linked",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Futbol için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Takım / eşli oyun uygulaması",
+      "techniques": [
+        {
+          "key": "ad7bb25dc6",
+          "name": "İlk dokunuş kontrolü"
+        },
+        {
+          "key": "9385ad3afa",
+          "name": "Kısa pas"
+        },
+        {
+          "key": "08ab070c54",
+          "name": "Top sürme"
+        },
+        {
+          "key": "931c07cc23",
+          "name": "Şut tekniği"
+        }
+      ]
+    },
+    "futsal": {
+      "sport_id": "futsal",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Futsal için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Takım / eşli oyun uygulaması",
+      "techniques": [
+        {
+          "key": "ad7bb25dc6",
+          "name": "İlk dokunuş kontrolü"
+        },
+        {
+          "key": "9385ad3afa",
+          "name": "Kısa pas"
+        },
+        {
+          "key": "08ab070c54",
+          "name": "Top sürme"
+        },
+        {
+          "key": "931c07cc23",
+          "name": "Şut tekniği"
+        }
+      ]
+    },
+    "beach-soccer": {
+      "sport_id": "beach-soccer",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Plaj futbolu için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Takım / eşli oyun uygulaması",
+      "techniques": [
+        {
+          "key": "ad7bb25dc6",
+          "name": "İlk dokunuş kontrolü"
+        },
+        {
+          "key": "9385ad3afa",
+          "name": "Kısa pas"
+        },
+        {
+          "key": "08ab070c54",
+          "name": "Top sürme"
+        },
+        {
+          "key": "931c07cc23",
+          "name": "Şut tekniği"
+        }
+      ]
+    },
+    "basketball": {
+      "sport_id": "basketball",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Basketbol için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Takım / eşli oyun uygulaması",
+      "techniques": [
+        {
+          "key": "08ab070c54",
+          "name": "Top sürme"
+        },
+        {
+          "key": "a55af68ed1",
+          "name": "Göğüs pası"
+        },
+        {
+          "key": "2e2341a40b",
+          "name": "Turnike adımları"
+        },
+        {
+          "key": "a7870f11e3",
+          "name": "Şut ayak yerleşimi"
+        }
+      ]
+    },
+    "basketball-3x3": {
+      "sport_id": "basketball-3x3",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "3x3 basketbol için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Takım / eşli oyun uygulaması",
+      "techniques": [
+        {
+          "key": "08ab070c54",
+          "name": "Top sürme"
+        },
+        {
+          "key": "a55af68ed1",
+          "name": "Göğüs pası"
+        },
+        {
+          "key": "2e2341a40b",
+          "name": "Turnike adımları"
+        },
+        {
+          "key": "a7870f11e3",
+          "name": "Şut ayak yerleşimi"
+        }
+      ]
+    },
+    "volleyball": {
+      "sport_id": "volleyball",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Voleybol için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Takım / eşli oyun uygulaması",
+      "techniques": [
+        {
+          "key": "5f637c9bf2",
+          "name": "Manşet pas"
+        },
+        {
+          "key": "942b4d79ec",
+          "name": "Parmak pas"
+        },
+        {
+          "key": "34cfe364d1",
+          "name": "Servis atışı"
+        },
+        {
+          "key": "ad5bfc9faf",
+          "name": "Blok ayak çalışması"
+        }
+      ]
+    },
+    "beach-volleyball": {
+      "sport_id": "beach-volleyball",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Plaj voleybolu için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Takım / eşli oyun uygulaması",
+      "techniques": [
+        {
+          "key": "5f637c9bf2",
+          "name": "Manşet pas"
+        },
+        {
+          "key": "942b4d79ec",
+          "name": "Parmak pas"
+        },
+        {
+          "key": "34cfe364d1",
+          "name": "Servis atışı"
+        },
+        {
+          "key": "ad5bfc9faf",
+          "name": "Blok ayak çalışması"
+        }
+      ]
+    },
+    "handball": {
+      "sport_id": "handball",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Hentbol için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Takım / eşli oyun uygulaması",
+      "techniques": [
+        {
+          "key": "850e886912",
+          "name": "Pas ve top alma"
+        },
+        {
+          "key": "08ab070c54",
+          "name": "Top sürme"
+        },
+        {
+          "key": "bd316aba89",
+          "name": "Şut adımları"
+        }
+      ]
+    },
+    "beach-handball": {
+      "sport_id": "beach-handball",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Plaj hentbolu için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Takım / eşli oyun uygulaması",
+      "techniques": [
+        {
+          "key": "850e886912",
+          "name": "Pas ve top alma"
+        },
+        {
+          "key": "08ab070c54",
+          "name": "Top sürme"
+        },
+        {
+          "key": "bd316aba89",
+          "name": "Şut adımları"
+        }
+      ]
+    },
+    "rugby-union": {
+      "sport_id": "rugby-union",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Ragbi union için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Takım / eşli oyun uygulaması",
+      "techniques": [
+        {
+          "key": "da9c298455",
+          "name": "İki elle pas"
+        },
+        {
+          "key": "2c8a417c7b",
+          "name": "Top taşıma"
+        },
+        {
+          "key": "20bac14677",
+          "name": "Destek koşusu çizgisi"
+        }
+      ]
+    },
+    "rugby-sevens": {
+      "sport_id": "rugby-sevens",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Yedili ragbi için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Takım / eşli oyun uygulaması",
+      "techniques": [
+        {
+          "key": "da9c298455",
+          "name": "İki elle pas"
+        },
+        {
+          "key": "2c8a417c7b",
+          "name": "Top taşıma"
+        },
+        {
+          "key": "20bac14677",
+          "name": "Destek koşusu çizgisi"
+        }
+      ]
+    },
+    "rugby-league": {
+      "sport_id": "rugby-league",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Ragbi league için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Takım / eşli oyun uygulaması",
+      "techniques": [
+        {
+          "key": "da9c298455",
+          "name": "İki elle pas"
+        },
+        {
+          "key": "2c8a417c7b",
+          "name": "Top taşıma"
+        },
+        {
+          "key": "20bac14677",
+          "name": "Destek koşusu çizgisi"
+        }
+      ]
+    },
+    "american-football": {
+      "sport_id": "american-football",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Amerikan futbolu için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Takım / eşli oyun uygulaması",
+      "techniques": [
+        {
+          "key": "bb8dc39d8a",
+          "name": "Top yakalama"
+        },
+        {
+          "key": "7d9d4a3078",
+          "name": "Rota koşusu"
+        },
+        {
+          "key": "dd81a839f5",
+          "name": "Pas atış tekniği"
+        }
+      ]
+    },
+    "flag-football": {
+      "sport_id": "flag-football",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Bayrak futbolu için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Takım / eşli oyun uygulaması",
+      "techniques": [
+        {
+          "key": "bb8dc39d8a",
+          "name": "Top yakalama"
+        },
+        {
+          "key": "7d9d4a3078",
+          "name": "Rota koşusu"
+        },
+        {
+          "key": "dd81a839f5",
+          "name": "Pas atış tekniği"
+        }
+      ]
+    },
+    "baseball": {
+      "sport_id": "baseball",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Beyzbol için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Takım / eşli oyun uygulaması",
+      "techniques": [
+        {
+          "key": "bb8dc39d8a",
+          "name": "Top yakalama"
+        },
+        {
+          "key": "6959d8a58a",
+          "name": "Atış mekaniği"
+        },
+        {
+          "key": "33426903e0",
+          "name": "Vuruş duruşu"
+        }
+      ]
+    },
+    "softball": {
+      "sport_id": "softball",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Softbol için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Takım / eşli oyun uygulaması",
+      "techniques": [
+        {
+          "key": "bb8dc39d8a",
+          "name": "Top yakalama"
+        },
+        {
+          "key": "6959d8a58a",
+          "name": "Atış mekaniği"
+        },
+        {
+          "key": "33426903e0",
+          "name": "Vuruş duruşu"
+        }
+      ]
+    },
+    "cricket": {
+      "sport_id": "cricket",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Kriket için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Takım / eşli oyun uygulaması",
+      "techniques": [
+        {
+          "key": "33426903e0",
+          "name": "Vuruş duruşu"
+        },
+        {
+          "key": "3b257610b1",
+          "name": "Bowling yaklaşma ritmi"
+        },
+        {
+          "key": "2f8c2f3950",
+          "name": "Alan savunmasında top toplama"
+        }
+      ]
+    },
+    "field-hockey": {
+      "sport_id": "field-hockey",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Çim hokeyi için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Takım / eşli oyun uygulaması",
+      "techniques": [
+        {
+          "key": "08ab070c54",
+          "name": "Top sürme"
+        },
+        {
+          "key": "4f04dad3e6",
+          "name": "İtiş pası"
+        },
+        {
+          "key": "bfc1fa0c04",
+          "name": "Top karşılama"
+        }
+      ]
+    },
+    "floorball": {
+      "sport_id": "floorball",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Floorball için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Takım / eşli oyun uygulaması",
+      "techniques": [
+        {
+          "key": "08ab070c54",
+          "name": "Top sürme"
+        },
+        {
+          "key": "4f04dad3e6",
+          "name": "İtiş pası"
+        },
+        {
+          "key": "bfc1fa0c04",
+          "name": "Top karşılama"
+        }
+      ]
+    },
+    "lacrosse": {
+      "sport_id": "lacrosse",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Lakros için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Takım / eşli oyun uygulaması",
+      "techniques": [
+        {
+          "key": "637b0fa0ae",
+          "name": "Cradling top kontrolü"
+        },
+        {
+          "key": "ef78c2e364",
+          "name": "Pas atışı"
+        },
+        {
+          "key": "bb8dc39d8a",
+          "name": "Top yakalama"
+        }
+      ]
+    },
+    "ultimate": {
+      "sport_id": "ultimate",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Ultimate frizbi için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Takım / eşli oyun uygulaması",
+      "techniques": [
+        {
+          "key": "8ad5828543",
+          "name": "Backhand pas"
+        },
+        {
+          "key": "c580601867",
+          "name": "Forehand pas"
+        },
+        {
+          "key": "9d81a43af5",
+          "name": "Disk yakalama"
+        }
+      ]
+    },
+    "netball": {
+      "sport_id": "netball",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Netbol için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Takım / eşli oyun uygulaması",
+      "techniques": [
+        {
+          "key": "dc1937d8a9",
+          "name": "Pas ve yakalama"
+        },
+        {
+          "key": "9003f4d0a7",
+          "name": "Pivot ayak kontrolü"
+        },
+        {
+          "key": "6723d79980",
+          "name": "Şut yerleşimi"
+        }
+      ]
+    },
+    "korfball": {
+      "sport_id": "korfball",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Korfbol için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Takım / eşli oyun uygulaması",
+      "techniques": [
+        {
+          "key": "dc1937d8a9",
+          "name": "Pas ve yakalama"
+        },
+        {
+          "key": "9003f4d0a7",
+          "name": "Pivot ayak kontrolü"
+        },
+        {
+          "key": "6723d79980",
+          "name": "Şut yerleşimi"
+        }
+      ]
+    },
+    "kabaddi": {
+      "sport_id": "kabaddi",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Kabaddi için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Takım / eşli oyun uygulaması",
+      "techniques": [
+        {
+          "key": "c8421e1e96",
+          "name": "Raid ayak çalışması"
+        },
+        {
+          "key": "a6a946655c",
+          "name": "Saha çizgisi farkındalığı"
+        },
+        {
+          "key": "1551a32a81",
+          "name": "Savunma dizilişi"
+        }
+      ]
+    },
+    "australian-football": {
+      "sport_id": "australian-football",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Avustralya futbolu için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Takım / eşli oyun uygulaması",
+      "techniques": [
+        {
+          "key": "bd94d627b1",
+          "name": "Handball el pası"
+        },
+        {
+          "key": "2cc8c91fb0",
+          "name": "Drop punt tekniği"
+        },
+        {
+          "key": "ac29cb634c",
+          "name": "Mark top yakalama"
+        }
+      ]
+    },
+    "gaelic-football": {
+      "sport_id": "gaelic-football",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Gaelik futbol için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Takım / eşli oyun uygulaması",
+      "techniques": [
+        {
+          "key": "789848bf36",
+          "name": "Solo top taşıma"
+        },
+        {
+          "key": "314d197e12",
+          "name": "El pası"
+        },
+        {
+          "key": "74551e19b4",
+          "name": "Ayak pası"
+        }
+      ]
+    },
+    "hurling": {
+      "sport_id": "hurling",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Hurling için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Takım / eşli oyun uygulaması",
+      "techniques": [
+        {
+          "key": "081fe6290e",
+          "name": "Sliotar yerden alma"
+        },
+        {
+          "key": "b98b77c3a6",
+          "name": "Hurley üzerinde top dengesi"
+        },
+        {
+          "key": "fc63b1c85f",
+          "name": "Vuruş yerleşimi"
+        }
+      ]
+    },
+    "tennis": {
+      "sport_id": "tennis",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Tenis için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Eşli ralliler",
+      "techniques": [
+        {
+          "key": "2bb687f2a0",
+          "name": "Forehand"
+        },
+        {
+          "key": "c6ce71f609",
+          "name": "Backhand"
+        },
+        {
+          "key": "64ad80262d",
+          "name": "Servis atış yerleşimi"
+        },
+        {
+          "key": "05814e6bae",
+          "name": "Vole"
+        }
+      ]
+    },
+    "table-tennis": {
+      "sport_id": "table-tennis",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Masa tenisi için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Eşli ralliler",
+      "techniques": [
+        {
+          "key": "bf7452b66e",
+          "name": "Forehand drive"
+        },
+        {
+          "key": "49c806aa1e",
+          "name": "Backhand drive"
+        },
+        {
+          "key": "ba6b74bd3c",
+          "name": "Servis karşılama"
+        },
+        {
+          "key": "ee53d743c3",
+          "name": "Ayak yerleşimi"
+        }
+      ]
+    },
+    "badminton": {
+      "sport_id": "badminton",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Badminton için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Eşli ralliler",
+      "techniques": [
+        {
+          "key": "0bdb43300a",
+          "name": "Forehand clear"
+        },
+        {
+          "key": "61053d9656",
+          "name": "Drop vuruşu"
+        },
+        {
+          "key": "b032ddca00",
+          "name": "File önü vuruşu"
+        },
+        {
+          "key": "da8f806935",
+          "name": "Split step"
+        }
+      ]
+    },
+    "squash": {
+      "sport_id": "squash",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Squash için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Eşli ralliler",
+      "techniques": [
+        {
+          "key": "cdff5e5486",
+          "name": "Düz drive"
+        },
+        {
+          "key": "c074e58d7a",
+          "name": "Boast"
+        },
+        {
+          "key": "19d3241d45",
+          "name": "T pozisyonuna dönüş"
+        }
+      ]
+    },
+    "padel": {
+      "sport_id": "padel",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Padel için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Eşli ralliler",
+      "techniques": [
+        {
+          "key": "05814e6bae",
+          "name": "Vole"
+        },
+        {
+          "key": "b4598fcee6",
+          "name": "Camdan dönen top"
+        },
+        {
+          "key": "ba6b74bd3c",
+          "name": "Servis karşılama"
+        }
+      ]
+    },
+    "pickleball": {
+      "sport_id": "pickleball",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Pickleball için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Eşli ralliler",
+      "techniques": [
+        {
+          "key": "ebc5cba699",
+          "name": "Dink"
+        },
+        {
+          "key": "b16fe556be",
+          "name": "Servis"
+        },
+        {
+          "key": "f9538a3417",
+          "name": "Üçüncü vuruş drop"
+        }
+      ]
+    },
+    "racquetball": {
+      "sport_id": "racquetball",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Raketbol için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Eşli ralliler",
+      "techniques": [
+        {
+          "key": "2bb687f2a0",
+          "name": "Forehand"
+        },
+        {
+          "key": "c6ce71f609",
+          "name": "Backhand"
+        },
+        {
+          "key": "ba6b74bd3c",
+          "name": "Servis karşılama"
+        }
+      ]
+    },
+    "beach-tennis": {
+      "sport_id": "beach-tennis",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Plaj tenisi için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Eşli ralliler",
+      "techniques": [
+        {
+          "key": "05814e6bae",
+          "name": "Vole"
+        },
+        {
+          "key": "b16fe556be",
+          "name": "Servis"
+        },
+        {
+          "key": "2a502eddf2",
+          "name": "Smash yerleşimi"
+        }
+      ]
+    },
+    "boxing": {
+      "sport_id": "boxing",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [
+        "https://www.englandboxing.org/news_articles/level-1-and-level-2-coaching-course-handbooks-now-available-online/"
+      ],
+      "terminology_status": "reference_linked",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Boks için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Partnerli teknik raunt",
+      "techniques": [
+        {
+          "key": "c3250f9fbb",
+          "name": "Gard ve duruş"
+        },
+        {
+          "key": "eab8aa8a1a",
+          "name": "İleri geri ayak çalışması"
+        },
+        {
+          "key": "ba93802c7e",
+          "name": "Jab"
+        },
+        {
+          "key": "1fc0e7076b",
+          "name": "Cross"
+        },
+        {
+          "key": "abbc6112ad",
+          "name": "Jab-cross kombinasyonu"
+        },
+        {
+          "key": "c0e099df30",
+          "name": "Slip savunması"
+        },
+        {
+          "key": "86d46933d5",
+          "name": "Pivot"
+        },
+        {
+          "key": "b0b0280b25",
+          "name": "Gölge boksu"
+        }
+      ]
+    },
+    "kickboxing": {
+      "sport_id": "kickboxing",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Kickboks için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Partnerli teknik raunt",
+      "techniques": [
+        {
+          "key": "adfffbfba0",
+          "name": "Gard ve mesafe"
+        },
+        {
+          "key": "009d60ce05",
+          "name": "Jab-cross"
+        },
+        {
+          "key": "91cdcd7bf5",
+          "name": "Round kick"
+        },
+        {
+          "key": "abf2debca8",
+          "name": "Front kick"
+        },
+        {
+          "key": "cf89c1920b",
+          "name": "Blok sonrası karşılık"
+        },
+        {
+          "key": "35c0c24040",
+          "name": "Gölge kombinasyonu"
+        }
+      ]
+    },
+    "muay-thai": {
+      "sport_id": "muay-thai",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Muay Thai için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Partnerli teknik raunt",
+      "techniques": [
+        {
+          "key": "239a6929ea",
+          "name": "Gard ve denge"
+        },
+        {
+          "key": "7f6cd69371",
+          "name": "Teep"
+        },
+        {
+          "key": "91cdcd7bf5",
+          "name": "Round kick"
+        },
+        {
+          "key": "34ef16790a",
+          "name": "Diz vuruşu tekniği"
+        },
+        {
+          "key": "f6af3770f6",
+          "name": "Check savunması"
+        },
+        {
+          "key": "36575574d4",
+          "name": "Clinch duruşu"
+        }
+      ]
+    },
+    "mma": {
+      "sport_id": "mma",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Karma dövüş sanatları için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Partnerli teknik raunt",
+      "techniques": [
+        {
+          "key": "b412babf2b",
+          "name": "Gard ve ayak çalışması"
+        },
+        {
+          "key": "876713d81b",
+          "name": "Seviye değiştirme"
+        },
+        {
+          "key": "27ab25cd46",
+          "name": "Duvar pozisyonu analizi"
+        },
+        {
+          "key": "588ec1556c",
+          "name": "Yer-ayakta geçiş tekniği"
+        }
+      ]
+    },
+    "judo": {
+      "sport_id": "judo",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [
+        "https://www.britishjudo.org.uk/get-started/grading/kyu-grade-scheme/"
+      ],
+      "terminology_status": "reference_linked",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Judo için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Partnerli teknik raunt",
+      "techniques": [
+        {
+          "key": "70de030c24",
+          "name": "Ushiro ukemi"
+        },
+        {
+          "key": "ad5bef75a2",
+          "name": "Yoko ukemi"
+        },
+        {
+          "key": "fd292af707",
+          "name": "Tai sabaki"
+        },
+        {
+          "key": "b763dfb163",
+          "name": "Kuzushi"
+        },
+        {
+          "key": "a2424a8439",
+          "name": "De ashi barai giriş çalışması"
+        },
+        {
+          "key": "1f69318fb9",
+          "name": "O soto gari giriş çalışması"
+        }
+      ]
+    },
+    "karate": {
+      "sport_id": "karate",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [
+        "https://www.jka.or.jp/en/about-jka/techniques/"
+      ],
+      "terminology_status": "reference_linked",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Karate için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Partnerli teknik raunt",
+      "techniques": [
+        {
+          "key": "4490151746",
+          "name": "Kihon duruş geçişi"
+        },
+        {
+          "key": "ef736de98c",
+          "name": "Oi zuki"
+        },
+        {
+          "key": "f00495c919",
+          "name": "Gyaku zuki"
+        },
+        {
+          "key": "e1aa44ae5d",
+          "name": "Gedan barai"
+        },
+        {
+          "key": "4add54c836",
+          "name": "Age uke"
+        },
+        {
+          "key": "5ec64aac81",
+          "name": "Mae geri"
+        },
+        {
+          "key": "9dc97a147a",
+          "name": "Mawashi geri"
+        },
+        {
+          "key": "1024e2326b",
+          "name": "Bilinen kata bölümü"
+        },
+        {
+          "key": "3eeeb1435a",
+          "name": "Kumite mesafe çalışması"
+        }
+      ]
+    },
+    "taekwondo": {
+      "sport_id": "taekwondo",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [
+        "https://www.kukkiwon.or.kr/eng/board/read?boardManagementNo=56&boardNo=1368&menuLevel=3&menuNo=73&page=1"
+      ],
+      "terminology_status": "reference_linked",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Tekvando için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Partnerli teknik raunt",
+      "techniques": [
+        {
+          "key": "2f126dfd5e",
+          "name": "Temel duruş geçişi"
+        },
+        {
+          "key": "c49592fc2a",
+          "name": "Ap chagi"
+        },
+        {
+          "key": "b5915c80a9",
+          "name": "Dollyeo chagi"
+        },
+        {
+          "key": "333e36477e",
+          "name": "Yeop chagi"
+        },
+        {
+          "key": "1992b245ba",
+          "name": "Arae makki"
+        },
+        {
+          "key": "b1e231ba3c",
+          "name": "Momtong makki"
+        },
+        {
+          "key": "232f5740a2",
+          "name": "Bilinen poomsae bölümü"
+        },
+        {
+          "key": "3a949763a9",
+          "name": "Kyorugi ayak çalışması"
+        }
+      ]
+    },
+    "wrestling": {
+      "sport_id": "wrestling",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [
+        "https://content.themat.com/usawrestling/free_level2.php"
+      ],
+      "terminology_status": "reference_linked",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Güreş için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Partnerli teknik raunt",
+      "techniques": [
+        {
+          "key": "07b9531d42",
+          "name": "Güreş duruşu"
+        },
+        {
+          "key": "876713d81b",
+          "name": "Seviye değiştirme"
+        },
+        {
+          "key": "445f2c41b1",
+          "name": "Penetration step"
+        },
+        {
+          "key": "b685ff0800",
+          "name": "Sprawl tekniği"
+        },
+        {
+          "key": "e57ec98f07",
+          "name": "Pummeling"
+        },
+        {
+          "key": "54bea9f864",
+          "name": "Single-leg giriş çalışması"
+        },
+        {
+          "key": "4dad94fc52",
+          "name": "Double-leg giriş çalışması"
+        },
+        {
+          "key": "7e62e5a7ec",
+          "name": "Stand-up kaçış tekniği"
+        }
+      ]
+    },
+    "bjj": {
+      "sport_id": "bjj",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [
+        "https://events.uaejjf.org/en/files/qbnf/191"
+      ],
+      "terminology_status": "reference_linked",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Brezilya jiu-jitsu için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Partnerli teknik raunt",
+      "techniques": [
+        {
+          "key": "907d630997",
+          "name": "Hip escape (shrimp)"
+        },
+        {
+          "key": "780a665674",
+          "name": "Technical stand-up"
+        },
+        {
+          "key": "c82ff03a89",
+          "name": "Bridge and roll"
+        },
+        {
+          "key": "36f466dc2a",
+          "name": "Guard retention"
+        },
+        {
+          "key": "cdc27101eb",
+          "name": "Guard pass giriş çalışması"
+        },
+        {
+          "key": "dd11fa238b",
+          "name": "Side control kaçış çerçevesi"
+        },
+        {
+          "key": "4f47d7bdc9",
+          "name": "Mount kaçış çerçevesi"
+        },
+        {
+          "key": "04c03bb9b0",
+          "name": "Pozisyon geçişi"
+        }
+      ]
+    },
+    "ju-jitsu": {
+      "sport_id": "ju-jitsu",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Ju-jitsu için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Partnerli teknik raunt",
+      "techniques": [
+        {
+          "key": "6bd3999f7a",
+          "name": "Ukemi"
+        },
+        {
+          "key": "fd292af707",
+          "name": "Tai sabaki"
+        },
+        {
+          "key": "04240b0b26",
+          "name": "Guard geçişi"
+        },
+        {
+          "key": "97b4074c8b",
+          "name": "Pozisyon kaçışı"
+        },
+        {
+          "key": "414b66f40b",
+          "name": "Teknik eşleştirme"
+        }
+      ]
+    },
+    "sambo": {
+      "sport_id": "sambo",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Sambo için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Partnerli teknik raunt",
+      "techniques": [
+        {
+          "key": "823acdd9bd",
+          "name": "Düşüş tekniği"
+        },
+        {
+          "key": "941ee7790b",
+          "name": "Tutuş yerleşimi"
+        },
+        {
+          "key": "47c756a364",
+          "name": "Denge bozma girişleri"
+        }
+      ]
+    },
+    "wushu": {
+      "sport_id": "wushu",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Wushu için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Partnerli teknik raunt",
+      "techniques": [
+        {
+          "key": "f2e7aeb527",
+          "name": "Ma bu duruşu"
+        },
+        {
+          "key": "71e600aa1d",
+          "name": "Gong bu duruşu"
+        },
+        {
+          "key": "cfe7b87417",
+          "name": "Temel yumruk çizgisi"
+        },
+        {
+          "key": "cacc4358d3",
+          "name": "Bilinen taolu bölümü"
+        }
+      ]
+    },
+    "kendo": {
+      "sport_id": "kendo",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Kendo için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Partnerli teknik raunt",
+      "techniques": [
+        {
+          "key": "08b33347c6",
+          "name": "Chudan no kamae"
+        },
+        {
+          "key": "a037b5a321",
+          "name": "Okuri ashi"
+        },
+        {
+          "key": "87aba4be85",
+          "name": "Suburi ritmi"
+        }
+      ]
+    },
+    "aikido": {
+      "sport_id": "aikido",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Aikido için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Partnerli teknik raunt",
+      "techniques": [
+        {
+          "key": "6bd3999f7a",
+          "name": "Ukemi"
+        },
+        {
+          "key": "fd292af707",
+          "name": "Tai sabaki"
+        },
+        {
+          "key": "da9aa13dd7",
+          "name": "Irimi tenkan"
+        }
+      ]
+    },
+    "fencing": {
+      "sport_id": "fencing",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Eskrim için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Partnerli teknik raunt",
+      "techniques": [
+        {
+          "key": "f594718955",
+          "name": "En garde"
+        },
+        {
+          "key": "a9e3afda79",
+          "name": "Advance-retreat"
+        },
+        {
+          "key": "12dbd5aa23",
+          "name": "Lunge"
+        },
+        {
+          "key": "1f09bdd917",
+          "name": "Parry-riposte tekniği"
+        }
+      ]
+    },
+    "sumo": {
+      "sport_id": "sumo",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Sumo için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Partnerli teknik raunt",
+      "techniques": [
+        {
+          "key": "adb0ea06a2",
+          "name": "Shiko"
+        },
+        {
+          "key": "cb63e628af",
+          "name": "Suriashi"
+        },
+        {
+          "key": "b70eec8aeb",
+          "name": "Tachiai duruşu"
+        }
+      ]
+    },
+    "capoeira": {
+      "sport_id": "capoeira",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Capoeira için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Partnerli teknik raunt",
+      "techniques": [
+        {
+          "key": "6308c06bff",
+          "name": "Ginga"
+        },
+        {
+          "key": "2eab6a8f46",
+          "name": "Esquiva"
+        },
+        {
+          "key": "80531bbe9f",
+          "name": "Negativa"
+        }
+      ]
+    },
+    "artistic-gymnastics": {
+      "sport_id": "artistic-gymnastics",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Artistik jimnastik için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "9ae10ceff8",
+          "name": "Hollow-arch gövde kontrolü"
+        },
+        {
+          "key": "31241e040d",
+          "name": "Denge hattı"
+        },
+        {
+          "key": "d8cb4511a3",
+          "name": "İniş pozisyonu"
+        }
+      ]
+    },
+    "rhythmic-gymnastics": {
+      "sport_id": "rhythmic-gymnastics",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Ritmik jimnastik için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "41fb33d952",
+          "name": "Alet tutuşu"
+        },
+        {
+          "key": "2fb07c1fde",
+          "name": "Ritim adımları"
+        },
+        {
+          "key": "c61290c08b",
+          "name": "Denge pozisyonu"
+        }
+      ]
+    },
+    "trampoline": {
+      "sport_id": "trampoline",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Trampolin jimnastik için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "ab465fadac",
+          "name": "Temel sıçrama hizası"
+        },
+        {
+          "key": "11b4d28628",
+          "name": "Duruş ve durdurma"
+        },
+        {
+          "key": "1d0dd4466f",
+          "name": "İniş kontrolü"
+        }
+      ]
+    },
+    "acrobatics": {
+      "sport_id": "acrobatics",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Akrobatik jimnastik için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "b4f3649c2a",
+          "name": "Destek pozisyonu"
+        },
+        {
+          "key": "ecf3eba836",
+          "name": "Partner iletişimi"
+        },
+        {
+          "key": "f573a4cc30",
+          "name": "Denge yerleşimi"
+        }
+      ]
+    },
+    "aerobic-gymnastics": {
+      "sport_id": "aerobic-gymnastics",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Aerobik jimnastik için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "1dc22d7753",
+          "name": "Temel adım dizisi"
+        },
+        {
+          "key": "a23225113d",
+          "name": "Ritim eşleme"
+        },
+        {
+          "key": "ee560cc902",
+          "name": "Kol-bacak koordinasyonu"
+        }
+      ]
+    },
+    "parkour": {
+      "sport_id": "parkour",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Parkur için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "68d0ba133a",
+          "name": "Hassas ayak basışı"
+        },
+        {
+          "key": "013cb19bae",
+          "name": "İniş mekaniği"
+        },
+        {
+          "key": "90b8bd7787",
+          "name": "Denge yürüyüşü"
+        }
+      ]
+    },
+    "dance": {
+      "sport_id": "dance",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Dans sporu için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "9f43805ecb",
+          "name": "Ritim sayımı"
+        },
+        {
+          "key": "1dc22d7753",
+          "name": "Temel adım dizisi"
+        },
+        {
+          "key": "9aa5759823",
+          "name": "Ağırlık aktarımı"
+        }
+      ]
+    },
+    "breaking": {
+      "sport_id": "breaking",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Breaking için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "9f43805ecb",
+          "name": "Ritim sayımı"
+        },
+        {
+          "key": "1dc22d7753",
+          "name": "Temel adım dizisi"
+        },
+        {
+          "key": "9aa5759823",
+          "name": "Ağırlık aktarımı"
+        }
+      ]
+    },
+    "yoga": {
+      "sport_id": "yoga",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Yoga için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "3e44e3cd1d",
+          "name": "Tadasana hizalanması"
+        },
+        {
+          "key": "06fd52f5bf",
+          "name": "Cat-cow geçişi"
+        },
+        {
+          "key": "0c694b7cca",
+          "name": "Denge duruşu"
+        }
+      ]
+    },
+    "pilates": {
+      "sport_id": "pilates",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Pilates için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "88f1c4f3c7",
+          "name": "Pelvik kontrol"
+        },
+        {
+          "key": "d4f2bf6bbd",
+          "name": "Omurga artikülasyonu"
+        },
+        {
+          "key": "1ac4515add",
+          "name": "Nefes-hareket koordinasyonu"
+        }
+      ]
+    },
+    "mobility": {
+      "sport_id": "mobility",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Mobilite çalışması için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "7421d24852",
+          "name": "Kontrollü eklem daireleri"
+        },
+        {
+          "key": "252688ae9a",
+          "name": "Ayak bileği hareket açıklığı"
+        },
+        {
+          "key": "900b9267fe",
+          "name": "Torakal rotasyon"
+        }
+      ]
+    },
+    "cheerleading": {
+      "sport_id": "cheerleading",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Cheerleading için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "0cadc0c299",
+          "name": "Kol pozisyonları"
+        },
+        {
+          "key": "c86e9c9dc1",
+          "name": "Sayım ve eşleşme"
+        },
+        {
+          "key": "b8fd620ed2",
+          "name": "İniş tekniği"
+        }
+      ]
+    },
+    "rope-skipping": {
+      "sport_id": "rope-skipping",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "İp atlama için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "d004eb02ec",
+          "name": "Temel atlama"
+        },
+        {
+          "key": "2492180e0d",
+          "name": "Alternatif ayak"
+        },
+        {
+          "key": "cd4e21d509",
+          "name": "Çapraz kol ritmi"
+        }
+      ]
+    },
+    "sport-climbing": {
+      "sport_id": "sport-climbing",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Sportif tırmanış için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "2eda58140e",
+          "name": "Ayak yerleştirme"
+        },
+        {
+          "key": "9aa5759823",
+          "name": "Ağırlık aktarımı"
+        },
+        {
+          "key": "55cc52afcc",
+          "name": "Rota okuma"
+        }
+      ]
+    },
+    "bouldering": {
+      "sport_id": "bouldering",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Bouldering için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "2eda58140e",
+          "name": "Ayak yerleştirme"
+        },
+        {
+          "key": "9aa5759823",
+          "name": "Ağırlık aktarımı"
+        },
+        {
+          "key": "55cc52afcc",
+          "name": "Rota okuma"
+        }
+      ]
+    },
+    "mountaineering": {
+      "sport_id": "mountaineering",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": false,
+      "adaptation_required": false,
+      "environment": "Dağcılık için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "8bd420fb74",
+          "name": "Adım ve tempo"
+        },
+        {
+          "key": "1990cf36e3",
+          "name": "Baton kullanımı"
+        },
+        {
+          "key": "55cc52afcc",
+          "name": "Rota okuma"
+        }
+      ]
+    },
+    "hiking": {
+      "sport_id": "hiking",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Doğa yürüyüşü için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "8bd420fb74",
+          "name": "Adım ve tempo"
+        },
+        {
+          "key": "1990cf36e3",
+          "name": "Baton kullanımı"
+        },
+        {
+          "key": "55cc52afcc",
+          "name": "Rota okuma"
+        }
+      ]
+    },
+    "orienteering": {
+      "sport_id": "orienteering",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Oryantiring için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "5c52e0944a",
+          "name": "Harita yönleme"
+        },
+        {
+          "key": "ade069c719",
+          "name": "Pusula doğrultusu"
+        },
+        {
+          "key": "28279941ba",
+          "name": "Kontrol noktası seçimi"
+        }
+      ]
+    },
+    "adventure-racing": {
+      "sport_id": "adventure-racing",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Macera yarışı için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "b4bc1f3144",
+          "name": "Etap geçişi"
+        },
+        {
+          "key": "6b8bdc41e6",
+          "name": "Navigasyon"
+        },
+        {
+          "key": "610bf4b0c4",
+          "name": "Ekip iletişimi"
+        }
+      ]
+    },
+    "ice-climbing": {
+      "sport_id": "ice-climbing",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": false,
+      "adaptation_required": false,
+      "environment": "Buz tırmanışı için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "bf36b91ac3",
+          "name": "Alet ve krampon yerleşimi analizi"
+        },
+        {
+          "key": "55cc52afcc",
+          "name": "Rota okuma"
+        },
+        {
+          "key": "2cbf7ce90c",
+          "name": "Emniyet prosedürü"
+        }
+      ]
+    },
+    "caving": {
+      "sport_id": "caving",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": false,
+      "adaptation_required": false,
+      "environment": "Mağaracılık için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "d1fcf04946",
+          "name": "Ekipman kontrolü"
+        },
+        {
+          "key": "1d0ac7621d",
+          "name": "İp sistemleri teorisi"
+        },
+        {
+          "key": "610bf4b0c4",
+          "name": "Ekip iletişimi"
+        }
+      ]
+    },
+    "alpine-skiing": {
+      "sport_id": "alpine-skiing",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Alp disiplini kayak için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "0c694b7cca",
+          "name": "Denge duruşu"
+        },
+        {
+          "key": "6b700a00b9",
+          "name": "Kenar kontrolü"
+        },
+        {
+          "key": "f4bed9f5bf",
+          "name": "Dönüş bağlantısı"
+        }
+      ]
+    },
+    "cross-country-ski": {
+      "sport_id": "cross-country-ski",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Kayaklı koşu için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "aa05c5f806",
+          "name": "Diagonal stride"
+        },
+        {
+          "key": "d8423d84f2",
+          "name": "Double poling"
+        },
+        {
+          "key": "e268d23e20",
+          "name": "Kayış ritmi"
+        }
+      ]
+    },
+    "biathlon": {
+      "sport_id": "biathlon",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Biatlon için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "27702d14fd",
+          "name": "Kayak-atış geçişi"
+        },
+        {
+          "key": "4688911fcc",
+          "name": "Atış pozisyonu analizi"
+        },
+        {
+          "key": "cb65862a75",
+          "name": "Parkur tempo analizi"
+        }
+      ]
+    },
+    "ski-jumping": {
+      "sport_id": "ski-jumping",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": false,
+      "adaptation_required": false,
+      "environment": "Kayakla atlama için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "5b2ae349e2",
+          "name": "Yaklaşma pozisyonu analizi"
+        },
+        {
+          "key": "66a48e01ff",
+          "name": "Sıçrama zamanlama analizi"
+        },
+        {
+          "key": "60f250f27f",
+          "name": "İniş pozisyonu analizi"
+        }
+      ]
+    },
+    "nordic-combined": {
+      "sport_id": "nordic-combined",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Kuzey kombine için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "cfe9ff8095",
+          "name": "Kayak ritmi"
+        },
+        {
+          "key": "1fc9a74107",
+          "name": "Atlama teknik analizi"
+        },
+        {
+          "key": "78c21a365a",
+          "name": "Etap tempo planı"
+        }
+      ]
+    },
+    "freestyle-ski": {
+      "sport_id": "freestyle-ski",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Serbest stil kayak için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "6b700a00b9",
+          "name": "Kenar kontrolü"
+        },
+        {
+          "key": "b8fd620ed2",
+          "name": "İniş tekniği"
+        },
+        {
+          "key": "b3ccd97ea9",
+          "name": "Parkur okuma"
+        }
+      ]
+    },
+    "ski-mountaineering": {
+      "sport_id": "ski-mountaineering",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Dağ kayağı için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "958d2f9b24",
+          "name": "Tırmanış ritmi"
+        },
+        {
+          "key": "7e985f7385",
+          "name": "Skin geçiş prosedürü"
+        },
+        {
+          "key": "369fc299c2",
+          "name": "Rota değerlendirmesi"
+        }
+      ]
+    },
+    "snowboard": {
+      "sport_id": "snowboard",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Snowboard için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "0c694b7cca",
+          "name": "Denge duruşu"
+        },
+        {
+          "key": "5a3c0925a6",
+          "name": "Topuk-burun kenar geçişi"
+        },
+        {
+          "key": "f4bed9f5bf",
+          "name": "Dönüş bağlantısı"
+        }
+      ]
+    },
+    "figure-skating": {
+      "sport_id": "figure-skating",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Artistik buz pateni için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "d86600ffce",
+          "name": "Temel kayış"
+        },
+        {
+          "key": "6b700a00b9",
+          "name": "Kenar kontrolü"
+        },
+        {
+          "key": "fbe5f9d361",
+          "name": "Dönüş girişleri"
+        }
+      ]
+    },
+    "speed-skating": {
+      "sport_id": "speed-skating",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Sürat pateni için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "0fb49fd8b1",
+          "name": "Kayış pozisyonu"
+        },
+        {
+          "key": "8c2f536789",
+          "name": "İtiş ritmi"
+        },
+        {
+          "key": "ebbc709993",
+          "name": "Viraj crossover"
+        }
+      ]
+    },
+    "short-track": {
+      "sport_id": "short-track",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Kısa kulvar sürat pateni için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "0fb49fd8b1",
+          "name": "Kayış pozisyonu"
+        },
+        {
+          "key": "8c2f536789",
+          "name": "İtiş ritmi"
+        },
+        {
+          "key": "ebbc709993",
+          "name": "Viraj crossover"
+        }
+      ]
+    },
+    "ice-hockey": {
+      "sport_id": "ice-hockey",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Buz hokeyi için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "a7cce24a3c",
+          "name": "Paten duruşu"
+        },
+        {
+          "key": "cfac7c3e9d",
+          "name": "Puck taşıma"
+        },
+        {
+          "key": "a53ee08f76",
+          "name": "Pas alma-verme"
+        }
+      ]
+    },
+    "curling": {
+      "sport_id": "curling",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Curling için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "6a99bd951d",
+          "name": "Delivery yerleşimi"
+        },
+        {
+          "key": "eb1599de5e",
+          "name": "Bırakış çizgisi"
+        },
+        {
+          "key": "0c6864313b",
+          "name": "Süpürme ritmi"
+        }
+      ]
+    },
+    "bobsleigh": {
+      "sport_id": "bobsleigh",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": false,
+      "adaptation_required": false,
+      "environment": "Bobsled için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "4838ef99ba",
+          "name": "Başlangıç prosedürü analizi"
+        },
+        {
+          "key": "72c3f0e131",
+          "name": "Viraj çizgisi analizi"
+        },
+        {
+          "key": "e6ef384d17",
+          "name": "Sürüş pozisyonu analizi"
+        }
+      ]
+    },
+    "luge": {
+      "sport_id": "luge",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": false,
+      "adaptation_required": false,
+      "environment": "Kızak için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "4838ef99ba",
+          "name": "Başlangıç prosedürü analizi"
+        },
+        {
+          "key": "72c3f0e131",
+          "name": "Viraj çizgisi analizi"
+        },
+        {
+          "key": "e6ef384d17",
+          "name": "Sürüş pozisyonu analizi"
+        }
+      ]
+    },
+    "skeleton": {
+      "sport_id": "skeleton",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": false,
+      "adaptation_required": false,
+      "environment": "Skeleton için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "4838ef99ba",
+          "name": "Başlangıç prosedürü analizi"
+        },
+        {
+          "key": "72c3f0e131",
+          "name": "Viraj çizgisi analizi"
+        },
+        {
+          "key": "e6ef384d17",
+          "name": "Sürüş pozisyonu analizi"
+        }
+      ]
+    },
+    "archery": {
+      "sport_id": "archery",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Okçuluk için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "1c8f802e95",
+          "name": "Duruş"
+        },
+        {
+          "key": "91b9e2022b",
+          "name": "Yay çekiş yerleşimi"
+        },
+        {
+          "key": "3160477649",
+          "name": "Bırakış ve takip"
+        }
+      ]
+    },
+    "shooting": {
+      "sport_id": "shooting",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": false,
+      "adaptation_required": false,
+      "environment": "Atıcılık için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "d651a290ec",
+          "name": "Duruş yerleşimi"
+        },
+        {
+          "key": "57ae9cdbf5",
+          "name": "Nişan hattı analizi"
+        },
+        {
+          "key": "8ba4065fa3",
+          "name": "Tetik kontrolü teorisi"
+        }
+      ]
+    },
+    "golf": {
+      "sport_id": "golf",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Golf için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "ff10d5837a",
+          "name": "Putting"
+        },
+        {
+          "key": "429dd6aab3",
+          "name": "Chipping"
+        },
+        {
+          "key": "f9c67c89a2",
+          "name": "Swing yerleşimi"
+        }
+      ]
+    },
+    "disc-golf": {
+      "sport_id": "disc-golf",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Disk golf için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "91cea4c5bb",
+          "name": "Backhand atış"
+        },
+        {
+          "key": "2af5925736",
+          "name": "Forehand atış"
+        },
+        {
+          "key": "ff10d5837a",
+          "name": "Putting"
+        }
+      ]
+    },
+    "darts": {
+      "sport_id": "darts",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Dart için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "1c8f802e95",
+          "name": "Duruş"
+        },
+        {
+          "key": "2250e9579c",
+          "name": "Atış çizgisi"
+        },
+        {
+          "key": "8d525bf387",
+          "name": "Takip hareketi"
+        }
+      ]
+    },
+    "billiards": {
+      "sport_id": "billiards",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Bilardo için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "68b35e07e6",
+          "name": "İsteka hattı"
+        },
+        {
+          "key": "78f6f8d897",
+          "name": "Duruş ve köprü"
+        },
+        {
+          "key": "460b78bade",
+          "name": "Düz top kontrolü"
+        }
+      ]
+    },
+    "bowling": {
+      "sport_id": "bowling",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Bowling için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "7afa100773",
+          "name": "Yaklaşma adımları"
+        },
+        {
+          "key": "272245927f",
+          "name": "Salınım ritmi"
+        },
+        {
+          "key": "eb1599de5e",
+          "name": "Bırakış çizgisi"
+        }
+      ]
+    },
+    "petanque": {
+      "sport_id": "petanque",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Petank için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "8fe917ae51",
+          "name": "Hedefe yuvarlama"
+        },
+        {
+          "key": "0d84cb1c58",
+          "name": "Mesafe kontrolü"
+        },
+        {
+          "key": "2250e9579c",
+          "name": "Atış çizgisi"
+        }
+      ]
+    },
+    "bocce": {
+      "sport_id": "bocce",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Bocce için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "8fe917ae51",
+          "name": "Hedefe yuvarlama"
+        },
+        {
+          "key": "0d84cb1c58",
+          "name": "Mesafe kontrolü"
+        },
+        {
+          "key": "2250e9579c",
+          "name": "Atış çizgisi"
+        }
+      ]
+    },
+    "lawn-bowls": {
+      "sport_id": "lawn-bowls",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Çim topu için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "8fe917ae51",
+          "name": "Hedefe yuvarlama"
+        },
+        {
+          "key": "0d84cb1c58",
+          "name": "Mesafe kontrolü"
+        },
+        {
+          "key": "2250e9579c",
+          "name": "Atış çizgisi"
+        }
+      ]
+    },
+    "skateboarding": {
+      "sport_id": "skateboarding",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Kaykay için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "390f9701e5",
+          "name": "Denge ve itiş"
+        },
+        {
+          "key": "73a8e0a5ef",
+          "name": "Foot brake"
+        },
+        {
+          "key": "0fd82610de",
+          "name": "Kickturn tekniği"
+        }
+      ]
+    },
+    "roller-skating": {
+      "sport_id": "roller-skating",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Paten için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "d86600ffce",
+          "name": "Temel kayış"
+        },
+        {
+          "key": "f4adb2d2a6",
+          "name": "Frenleme"
+        },
+        {
+          "key": "a07e62d297",
+          "name": "Dönüş"
+        }
+      ]
+    },
+    "roller-derby": {
+      "sport_id": "roller-derby",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Roller derby için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "0821a20077",
+          "name": "Kayış ve frenleme"
+        },
+        {
+          "key": "714b309cf7",
+          "name": "Pack pozisyonu"
+        },
+        {
+          "key": "14d99d516e",
+          "name": "Alan paylaşımı"
+        }
+      ]
+    },
+    "bmx-racing": {
+      "sport_id": "bmx-racing",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "BMX yarışı için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "af62ffd56f",
+          "name": "Başlangıç duruşu"
+        },
+        {
+          "key": "5c73746615",
+          "name": "Viraj çizgisi"
+        },
+        {
+          "key": "f013857639",
+          "name": "Pump tekniği"
+        }
+      ]
+    },
+    "bmx-freestyle": {
+      "sport_id": "bmx-freestyle",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "BMX serbest stil için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "dae202c66c",
+          "name": "Denge"
+        },
+        {
+          "key": "d24c5d3cab",
+          "name": "Rampaya yaklaşma"
+        },
+        {
+          "key": "ef35542f0f",
+          "name": "İniş yerleşimi"
+        }
+      ]
+    },
+    "motocross": {
+      "sport_id": "motocross",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": false,
+      "adaptation_required": false,
+      "environment": "Motokros için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "72c3f0e131",
+          "name": "Viraj çizgisi analizi"
+        },
+        {
+          "key": "5e44db8b05",
+          "name": "Frenleme noktası analizi"
+        },
+        {
+          "key": "c45127f31f",
+          "name": "Bayrak ve pist prosedürü"
+        }
+      ]
+    },
+    "motor-racing": {
+      "sport_id": "motor-racing",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": false,
+      "adaptation_required": false,
+      "environment": "Motor sporları için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "72c3f0e131",
+          "name": "Viraj çizgisi analizi"
+        },
+        {
+          "key": "5e44db8b05",
+          "name": "Frenleme noktası analizi"
+        },
+        {
+          "key": "c45127f31f",
+          "name": "Bayrak ve pist prosedürü"
+        }
+      ]
+    },
+    "dressage": {
+      "sport_id": "dressage",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [
+        "https://www.fei.org/stories/sport/dressage/dressage-tips-value-transitions"
+      ],
+      "terminology_status": "reference_linked",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "At terbiyesi için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Eğitmenle saha uygulaması",
+      "techniques": [
+        {
+          "key": "ee28ade833",
+          "name": "Adeta-tırıs geçişi"
+        },
+        {
+          "key": "f4c50895f4",
+          "name": "Dairede ritim"
+        },
+        {
+          "key": "25e9dab93f",
+          "name": "Duruş ve yeniden yürüyüş"
+        },
+        {
+          "key": "4491947de9",
+          "name": "Serpantin çizgisi"
+        },
+        {
+          "key": "ffbaf2c7a3",
+          "name": "Tırıs-dörtnal geçişi"
+        },
+        {
+          "key": "ca2c6263c4",
+          "name": "Baldıra yanıt çalışması"
+        }
+      ]
+    },
+    "show-jumping": {
+      "sport_id": "show-jumping",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [
+        "https://www.fei.org/node/19905"
+      ],
+      "terminology_status": "reference_linked",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Binicilik engel atlama için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Eğitmenle saha uygulaması",
+      "techniques": [
+        {
+          "key": "8eff88a0f5",
+          "name": "Düz çalışmada ritim"
+        },
+        {
+          "key": "982304401d",
+          "name": "Yer sırıkları yaklaşımı"
+        },
+        {
+          "key": "391ae97815",
+          "name": "Hafif oturuş"
+        },
+        {
+          "key": "951cd94a43",
+          "name": "Engel yaklaşma çizgisi analizi"
+        }
+      ]
+    },
+    "eventing": {
+      "sport_id": "eventing",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Üç günlük yarışma için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Eğitmenle saha uygulaması",
+      "techniques": [
+        {
+          "key": "d5e2c50081",
+          "name": "Düz çalışma geçişleri"
+        },
+        {
+          "key": "8467239166",
+          "name": "Parkur çizgisi analizi"
+        },
+        {
+          "key": "78c21a365a",
+          "name": "Etap tempo planı"
+        }
+      ]
+    },
+    "equestrian-endurance": {
+      "sport_id": "equestrian-endurance",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Atlı dayanıklılık için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Eğitmenle saha uygulaması",
+      "techniques": [
+        {
+          "key": "eef9b6c5c4",
+          "name": "Ritim ve tempo planı"
+        },
+        {
+          "key": "4237922395",
+          "name": "Arazi çizgisi seçimi"
+        },
+        {
+          "key": "0cf8b6120f",
+          "name": "Veteriner kontrol prosedürü"
+        }
+      ]
+    },
+    "vaulting": {
+      "sport_id": "vaulting",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Atlı jimnastik için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Eğitmenle saha uygulaması",
+      "techniques": [
+        {
+          "key": "207507105d",
+          "name": "Varil üzerinde temel oturuş"
+        },
+        {
+          "key": "38caa8fe6e",
+          "name": "Varil üzerinde denge"
+        },
+        {
+          "key": "a75c710bc1",
+          "name": "Rutin sayım çalışması"
+        }
+      ]
+    },
+    "polo": {
+      "sport_id": "polo",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Polo için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Eğitmenle saha uygulaması",
+      "techniques": [
+        {
+          "key": "49447d51bb",
+          "name": "At üzerinde yön değiştirme"
+        },
+        {
+          "key": "86f6bba8b9",
+          "name": "Mallet tutuşu"
+        },
+        {
+          "key": "014bc19b7e",
+          "name": "Vuruş çizgisi analizi"
+        }
+      ]
+    },
+    "para-athletics": {
+      "sport_id": "para-athletics",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": false,
+      "adaptation_required": true,
+      "environment": "Para atletizm için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "82d9f80e08",
+          "name": "Seçili yarış disiplininin teknik analizi"
+        },
+        {
+          "key": "a46cc98d53",
+          "name": "Uyarlanmış ekipman yerleşimi"
+        },
+        {
+          "key": "e1eb88ba35",
+          "name": "Başlangıç prosedürü"
+        }
+      ]
+    },
+    "para-swimming": {
+      "sport_id": "para-swimming",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": false,
+      "adaptation_required": true,
+      "environment": "Para yüzme için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "b2de60a57d",
+          "name": "Uyarlanmış serbest kulaç koordinasyonu"
+        },
+        {
+          "key": "2447f0f219",
+          "name": "Uyarlanmış sırtüstü kulaç koordinasyonu"
+        },
+        {
+          "key": "19e39252d4",
+          "name": "Uyarlanmış kurbağalama koordinasyonu"
+        }
+      ]
+    },
+    "para-cycling": {
+      "sport_id": "para-cycling",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": false,
+      "adaptation_required": true,
+      "environment": "Para bisiklet için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "b3df04b2e1",
+          "name": "Uyarlanmış pedal çevirme ritmi"
+        },
+        {
+          "key": "4cd327683b",
+          "name": "Uyarlanmış vites ve kadans geçişi"
+        },
+        {
+          "key": "293db4aee9",
+          "name": "Uyarlanmış sürüş pozisyonu"
+        }
+      ]
+    },
+    "para-rowing": {
+      "sport_id": "para-rowing",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": false,
+      "adaptation_required": true,
+      "environment": "Para kürek için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "9b919d3d22",
+          "name": "Uyarlanmış bacak-gövde-kol çekiş sırası"
+        },
+        {
+          "key": "31c106c28e",
+          "name": "Uyarlanmış catch pozisyonu"
+        },
+        {
+          "key": "b1ddcc4a49",
+          "name": "Uyarlanmış recovery fazı ritmi"
+        }
+      ]
+    },
+    "para-canoe": {
+      "sport_id": "para-canoe",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": false,
+      "adaptation_required": true,
+      "environment": "Para kano için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "8e6fd830ab",
+          "name": "Uyarlanmış i̇leri kürek çekişi"
+        },
+        {
+          "key": "4d48a81372",
+          "name": "Uyarlanmış süpürme çekişi"
+        },
+        {
+          "key": "7302fcdde9",
+          "name": "Uyarlanmış dümenleme tekniği"
+        }
+      ]
+    },
+    "para-triathlon": {
+      "sport_id": "para-triathlon",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": false,
+      "adaptation_required": true,
+      "environment": "Para triatlon için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "1bba81fc33",
+          "name": "Uyarlanmış yüzme yön bulma"
+        },
+        {
+          "key": "0fa0a3fbd5",
+          "name": "Uyarlanmış bisiklet-koşu geçişi"
+        },
+        {
+          "key": "765dacb07d",
+          "name": "Uyarlanmış geçiş alanı düzeni"
+        }
+      ]
+    },
+    "para-powerlifting": {
+      "sport_id": "para-powerlifting",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": false,
+      "adaptation_required": true,
+      "environment": "Para halter için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "61f2d11d21",
+          "name": "Uyarlanmış squat yarışma komutları"
+        },
+        {
+          "key": "cf183a7c39",
+          "name": "Uyarlanmış bench press duraklatma tekniği"
+        },
+        {
+          "key": "0ac8111340",
+          "name": "Uyarlanmış deadlift kilitleme tekniği"
+        }
+      ]
+    },
+    "para-climbing": {
+      "sport_id": "para-climbing",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": false,
+      "adaptation_required": true,
+      "environment": "Para tırmanış için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "f614cdf2a3",
+          "name": "Uyarlanmış ayak yerleştirme"
+        },
+        {
+          "key": "016e447b39",
+          "name": "Uyarlanmış ağırlık aktarımı"
+        },
+        {
+          "key": "91ce6aa50e",
+          "name": "Uyarlanmış rota okuma"
+        }
+      ]
+    },
+    "wheelchair-basketball": {
+      "sport_id": "wheelchair-basketball",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": false,
+      "adaptation_required": true,
+      "environment": "Tekerlekli sandalye basketbolu için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "de120e5a0c",
+          "name": "Uyarlanmış top sürme"
+        },
+        {
+          "key": "6558bae355",
+          "name": "Uyarlanmış göğüs pası"
+        },
+        {
+          "key": "92d28844fe",
+          "name": "Uyarlanmış turnike adımları"
+        }
+      ]
+    },
+    "wheelchair-rugby": {
+      "sport_id": "wheelchair-rugby",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": false,
+      "adaptation_required": true,
+      "environment": "Tekerlekli sandalye ragbisi için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "2e31963d9c",
+          "name": "Uyarlanmış i̇ki elle pas"
+        },
+        {
+          "key": "d401ad2d1f",
+          "name": "Uyarlanmış top taşıma"
+        },
+        {
+          "key": "7dff6b7ebf",
+          "name": "Uyarlanmış destek koşusu çizgisi"
+        }
+      ]
+    },
+    "wheelchair-tennis": {
+      "sport_id": "wheelchair-tennis",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": false,
+      "adaptation_required": true,
+      "environment": "Tekerlekli sandalye tenisi için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "47d41dd872",
+          "name": "Uyarlanmış forehand"
+        },
+        {
+          "key": "3547157adf",
+          "name": "Uyarlanmış backhand"
+        },
+        {
+          "key": "16d9ff945e",
+          "name": "Uyarlanmış servis atış yerleşimi"
+        }
+      ]
+    },
+    "wheelchair-fencing": {
+      "sport_id": "wheelchair-fencing",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": false,
+      "adaptation_required": true,
+      "environment": "Tekerlekli sandalye eskrimi için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "4251ebc761",
+          "name": "Uyarlanmış en garde"
+        },
+        {
+          "key": "5f36521d22",
+          "name": "Uyarlanmış advance-retreat"
+        },
+        {
+          "key": "82498f01f4",
+          "name": "Uyarlanmış lunge"
+        }
+      ]
+    },
+    "para-badminton": {
+      "sport_id": "para-badminton",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": false,
+      "adaptation_required": true,
+      "environment": "Para badminton için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "2184964031",
+          "name": "Uyarlanmış forehand clear"
+        },
+        {
+          "key": "299dfc7bf7",
+          "name": "Uyarlanmış drop vuruşu"
+        },
+        {
+          "key": "a94a7f6a17",
+          "name": "Uyarlanmış file önü vuruşu"
+        }
+      ]
+    },
+    "para-table-tennis": {
+      "sport_id": "para-table-tennis",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": false,
+      "adaptation_required": true,
+      "environment": "Para masa tenisi için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "09a7f188c9",
+          "name": "Uyarlanmış forehand drive"
+        },
+        {
+          "key": "488e3a8ec9",
+          "name": "Uyarlanmış backhand drive"
+        },
+        {
+          "key": "fe823bc407",
+          "name": "Uyarlanmış servis karşılama"
+        }
+      ]
+    },
+    "para-judo": {
+      "sport_id": "para-judo",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": false,
+      "adaptation_required": true,
+      "environment": "Para judo için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "be057a6db4",
+          "name": "Uyarlanmış ushiro ukemi"
+        },
+        {
+          "key": "ed5e26c926",
+          "name": "Uyarlanmış yoko ukemi"
+        },
+        {
+          "key": "83cfcbe15d",
+          "name": "Uyarlanmış tai sabaki"
+        }
+      ]
+    },
+    "para-taekwondo": {
+      "sport_id": "para-taekwondo",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": false,
+      "adaptation_required": true,
+      "environment": "Para tekvando için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "4a0f625b6a",
+          "name": "Uyarlanmış temel duruş geçişi"
+        },
+        {
+          "key": "52290b29d5",
+          "name": "Uyarlanmış ap chagi"
+        },
+        {
+          "key": "8f5862105a",
+          "name": "Uyarlanmış dollyeo chagi"
+        }
+      ]
+    },
+    "para-archery": {
+      "sport_id": "para-archery",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": false,
+      "adaptation_required": true,
+      "environment": "Para okçuluk için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "112072d00f",
+          "name": "Uyarlanmış duruş"
+        },
+        {
+          "key": "72cdfd0dd7",
+          "name": "Uyarlanmış yay çekiş yerleşimi"
+        },
+        {
+          "key": "42e9c953e4",
+          "name": "Uyarlanmış bırakış ve takip"
+        }
+      ]
+    },
+    "para-shooting": {
+      "sport_id": "para-shooting",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": false,
+      "adaptation_required": true,
+      "environment": "Para atıcılık için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "fcac2ad1fd",
+          "name": "Uyarlanmış duruş yerleşimi"
+        },
+        {
+          "key": "c9be450a63",
+          "name": "Uyarlanmış nişan hattı analizi"
+        },
+        {
+          "key": "3764238b30",
+          "name": "Uyarlanmış tetik kontrolü teorisi"
+        }
+      ]
+    },
+    "para-equestrian": {
+      "sport_id": "para-equestrian",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": false,
+      "adaptation_required": true,
+      "environment": "Para binicilik için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "2b6bddfde6",
+          "name": "Uyarlanmış adeta-tırıs geçişi"
+        },
+        {
+          "key": "513a67bb04",
+          "name": "Uyarlanmış dairede ritim"
+        },
+        {
+          "key": "aaeca0389c",
+          "name": "Uyarlanmış duruş ve yeniden yürüyüş"
+        }
+      ]
+    },
+    "blind-football": {
+      "sport_id": "blind-football",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": false,
+      "adaptation_required": true,
+      "environment": "Görme engelli futbolu için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "6b0871eb07",
+          "name": "Sesli top takibi"
+        },
+        {
+          "key": "6c031e6120",
+          "name": "Top kontrolü"
+        },
+        {
+          "key": "ead291f051",
+          "name": "Sözlü saha iletişimi"
+        }
+      ]
+    },
+    "sitting-volleyball": {
+      "sport_id": "sitting-volleyball",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": false,
+      "adaptation_required": true,
+      "environment": "Oturarak voleybol için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "b1719757b7",
+          "name": "Uyarlanmış manşet pas"
+        },
+        {
+          "key": "f03d184b2d",
+          "name": "Uyarlanmış parmak pas"
+        },
+        {
+          "key": "3ecb0f576b",
+          "name": "Uyarlanmış servis atışı"
+        }
+      ]
+    },
+    "goalball": {
+      "sport_id": "goalball",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": false,
+      "adaptation_required": true,
+      "environment": "Goalball için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "38a1f9872e",
+          "name": "Sesli top yönü"
+        },
+        {
+          "key": "3ae8cccc9d",
+          "name": "Savunma yerleşimi"
+        },
+        {
+          "key": "2250e9579c",
+          "name": "Atış çizgisi"
+        }
+      ]
+    },
+    "boccia": {
+      "sport_id": "boccia",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": false,
+      "adaptation_required": true,
+      "environment": "Boccia için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "8d7e7f6cdc",
+          "name": "Hedef top stratejisi"
+        },
+        {
+          "key": "b8de69b8a8",
+          "name": "Yuvarlama çizgisi"
+        },
+        {
+          "key": "0d84cb1c58",
+          "name": "Mesafe kontrolü"
+        }
+      ]
+    },
+    "para-alpine": {
+      "sport_id": "para-alpine",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": false,
+      "adaptation_required": true,
+      "environment": "Para alp disiplini için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "c8cb36c397",
+          "name": "Uyarlanmış denge duruşu"
+        },
+        {
+          "key": "7f9006019b",
+          "name": "Uyarlanmış kenar kontrolü"
+        },
+        {
+          "key": "43c308be93",
+          "name": "Uyarlanmış dönüş bağlantısı"
+        }
+      ]
+    },
+    "para-biathlon": {
+      "sport_id": "para-biathlon",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": false,
+      "adaptation_required": true,
+      "environment": "Para biatlon için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "8e489ca984",
+          "name": "Uyarlanmış kayak-atış geçişi"
+        },
+        {
+          "key": "4c07366b98",
+          "name": "Uyarlanmış atış pozisyonu analizi"
+        },
+        {
+          "key": "2cbbb2f478",
+          "name": "Uyarlanmış parkur tempo analizi"
+        }
+      ]
+    },
+    "para-cross-country": {
+      "sport_id": "para-cross-country",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": false,
+      "adaptation_required": true,
+      "environment": "Para kayaklı koşu için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "4cbec69c94",
+          "name": "Uyarlanmış diagonal stride"
+        },
+        {
+          "key": "303197d242",
+          "name": "Uyarlanmış double poling"
+        },
+        {
+          "key": "504c42ceb1",
+          "name": "Uyarlanmış kayış ritmi"
+        }
+      ]
+    },
+    "para-ice-hockey": {
+      "sport_id": "para-ice-hockey",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": false,
+      "adaptation_required": true,
+      "environment": "Para buz hokeyi için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "6449da290f",
+          "name": "Uyarlanmış paten duruşu"
+        },
+        {
+          "key": "6060f478fe",
+          "name": "Uyarlanmış puck taşıma"
+        },
+        {
+          "key": "09db8a8792",
+          "name": "Uyarlanmış pas alma-verme"
+        }
+      ]
+    },
+    "para-snowboard": {
+      "sport_id": "para-snowboard",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": false,
+      "adaptation_required": true,
+      "environment": "Para snowboard için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "c8cb36c397",
+          "name": "Uyarlanmış denge duruşu"
+        },
+        {
+          "key": "2b173469c7",
+          "name": "Uyarlanmış topuk-burun kenar geçişi"
+        },
+        {
+          "key": "43c308be93",
+          "name": "Uyarlanmış dönüş bağlantısı"
+        }
+      ]
+    },
+    "wheelchair-curling": {
+      "sport_id": "wheelchair-curling",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": false,
+      "adaptation_required": true,
+      "environment": "Tekerlekli sandalye curling için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "037bf87092",
+          "name": "Uyarlanmış delivery yerleşimi"
+        },
+        {
+          "key": "e266e8a2c8",
+          "name": "Uyarlanmış bırakış çizgisi"
+        },
+        {
+          "key": "31ffd86312",
+          "name": "Uyarlanmış süpürme ritmi"
+        }
+      ]
+    },
+    "chess": {
+      "sport_id": "chess",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Satranç için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Zamanlı problem / oyun uygulaması",
+      "techniques": [
+        {
+          "key": "cb984a1f18",
+          "name": "Taktik pozisyon çözümü"
+        },
+        {
+          "key": "62a19d7da3",
+          "name": "Oyun sonu çalışması"
+        },
+        {
+          "key": "44f7bfbea9",
+          "name": "Kendi oyununu inceleme"
+        }
+      ]
+    },
+    "go": {
+      "sport_id": "go",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Go için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Zamanlı problem / oyun uygulaması",
+      "techniques": [
+        {
+          "key": "7f2acee431",
+          "name": "Yaşam-ölüm problemleri"
+        },
+        {
+          "key": "0b1348310b",
+          "name": "Joseki incelemesi"
+        },
+        {
+          "key": "44f7bfbea9",
+          "name": "Kendi oyununu inceleme"
+        }
+      ]
+    },
+    "bridge": {
+      "sport_id": "bridge",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Briç için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Zamanlı problem / oyun uygulaması",
+      "techniques": [
+        {
+          "key": "d8ca1fbc52",
+          "name": "Deklarasyon problemi"
+        },
+        {
+          "key": "6c97434f89",
+          "name": "Yer oyunu problemi"
+        },
+        {
+          "key": "f5bae3b034",
+          "name": "Defans analizi"
+        }
+      ]
+    },
+    "esports": {
+      "sport_id": "esports",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Elektronik sporlar için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Zamanlı problem / oyun uygulaması",
+      "techniques": [
+        {
+          "key": "b0dcf3783f",
+          "name": "Seçili oyun mekaniği"
+        },
+        {
+          "key": "7cbfd069ed",
+          "name": "Karar senaryosu"
+        },
+        {
+          "key": "3a4c9ba3bf",
+          "name": "Maç tekrarı analizi"
+        }
+      ]
+    },
+    "oil-wrestling": {
+      "sport_id": "oil-wrestling",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Yağlı güreş için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "ecd3f7f8dd",
+          "name": "Duruş ve ayak çalışması"
+        },
+        {
+          "key": "f7d08a88a3",
+          "name": "Kispet tutuş analizi"
+        },
+        {
+          "key": "5ab3ab92c1",
+          "name": "Pozisyon geçişi analizi"
+        }
+      ]
+    },
+    "mas-wrestling": {
+      "sport_id": "mas-wrestling",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Mas güreşi için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "eca484b1cc",
+          "name": "Başlangıç tutuşu"
+        },
+        {
+          "key": "ee53d743c3",
+          "name": "Ayak yerleşimi"
+        },
+        {
+          "key": "42cba9b530",
+          "name": "Çekiş açısı analizi"
+        }
+      ]
+    },
+    "sepak-takraw": {
+      "sport_id": "sepak-takraw",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Sepak takraw için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "4d6c0335b5",
+          "name": "Ayak içi kontrol"
+        },
+        {
+          "key": "4ff2779c2d",
+          "name": "Dizle kontrol"
+        },
+        {
+          "key": "cb7991c10e",
+          "name": "Servis yerleşimi"
+        }
+      ]
+    },
+    "tug-of-war": {
+      "sport_id": "tug-of-war",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Halat çekme için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "941ee7790b",
+          "name": "Tutuş yerleşimi"
+        },
+        {
+          "key": "8a7acc9f2a",
+          "name": "Ekip ritmi"
+        },
+        {
+          "key": "ee53d743c3",
+          "name": "Ayak yerleşimi"
+        }
+      ]
+    },
+    "boules-sports": {
+      "sport_id": "boules-sports",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Boules sporları için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "8ef96a2630",
+          "name": "Hedefe atış"
+        },
+        {
+          "key": "0d84cb1c58",
+          "name": "Mesafe kontrolü"
+        },
+        {
+          "key": "2250e9579c",
+          "name": "Atış çizgisi"
+        }
+      ]
+    },
+    "underwater-hockey": {
+      "sport_id": "underwater-hockey",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Sualtı hokeyi için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "40cc6f19e7",
+          "name": "Puck sürme"
+        },
+        {
+          "key": "cfb96abbcb",
+          "name": "Pas açısı"
+        },
+        {
+          "key": "aa1e6ca79e",
+          "name": "Takım dizilişi analizi"
+        }
+      ]
+    },
+    "underwater-rugby": {
+      "sport_id": "underwater-rugby",
+      "coverage": "foundation",
+      "exhaustive": false,
+      "source_urls": [],
+      "terminology_status": "editorial_requires_coach_review",
+      "automatic_physical_dose": true,
+      "adaptation_required": false,
+      "environment": "Sualtı ragbisi için uygun tesis, ekipman ve güvenlik düzeni",
+      "practice_label": "Branşa özgü uygulama bloğu",
+      "techniques": [
+        {
+          "key": "6c031e6120",
+          "name": "Top kontrolü"
+        },
+        {
+          "key": "df2b92265e",
+          "name": "Pas yönü"
+        },
+        {
+          "key": "aa1e6ca79e",
+          "name": "Takım dizilişi analizi"
+        }
+      ]
+    }
+  }
+}

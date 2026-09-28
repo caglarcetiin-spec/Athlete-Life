@@ -154,6 +154,8 @@ type CatalogMovement = {
   contraction?: string;
   catalog_version: string;
   note?: string;
+  sport_id?: string;
+  source_urls?: string[];
 };
 const muscleLabels: Record<string, string> = {
   chest: "Göğüs",
@@ -380,6 +382,12 @@ export function MovementLibrary() {
                 biçimi aşağıda; başka hareketin görseli yerine kullanılmaz.
               </p>
             )}
+            {movement.note && <p>{movement.note}</p>}
+            {movement.source_urls?.map((url) => (
+              <a key={url} href={url} target="_blank" rel="noreferrer">
+                Branş kaynağı
+              </a>
+            ))}
             <h4>Katalogdaki kas bölgeleri</h4>
             {muscleEntries.length > 0 && (
               <CatalogMuscleMap muscles={movement.muscles} />

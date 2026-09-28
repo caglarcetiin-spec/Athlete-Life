@@ -9,6 +9,7 @@ from ..errors import DomainError
 from ..lifestyle import capability_series, nutrition_summary
 from ..movements import VERSION as CATALOG_VERSION
 from ..movements import resolve
+from ..sports import BY_SPORT
 from .recovery import contribution, summarize
 
 MODELS = {
@@ -358,8 +359,32 @@ def compute(snapshot, as_of, model_version="exposure-1", window_days=28, knowled
                 "archived": goal["archived"],
             }
         )
+    branch_practice = {}
     timeline = {}
     for row in set_rows:
+        definition = resolve(row)["definition"]
+        if definition and definition.get("sport_id"):
+            sport = definition["sport_id"]
+            method = definition["method"]
+            summary = branch_practice.setdefault(
+                (sport, method),
+                {
+                    "sport_id": sport,
+                    "sport": BY_SPORT[sport]["name"],
+                    "method": method,
+                    "physical": definition["physical"],
+                    "recorded_rounds": 0,
+                    "known_seconds": None,
+                    "missing_duration_rounds": 0,
+                    "source_ids": [],
+                },
+            )
+            summary["recorded_rounds"] += 1
+            if row.get("seconds") is None:
+                summary["missing_duration_rounds"] += 1
+            else:
+                summary["known_seconds"] = (summary["known_seconds"] or 0) + row["seconds"]
+            summary["source_ids"].append(row["id"])
         d = timeline.setdefault(
             row["local_date"],
             {
@@ -409,6 +434,7 @@ def compute(snapshot, as_of, model_version="exposure-1", window_days=28, knowled
             ],
             "meaning": "İki efor alanı birlikte girildiğinde dönüşüm varsayılmaz; RIR önceliklidir. Bilgileri gözden geçir.",
         },
+        "branch_practice": list(branch_practice.values()),
         "modality_loads": loads,
         "ad_hoc_loads": events,
         "nutrition": nutrition,

@@ -33,6 +33,7 @@ export const equipmentOptions = [
   "Treadmill",
   "Bench",
   "Pool",
+  "Medicine Ball",
 ];
 const labels = [
   "Bar",
@@ -49,6 +50,7 @@ const labels = [
   "Koşu bandı",
   "Ağırlık sehpası",
   "Yüzme havuzu",
+  "Sağlık topu",
 ];
 export function profilePayload(profile: Entity) {
   return Object.fromEntries(

@@ -204,3 +204,11 @@ GET `/api/v2/ai-planning-status` yalnız yapılandırma durumunu oturum sahibine
 `guided_choices.sport_experience[]`: sport_id, nullable level/years/sessions_per_week/session_minutes, known_skills; isteğe bağlı alan, varsayılan []. Program kabulünden sonra mevcut guided_choices JSON hattında korunur, otomatik profil yazımı yapılmaz.
 
 `ai_progress.py`: hesap oturumundan snapshot → seçilen ve önceki dönem → izin verilen sayısal facts → önizleme/digest → sağlayıcıya özel onay → EVREN/OpenAI ProgressReview → evidence_ids doğrulaması. `AIProgress` Gelişim bölümünde çalışır; kayıt/plan mutasyonu veya otomatik rapor arşivi yok. DB göçü yok. Ayrıntı: `docs/AI_PROGRESS_AND_CATALOG.md`.
+
+## 2026-09-28 — Branşa özgü çalışma hattı
+
+- `catalogs/sport_training.json` → `sport_training.py` (199 branşın açık temel teknik profili, kaynak/kapsam, ortam önkoşulları) → `movements.BY_ID` ve `planner_catalog` → `guided_planning` / `sport_program` → `ai_planning` uygun adaylar ve günlük branş doğrulaması.
+- İlave plan alanları: `sport_readiness[{sport_id, environment_ready, coach_present, partner_available}]`; yöntemler `sport_technique`, `sport_practice`, `sport_tactics`, `explosive_power`; `split=sport_days`, `objective=power`. Tek yazım `program.decisions.guided_choices`. Eski değerler ve boş varsayılanlar korunur.
+- `ai_origin.prompt_version=ai-planner-7`; önceki sürümler okunur. `sport-<sport>-<key>` kimliği `slot` ve gerçek `set` içine aynen taşınır; tur/saniye circuit kanalıdır, güç çalışması skill/tekrar kanalıdır. Yeni tekniklerde kas dağılımı UNKNOWN.
+- `science.branch_practice` kayıtlı tur, bilinen süre, eksik süre sayısı ve kaynak setlerini branş/yöntem bazında toplar. `Reports` bu özeti gösterir. `ai_progress.performance` olgularına `sport_id`, `training_method`, `physical` eklenir; tahmin değil katalog bağlamıdır.
+- [Kapsam, kaynaklar, test ve rollback sınırları](../SPORT_TRAINING_CATALOG.md). DB şema/hesap/medya göçü yok; kişisel verilerle test veya üretim yayını yok.

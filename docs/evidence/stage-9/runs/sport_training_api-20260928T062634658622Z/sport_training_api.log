@@ -1,0 +1,139 @@
+........................................................................ [ 21%]
+........................................................................ [ 42%]
+................................................................F....... [ 63%]
+..................F..................................................... [ 84%]
+...................................................                      [100%]
+=================================== FAILURES ===================================
+__________ test_branch_plan_rounds_persist_and_analysis_keeps_unknown __________
+
+client = <starlette.testclient.TestClient object at 0x10c6b5a60>
+
+    def test_branch_plan_rounds_persist_and_analysis_keeps_unknown(client):
+        request = branch("bjj")
+        preview = client.post(
+            "/api/v2/guided-program-drafts",
+            json=request.model_dump(mode="json", exclude={"consent"}),
+        )
+        assert preview.status_code == 200, preview.text
+        created = write(client, cmd("program.create", **preview.json()["program"]))
+        program = write(client, cmd("program.activate", created["entity"]["id"], 1))[
+            "entity"
+        ]
+        day = next(
+            c["entity"]
+            for c in created["changes"]
+            if c["kind"] == "program_day" and c["entity"]["weekday"] == 0
+        )
+        rx = prescription(client, program, day, "2026-09-14")
+        current = session(client, rx)
+        slot = next(c["entity"] for c in rx["changes"] if c["kind"] == "slot")
+        saved = write(
+            client,
+            actual(
+                client,
+                current,
+                slot,
+                reps=None,
+                seconds=slot["seconds"],
+                occurred_at="2026-09-14T12:00:00Z",
+            ),
+        )["entity"]
+        assert (
+            saved["movement_id"].startswith("sport-bjj-")
+            and saved["seconds"] == slot["seconds"]
+        )
+        assert saved["modality"] == "circuit"
+        report = client.get(
+            "/api/v2/analysis", params={"as_of": "2026-09-15T12:00:00Z", "window_days": 7}
+        ).json()
+        assert not report["recorded_distribution"]
+        assert report["coverage"]["missing"]
+        restored = client.get("/api/v2/bootstrap").json()["programs"][0]
+>       assert restored["guided_choices"]["sport_readiness"][0]["partner_available"] is True
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'guided_choices'
+
+tests/v2/test_sport_training.py:224: KeyError
+____________ test_plan_actual_and_muscle_report_share_canonical_ids ____________
+
+client = <starlette.testclient.TestClient object at 0x10b8666f0>
+
+    def test_plan_actual_and_muscle_report_share_canonical_ids(client):
+        data = hybrid()
+        preview = client.post(
+            "/api/v2/guided-program-drafts", json=data.model_dump(mode="json")
+        )
+        assert preview.status_code == 200, preview.text
+        assert client.get("/api/v2/bootstrap").json()["sets"] == []
+        created = write(client, cmd("program.create", **preview.json()["program"]))
+        program = write(client, cmd("program.activate", created["entity"]["id"], 1))[
+            "entity"
+        ]
+        day = next(
+            c["entity"]
+            for c in created["changes"]
+            if c["kind"] == "program_day" and c["entity"]["weekday"] == 0
+        )
+        rx = prescription(client, program, day, "2026-09-14")
+        current = session(client, rx)
+        slots = [c["entity"] for c in rx["changes"] if c["kind"] == "slot"]
+        saved = []
+        for key in ("front-lever", "muscle-up", "ez-bar-row"):
+            slot = next(s for s in slots if s["movement_id"] == key)
+            saved.append(
+                write(
+                    client,
+                    actual(
+                        client,
+                        current,
+                        slot,
+                        reps=slot["reps"],
+                        seconds=slot["seconds"],
+                        occurred_at="2026-09-14T12:00:00Z",
+                    ),
+                )["entity"]
+            )
+    
+        def report():
+            response = client.get(
+                "/api/v2/analysis",
+                params={"as_of": "2026-09-15T12:00:00Z", "window_days": 7},
+            )
+            assert response.status_code == 200, response.text
+            return response.json()
+    
+        channels = report()["recorded_distribution"]["lats"]
+        assert channels["isometric"]["amount"] > 0
+        assert channels["skill"]["amount"] > 0
+        assert channels["strength"]["amount"] > 0
+        assert channels["isometric"]["source_ids"] == [saved[0]["id"]]
+        assert channels["skill"]["source_ids"] == [saved[1]["id"]]
+        assert channels["strength"]["source_ids"] == [saved[2]["id"]]
+        write(client, cmd("set.delete", saved[2]["id"], saved[2]["version"]))
+        assert "strength" not in report()["recorded_distribution"]["lats"]
+>       assert (
+            client.get("/api/v2/bootstrap").json()["programs"][0]["decisions"][
+                "guided_model_version"
+            ]
+            == "guided-hybrid-3"
+        )
+E       AssertionError: assert 'guided-sports-4' == 'guided-hybrid-3'
+E         
+E         - guided-hybrid-3
+E         + guided-sports-4
+
+tests/v2/test_hybrid_planning.py:153: AssertionError
+=============================== warnings summary ===============================
+.venv-v2/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+.venv-v2/lib/python3.12/site-packages/starlette/testclient.py:53
+  /Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/v2/test_sport_training.py::test_branch_plan_rounds_persist_and_analysis_keeps_unknown
+FAILED tests/v2/test_hybrid_planning.py::test_plan_actual_and_muscle_report_share_canonical_ids
+2 failed, 337 passed, 2 warnings in 17.40s

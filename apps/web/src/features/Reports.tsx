@@ -12,6 +12,19 @@ const point = z
   .object({ id: z.string(), local_date: z.string(), value: z.number() })
   .catchall(z.unknown());
 const schema = z.object({
+  branch_practice: z
+    .array(
+      z.object({
+        sport_id: z.string(),
+        sport: z.string(),
+        method: z.string(),
+        physical: z.boolean(),
+        recorded_rounds: z.number(),
+        known_seconds: z.number().nullable(),
+        missing_duration_rounds: z.number(),
+      }),
+    )
+    .optional(),
   muscle_recovery: recoverySchema.optional(),
   model_version: z.string(),
   as_of: z.string(),
@@ -504,6 +517,37 @@ export function Reports({
             ...(saved ? { saved_id: saved } : {}),
           }).toString()}
         />
+      )}
+      {!!report?.branch_practice?.length && (
+        <section className="card" aria-label="Branş çalışma özeti">
+          <h2>Branş çalışmalarım</h2>
+          <p>
+            Gerçek kayıtlardaki turlar ve süreler. Teknik ustalığı, kas büyümesi
+            veya hasar yüzdesi ölçümü değildir.
+          </p>
+          <ul>
+            {report.branch_practice.map((r) => (
+              <li key={r.sport_id + r.method}>
+                <strong>{r.sport}</strong> ·{" "}
+                {(
+                  {
+                    sport_technique: "Teknik",
+                    sport_practice: "Uygulama",
+                    sport_tactics: "Taktik analiz",
+                  } as Record<string, string>
+                )[r.method] || r.method}{" "}
+                · {r.recorded_rounds} tur ·{" "}
+                {r.known_seconds === null
+                  ? "süre bilinmiyor"
+                  : `${Math.round((r.known_seconds / 60) * 10) / 10} dk kayıtlı süre`}
+                {r.missing_duration_rounds > 0
+                  ? ` · ${r.missing_duration_rounds} turda süre eksik`
+                  : ""}
+                {!r.physical ? " · fiziksel yük sayılmaz" : ""}
+              </li>
+            ))}
+          </ul>
+        </section>
       )}
       {report?.period_summary && (
         <section className="card">

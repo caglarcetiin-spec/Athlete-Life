@@ -2,7 +2,7 @@
 
 from .movements import BY_ID
 
-VERSION = "guided-hybrid-3"
+VERSION = "guided-sports-4"
 # id, movement family, eligible methods, self-reported competency required, block
 ROWS = [
     ("bodyweight-squat", "knee", "weights calisthenics", False, "main"),
@@ -62,10 +62,28 @@ ROWS = [
 ]
 for stroke in ("freestyle", "backstroke", "breaststroke", "butterfly"):
     ROWS.append(("swim-" + stroke, "conditioning", "swimming", True, "conditioning"))
+from .sport_training import DEFINITIONS as SPORT_DEFINITIONS
+
+for d in SPORT_DEFINITIONS:
+    method = d["method"]
+    ROWS.append(
+        (
+            d["id"],
+            method,
+            method,
+            method == "explosive_power",
+            "power" if method == "explosive_power" else method,
+        )
+    )
+
 META = {
     r[0]: {"family": r[1], "methods": r[2].split(), "competency_required": r[3], "block": r[4]} for r in ROWS
 }
 FAMILY_LABELS = {
+    "sport_technique": "Branş tekniği",
+    "sport_practice": "Branş uygulaması",
+    "sport_tactics": "Taktik analiz",
+    "explosive_power": "Patlayıcı güç",
     "knee": "Diz baskın / çömelme",
     "hinge": "Kalça baskın / kaldırma",
     "horizontal_push": "Yatay itiş",
@@ -91,12 +109,14 @@ def options():
         {
             "movement_id": key,
             "name": BY_ID[key].get("displayNameTR", BY_ID[key]["name"]),
-            "metric": "seconds" if BY_ID[key]["modality"] in ("isometric", "cardio") else "reps",
+            "metric": "seconds" if BY_ID[key]["modality"] in ("isometric", "cardio", "circuit") else "reps",
             "family": value["family"],
             "equipment": BY_ID[key]["equipment"],
             "methods": value["methods"],
             "competency_required": value["competency_required"],
             "block": value["block"],
+            "sport_id": BY_ID[key].get("sport_id"),
+            "note": BY_ID[key].get("note", ""),
         }
         for key, value in META.items()
     ]
