@@ -152,3 +152,7 @@ Tam alan/varsayılan/kaynak ve geri alma sözleşmesi: `docs/migration/REVISION_
 `ai_origin.prompt_version` ayrıca `ai-planner-2` kabul eder; `openai-planner-1` geçmiş kayıtları korunur. Yeni istemde aday başına türetilmiş prescription_rules, day_split, session_limits ve yalnız formdan üretilen reference_draft gönderilir. Bunlar sağlık/geçmiş antrenman kaydı değildir, kanonik programı otomatik değiştirmez. `ALOS_V2_EVREN_REASONING_EFFORT` opsiyonel sunucu model ayarıdır; veritabanı alanı değildir. Şema göçü yok.
 
 GLM‑5.3 seçimi: `ai_origin.prompt_version=ai-planner-3` ek kabul; eski iki etiket korunur. İstem `day_split.required_patterns` ve `minimum_strength_sets` mevcut validatörün kurallarından türetilir, yeni kişisel veri gönderilmez. Yeni tablo veya belge göçü yok; provider/model değişikliği geçmiş programların kökenini yeniden yazmaz.
+
+### Günlük anlatım kaydı (2026-10-05)
+
+Yeni `daily_log.save` mevcut domain kayıtlarını üretir; eski veri taşıması yapmaz. Kaynak metin/tarih/seçim/işlenmeyen bilgi `Audit.before.daily_log_provenance` JSON alanındadır; domain alanları eski okuyucularla uyumludur. Geçmiş set bilinmiyorsa uydurulmaz; yalnız seans özeti oluşur. `daily-narrative:YYYY-MM-DD` yerel taslak ve bekleyen operation id yeni istemciye aittir. Bkz. `docs/DAILY_NARRATIVE.md`.

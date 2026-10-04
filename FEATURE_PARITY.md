@@ -108,3 +108,5 @@ MacroFactor Workouts resmî akışından esinlenen, sekiz ekranlı özgün Athle
 ## AI destekli taslak — kurulum bekleyen yerel aday
 
 OpenAI Responses adaptörü, açık veri aktarımı onayı, kanonik hareket/süre/ekipman/yetkinlik/split doğrulayıcısı ve mevcut düzenleyiciye aktarım eklendi. API anahtarı/model yokken AI kapalıdır. Bağlantı reddi, limit, zaman aşımı ve eksik yanıt açık hata verir; sessiz standart-model fallback yok. Gerçek model erişimi/plan kalitesi henüz test edilmedi. Ayrıntılar: docs/AI_PLANNER_SETUP.md.
+
+- 2026-10-05: Antrenman içindeki **Günümü anlat / Hızlı kayıt** yeni özelliği; EVREN'le açık izinli günlük ayrıştırma, eksik tamamlama, seçili satırların atomik kaydı ve bağlantı kaybında idempotent tekrar. Var olan manuel formlar korunur. Sınırlar/test kanıtı: `docs/DAILY_NARRATIVE.md`.

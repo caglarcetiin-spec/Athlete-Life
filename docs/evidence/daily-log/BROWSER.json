@@ -1,0 +1,15 @@
+{
+  "mobileReview": true,
+  "consentRequired": true,
+  "incompleteWaterBlocked": true,
+  "followUpCompleted": true,
+  "noWritesBeforeApproval": true,
+  "reloadPreserved": true,
+  "definitiveRejectionAllowsCorrection": true,
+  "lostAckRetriedWithoutDuplication": true,
+  "allFiveDomains": true,
+  "threeRealSets": true,
+  "noInventedCalories": true,
+  "violations": [],
+  "errors": []
+}

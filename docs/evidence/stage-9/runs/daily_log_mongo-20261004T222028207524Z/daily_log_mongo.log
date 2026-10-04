@@ -1,0 +1,737 @@
+EEEEEEE
+==================================== ERRORS ====================================
+______ ERROR at setup of test_daily_invalid_command_and_concurrent_commit ______
+
+app_factory = <function app_factory.<locals>.factory at 0x10e17eca0>
+
+    @pytest.fixture
+    def app(app_factory):
+>       return app_factory()
+               ^^^^^^^^^^^^^
+
+tests/mongodb/conftest.py:53: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/mongodb/conftest.py:35: in factory
+    app.state.database.migrate()
+apps/api/alos/mongo_db.py:160: in migrate
+    hello = self.client.admin.command("hello")
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/_csot.py:126: in csot_wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/database.py:946: in command
+    return self._client._retryable_read(
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:2061: in _retryable_read
+    return self._retry_internal(
+.venv-v2/lib/python3.12/site-packages/pymongo/_csot.py:126: in csot_wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:2022: in _retry_internal
+    ).run()
+      ^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:2890: in run
+    res = self._read() if self._is_read else self._write()
+          ^^^^^^^^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:3118: in _read
+    self._server = self._get_server()
+                   ^^^^^^^^^^^^^^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:3063: in _get_server
+    return self._client._select_server(
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:1862: in _select_server
+    server = topology.select_server(
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/topology.py:357: in select_server
+    server = self._select_server(
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/topology.py:331: in _select_server
+    servers = self.select_servers(
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/topology.py:249: in select_servers
+    server_descriptions = self._select_servers_loop(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Topology <TopologyDescription id: 6ac2ce3919e9fecd1380b3f7, topology_type: ReplicaSetNoPrimary, servers: [<ServerDesc...27028: [Errno 61] Connection refused (configured timeouts: socketTimeoutMS: 5000.0ms, connectTimeoutMS: 5000.0ms)')>]>>
+selector = Primary(), timeout = 5.0, operation = 'hello', operation_id = None
+address = None, deprioritized_servers = None
+
+    def _select_servers_loop(
+        self,
+        selector: Callable[[Selection], Selection],
+        timeout: float,
+        operation: str,
+        operation_id: Optional[int],
+        address: Optional[_Address],
+        deprioritized_servers: Optional[list[Server]] = None,
+    ) -> list[ServerDescription]:
+        """select_servers() guts. Hold the lock when calling this."""
+        now = time.monotonic()
+        end_time = now + timeout
+        logged_waiting = False
+        # Server selection does not have APM events, gate only on logging
+        ss: Optional[_ServerSelectionTelemetry] = None
+        if _is_debug_enabled(_SERVER_SELECTION_LOGGER):
+            ss = _ServerSelectionTelemetry(
+                self._topology_id, selector, operation, operation_id, self.description
+            )
+            ss.started()
+    
+        server_descriptions = self._description.apply_selector(
+            selector,
+            address,
+            custom_selector=self._settings.server_selector,
+            deprioritized_servers=[server.description for server in deprioritized_servers]
+            if deprioritized_servers
+            else None,
+        )
+    
+        while not server_descriptions:
+            # No suitable servers.
+            if timeout == 0 or now > end_time:
+                if ss is not None:
+                    ss.failed(self._error_message(selector), self.description)
+>               raise ServerSelectionTimeoutError(
+                    f"{self._error_message(selector)}, Timeout: {timeout}s, Topology Description: {self.description!r}"
+                )
+E               pymongo.errors.ServerSelectionTimeoutError: 127.0.0.1:27028: [Errno 61] Connection refused (configured timeouts: socketTimeoutMS: 5000.0ms, connectTimeoutMS: 5000.0ms), Timeout: 5.0s, Topology Description: <TopologyDescription id: 6ac2ce3919e9fecd1380b3f7, topology_type: ReplicaSetNoPrimary, servers: [<ServerDescription ('127.0.0.1', 27028) server_type: Unknown, rtt: None, error=AutoReconnect('127.0.0.1:27028: [Errno 61] Connection refused (configured timeouts: socketTimeoutMS: 5000.0ms, connectTimeoutMS: 5000.0ms)')>]>
+
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/topology.py:297: ServerSelectionTimeoutError
+____ ERROR at teardown of test_daily_invalid_command_and_concurrent_commit _____
+
+    @pytest.fixture
+    def app_factory():
+        applications = []
+    
+        def factory():
+            name = "alos_test_" + uuid4().hex
+            app = create_app(
+                Settings(
+                    database_url="mongodb://127.0.0.1:27028/?replicaSet=alos-test",
+                    mongo_database=name,
+                    enabled=True,
+                    environment="test",
+                    public_origin="http://testserver",
+                )
+            )
+            applications.append((app, name))  # Clean up even if migration/seed fails.
+            app.state.database.migrate()
+            with app.state.database.sessions.begin() as db:
+                _, a = create_user(db, "deniz", "Deniz Test", "test-password-123")
+                _, b = create_user(db, "arda", "Arda Test", "test-password-456")
+            app.state.athletes = [a.id, b.id]
+            return app
+    
+        yield factory
+        admin = MongoClient("mongodb://127.0.0.1:27028/?replicaSet=alos-test")
+        for app, name in applications:
+            app.state.database.client.close()
+            assert name.startswith("alos_test_")
+>           admin.drop_database(name)
+
+tests/mongodb/conftest.py:47: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv-v2/lib/python3.12/site-packages/pymongo/_csot.py:126: in csot_wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:2462: in drop_database
+    self[name].command(
+.venv-v2/lib/python3.12/site-packages/pymongo/_csot.py:126: in csot_wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/database.py:946: in command
+    return self._client._retryable_read(
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:2061: in _retryable_read
+    return self._retry_internal(
+.venv-v2/lib/python3.12/site-packages/pymongo/_csot.py:126: in csot_wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:2022: in _retry_internal
+    ).run()
+      ^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:2890: in run
+    res = self._read() if self._is_read else self._write()
+          ^^^^^^^^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:3118: in _read
+    self._server = self._get_server()
+                   ^^^^^^^^^^^^^^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:3063: in _get_server
+    return self._client._select_server(
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:1862: in _select_server
+    server = topology.select_server(
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/topology.py:357: in select_server
+    server = self._select_server(
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/topology.py:331: in _select_server
+    servers = self.select_servers(
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/topology.py:249: in select_servers
+    server_descriptions = self._select_servers_loop(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Topology <TopologyDescription id: 6ac2ce3e19e9fecd1380b3f8, topology_type: ReplicaSetNoPrimary, servers: [<ServerDesc...028: [Errno 61] Connection refused (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>]>>
+selector = Primary(), timeout = 30, operation = 'dropDatabase'
+operation_id = None, address = None, deprioritized_servers = None
+
+    def _select_servers_loop(
+        self,
+        selector: Callable[[Selection], Selection],
+        timeout: float,
+        operation: str,
+        operation_id: Optional[int],
+        address: Optional[_Address],
+        deprioritized_servers: Optional[list[Server]] = None,
+    ) -> list[ServerDescription]:
+        """select_servers() guts. Hold the lock when calling this."""
+        now = time.monotonic()
+        end_time = now + timeout
+        logged_waiting = False
+        # Server selection does not have APM events, gate only on logging
+        ss: Optional[_ServerSelectionTelemetry] = None
+        if _is_debug_enabled(_SERVER_SELECTION_LOGGER):
+            ss = _ServerSelectionTelemetry(
+                self._topology_id, selector, operation, operation_id, self.description
+            )
+            ss.started()
+    
+        server_descriptions = self._description.apply_selector(
+            selector,
+            address,
+            custom_selector=self._settings.server_selector,
+            deprioritized_servers=[server.description for server in deprioritized_servers]
+            if deprioritized_servers
+            else None,
+        )
+    
+        while not server_descriptions:
+            # No suitable servers.
+            if timeout == 0 or now > end_time:
+                if ss is not None:
+                    ss.failed(self._error_message(selector), self.description)
+>               raise ServerSelectionTimeoutError(
+                    f"{self._error_message(selector)}, Timeout: {timeout}s, Topology Description: {self.description!r}"
+                )
+E               pymongo.errors.ServerSelectionTimeoutError: 127.0.0.1:27028: [Errno 61] Connection refused (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms), Timeout: 30s, Topology Description: <TopologyDescription id: 6ac2ce3e19e9fecd1380b3f8, topology_type: ReplicaSetNoPrimary, servers: [<ServerDescription ('127.0.0.1', 27028) server_type: Unknown, rtt: None, error=AutoReconnect('127.0.0.1:27028: [Errno 61] Connection refused (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>]>
+
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/topology.py:297: ServerSelectionTimeoutError
+_________ ERROR at setup of test_daily_atomic_full_day_and_idempotency _________
+
+app_factory = <function app_factory.<locals>.factory at 0x10e507ec0>
+
+    @pytest.fixture
+    def app(app_factory):
+>       return app_factory()
+               ^^^^^^^^^^^^^
+
+tests/mongodb/conftest.py:53: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/mongodb/conftest.py:35: in factory
+    app.state.database.migrate()
+apps/api/alos/mongo_db.py:160: in migrate
+    hello = self.client.admin.command("hello")
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/_csot.py:126: in csot_wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/database.py:946: in command
+    return self._client._retryable_read(
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:2061: in _retryable_read
+    return self._retry_internal(
+.venv-v2/lib/python3.12/site-packages/pymongo/_csot.py:126: in csot_wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:2022: in _retry_internal
+    ).run()
+      ^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:2890: in run
+    res = self._read() if self._is_read else self._write()
+          ^^^^^^^^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:3118: in _read
+    self._server = self._get_server()
+                   ^^^^^^^^^^^^^^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:3063: in _get_server
+    return self._client._select_server(
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:1862: in _select_server
+    server = topology.select_server(
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/topology.py:357: in select_server
+    server = self._select_server(
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/topology.py:331: in _select_server
+    servers = self.select_servers(
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/topology.py:249: in select_servers
+    server_descriptions = self._select_servers_loop(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Topology <TopologyDescription id: 6ac2ce5d19e9fecd1380b3f9, topology_type: ReplicaSetNoPrimary, servers: [<ServerDesc...27028: [Errno 61] Connection refused (configured timeouts: socketTimeoutMS: 5000.0ms, connectTimeoutMS: 5000.0ms)')>]>>
+selector = Primary(), timeout = 5.0, operation = 'hello', operation_id = None
+address = None, deprioritized_servers = None
+
+    def _select_servers_loop(
+        self,
+        selector: Callable[[Selection], Selection],
+        timeout: float,
+        operation: str,
+        operation_id: Optional[int],
+        address: Optional[_Address],
+        deprioritized_servers: Optional[list[Server]] = None,
+    ) -> list[ServerDescription]:
+        """select_servers() guts. Hold the lock when calling this."""
+        now = time.monotonic()
+        end_time = now + timeout
+        logged_waiting = False
+        # Server selection does not have APM events, gate only on logging
+        ss: Optional[_ServerSelectionTelemetry] = None
+        if _is_debug_enabled(_SERVER_SELECTION_LOGGER):
+            ss = _ServerSelectionTelemetry(
+                self._topology_id, selector, operation, operation_id, self.description
+            )
+            ss.started()
+    
+        server_descriptions = self._description.apply_selector(
+            selector,
+            address,
+            custom_selector=self._settings.server_selector,
+            deprioritized_servers=[server.description for server in deprioritized_servers]
+            if deprioritized_servers
+            else None,
+        )
+    
+        while not server_descriptions:
+            # No suitable servers.
+            if timeout == 0 or now > end_time:
+                if ss is not None:
+                    ss.failed(self._error_message(selector), self.description)
+>               raise ServerSelectionTimeoutError(
+                    f"{self._error_message(selector)}, Timeout: {timeout}s, Topology Description: {self.description!r}"
+                )
+E               pymongo.errors.ServerSelectionTimeoutError: 127.0.0.1:27028: [Errno 61] Connection refused (configured timeouts: socketTimeoutMS: 5000.0ms, connectTimeoutMS: 5000.0ms), Timeout: 5.0s, Topology Description: <TopologyDescription id: 6ac2ce5d19e9fecd1380b3f9, topology_type: ReplicaSetNoPrimary, servers: [<ServerDescription ('127.0.0.1', 27028) server_type: Unknown, rtt: None, error=AutoReconnect('127.0.0.1:27028: [Errno 61] Connection refused (configured timeouts: socketTimeoutMS: 5000.0ms, connectTimeoutMS: 5000.0ms)')>]>
+
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/topology.py:297: ServerSelectionTimeoutError
+_______ ERROR at teardown of test_daily_atomic_full_day_and_idempotency ________
+
+    @pytest.fixture
+    def app_factory():
+        applications = []
+    
+        def factory():
+            name = "alos_test_" + uuid4().hex
+            app = create_app(
+                Settings(
+                    database_url="mongodb://127.0.0.1:27028/?replicaSet=alos-test",
+                    mongo_database=name,
+                    enabled=True,
+                    environment="test",
+                    public_origin="http://testserver",
+                )
+            )
+            applications.append((app, name))  # Clean up even if migration/seed fails.
+            app.state.database.migrate()
+            with app.state.database.sessions.begin() as db:
+                _, a = create_user(db, "deniz", "Deniz Test", "test-password-123")
+                _, b = create_user(db, "arda", "Arda Test", "test-password-456")
+            app.state.athletes = [a.id, b.id]
+            return app
+    
+        yield factory
+        admin = MongoClient("mongodb://127.0.0.1:27028/?replicaSet=alos-test")
+        for app, name in applications:
+            app.state.database.client.close()
+            assert name.startswith("alos_test_")
+>           admin.drop_database(name)
+
+tests/mongodb/conftest.py:47: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv-v2/lib/python3.12/site-packages/pymongo/_csot.py:126: in csot_wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:2462: in drop_database
+    self[name].command(
+.venv-v2/lib/python3.12/site-packages/pymongo/_csot.py:126: in csot_wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/database.py:946: in command
+    return self._client._retryable_read(
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:2061: in _retryable_read
+    return self._retry_internal(
+.venv-v2/lib/python3.12/site-packages/pymongo/_csot.py:126: in csot_wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:2022: in _retry_internal
+    ).run()
+      ^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:2890: in run
+    res = self._read() if self._is_read else self._write()
+          ^^^^^^^^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:3118: in _read
+    self._server = self._get_server()
+                   ^^^^^^^^^^^^^^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:3063: in _get_server
+    return self._client._select_server(
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:1862: in _select_server
+    server = topology.select_server(
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/topology.py:357: in select_server
+    server = self._select_server(
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/topology.py:331: in _select_server
+    servers = self.select_servers(
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/topology.py:249: in select_servers
+    server_descriptions = self._select_servers_loop(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Topology <TopologyDescription id: 6ac2ce6219e9fecd1380b3fa, topology_type: ReplicaSetNoPrimary, servers: [<ServerDesc...028: [Errno 61] Connection refused (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>]>>
+selector = Primary(), timeout = 30, operation = 'dropDatabase'
+operation_id = None, address = None, deprioritized_servers = None
+
+    def _select_servers_loop(
+        self,
+        selector: Callable[[Selection], Selection],
+        timeout: float,
+        operation: str,
+        operation_id: Optional[int],
+        address: Optional[_Address],
+        deprioritized_servers: Optional[list[Server]] = None,
+    ) -> list[ServerDescription]:
+        """select_servers() guts. Hold the lock when calling this."""
+        now = time.monotonic()
+        end_time = now + timeout
+        logged_waiting = False
+        # Server selection does not have APM events, gate only on logging
+        ss: Optional[_ServerSelectionTelemetry] = None
+        if _is_debug_enabled(_SERVER_SELECTION_LOGGER):
+            ss = _ServerSelectionTelemetry(
+                self._topology_id, selector, operation, operation_id, self.description
+            )
+            ss.started()
+    
+        server_descriptions = self._description.apply_selector(
+            selector,
+            address,
+            custom_selector=self._settings.server_selector,
+            deprioritized_servers=[server.description for server in deprioritized_servers]
+            if deprioritized_servers
+            else None,
+        )
+    
+        while not server_descriptions:
+            # No suitable servers.
+            if timeout == 0 or now > end_time:
+                if ss is not None:
+                    ss.failed(self._error_message(selector), self.description)
+>               raise ServerSelectionTimeoutError(
+                    f"{self._error_message(selector)}, Timeout: {timeout}s, Topology Description: {self.description!r}"
+                )
+E               pymongo.errors.ServerSelectionTimeoutError: 127.0.0.1:27028: [Errno 61] Connection refused (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms), Timeout: 30s, Topology Description: <TopologyDescription id: 6ac2ce6219e9fecd1380b3fa, topology_type: ReplicaSetNoPrimary, servers: [<ServerDescription ('127.0.0.1', 27028) server_type: Unknown, rtt: None, error=AutoReconnect('127.0.0.1:27028: [Errno 61] Connection refused (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>]>
+
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/topology.py:297: ServerSelectionTimeoutError
+_______ ERROR at setup of test_daily_overlapping_sleep_rolls_back_water ________
+
+app_factory = <function app_factory.<locals>.factory at 0x10e5445e0>
+
+    @pytest.fixture
+    def app(app_factory):
+>       return app_factory()
+               ^^^^^^^^^^^^^
+
+tests/mongodb/conftest.py:53: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/mongodb/conftest.py:35: in factory
+    app.state.database.migrate()
+apps/api/alos/mongo_db.py:160: in migrate
+    hello = self.client.admin.command("hello")
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/_csot.py:126: in csot_wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/database.py:946: in command
+    return self._client._retryable_read(
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:2061: in _retryable_read
+    return self._retry_internal(
+.venv-v2/lib/python3.12/site-packages/pymongo/_csot.py:126: in csot_wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:2022: in _retry_internal
+    ).run()
+      ^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:2890: in run
+    res = self._read() if self._is_read else self._write()
+          ^^^^^^^^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:3118: in _read
+    self._server = self._get_server()
+                   ^^^^^^^^^^^^^^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:3063: in _get_server
+    return self._client._select_server(
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:1862: in _select_server
+    server = topology.select_server(
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/topology.py:357: in select_server
+    server = self._select_server(
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/topology.py:331: in _select_server
+    servers = self.select_servers(
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/topology.py:249: in select_servers
+    server_descriptions = self._select_servers_loop(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Topology <TopologyDescription id: 6ac2ce8019e9fecd1380b3fb, topology_type: ReplicaSetNoPrimary, servers: [<ServerDesc...27028: [Errno 61] Connection refused (configured timeouts: socketTimeoutMS: 5000.0ms, connectTimeoutMS: 5000.0ms)')>]>>
+selector = Primary(), timeout = 5.0, operation = 'hello', operation_id = None
+address = None, deprioritized_servers = None
+
+    def _select_servers_loop(
+        self,
+        selector: Callable[[Selection], Selection],
+        timeout: float,
+        operation: str,
+        operation_id: Optional[int],
+        address: Optional[_Address],
+        deprioritized_servers: Optional[list[Server]] = None,
+    ) -> list[ServerDescription]:
+        """select_servers() guts. Hold the lock when calling this."""
+        now = time.monotonic()
+        end_time = now + timeout
+        logged_waiting = False
+        # Server selection does not have APM events, gate only on logging
+        ss: Optional[_ServerSelectionTelemetry] = None
+        if _is_debug_enabled(_SERVER_SELECTION_LOGGER):
+            ss = _ServerSelectionTelemetry(
+                self._topology_id, selector, operation, operation_id, self.description
+            )
+            ss.started()
+    
+        server_descriptions = self._description.apply_selector(
+            selector,
+            address,
+            custom_selector=self._settings.server_selector,
+            deprioritized_servers=[server.description for server in deprioritized_servers]
+            if deprioritized_servers
+            else None,
+        )
+    
+        while not server_descriptions:
+            # No suitable servers.
+            if timeout == 0 or now > end_time:
+                if ss is not None:
+                    ss.failed(self._error_message(selector), self.description)
+>               raise ServerSelectionTimeoutError(
+                    f"{self._error_message(selector)}, Timeout: {timeout}s, Topology Description: {self.description!r}"
+                )
+E               pymongo.errors.ServerSelectionTimeoutError: 127.0.0.1:27028: [Errno 61] Connection refused (configured timeouts: socketTimeoutMS: 5000.0ms, connectTimeoutMS: 5000.0ms), Timeout: 5.0s, Topology Description: <TopologyDescription id: 6ac2ce8019e9fecd1380b3fb, topology_type: ReplicaSetNoPrimary, servers: [<ServerDescription ('127.0.0.1', 27028) server_type: Unknown, rtt: None, error=AutoReconnect('127.0.0.1:27028: [Errno 61] Connection refused (configured timeouts: socketTimeoutMS: 5000.0ms, connectTimeoutMS: 5000.0ms)')>]>
+
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/topology.py:297: ServerSelectionTimeoutError
+______ ERROR at teardown of test_daily_overlapping_sleep_rolls_back_water ______
+
+    @pytest.fixture
+    def app_factory():
+        applications = []
+    
+        def factory():
+            name = "alos_test_" + uuid4().hex
+            app = create_app(
+                Settings(
+                    database_url="mongodb://127.0.0.1:27028/?replicaSet=alos-test",
+                    mongo_database=name,
+                    enabled=True,
+                    environment="test",
+                    public_origin="http://testserver",
+                )
+            )
+            applications.append((app, name))  # Clean up even if migration/seed fails.
+            app.state.database.migrate()
+            with app.state.database.sessions.begin() as db:
+                _, a = create_user(db, "deniz", "Deniz Test", "test-password-123")
+                _, b = create_user(db, "arda", "Arda Test", "test-password-456")
+            app.state.athletes = [a.id, b.id]
+            return app
+    
+        yield factory
+        admin = MongoClient("mongodb://127.0.0.1:27028/?replicaSet=alos-test")
+        for app, name in applications:
+            app.state.database.client.close()
+            assert name.startswith("alos_test_")
+>           admin.drop_database(name)
+
+tests/mongodb/conftest.py:47: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv-v2/lib/python3.12/site-packages/pymongo/_csot.py:126: in csot_wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:2462: in drop_database
+    self[name].command(
+.venv-v2/lib/python3.12/site-packages/pymongo/_csot.py:126: in csot_wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/database.py:946: in command
+    return self._client._retryable_read(
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:2061: in _retryable_read
+    return self._retry_internal(
+.venv-v2/lib/python3.12/site-packages/pymongo/_csot.py:126: in csot_wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:2022: in _retry_internal
+    ).run()
+      ^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:2890: in run
+    res = self._read() if self._is_read else self._write()
+          ^^^^^^^^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:3118: in _read
+    self._server = self._get_server()
+                   ^^^^^^^^^^^^^^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:3063: in _get_server
+    return self._client._select_server(
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:1862: in _select_server
+    server = topology.select_server(
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/topology.py:357: in select_server
+    server = self._select_server(
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/topology.py:331: in _select_server
+    servers = self.select_servers(
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/topology.py:249: in select_servers
+    server_descriptions = self._select_servers_loop(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Topology <TopologyDescription id: 6ac2ce8519e9fecd1380b3fc, topology_type: ReplicaSetNoPrimary, servers: [<ServerDesc...028: [Errno 61] Connection refused (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>]>>
+selector = Primary(), timeout = 30, operation = 'dropDatabase'
+operation_id = None, address = None, deprioritized_servers = None
+
+    def _select_servers_loop(
+        self,
+        selector: Callable[[Selection], Selection],
+        timeout: float,
+        operation: str,
+        operation_id: Optional[int],
+        address: Optional[_Address],
+        deprioritized_servers: Optional[list[Server]] = None,
+    ) -> list[ServerDescription]:
+        """select_servers() guts. Hold the lock when calling this."""
+        now = time.monotonic()
+        end_time = now + timeout
+        logged_waiting = False
+        # Server selection does not have APM events, gate only on logging
+        ss: Optional[_ServerSelectionTelemetry] = None
+        if _is_debug_enabled(_SERVER_SELECTION_LOGGER):
+            ss = _ServerSelectionTelemetry(
+                self._topology_id, selector, operation, operation_id, self.description
+            )
+            ss.started()
+    
+        server_descriptions = self._description.apply_selector(
+            selector,
+            address,
+            custom_selector=self._settings.server_selector,
+            deprioritized_servers=[server.description for server in deprioritized_servers]
+            if deprioritized_servers
+            else None,
+        )
+    
+        while not server_descriptions:
+            # No suitable servers.
+            if timeout == 0 or now > end_time:
+                if ss is not None:
+                    ss.failed(self._error_message(selector), self.description)
+>               raise ServerSelectionTimeoutError(
+                    f"{self._error_message(selector)}, Timeout: {timeout}s, Topology Description: {self.description!r}"
+                )
+E               pymongo.errors.ServerSelectionTimeoutError: 127.0.0.1:27028: [Errno 61] Connection refused (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms), Timeout: 30s, Topology Description: <TopologyDescription id: 6ac2ce8519e9fecd1380b3fc, topology_type: ReplicaSetNoPrimary, servers: [<ServerDescription ('127.0.0.1', 27028) server_type: Unknown, rtt: None, error=AutoReconnect('127.0.0.1:27028: [Errno 61] Connection refused (configured timeouts: socketTimeoutMS: 20000.0ms, connectTimeoutMS: 20000.0ms)')>]>
+
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/topology.py:297: ServerSelectionTimeoutError
+_____________ ERROR at setup of test_daily_stale_no_partial_write ______________
+
+app_factory = <function app_factory.<locals>.factory at 0x10e784220>
+
+    @pytest.fixture
+    def app(app_factory):
+>       return app_factory()
+               ^^^^^^^^^^^^^
+
+tests/mongodb/conftest.py:53: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/mongodb/conftest.py:35: in factory
+    app.state.database.migrate()
+apps/api/alos/mongo_db.py:160: in migrate
+    hello = self.client.admin.command("hello")
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/_csot.py:126: in csot_wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/database.py:946: in command
+    return self._client._retryable_read(
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:2061: in _retryable_read
+    return self._retry_internal(
+.venv-v2/lib/python3.12/site-packages/pymongo/_csot.py:126: in csot_wrapper
+    return func(self, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:2022: in _retry_internal
+    ).run()
+      ^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:2890: in run
+    res = self._read() if self._is_read else self._write()
+          ^^^^^^^^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:3118: in _read
+    self._server = self._get_server()
+                   ^^^^^^^^^^^^^^^^^^
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:3063: in _get_server
+    return self._client._select_server(
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/mongo_client.py:1862: in _select_server
+    server = topology.select_server(
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/topology.py:357: in select_server
+    server = self._select_server(
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/topology.py:331: in _select_server
+    servers = self.select_servers(
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/topology.py:249: in select_servers
+    server_descriptions = self._select_servers_loop(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Topology <TopologyDescription id: 6ac2cea419e9fecd1380b3fd, topology_type: ReplicaSetNoPrimary, servers: [<ServerDesc...27028: [Errno 61] Connection refused (configured timeouts: socketTimeoutMS: 5000.0ms, connectTimeoutMS: 5000.0ms)')>]>>
+selector = Primary(), timeout = 5.0, operation = 'hello', operation_id = None
+address = None, deprioritized_servers = None
+
+    def _select_servers_loop(
+        self,
+        selector: Callable[[Selection], Selection],
+        timeout: float,
+        operation: str,
+        operation_id: Optional[int],
+        address: Optional[_Address],
+        deprioritized_servers: Optional[list[Server]] = None,
+    ) -> list[ServerDescription]:
+        """select_servers() guts. Hold the lock when calling this."""
+        now = time.monotonic()
+        end_time = now + timeout
+        logged_waiting = False
+        # Server selection does not have APM events, gate only on logging
+        ss: Optional[_ServerSelectionTelemetry] = None
+        if _is_debug_enabled(_SERVER_SELECTION_LOGGER):
+            ss = _ServerSelectionTelemetry(
+                self._topology_id, selector, operation, operation_id, self.description
+            )
+            ss.started()
+    
+        server_descriptions = self._description.apply_selector(
+            selector,
+            address,
+            custom_selector=self._settings.server_selector,
+            deprioritized_servers=[server.description for server in deprioritized_servers]
+            if deprioritized_servers
+            else None,
+        )
+    
+        while not server_descriptions:
+            # No suitable servers.
+            if timeout == 0 or now > end_time:
+                if ss is not None:
+                    ss.failed(self._error_message(selector), self.description)
+>               raise ServerSelectionTimeoutError(
+                    f"{self._error_message(selector)}, Timeout: {timeout}s, Topology Description: {self.description!r}"
+                )
+E               pymongo.errors.ServerSelectionTimeoutError: 127.0.0.1:27028: [Errno 61] Connection refused (configured timeouts: socketTimeoutMS: 5000.0ms, connectTimeoutMS: 5000.0ms), Timeout: 5.0s, Topology Description: <TopologyDescription id: 6ac2cea419e9fecd1380b3fd, topology_type: ReplicaSetNoPrimary, servers: [<ServerDescription ('127.0.0.1', 27028) server_type: Unknown, rtt: None, error=AutoReconnect('127.0.0.1:27028: [Errno 61] Connection refused (configured timeouts: socketTimeoutMS: 5000.0ms, connectTimeoutMS: 5000.0ms)')>]>
+
+.venv-v2/lib/python3.12/site-packages/pymongo/synchronous/topology.py:297: ServerSelectionTimeoutError
+=============================== warnings summary ===============================
+.venv-v2/lib/python3.12/site-packages/fastapi/testclient.py:1
+  /Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/fastapi/testclient.py:1: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient as TestClient  # noqa
+
+.venv-v2/lib/python3.12/site-packages/starlette/testclient.py:53
+  /Users/caglarcetin/Documents/GitHub/Athlete-Life/.venv-v2/lib/python3.12/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+ERROR tests/mongodb/test_daily_log_parity.py::test_daily_invalid_command_and_concurrent_commit
+ERROR tests/mongodb/test_daily_log_parity.py::test_daily_invalid_command_and_concurrent_commit
+ERROR tests/mongodb/test_daily_log_parity.py::test_daily_atomic_full_day_and_idempotency
+ERROR tests/mongodb/test_daily_log_parity.py::test_daily_atomic_full_day_and_idempotency
+ERROR tests/mongodb/test_daily_log_parity.py::test_daily_overlapping_sleep_rolls_back_water
+ERROR tests/mongodb/test_daily_log_parity.py::test_daily_overlapping_sleep_rolls_back_water
+ERROR tests/mongodb/test_daily_log_parity.py::test_daily_stale_no_partial_write
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! KeyboardInterrupt !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+/Users/caglarcetin/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/lib/python3.12/threading.py:359: KeyboardInterrupt
+(to show a full traceback on KeyboardInterrupt use --full-trace)
+2 warnings, 7 errors in 134.47s (0:02:14)

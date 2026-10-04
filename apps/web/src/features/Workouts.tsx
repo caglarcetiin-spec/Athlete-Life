@@ -1,3 +1,4 @@
+import { DailyNarrative } from "./DailyNarrative";
 import { QuantityInput } from "./QuantityInput";
 import {
   formatQuantity,
@@ -691,6 +692,7 @@ export function Workouts({
           />
         </label>
       </div>
+      <DailyNarrative key={selected} store={store} selected={selected} />
       {active && (
         <section className="card runner">
           <div className="runner-heading">

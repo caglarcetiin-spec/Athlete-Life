@@ -233,6 +233,7 @@ def execute(database, athlete_id: UUID, command: Command, attachment=None):
             prefix = command.command_type.split(".")[0]
             from .analysis import apply as apply_analysis
             from .backups import apply_import
+            from .daily_log import apply as apply_daily_log
             from .execution import apply_session, apply_set
             from .lifecycle import apply as apply_lifecycle
             from .lifestyle import REGISTRY
@@ -241,6 +242,7 @@ def execute(database, athlete_id: UUID, command: Command, attachment=None):
             from .programming import apply_prescription, apply_program
 
             handler = {
+                "daily_log": apply_daily_log,
                 "archive": apply_lifecycle,
                 "record": apply_lifecycle,
                 "analysis": apply_analysis,

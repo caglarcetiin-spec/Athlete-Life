@@ -765,6 +765,21 @@ def create_app(settings: Settings | None = None):
             auth.release_rate_slot(database, key, reservation)
             raise
 
+    @app.post("/api/v2/daily-log-preview")
+    async def daily_log_preview(request: Request):
+        from starlette.concurrency import run_in_threadpool
+
+        from . import daily_log
+        identity = await run_in_threadpool(who, request, True)
+        data = daily_log.Narrative.model_validate(await request.json())
+        data.text()
+        auth.ai_rate_limit(database, "daily-log:" + identity["athlete_id"], 20)
+        auth.ai_rate_limit(database, "ai-global", settings.ai_global_limit)
+        parsed = await run_in_threadpool(daily_log.extract, settings, data)
+        snapshot = await run_in_threadpool(service.bootstrap, database, UUID(identity["athlete_id"]))
+        preview = daily_log.review(data, parsed, snapshot)
+        return {**preview, "token": daily_log.sign(identity["athlete_id"], preview)}
+
     @app.get("/api/v2/ai-chat-status")
     def ai_chat_status(request: Request):
         from .ai_chat import configuration

@@ -1,0 +1,19 @@
+{
+  "date": "2026-10-04T22:09:13.358357+00:00",
+  "source_base": "3582ac299ea7fd0c97bbbab78f4f02998986d75f",
+  "method": "Interactive getpass credential; alos.daily_log.extract and review; synthetic day only; no database writes",
+  "provider": "EVREN",
+  "model": "qwen3.8-flash-next",
+  "exit_code": 0,
+  "observed": {
+    "sleep": "02:00–07:00",
+    "work": "10:00–18:00",
+    "water_ml": 2500,
+    "meal": "Pilav burger makarna; no invented calories",
+    "workout_minutes": 30,
+    "pushup_sets": 3,
+    "pushup_reps": 5,
+    "question": "Pilav, burger ve makarna porsiyonları ne kadardı?"
+  },
+  "scope": "Single live synthetic response; not a guarantee of all natural language cases. Subsequent source validation changes covered by local regression."
+}
