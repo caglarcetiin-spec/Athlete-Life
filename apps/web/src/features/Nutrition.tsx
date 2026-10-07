@@ -1,3 +1,4 @@
+import { MealEstimateNote, estimateInfo } from "./MealEstimateNote";
 import { OptionalModule } from "./OptionalModule";
 import { MealReuse } from "./MealReuse";
 import { useState } from "react";
@@ -118,8 +119,9 @@ export function Nutrition({
             <div className="metric-grid">
               {nutrients.slice(0, 4).map(([k, l]) => (
                 <article className="metric card" key={k}>
-                  <span>Bilinen {l.toLocaleLowerCase("tr-TR")}</span>
+                  <span>Kaydedilen {l.toLocaleLowerCase("tr-TR")}</span>
                   <strong>{shown(totals[k])}</strong>
+                  <small>{meals.filter(r => estimateInfo(r.nutrient_snapshot)).length} öğünde tahmini değer var; toplama dahildir.</small>
                   <small>
                     {meals.filter((r) => r[k] == null).length} öğünde bilgi
                     eksik.
@@ -173,6 +175,7 @@ export function Nutrition({
               describe={(r) => (
                 <>
                   <strong>{String(r.name)}</strong>
+                  <MealEstimateNote snapshot={r.nutrient_snapshot} />
                   <p>
                     {shown(r.grams, "g")} · {shown(r.kcal, "kcal")} · Protein{" "}
                     {shown(r.protein_g, "g")}

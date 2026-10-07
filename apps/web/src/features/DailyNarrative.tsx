@@ -16,6 +16,7 @@ type Review = {
   items: Item[];
   questions: string[];
   unrecorded: string[];
+  portion_options?: { id: string; label: string; basis: string }[];
 };
 type Write = {
   operation_id: string;
@@ -25,6 +26,35 @@ type Write = {
   command_type: string;
   payload: { token: string; selected: number[] };
 };
+function MealPortion({ options, disabled, apply }: {
+  options: NonNullable<Review["portion_options"]>; disabled: boolean;
+  apply: (reference: string, size: string, count: number, oil: string) => void;
+}) {
+  const [reference, setReference] = useState("");
+  const [size, setSize] = useState("unknown");
+  const [count, setCount] = useState(1);
+  const [oil, setOil] = useState("unknown");
+  return <details><summary>Gram bilmeden yaklaşık hesapla</summary>
+    <p>Bu satırdaki yiyeceğe uygun karşılığı seç. Birden fazla farklı yemek aynı satırdaysa önce mesajında ayrı yaz. Uygun karşılık yoksa tahmin uygulama.</p>
+    <label>Yiyecek karşılığı<select aria-label="Yiyecek karşılığı" disabled={disabled} value={reference} onChange={e => setReference(e.target.value)}>
+      <option value="">Seç…</option>{options.map(o => <option key={o.id} value={o.id}>{o.label}</option>)}
+    </select></label>
+    <p>{options.find(o => o.id === reference)?.basis}</p>
+    <label>Porsiyon büyüklüğü<select aria-label="Porsiyon büyüklüğü" disabled={disabled} value={size} onChange={e => setSize(e.target.value)}>
+      <option value="small">Küçük</option><option value="medium">Orta</option><option value="large">Büyük</option><option value="unknown">Bilmiyorum — orta varsay</option>
+    </select></label>
+    <label>Porsiyon adedi<select aria-label="Porsiyon adedi" disabled={disabled} value={count} onChange={e => setCount(Number(e.target.value))}>
+      {[1,2,3,4,5,6,7,8,9,10].map(n => <option key={n} value={n}>{n}</option>)}
+    </select></label>
+    <label>Referansa ek yağ<select aria-label="Referansa ek yağ" disabled={disabled} value={oil} onChange={e => setOil(e.target.value)}>
+      <option value="unknown">Bilmiyorum — ek yağ hesaba katılmasın</option><option value="none">Ek yağ yok</option><option value="teaspoon">Yaklaşık 1 çay kaşığı (5 g)</option><option value="tablespoon">Yaklaşık 1 yemek kaşığı (15 g)</option>
+    </select></label>
+    <p>Süt, meyve, sos gibi eklemeleri mesajında ayrı belirt. Burger referansı kendi mayonezini içerir.</p>
+    <button className="secondary small" disabled={disabled || !reference} onClick={() => apply(reference,size,count,oil)}>Tahmini özette göster</button>
+    <button className="secondary small" disabled={disabled} onClick={() => apply(reference,"none",1,"none")}>Tahmini kaldır</button>
+  </details>;
+}
+
 export function DailyNarrative({
   store,
   selected,
@@ -69,6 +99,17 @@ export function DailyNarrative({
         .saveDraft(key, { messages, text, review, pending, chosen, notice })
         .catch((e) => setError(e.message));
   }, [store, key, ready, messages, text, review, pending, chosen, notice]);
+  async function portion(index: number, reference: string, size: string, count: number, oil: string) {
+    if (!review || busy || pending) return;
+    setBusy(true); setError(""); setChosen([]);
+    try {
+      const result = await api("daily-log-portion", { method: "POST", headers: { "X-CSRF-Token": store.me.csrf },
+        body: JSON.stringify({ token: review.token, index, reference, size, count, oil }) }) as Review;
+      await store.saveDraft(key, { messages, text, review: result, pending: null, chosen: [], notice });
+      setReview(result);
+    } catch(e) { setError(e instanceof Error ? e.message : "Porsiyon hazırlanamadı."); }
+    finally { setBusy(false); }
+  }
   async function analyze() {
     if (busy || pending || !consent) return;
     const next = text.trim() ? [...messages, text.trim()] : messages;
@@ -238,6 +279,9 @@ export function DailyNarrative({
               </label>
               <p className="caption">Mesajındaki dayanak: “{item.quote}”</p>
               {item.warning && <p>{item.warning}</p>}
+              {item.kind === "meal" && !item.blocked && review.portion_options && <MealPortion
+                options={review.portion_options} disabled={busy || !!pending}
+                apply={(reference,size,count,oil) => void portion(i,reference,size,count,oil)} /> }
               {item.blocked && (
                 <p>
                   <strong>Tamamlanmalı:</strong> {item.blocked}

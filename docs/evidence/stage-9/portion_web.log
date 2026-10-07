@@ -1,0 +1,13 @@
+
+> athlete-life-web@2.0.0-dev test
+> vitest run
+
+
+ RUN  v4.1.11 /Users/caglarcetin/Documents/GitHub/Athlete-Life/apps/web
+
+
+ Test Files  15 passed (15)
+      Tests  45 passed (45)
+   Start at  02:47:50
+   Duration  709ms (transform 503ms, setup 0ms, import 1.01s, tests 536ms, environment 1ms)
+

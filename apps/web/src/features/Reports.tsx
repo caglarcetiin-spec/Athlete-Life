@@ -899,7 +899,7 @@ export function Reports({
                 <h2>Beslenme ve uyku eğilimleri</h2>
                 <p>
                   Grafikler yalnız kayıtlı değerleri gösterir. Kısmi beslenme
-                  günleri tam günlük tüketim gibi kullanılmaz.
+                  günleri tam günlük tüketim gibi kullanılmaz. Referans porsiyonlardan hesaplanan tahmini değerler de toplamlara dahildir; ölçüm değildir.
                 </p>
                 <Trend
                   label="Kaydedilen bilinen protein"

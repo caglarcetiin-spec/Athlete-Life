@@ -430,6 +430,14 @@ def apply(db, athlete, command):
                         if snapshot["per100"].get(key) is not None
                         else None
                     )
+            from .meal_estimates import is_estimated
+
+            if same and row and is_estimated(row.nutrient_snapshot) and not data.copy_from:
+                if all(fields.get(k) == getattr(row, k) for k in (*NUTRIENTS, "grams")):
+                    snapshot = row.nutrient_snapshot
+                else:
+                    snapshot["original_source"] = row.nutrient_snapshot
+                    snapshot["source"] = "edited-estimated-portion"
             fields["nutrient_snapshot"] = snapshot
             fields["source_version"] = version
         elif kind == "sleep":
@@ -508,6 +516,8 @@ def apply(db, athlete, command):
 
 
 def nutrition_summary(snapshot, on):
+    from .meal_estimates import is_estimated
+
     meals = [r for r in snapshot.get("meals", []) if r["local_date"] == on and not r.get("deleted_at")]
     status = next(
         (
@@ -521,6 +531,7 @@ def nutrition_summary(snapshot, on):
     return {
         "status": state,
         "entries": len(meals),
+        "estimated_entries": sum(is_estimated(r.get("nutrient_snapshot")) for r in meals),
         "totals": {
             k: sum(r[k] for r in meals if r.get(k) is not None)
             if any(r.get(k) is not None for r in meals)
@@ -529,7 +540,7 @@ def nutrition_summary(snapshot, on):
         },
         "missing_counts": {k: sum(r.get(k) is None for r in meals) for k in NUTRIENTS},
         "known_counts": {k: sum(r.get(k) is not None for r in meals) for k in NUTRIENTS},
-        "meaning": "Kaydedilen bilinen toplam; tam günlük alım veya beslenme yeterliliği değildir.",
+        "meaning": "Kaydedilen toplam; tahmini porsiyon değerlerini içerebilir. Tam günlük alım veya beslenme yeterliliği değildir.",
         "water_ml": sum(
             r["ml"]
             for r in snapshot.get("hydrations", [])

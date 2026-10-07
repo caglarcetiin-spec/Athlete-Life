@@ -124,7 +124,7 @@ reps, seconds (saniye belirtilmişse), external_kg, rir, rpe. Bilinmeyenler null
 seconds; toplam antrenman süresini harekete dağıtma. Eksik set/tekrar veya tutuşu sor.
 Hareketi kesin varyantıyla isimlendir; belirsiz 'row' için halka mı ağırlık mı sor.
 meal: belirtilen yiyecekleri name ile yaz, miktar/kalori/makro tahmin ETME; grams, kcal, protein_g, carbs_g, fat_g yalnız açıkça bildirildiyse aynı değerle doldur, aksi null; sırası veya
-öğün ayrımı bilinmiyorsa tek özet öğün oluştur. Porsiyonu eksik olduğunu bildir.
+öğün ayrımı bilinmiyorsa da farklı yiyecekleri ayrı meal entry olarak yaz; aynı yemeğin bileşenlerini (tavuklu pilav gibi) bölme. Kullanıcı gram veya makro bilmek zorunda değil; küçük/orta/büyük porsiyon ve eklemeleri sor. Sayısal tahmin üretme; arayüzde referans porsiyon seçilecek.
 Desteklenmeyen kilo, ağrı, ilaç, ölçüm vb bilgileri note olarak ve unrecorded içinde göster;
 ilgili sağlık/ölçüm modülüne işlendiğini iddia etme. Hiçbir veriyi sessizce atlama.
 name ve açıklamalar yalnız kullanıcı bilgileri; öneri, tanı veya antrenman planı üretme.
@@ -296,7 +296,7 @@ def review(data, parsed, snapshot):
                 if getattr(entry, metric) is not None:
                     payload[metric] = getattr(entry, metric)
                     label += f" · {getattr(entry, metric):g} {unit}"
-            warning = "Yalnız açıkça bildirdiğin miktarlar kaydedilir. Eksik porsiyon, kalori ve makrolar bilinmiyor olarak kalır; sıfır veya tahmin yazılmaz."
+            warning = "Gram bilmen gerekmiyor. Yaklaşık hesap için aşağıdan yiyecek karşılığını ve porsiyonunu seçebilirsin. Seçmezsen eksik değerler bilinmiyor kalır."
             if rows_for(snapshot, "meals", on):
                 warning += " Bu gün zaten öğün var; yalnız ayrı bir öğünse seç."
         elif e["kind"] == "sleep":
@@ -610,6 +610,9 @@ def apply(db, athlete, command):
             updates = [{"kind": "session", "entity": service.serial(last)}]
         else:
             last, _, updates = (service.apply_shift if kind == "shift" else lifestyle.apply)(db, athlete, sub)
+        if kind == "meal" and item.get("estimate"):
+            last.nutrient_snapshot = {**last.nutrient_snapshot, **item["estimate"]}
+            updates = [{"kind": "meal", "entity": service.serial(last)}]
         changes.extend(updates)
     return (
         last,

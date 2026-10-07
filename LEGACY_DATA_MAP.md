@@ -156,3 +156,5 @@ GLM‑5.3 seçimi: `ai_origin.prompt_version=ai-planner-3` ek kabul; eski iki et
 ### Günlük anlatım kaydı (2026-10-05)
 
 Yeni `daily_log.save` mevcut domain kayıtlarını üretir; eski veri taşıması yapmaz. Kaynak metin/tarih/seçim/işlenmeyen bilgi `Audit.before.daily_log_provenance` JSON alanındadır; domain alanları eski okuyucularla uyumludur. Geçmiş set bilinmiyorsa uydurulmaz; yalnız seans özeti oluşur. `daily-narrative:YYYY-MM-DD` yerel taslak ve bekleyen operation id yeni istemciye aittir. Bkz. `docs/DAILY_NARRATIVE.md`.
+
+2026-10-08: Eski öğünlerin NULL makroları otomatik doldurulmaz. Yeni göz kararı tahminler mevcut nutrient_snapshot JSON'unda source/assumption/sources/estimated_fields ile saklanır. Kopyalanmış/düzenlenmiş kayıtlarda original_source üzerinden tahmin kökeni korunur. Hesap veya medya göçü yok.

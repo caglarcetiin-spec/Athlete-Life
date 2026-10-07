@@ -1,0 +1,10 @@
+{
+  "mobile": true,
+  "portionUnknownUsesVisibleMedium": true,
+  "noWritesBeforeApproval": true,
+  "reloadPreserved": true,
+  "savedProvenance": true,
+  "nutritionEstimateVisible": true,
+  "violations": [],
+  "errors": []
+}

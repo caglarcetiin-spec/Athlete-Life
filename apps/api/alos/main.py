@@ -778,6 +778,43 @@ def create_app(settings: Settings | None = None):
         parsed = await run_in_threadpool(daily_log.extract, settings, data)
         snapshot = await run_in_threadpool(service.bootstrap, database, UUID(identity["athlete_id"]))
         preview = daily_log.review(data, parsed, snapshot)
+        from .meal_estimates import options
+        preview["portion_options"] = options()
+        return {**preview, "token": daily_log.sign(identity["athlete_id"], preview)}
+
+    @app.post("/api/v2/daily-log-portion")
+    def daily_log_portion(request: Request, data: dict):
+        from . import daily_log, meal_estimates
+        identity = who(request, True)
+        choice = meal_estimates.PortionChoice.model_validate(data)
+        preview = daily_log.verify(identity["athlete_id"], choice.token)
+        if choice.index >= len(preview["items"]):
+            raise DomainError("portion_index", "Öğün bulunamadı.")
+        item = preview["items"][choice.index]
+        if item["kind"] != "meal" or item["blocked"]:
+            raise DomainError("portion_kind", "Yalnız hazır öğüne porsiyon seçebilirsin.")
+        original = item.setdefault("reported_payload", dict(item["payload"]))
+        item["payload"] = dict(original)
+        item.pop("estimate", None)
+        if choice.size != "none":
+            values, provenance = meal_estimates.estimate(choice)
+            estimated = []
+            for key, value in values.items():
+                if original.get(key) is None:
+                    item["payload"][key] = value
+                    estimated.append(key)
+            if estimated:
+                item["estimate"] = {**provenance, "estimated_fields": estimated}
+                item["warning"] = "Tahmini: " + provenance["assumption"] + " Bildirdiğin değerler korunur. Tarif/marka farkları sonucu değiştirir."
+            else:
+                item["warning"] = "Bütün değerleri zaten bildirdin; tahmin eklenmedi."
+        else:
+            item["warning"] = "Tahmin kaldırıldı. Eksik değerler bilinmiyor kalır."
+        item["label"] = "Öğün: " + original["name"] + " · " + " · ".join(
+            f"{item['payload'][key]:g} {unit}" for key, unit in
+            (("kcal", "kcal"), ("protein_g", "g protein"), ("carbs_g", "g karbonhidrat"), ("fat_g", "g yağ"))
+            if item["payload"].get(key) is not None
+        )
         return {**preview, "token": daily_log.sign(identity["athlete_id"], preview)}
 
     @app.get("/api/v2/ai-chat-status")

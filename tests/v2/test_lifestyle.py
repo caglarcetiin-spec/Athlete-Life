@@ -9,6 +9,7 @@ def test_nutrition_unknown_partial_complete_and_dedup(client):
     assert client.get("/api/v2/nutrition-summary?on=2026-09-15").json() == {
         "status": "not_logged",
         "entries": 0,
+        "estimated_entries": 0,
         "totals": {
             k: None for k in ["kcal", "protein_g", "carbs_g", "fat_g", "fiber_g"]
         },
@@ -20,7 +21,7 @@ def test_nutrition_unknown_partial_complete_and_dedup(client):
         "missing_counts": {
             k: 0 for k in ["kcal", "protein_g", "carbs_g", "fat_g", "fiber_g"]
         },
-        "meaning": "Kaydedilen bilinen toplam; tam günlük alım veya beslenme yeterliliği değildir.",
+        "meaning": "Kaydedilen toplam; tahmini porsiyon değerlerini içerebilir. Tam günlük alım veya beslenme yeterliliği değildir.",
     }
     meal = write(
         client,

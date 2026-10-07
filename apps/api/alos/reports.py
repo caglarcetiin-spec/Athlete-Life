@@ -115,7 +115,8 @@ def report_sections(snapshot, result, selection="training,nutrition"):
                     ]
                 ],
                 "notes": [
-                    "Bilinen toplamlar; tam günlük alım veya yeterlilik değildir.",
+                    "Kaydedilen toplamlar; tam günlük alım veya yeterlilik değildir.",
+                    "Tahmini referans porsiyonu içeren öğün: " + str(n.get("estimated_entries", 0)),
                     "Protein bilgisi eksik öğün: "
                     + str(n.get("missing_counts", {}).get("protein_g", "Bilgi yok")),
                 ],

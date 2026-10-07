@@ -1,0 +1,137 @@
+İçeriğe geç
+Sunucuya kaydedildi
+Açık
+D
+Deniz Test
+Seanslarım
+Planım
+Haftam
+PLANINI HAYATA GEÇİR
+Antrenman
+
+Hedef ve gerçek performans ayrı saklanır. Yaptığın her set kendi seansına bağlı kalır.
+
+Seçili tarih
+ Günümü anlat · Hızlı kayıt
+
+Uyku, su, öğün, iş ve antrenmanını tek mesajda anlat. EVREN eksikleri sorar; yalnız seçip onayladıkların kaydedilir. Kayıt tarihi: 2026-10-05.
+
+Bilinmeyen miktarlar ve kalori tahmin edilmez. Desteklenmeyen bilgiler mesajında kalır. Önceden kaydettiğin aynı olayı yeniden seçme.
+
+Yeni kayıt başlat
+02:00–07:00 uyudum. 10:00 işe başladım 8 saat çalıştım; ulaşım 0 dk hazırlık 0 dk. 2,5 litre su. Pilav yedim. 30 dk kalistenik; 3 set 5 tekrar pushup yaptım
+Su miktarı günün toplamı.
+Hızlı kayıt özeti
+
+Her satırı kontrol et ve kaydetmek istediklerini seç. Uyarılı kayıtları yalnız ayrı bir olay olduğundan eminsen seç.
+
+Su: 2500 ml eklenecek (mevcut 0 ml).
+
+Mesajındaki dayanak: “2,5 litre su”
+
+Öğün: Pilav
+
+Mesajındaki dayanak: “Pilav yedim”
+
+Gram bilmen gerekmiyor. Yaklaşık hesap için aşağıdan yiyecek karşılığını ve porsiyonunu seçebilirsin. Seçmezsen eksik değerler bilinmiyor kalır.
+
+Gram bilmeden yaklaşık hesapla
+
+Bu satırdaki yiyeceğe uygun karşılığı seç. Birden fazla farklı yemek aynı satırdaysa önce mesajında ayrı yaz. Uygun karşılık yoksa tahmin uygulama.
+
+Yiyecek karşılığı
+Seç…
+Sade yulaf (kuru miktar karşılığı)
+Sade pişmiş pirinç
+Pişmiş derisiz tavuk göğsü
+Tavuklu pilav (örnek tarif)
+Tavuk burger (benzer ürün referansı)
+
+Porsiyon büyüklüğü
+Küçük
+Orta
+Büyük
+Bilmiyorum — orta varsay
+Porsiyon adedi
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+Referansa ek yağ
+Bilmiyorum — ek yağ hesaba katılmasın
+Ek yağ yok
+Yaklaşık 1 çay kaşığı (5 g)
+Yaklaşık 1 yemek kaşığı (15 g)
+
+Süt, meyve, sos gibi eklemeleri mesajında ayrı belirt. Burger referansı kendi mayonezini içerir.
+
+Tahmini özette gösterTahmini kaldır
+Uyku: 2026-10-05 02:00 → 2026-10-05 07:00
+
+Mesajındaki dayanak: “02:00–07:00 uyudum”
+
+Uyandığın gün seçili tarihtir. Tarih ve saatleri kontrol et.
+
+İş: 10:00–18:00 (ulaşım 0 dk, hazırlık 0 dk).
+
+Mesajındaki dayanak: “10:00 işe başladım 8 saat çalıştım; ulaşım 0 dk hazırlık 0 dk”
+
+Antrenman: Kalistenik · 30 dakika · 3 ayrıntılı set; Push-Up 5 tekrar / yük bilinmiyor; Push-Up 5 tekrar / yük bilinmiyor; Push-Up 5 tekrar / yük bilinmiyor
+
+Mesajındaki dayanak: “30 dk kalistenik; 3 set 5 tekrar pushup yaptım”
+
+3 açıkça belirtilmiş set kaydedilecek.
+
+Seçtiklerimi onayla ve kaydet
+Gününü anlat veya eksik bilgileri tamamla
+Bu günlük mesajlarının uyku, beslenme ve antrenman bilgileriyle birlikte EVREN’e gönderilmesini kabul ediyorum. Mevcut hesap kayıtlarım gönderilmez.
+Güncel kayıtlarla yeniden analiz et
+
+Bu işlem ölçüm veya tıbbi rapor üretmez; anlattıklarını kayda dönüştürür. İnternet bağlantısı gerekir. Kaydın tamamlandığı ayrıca gösterilir.
+
+5 Ekim planı
+
+Bu tarihte ana planına ait çalışma yok. Serbest seans kaydedebilir veya program oluşturabilirsin.
+
+Plan dışı / geçmiş seans
+
+Tarih: 5 Ekim. Aynı gün birden fazla seans açabilirsin.
+
+Seans adı
+Serbest seans aç
+Hareket kütüphanesi
+1151 katalog hareketi · kas bölgeleri ve kayıt biçimleri
+Seans geçmişim
+
+Henüz gerçek seans kaydı yok.
+
+Geri
+Bugün
+İleri
+Bugün
+Antrenman
+Sağlık
+Gelişim
+Araçlar
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+locator.selectOption: Timeout 20000ms exceeded.
+Call log:
+[2m  - waiting for getByRole('region', { name: 'Hızlı kayıt özeti', exact: true }).getByLabel('Yiyecek karşılığı', { exact: true })[22m
+
+    at /Users/caglarcetin/Documents/GitHub/Athlete-Life/tools/v2/portion_browser.mjs:24:61 {
+  log: [
+    "  - waiting for getByRole('region', { name: 'Hızlı kayıt özeti', exact: true }).getByLabel('Yiyecek karşılığı', { exact: true })"
+  ],
+  name: 'TimeoutError'
+}
+
+Node.js v24.19.0
