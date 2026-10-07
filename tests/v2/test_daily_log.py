@@ -294,8 +294,9 @@ def test_daily_invalid_provider_output_cannot_write(monkeypatch, finish, content
             )
 
     monkeypatch.setattr("urllib.request.build_opener", lambda *_: Opener())
-    with pytest.raises(DomainError):
-        d.extract(evren_settings(), narrative())
+    result = d.extract(evren_settings(), narrative())
+    assert result.entries == []
+    assert result.questions and "Hiçbir kayıt yapılmadı" in result.questions[0]
 
 
 def test_daily_invalid_command_and_concurrent_commit(client, app, monkeypatch):
@@ -397,3 +398,106 @@ def test_daily_explicit_rir_and_rpe_are_preserved():
     result = d.review(data, parsed, {"cursor": 0})
     sets = result["items"][0]["payload"]["sets"]
     assert len(sets) == 3 and all(x["rir"] == 2 and x["rpe"] == 8 for x in sets)
+
+
+def test_daily_repairs_format_from_original_evidence(monkeypatch):
+    requests = []
+
+    class Opener:
+        def open(self, request, **kwargs):
+            requests.append(json.loads(request.data))
+            content = (
+                "invalid" if len(requests) == 1 else extraction().model_dump_json()
+            )
+            return io.BytesIO(
+                json.dumps(
+                    {
+                        "choices": [
+                            {"finish_reason": "stop", "message": {"content": content}}
+                        ]
+                    }
+                ).encode()
+            )
+
+    monkeypatch.setattr("urllib.request.build_opener", lambda *_: Opener())
+    settings = evren_settings().model_copy(update={"evren_reasoning_effort": "low"})
+    result = d.extract(settings, narrative())
+    assert len(result.entries) == 5
+    assert len(requests) == 2
+    assert requests[1]["messages"][1] == requests[0]["messages"][1]
+    assert all(x["role"] != "assistant" for x in requests[1]["messages"])
+    assert requests[0]["reasoning_effort"] == "low"
+
+
+@pytest.mark.parametrize("fence", ["```", "```json", "```JSON"])
+def test_daily_optional_nulls_and_fences(fence):
+    result = d.parse_extraction(
+        fence
+        + "\n"
+        + json.dumps(
+            {
+                "entries": [
+                    {
+                        "kind": "water",
+                        "quote": "2 litre",
+                        "amount": 2,
+                        "unit": "l",
+                        "name": None,
+                        "scope": None,
+                        "movements": None,
+                    }
+                ],
+                "questions": None,
+                "unrecorded": None,
+            }
+        )
+        + "\n```"
+    )
+    assert result.entries[0].scope == "unknown"
+    assert result.entries[0].amount == 2
+    assert result.entries[0].movements == []
+
+
+@pytest.mark.parametrize(
+    "payload",
+    [
+        {"entries": [{"kind": "water", "quote": "su", "amount": -1}]},
+        {"entries": [{"kind": "water", "quote": "su", "secret": "ignored?"}]},
+        {"entries": None},
+        {"entries": [{"kind": "workout"}]},
+    ],
+)
+def test_daily_normalization_does_not_relax_validation(payload):
+    with pytest.raises((ValueError, TypeError)):
+        d.parse_extraction(json.dumps(payload))
+
+
+def test_daily_invalid_format_returns_clarification_without_writes(
+    client, app, monkeypatch
+):
+    class Opener:
+        def open(self, *_args, **_kwargs):
+            return io.BytesIO(
+                json.dumps(
+                    {
+                        "choices": [
+                            {
+                                "finish_reason": "stop",
+                                "message": {"content": "not valid json"},
+                            }
+                        ]
+                    }
+                ).encode()
+            )
+
+    monkeypatch.setattr("urllib.request.build_opener", lambda *_: Opener())
+    for field in ("ai_provider", "evren_model", "evren_api_key"):
+        monkeypatch.setattr(app.state.settings, field, getattr(evren_settings(), field))
+    before = client.get("/api/v2/bootstrap").json()
+    response = client.post(
+        "/api/v2/daily-log-preview", json=narrative().model_dump(mode="json")
+    )
+    assert response.status_code == 200, response.text
+    assert response.json()["items"] == []
+    assert response.json()["questions"]
+    assert client.get("/api/v2/bootstrap").json()["cursor"] == before["cursor"]

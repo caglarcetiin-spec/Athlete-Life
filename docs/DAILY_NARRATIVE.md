@@ -42,3 +42,9 @@ Tam MongoDB regresyonunun ilk denemesinde geçici mongod açık dosya sınırın
 Son kontroller: açıkça bildirilen RIR/RPE korunur ve katalogdaki hareket türü kullanılır. Nihai günlük kayıt birim senaryoları 16 testtir. Geniş v2 paketi 1098 test geçti; son eklenen dar kapsamlı doğrulamalar ayrıca günlük kayıt testleriyle tekrar yürütüldü. Ön yüz 45 birim testi, lint, TypeScript üretim derlemesi ve mobil tarayıcı testi geçti. Tam MongoDB sonucu kendi evidence kaydında izlenir.
 
 Tam MongoDB regresyonu düzeltilmiş sentetik ortamda **139 passed** ile tamamlandı (exit 0). Son mobil senaryo, 422 alan reddinin düzeltmeye izin vermesini ve commit sonrası kayıp yanıtın aynı işlem kimliğiyle tekrarını da doğrular.
+
+## 8 Ekim 2026 — yanıt biçimi kurtarma
+
+Günlük ayrıştırıcı planlayıcı ile aynı yapılandırılmış EVREN reasoning_effort ayarını kullanır. JSON kod bloğu yazımı ve ölçüm içermeyen isteğe bağlı boş alanlar güvenli varsayılanlara çevrilir; zorunlu kanıtlar, sayısal sınırlar ve bilinmeyen alan denetimi korunur. Tamamlanmamış veya şema dışı yanıt, orijinal kullanıcı mesajlarından bir kez yeniden istenir. Bozuk sağlayıcı yanıtı sonraki isteğe kanıt olarak eklenmez. İki deneme de başarısızsa boş kayıt taslağı ve açık bir netleştirme sorusu döner; hiçbir veri yazılmaz. Bu durum AI'nin kullanıcıyı anlamış olduğu iddiasıyla sunulmaz. Ağ/kimlik doğrulama sorunları ayrı bağlantı hatası olarak kalır.
+
+Yeni sentetik testler biçim onarımı, null alanlar, farklı JSON blokları, sıkı doğrulama ve API üzerinden yazmadan soru sorma akışını kapsar. İlk API çalışmasında sandbox localhost erişimini engelledi; ikinci çalışmada test ayarı closure'daki settings nesnesine uygulanmadığı için yalnız yeni senaryo 503 verdi. Test yapılandırması düzeltildi, kabul beklentisi değiştirilmedi. Kanıt: stage-9/daily_log_format_api. Şema, veri alanları ve hesap/medya göçü değişmez. Önceki sürüme dönüş mevcut kayıtları etkilemez.

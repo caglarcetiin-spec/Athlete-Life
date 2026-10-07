@@ -73,6 +73,29 @@ class Narrative(StrictModel):
         return result
 
 
+def parse_extraction(content):
+    """Accept presentation differences, never invent missing measurements."""
+    content = content.strip()
+    fence = re.fullmatch(r"```(?:json)?\s*([\s\S]*?)\s*```", content, re.IGNORECASE)
+    if fence:
+        content = fence.group(1)
+    payload = json.loads(content)
+    if not isinstance(payload, dict):
+        raise TypeError("object required")
+    # Providers often emit null for optional collections/defaults. These defaults
+    # carry no measurement; required entries, quotes and numeric bounds stay strict.
+    for field in ("questions", "unrecorded"):
+        if payload.get(field) is None:
+            payload.pop(field, None)
+    for entry in payload.get("entries", []):
+        if not isinstance(entry, dict):
+            raise TypeError("entry required")
+        for field in ("name", "movements", "scope"):
+            if entry.get(field) is None:
+                entry.pop(field, None)
+    return Extraction.model_validate(payload)
+
+
 def extract(settings, data):
     from urllib.error import HTTPError, URLError
     from urllib.request import Request, build_opener
@@ -106,42 +129,61 @@ Desteklenmeyen kilo, ağrı, ilaç, ölçüm vb bilgileri note olarak ve unrecor
 ilgili sağlık/ölçüm modülüne işlendiğini iddia etme. Hiçbir veriyi sessizce atlama.
 name ve açıklamalar yalnız kullanıcı bilgileri; öneri, tanı veya antrenman planı üretme.
 """
-    request = Request(
-        "https://evren-llmapi.ssyz.org.tr/v1/chat/completions",
-        data=json.dumps(
-            {
-                "model": config["model"],
-                "messages": [
-                    {"role": "system", "content": instruction + json.dumps(Extraction.model_json_schema())},
-                    {
-                        "role": "user",
-                        "content": json.dumps(
-                            {"selected_date": str(data.local_date), "messages": data.messages},
-                            ensure_ascii=False,
-                        ),
-                    },
-                ],
-                "max_tokens": 5000,
-                "stream": False,
-            }
-        ).encode(),
-        headers={
-            "Authorization": "Bearer " + settings.evren_api_key.get_secret_value(),
-            "Content-Type": "application/json",
+    messages = [
+        {"role": "system", "content": instruction + json.dumps(Extraction.model_json_schema())},
+        {
+            "role": "user",
+            "content": json.dumps(
+                {"selected_date": str(data.local_date), "messages": data.messages}, ensure_ascii=False
+            ),
         },
-    )
+    ]
     try:
-        with build_opener(NoRedirect()).open(request, timeout=150) as response:
-            raw = response.read(1200001)
-        if len(raw) > 1200000:
-            raise ValueError("size")
-        choice = json.loads(raw)["choices"][0]
-        if choice.get("finish_reason") != "stop" or choice["message"].get("tool_calls"):
-            raise ValueError("incomplete")
-        content = choice["message"]["content"].strip()
-        if content.startswith("```json") and content.endswith("```"):
-            content = content[7:-3].strip()
-        parsed = Extraction.model_validate_json(content)
+        parsed = None
+        for attempt in range(2):
+            body = {"model": config["model"], "messages": messages, "max_tokens": 8000, "stream": False}
+            if settings.evren_reasoning_effort is not None:
+                body["reasoning_effort"] = settings.evren_reasoning_effort
+            request = Request(
+                "https://evren-llmapi.ssyz.org.tr/v1/chat/completions",
+                data=json.dumps(body).encode(),
+                headers={
+                    "Authorization": "Bearer " + settings.evren_api_key.get_secret_value(),
+                    "Content-Type": "application/json",
+                },
+            )
+            with build_opener(NoRedirect()).open(request, timeout=70) as response:
+                raw = response.read(1200001)
+            try:
+                if len(raw) > 1200000:
+                    raise ValueError("size")
+                choice = json.loads(raw)["choices"][0]
+                if choice.get("finish_reason") != "stop" or choice["message"].get("tool_calls"):
+                    raise ValueError("incomplete")
+                parsed = parse_extraction(choice["message"]["content"])
+                break
+            except (ValueError, TypeError, KeyError, IndexError, AttributeError):
+                if attempt == 0:
+                    # Retry from the original user evidence, never from a malformed
+                    # assistant answer that could introduce unsupported information.
+                    messages[0]["content"] += (
+                        "\nÖnceki yanıtın biçimi doğrulanamadı. Kısa ve yalnız şemaya uygun JSON üret. "
+                        "entries/questions/unrecorded dizidir. kind sadece water/meal/sleep/work/workout/note. "
+                        "Saat HH:MM, birim ml/l/min/h. Bilinmeyen sayılar null. Eksikleri questions ile sor. "
+                        "Açıklama, markdown veya düşünme metni ekleme."
+                    )
+        if parsed is None:
+            return Extraction(
+                entries=[],
+                questions=[
+                    (
+                        "Mesajın korundu ancak EVREN yanıtını güvenli bir kayıt taslağına dönüştüremedim. "
+                        "Hiçbir kayıt yapılmadı. Önce tek bir bölümü (örneğin uyku veya antrenman) "
+                        "tarihi ve bildiğin süre/miktarlarla ayrı mesajda netleştirir misin? "
+                        "Bilmediğin değerleri yazman gerekmiyor; kayıt öncesinde özeti onaylayacaksın."
+                    )
+                ],
+            )
         accepted = []
         labels = {
             "water": "Su",
